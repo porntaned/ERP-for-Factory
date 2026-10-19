@@ -6,7 +6,7 @@
 
 ## สถานะปัจจุบัน
 
-เอกสารเริ่มต้น, Multi-Agent execution contract, GitHub Issue #1, Branch สำหรับทำงาน, Email privacy สำหรับ Commit ใหม่ และกฎป้องกัน `main` ถูกสร้างหรือเปิดใช้งานแล้ว ยังไม่มี Application code, Migration, Test, CI, Independent review รอบปัจจุบัน หรือ Pull Request
+เอกสารเริ่มต้น, Multi-Agent execution contract, GitHub Issue #1, Branch สำหรับทำงาน, Email privacy สำหรับ Commit ใหม่, กฎป้องกัน `main` และรายงาน Independent review สำหรับ Bootstrap ถูกบันทึกแล้ว ยังไม่มี Application code, Migration, Test, CI หรือ Pull Request
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -23,7 +23,7 @@
   - [x] MA.1 เผยแพร่ Execution contract — [Multi-Agent execution contract](MULTI_AGENT.md)
   - [ ] MA.2 บันทึกบทบาทและ Assignment ของแต่ละ Issue
   - [ ] MA.3 บันทึก Handoff พร้อมไฟล์ คำสั่ง ผลลัพธ์ และ Commit SHA
-  - [ ] MA.4 บันทึกผล Independent review ที่ระบุ Agent และ Commit ที่ตรวจ
+  - [x] MA.4 บันทึกผล Independent review ที่ระบุ Agent และ Commit ที่ตรวจ — [Bootstrap independent review](reviews/bootstrap-independent-review.md)
   - [ ] MA.5 บันทึกรอบแก้ไข จุดหยุด หรือการส่งต่อให้เจ้าของเมื่อเกิดขึ้น
   - [ ] MA.6 สรุปหลักฐาน Agent, Issue, PR และ CI สำหรับ Portfolio
 
@@ -33,10 +33,14 @@
   - [x] M1.1 สร้าง GitHub Issue จริง — [Issue #1](https://github.com/porntaned/ERP-for-Factory/issues/1)
   - [x] M1.2 สร้าง Branch `chore/project-foundation` จาก `main`
   - [x] M1.3 เผยแพร่ Project brief, กฎ Agent, Scrutinize, Multi-Agent contract และ Checklist บน Branch
-  - [x] M1.4 เปิด Email privacy สำหรับ Commit ใหม่และเปิดกฎป้องกัน `main` — [Ruleset: Protect main](https://github.com/porntaned/ERP-for-Factory/rules/25390359)
-  - [ ] M1.5 ยืนยันเวอร์ชัน Python, Django, PostgreSQL และ Dependencies
-  - [ ] M1.6 เตรียมสภาพทดสอบ PostgreSQL ที่ใช้งานได้
-  - [ ] M1.7 กำหนด Development/Test configuration และวิธีเก็บค่าลับนอก Source
+  - [x] M1.4 เปิด Email privacy สำหรับ Commit ใหม่ — [Commit ที่ใช้ Metadata แบบไม่เปิดเผยอีเมล](https://github.com/porntaned/ERP-for-Factory/commit/e6a5dbc633872188551c30198f005c2f127d6890)
+  - [x] M1.5 เปิดกฎป้องกัน `main` — [Ruleset: Protect main](https://github.com/porntaned/ERP-for-Factory/rules/25390359)
+  - [ ] M1.6 ยืนยันเวอร์ชัน Python, Django, PostgreSQL และ Dependencies
+  - [ ] M1.7 เตรียมสภาพทดสอบ PostgreSQL ที่ใช้งานได้
+  - [ ] M1.8 กำหนด Development/Test configuration และวิธีเก็บค่าลับนอก Source
+  - [ ] M1.9 เปิด PR สำหรับ Governance/Project bootstrap โดยไม่ปิด Issue #1
+
+M1.9 ตรวจรับเฉพาะเอกสารและกลไกกำกับงาน ไม่ทำให้ M2 หรือ Acceptance Criteria ของ Issue #1 เสร็จ
 
 ## M2 — Organization → Plant → Warehouse Foundation
 
@@ -109,4 +113,5 @@
 
 - 2026-10-19: สร้าง Issue #1, Branch และเอกสารเริ่มต้นบน GitHub โดยยังไม่เริ่ม Application code
 - 2026-10-19: เพิ่ม Multi-Agent execution contract, เปิด Email privacy สำหรับ Commit ใหม่ และเปิด Ruleset `Protect main`; เก็บประวัติ Commit เดิมไว้ตามการตัดสินใจของเจ้าของ
-- 2026-10-19: Independent review รอบปัจจุบันยังรอดำเนินการ จึงยังไม่ทำเครื่องหมาย MA.4 หรือ M2.7
+- 2026-10-19: Independent Agent ตรวจ Bootstrap ที่ SHA `e6a5dbc633872188551c30198f005c2f127d6890`; verdict `fix-then-ship` — [รายงาน](reviews/bootstrap-independent-review.md)
+- 2026-10-19: แก้รอบที่ 1 โดยบันทึกรายงาน แยกหลักฐาน Email privacy/Ruleset และเพิ่มงาน Governance PR; รอ Independent re-review จึงยังไม่ทำเครื่องหมาย M2.7
