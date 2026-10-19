@@ -6,7 +6,7 @@
 
 ## สถานะปัจจุบัน
 
-เอกสารเริ่มต้น, Multi-Agent execution contract, GitHub Issue #1, Branch สำหรับทำงาน, Email privacy สำหรับ Commit ใหม่, กฎป้องกัน `main` และรายงาน Independent review สำหรับ Bootstrap ถูกบันทึกแล้ว ยังไม่มี Application code, Migration, Test, CI หรือ Pull Request
+เอกสารเริ่มต้น, Multi-Agent execution contract, GitHub Issue #1, Branch สำหรับทำงาน, Email privacy สำหรับ Commit ใหม่, กฎป้องกัน `main` และรายงาน Independent review สำหรับ Bootstrap ถูกบันทึกแล้ว [Governance PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2) เปิดให้เจ้าของตรวจ โดยยังไม่มี Application code, Migration, Test หรือ CI และยังไม่มีการ Merge หรือ Deploy
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -38,7 +38,7 @@
   - [ ] M1.6 ยืนยันเวอร์ชัน Python, Django, PostgreSQL และ Dependencies
   - [ ] M1.7 เตรียมสภาพทดสอบ PostgreSQL ที่ใช้งานได้
   - [ ] M1.8 กำหนด Development/Test configuration และวิธีเก็บค่าลับนอก Source
-  - [ ] M1.9 เปิด PR สำหรับ Governance/Project bootstrap โดยไม่ปิด Issue #1
+  - [x] M1.9 เปิด PR สำหรับ Governance/Project bootstrap โดยไม่ปิด Issue #1 — [PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2)
 
 M1.9 ตรวจรับเฉพาะเอกสารและกลไกกำกับงาน ไม่ทำให้ M2 หรือ Acceptance Criteria ของ Issue #1 เสร็จ
 
@@ -114,4 +114,6 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - 2026-10-19: สร้าง Issue #1, Branch และเอกสารเริ่มต้นบน GitHub โดยยังไม่เริ่ม Application code
 - 2026-10-19: เพิ่ม Multi-Agent execution contract, เปิด Email privacy สำหรับ Commit ใหม่ และเปิด Ruleset `Protect main`; เก็บประวัติ Commit เดิมไว้ตามการตัดสินใจของเจ้าของ
 - 2026-10-19: Independent Agent ตรวจ Bootstrap ที่ SHA `e6a5dbc633872188551c30198f005c2f127d6890`; verdict `fix-then-ship` — [รายงาน](reviews/bootstrap-independent-review.md)
-- 2026-10-19: แก้รอบที่ 1 โดยบันทึกรายงาน แยกหลักฐาน Email privacy/Ruleset และเพิ่มงาน Governance PR; รอ Independent re-review จึงยังไม่ทำเครื่องหมาย M2.7
+- 2026-10-19: แก้รอบที่ 1 โดยบันทึกรายงาน แยกหลักฐาน Email privacy/Ruleset และเพิ่มงาน Governance PR; M2.7 ยังคงไม่เสร็จเพราะเป็นงานตรวจการพัฒนา Foundation
+- 2026-10-19: Independent re-review ที่ SHA `49fcd39f4b8efdf37ac4f197cd166cd96fc80349` ได้ verdict `ship` และบันทึกผลไว้ใน [PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2)
+- 2026-10-19: เปิด Governance-only [PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2); Issue #1 และ M2 ยังไม่เสร็จ และเจ้าของเป็นผู้ตัดสินใจ Merge
