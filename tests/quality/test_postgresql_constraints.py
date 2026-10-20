@@ -14,6 +14,7 @@ from django.db import (
     transaction,
 )
 from django.db.models.deletion import ProtectedError
+from django.utils import timezone
 
 pytestmark = pytest.mark.django_db
 
@@ -46,6 +47,27 @@ def authorize_quality(
 
 def test_quality_suite_uses_postgresql(disposition_contract: dict[str, Any]) -> None:
     assert connection.vendor == "postgresql"
+
+
+def test_created_at_is_required_and_direct_insert_supplies_aware_server_time(
+    disposition_contract: dict[str, Any],
+    quality_scope: dict[str, Any],
+    quality_user: Any,
+    grant_role: Any,
+) -> None:
+    authorize_quality(grant_role, quality_user, quality_scope)
+    event_model = disposition_contract["event_model"]
+    assert event_model._meta.get_field("created_at").null is False
+    before = timezone.now()
+
+    event = event_model.objects.create(
+        **direct_event_values(quality_scope, quality_user)
+    )
+    event.refresh_from_db()
+    after = timezone.now()
+
+    assert timezone.is_aware(event.created_at)
+    assert before <= event.created_at <= after
 
 
 @pytest.mark.parametrize(
@@ -103,6 +125,7 @@ def test_state_and_reason_constraints_reject_direct_invalid_writes(
         )
 
 
+@pytest.mark.django_db(transaction=True)
 @pytest.mark.parametrize("invalid_field", ["lot_id", "warehouse_id", "actor_id"])
 def test_invalid_references_fail_at_database_boundary(
     disposition_contract: dict[str, Any],
@@ -353,6 +376,48 @@ def test_concurrent_distinct_commands_allow_one_authoritative_transition(
     assert not any(worker.is_alive() for worker in workers)
     outcomes = sorted(results.get(timeout=1) for _ in range(2))
     assert outcomes == ["conflict", "created"]
+    assert disposition_contract["event_model"].objects.count() == 1
+
+
+@pytest.mark.django_db(transaction=True)
+def test_concurrent_direct_inserts_serialize_one_transition(
+    disposition_contract: dict[str, Any],
+) -> None:
+    objects = create_concurrency_scope(disposition_contract)
+    barrier = Barrier(2)
+    results: Queue[str] = Queue()
+
+    def insert_event() -> None:
+        close_old_connections()
+        try:
+            barrier.wait(timeout=10)
+            with transaction.atomic():
+                disposition_contract["event_model"].objects.create(
+                    lot_id=objects["lot_id"],
+                    warehouse_id=objects["warehouse_id"],
+                    actor_id=objects["user_id"],
+                    request_id=uuid4(),
+                    from_disposition="HOLD",
+                    to_disposition="RELEASED",
+                    reason="Concurrent direct PostgreSQL insert",
+                )
+            results.put("created")
+        except IntegrityError:
+            results.put("integrity_error")
+        except Exception as error:  # Surface harness and trigger failures.
+            results.put(f"unexpected:{type(error).__name__}:{error}")
+        finally:
+            connections.close_all()
+
+    workers = [Thread(target=insert_event), Thread(target=insert_event)]
+    for worker in workers:
+        worker.start()
+    for worker in workers:
+        worker.join(timeout=15)
+
+    assert not any(worker.is_alive() for worker in workers)
+    outcomes = sorted(results.get(timeout=1) for _ in range(2))
+    assert outcomes == ["created", "integrity_error"]
     assert disposition_contract["event_model"].objects.count() == 1
 
 
