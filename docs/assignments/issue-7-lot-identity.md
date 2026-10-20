@@ -11,8 +11,8 @@
 - Test reviewer: `/root/lot_test_reviewer` — read-only TDD RED review
 - Test writer: `/root/lot_tdd_writer` — PostgreSQL acceptance tests only
 - Independent TDD reviewer: `/root/lot_red_independent_review` — read-only exact-commit Scrutinize
-- Model implementer: unassigned — future `inventory.Lot` model and migration
-- Independent implementation reviewer: unassigned — future read-only end-to-end Scrutinize
+- Model implementer: `/root/lot_model_implementer` — `inventory.Lot` model and migration
+- Independent implementation reviewer: `/root/lot_red_independent_review` — read-only end-to-end Scrutinize
 
 ## Authorized scope
 
@@ -50,7 +50,10 @@ deployment.
 - RED run: [Foundation #16](https://github.com/porntaned/ERP-for-Factory/actions/runs/39394726202)
 - RED record: [PostgreSQL TDD RED evidence](../evidence/issue-7-tdd-red.md)
 - RED review: [Independent TDD RED review](../reviews/issue-7-tdd-red-independent-review.md)
+- GREEN implementation: [`c66cab65bb0f1dcb7dd1131514446651fecc47cf`](https://github.com/porntaned/ERP-for-Factory/commit/c66cab65bb0f1dcb7dd1131514446651fecc47cf)
+- GREEN run: [Foundation #18](https://github.com/porntaned/ERP-for-Factory/actions/runs/39395440223)
+- GREEN record: [PostgreSQL GREEN evidence](../evidence/issue-7-green.md)
+- Independent implementation review: [Issue #7 Lot review](../reviews/issue-7-lot-independent-review.md)
 
-Implementation, GREEN evidence, independent implementation review and owner-review PR remain
-pending. No merge or deployment is authorized.
+The owner-review PR remains pending. No merge or deployment is authorized.
 

@@ -68,8 +68,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] M3.1.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-5-item-uom-independent-review.md), [PR #6](https://github.com/porntaned/ERP-for-Factory/pull/6)
     - [x] M3.1.6 เปิด Issue สำหรับ Lot identity — [Issue #7](https://github.com/porntaned/ERP-for-Factory/issues/7), [Assignment](assignments/issue-7-lot-identity.md)
     - [x] M3.1.7 เขียน PostgreSQL tests และบันทึก TDD RED ที่ตรวจสอบอิสระแล้ว — [RED evidence](evidence/issue-7-tdd-red.md), [Independent review](reviews/issue-7-tdd-red-independent-review.md), [Foundation #16](https://github.com/porntaned/ERP-for-Factory/actions/runs/39394726202)
-    - [ ] M3.1.8 สร้าง `inventory.Lot` และ Migration ตาม Contract ที่ล็อกไว้
-    - [ ] M3.1.9 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN
+    - [x] M3.1.8 สร้าง `inventory.Lot` และ Migration ตาม Contract ที่ล็อกไว้ — [Implementation](../inventory/models.py), [Migration](../inventory/migrations/0001_initial.py)
+    - [x] M3.1.9 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN — [GREEN evidence](evidence/issue-7-green.md), [Foundation #18](https://github.com/porntaned/ERP-for-Factory/actions/runs/39395440223), [Independent review](reviews/issue-7-lot-independent-review.md)
     - [ ] M3.1.10 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ
   - [ ] M3.2 กำหนดผู้ใช้จำลองและสิทธิ์ตามบทบาท/คลัง
   - [ ] M3.3 กำหนด Audit และสถานะ Released/Hold ขั้นต่ำ
@@ -143,3 +143,4 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - 2026-10-20: เปิด owner-review [PR #6](https://github.com/porntaned/ERP-for-Factory/pull/6) จาก `feat/item-uom-foundation` ไป `main`; Issue #5 จะปิดเมื่อเจ้าของ Merge เท่านั้น และไม่มีการ Deploy
 - 2026-10-20: เจ้าของ Merge [PR #6](https://github.com/porntaned/ERP-for-Factory/pull/6) ที่ [`d31ac7a`](https://github.com/porntaned/ERP-for-Factory/commit/d31ac7a9f5286353ed05a46ccc6ce3be3c1678e1) และ Issue #5 ปิดเป็น `completed`; ไม่มีการ Deploy
 - 2026-10-20: เปิด [Issue #7](https://github.com/porntaned/ERP-for-Factory/issues/7) สำหรับ Lot identity และ Push RED commit [`dab4b46`](https://github.com/porntaned/ERP-for-Factory/commit/dab4b460bb5f0fea476a72d8c609746e02c708d1); [Foundation #16](https://github.com/porntaned/ERP-for-Factory/actions/runs/39394726202) ยืนยัน PostgreSQL 18.6, 96 regression tests ผ่าน และ 19 Lot tests ล้มเฉพาะเพราะยังไม่มี `inventory.Lot` ตาม TDD
+- 2026-10-20: Implementer เพิ่ม `inventory.Lot` และ Migration ที่ [`c66cab6`](https://github.com/porntaned/ERP-for-Factory/commit/c66cab65bb0f1dcb7dd1131514446651fecc47cf); [Foundation #18](https://github.com/porntaned/ERP-for-Factory/actions/runs/39395440223) ผ่าน PostgreSQL 18.6, fresh migration, Ruff และ 115 tests และ Independent Scrutinize ได้ verdict `ship`
