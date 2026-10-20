@@ -15,9 +15,14 @@ def _validated_roles(allowed_roles: object) -> frozenset[str] | None:
     ):
         return None
 
-    if not allowed_roles or not all(isinstance(role, str) for role in allowed_roles):
+    try:
+        candidates = tuple(allowed_roles)
+    except TypeError:
         return None
-    roles = frozenset(allowed_roles)
+
+    if not candidates or not all(isinstance(role, str) for role in candidates):
+        return None
+    roles = frozenset(str(role) for role in candidates)
     if not roles.issubset(WarehouseRole.values):
         return None
     return roles

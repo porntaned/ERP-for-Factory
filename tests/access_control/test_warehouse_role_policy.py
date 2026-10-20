@@ -278,6 +278,24 @@ def test_authorized_warehouse_query_fails_closed_for_invalid_roles(
     assert warehouse_ids(warehouses_for_user(synthetic_user, requested_roles)) == set()
 
 
+def test_unhashable_string_role_fails_closed_without_raising(
+    assignment_model: Any,
+    has_warehouse_role: Any,
+    warehouses_for_user: Any,
+    synthetic_user: Any,
+    warehouse_scope: dict[str, Any],
+) -> None:
+    class UnhashableStr(str):
+        __hash__ = None  # type: ignore[assignment]
+
+    warehouse = warehouse_scope["target"]
+    grant(assignment_model, synthetic_user, warehouse, "WAREHOUSE")
+    requested_roles = [UnhashableStr("UNKNOWN")]
+
+    assert has_warehouse_role(synthetic_user, warehouse, requested_roles) is False
+    assert warehouse_ids(warehouses_for_user(synthetic_user, requested_roles)) == set()
+
+
 def test_mixed_supported_and_unsupported_requested_roles_fail_closed(
     assignment_model: Any,
     has_warehouse_role: Any,
