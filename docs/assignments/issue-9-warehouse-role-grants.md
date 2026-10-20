@@ -11,8 +11,8 @@
 - Risk reviewer: `/root/m32_risk_reviewer` — read-only authorization review
 - Test writer: `/root/m32_tdd_writer` — PostgreSQL acceptance tests only
 - Independent TDD reviewer: `/root/m32_red_independent_review` — read-only exact-commit Scrutinize
-- Model implementer: pending assignment — Django Auth, assignment model, migration and policy interface
-- Independent implementation reviewer: pending assignment — read-only exact-commit Scrutinize
+- Model implementer: `/root/m32_implementer` — Django Auth, assignment model, migration and policy interface
+- Independent implementation reviewer: `/root/m32_implementation_scrutinize` — read-only exact-commit Scrutinize
 
 ## Authorized scope
 
@@ -57,6 +57,11 @@ Hold/Released state, valuation, merge or deployment.
 - RED record: [PostgreSQL TDD RED evidence](../evidence/issue-9-tdd-red.md)
 - RED review: [Independent TDD RED review](../reviews/issue-9-tdd-red-independent-review.md)
 
-GREEN implementation, final independent review and owner-review pull request remain pending.
+- GREEN implementation: [`23286336a752afd3791f4a41881f83f339bbe8a9`](https://github.com/porntaned/ERP-for-Factory/commit/23286336a752afd3791f4a41881f83f339bbe8a9)
+- GREEN run: [Foundation #28](https://github.com/porntaned/ERP-for-Factory/actions/runs/39444111594)
+- GREEN record: [PostgreSQL GREEN evidence](../evidence/issue-9-green.md)
+- Independent implementation review: [Issue #9 Warehouse role review](../reviews/issue-9-warehouse-role-independent-review.md)
+
+Owner-review pull request remains pending.
 
 The owner decides whether to merge the future pull request. No merge or deployment is authorized.
