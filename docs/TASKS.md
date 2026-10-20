@@ -6,7 +6,7 @@
 
 ## สถานะปัจจุบัน
 
-Foundation environment และ acceptance tests อยู่บน `feat/warehouse-foundation`; [GitHub Actions run #1](https://github.com/porntaned/ERP-for-Factory/actions/runs/39355731564) พิสูจน์ PostgreSQL TDD RED ที่ Commit `31ba6be` แล้ว ยังไม่มี Domain model, Migration, PR สำหรับ Issue #1, Merge หรือ Deploy ส่วน [Governance PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2) ยังคงรอเจ้าของตรวจ
+Issue #1 อยู่บน `feat/warehouse-foundation`; [TDD RED](evidence/issue-1-tdd-red.md) ได้เปลี่ยนเป็น [PostgreSQL GREEN](evidence/issue-1-green.md) ที่ Commit `8fdb446` โดยผ่าน 51 tests และ [Independent Scrutinize](reviews/issue-1-foundation-independent-review.md) แล้ว ขั้นถัดไปคือเปิด PR ให้เจ้าของตรวจ โดยยังไม่มี Merge หรือ Deploy ส่วน [Governance PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2) ยังคงรอเจ้าของตรวจ
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -48,12 +48,12 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 - [ ] **M2 — Foundation ผ่านการตรวจและเปิด PR**
   - [x] M2.1 เขียน Test และบันทึก TDD RED — [PostgreSQL TDD RED evidence](evidence/issue-1-tdd-red.md)
-  - [ ] M2.2 สร้าง Django project และโมดูล Organization, Plant, Warehouse
-  - [ ] M2.3 เพิ่ม Migration และ Database constraints
-  - [ ] M2.4 พิสูจน์ uniqueness, invalid parents, deletion protection และ concurrent writes บน PostgreSQL
-  - [ ] M2.5 รัน Tests, Django checks และ Ruff
-  - [ ] M2.6 ตั้ง GitHub Actions CI และตรวจผลบน Commit ล่าสุด
-  - [ ] M2.7 ทำ Scrutinize และ Independent review ตามหลักฐานจริง
+  - [x] M2.2 สร้าง Django project และโมดูล Organization, Plant, Warehouse — [Implementation](../facilities/models.py)
+  - [x] M2.3 เพิ่ม Migration และ Database constraints — [Initial migration](../facilities/migrations/0001_initial.py)
+  - [x] M2.4 พิสูจน์ uniqueness, invalid parents, deletion protection และ concurrent writes บน PostgreSQL — [GREEN evidence](evidence/issue-1-green.md#acceptance-evidence)
+  - [x] M2.5 รัน Tests, Django checks และ Ruff — [GREEN evidence](evidence/issue-1-green.md#verified-path)
+  - [x] M2.6 ตั้ง GitHub Actions CI และตรวจผลบน Commit ล่าสุด — [Foundation #4](https://github.com/porntaned/ERP-for-Factory/actions/runs/39369435238)
+  - [x] M2.7 ทำ Scrutinize และ Independent review ตามหลักฐานจริง — [Independent review](reviews/issue-1-foundation-independent-review.md)
   - [ ] M2.8 เปิด PR พร้อม Scope, ผลตรวจและข้อจำกัดให้เจ้าของตัดสินใจ Merge
 
 ## M3 — Item, Lot, สิทธิ์ และ Audit
@@ -120,3 +120,5 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - 2026-10-20: กู้สถานะจากรอบที่ติดลิมิตโดยเก็บงานเดิมไว้ใน `stash@{0}` และแยก branch สำรอง `backup/local-planning-draft-20261019`; ไม่ลบหรือเขียนทับงานเดิม
 - 2026-10-20: ยืนยัน stack และ configuration โดย pytest รวบรวมได้ 43 tests; Independent Scrutinize พบรอบแก้ FK transaction, deletion graph และ publishing target แล้ว re-review ผ่าน
 - 2026-10-20: Push Commit [`31ba6be`](https://github.com/porntaned/ERP-for-Factory/commit/31ba6be9cf94f50f28267734f7040a4592db3545) ไป `feat/warehouse-foundation`; [Actions run #1](https://github.com/porntaned/ERP-for-Factory/actions/runs/39355731564) ผ่าน PostgreSQL setup/check และล้มด้วย expected TDD RED ก่อนเริ่ม M2.2
+- 2026-10-20: เพิ่ม `facilities` models, Migration และ constraints ที่ Commit [`7db1db9`](https://github.com/porntaned/ERP-for-Factory/commit/7db1db96f810603650807abce5f0999c53bfa388); PostgreSQL suite เปลี่ยนเป็น GREEN
+- 2026-10-20: Independent Scrutinize พบช่องว่างการทดสอบ NOT NULL โดยตรง จึงเพิ่ม 8 regression cases ที่ Commit [`8fdb446`](https://github.com/porntaned/ERP-for-Factory/commit/8fdb446669c47f892774c2fba2c2093ba4d1c1e8); [Foundation #4](https://github.com/porntaned/ERP-for-Factory/actions/runs/39369435238) ผ่าน 51 tests และ re-review ได้ verdict `ship`
