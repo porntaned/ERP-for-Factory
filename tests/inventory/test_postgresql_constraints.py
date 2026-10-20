@@ -75,4 +75,3 @@ def test_concurrent_duplicate_lot_creation_allows_only_one(
     outcomes = sorted(results.get(timeout=1) for _ in range(2))
     assert outcomes == ["created", "integrity_error"]
     assert lot_model.objects.filter(item=item, code="LOT-RACE").count() == 1
-

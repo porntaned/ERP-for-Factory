@@ -41,4 +41,3 @@ def raw_item(organization: Any, each_uom: Any) -> Any:
         item_type="RAW",
         base_uom=each_uom,
     )
-

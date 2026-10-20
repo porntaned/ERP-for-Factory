@@ -108,4 +108,3 @@ def test_item_deletion_is_protected_by_lot(
 
     with pytest.raises(ProtectedError):
         raw_item.delete()
-

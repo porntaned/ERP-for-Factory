@@ -57,4 +57,3 @@ deployment.
 - Owner-review pull request: [#8 — Add Lot identity foundation](https://github.com/porntaned/ERP-for-Factory/pull/8)
 
 The owner decides whether to merge PR #8. No merge or deployment is authorized.
-
