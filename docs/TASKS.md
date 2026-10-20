@@ -66,7 +66,11 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] M3.1.3 สร้าง Item และ Unit of Measure พร้อม Migration — [Implementation](../catalog/models.py), [Migration](../catalog/migrations/0001_initial.py)
     - [x] M3.1.4 พิสูจน์ Constraints, Concurrent writes และ Regression suite — [GREEN evidence](evidence/issue-5-green.md), [Foundation #11](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390768062)
     - [x] M3.1.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-5-item-uom-independent-review.md), [PR #6](https://github.com/porntaned/ERP-for-Factory/pull/6)
-    - [ ] M3.1.6 แยก Lot identity เป็น Issue ถัดไปหลัง Item/UOM ผ่านการตรวจ
+    - [ ] M3.1.6 เปิด Issue สำหรับ Lot identity — [Issue #7](https://github.com/porntaned/ERP-for-Factory/issues/7), [Assignment](assignments/issue-7-lot-identity.md)
+    - [ ] M3.1.7 เขียน PostgreSQL tests และบันทึก TDD RED ที่ตรวจสอบอิสระแล้ว
+    - [ ] M3.1.8 สร้าง `inventory.Lot` และ Migration ตาม Contract ที่ล็อกไว้
+    - [ ] M3.1.9 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN
+    - [ ] M3.1.10 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ
   - [ ] M3.2 กำหนดผู้ใช้จำลองและสิทธิ์ตามบทบาท/คลัง
   - [ ] M3.3 กำหนด Audit และสถานะ Released/Hold ขั้นต่ำ
   - [ ] M3.4 แยก Issue, Test, Review และ PR สำหรับแต่ละส่วน

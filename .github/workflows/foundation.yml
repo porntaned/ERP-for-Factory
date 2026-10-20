@@ -5,6 +5,7 @@ on:
     branches:
       - feat/warehouse-foundation
       - feat/item-uom-foundation
+      - feat/lot-identity
   pull_request:
     branches:
       - main
