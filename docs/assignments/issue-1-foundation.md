@@ -31,4 +31,18 @@ test path executable; M2.2 remains incomplete until the three domain models exis
 5. The targeted RED fails because `facilities.Organization` is not registered, after PostgreSQL
    and Django setup succeed.
 
-Commands, results, the tested commit and the CI run URL are added after the first remote run.
+## Handoff evidence
+
+- Tested commit: [`31ba6be9cf94f50f28267734f7040a4592db3545`](https://github.com/porntaned/ERP-for-Factory/commit/31ba6be9cf94f50f28267734f7040a4592db3545)
+- PostgreSQL run: [Foundation #1](https://github.com/porntaned/ERP-for-Factory/actions/runs/39355731564)
+- Execution record: [PostgreSQL TDD RED evidence](../evidence/issue-1-tdd-red.md)
+- Independent review: [TDD RED foundation review](../reviews/issue-1-tdd-red-independent-review.md)
+
+Local preparation and checks used `uv lock`, `uv sync --locked --all-groups`, Django system check,
+pytest collection, Ruff and `git diff --check`. The local checks passed and collected 43 tests.
+The remote run installed the locked stack, passed Django configuration, connected to PostgreSQL
+18.6 and then produced the intended RED because `facilities.Organization` is not implemented.
+
+The next implementation handoff is M2.2. It may add only the `facilities` app and the three domain
+models needed to progress these tests. Migrations, full database proof and final CI remain later
+unchecked tasks.

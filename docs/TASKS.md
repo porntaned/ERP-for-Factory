@@ -1,12 +1,12 @@
 # Project checklist — รายการงานโครงการ
 
-อัปเดตล่าสุด: 2026-10-19
+อัปเดตล่าสุด: 2026-10-20
 
 `[x]` หมายถึงงานเสร็จและมีหลักฐานที่ลิงก์ไว้ ส่วนงานที่กำลังทำ ติดขัด หรือยังไม่ได้ตรวจรับใช้ `[ ]` งานใหญ่เสร็จเมื่อทุกงานย่อยและเกณฑ์ตรวจรับเสร็จเท่านั้น
 
 ## สถานะปัจจุบัน
 
-เอกสารเริ่มต้น, Multi-Agent execution contract, GitHub Issue #1, Branch สำหรับทำงาน, Email privacy สำหรับ Commit ใหม่, กฎป้องกัน `main` และรายงาน Independent review สำหรับ Bootstrap ถูกบันทึกแล้ว [Governance PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2) เปิดให้เจ้าของตรวจ โดยยังไม่มี Application code, Migration, Test หรือ CI และยังไม่มีการ Merge หรือ Deploy
+Foundation environment และ acceptance tests อยู่บน `feat/warehouse-foundation`; [GitHub Actions run #1](https://github.com/porntaned/ERP-for-Factory/actions/runs/39355731564) พิสูจน์ PostgreSQL TDD RED ที่ Commit `31ba6be` แล้ว ยังไม่มี Domain model, Migration, PR สำหรับ Issue #1, Merge หรือ Deploy ส่วน [Governance PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2) ยังคงรอเจ้าของตรวจ
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -21,23 +21,23 @@
 
 - [ ] **MA — มีหลักฐานครบว่าหลาย Agent ทำงานและตรวจสอบกันจริง**
   - [x] MA.1 เผยแพร่ Execution contract — [Multi-Agent execution contract](MULTI_AGENT.md)
-  - [ ] MA.2 บันทึกบทบาทและ Assignment ของแต่ละ Issue
-  - [ ] MA.3 บันทึก Handoff พร้อมไฟล์ คำสั่ง ผลลัพธ์ และ Commit SHA
-  - [x] MA.4 บันทึกผล Independent review ที่ระบุ Agent และ Commit ที่ตรวจ — [Bootstrap independent review](reviews/bootstrap-independent-review.md)
-  - [ ] MA.5 บันทึกรอบแก้ไข จุดหยุด หรือการส่งต่อให้เจ้าของเมื่อเกิดขึ้น
+  - [x] MA.2 บันทึกบทบาทและ Assignment ของแต่ละ Issue — [Issue #1 assignment](assignments/issue-1-foundation.md)
+  - [x] MA.3 บันทึก Handoff พร้อมไฟล์ คำสั่ง ผลลัพธ์ และ Commit SHA — [Issue #1 handoff](assignments/issue-1-foundation.md#handoff-evidence)
+  - [x] MA.4 บันทึกผล Independent review ที่ระบุ Agent และ Commit ที่ตรวจ — [Bootstrap review](reviews/bootstrap-independent-review.md), [Issue #1 TDD RED review](reviews/issue-1-tdd-red-independent-review.md)
+  - [x] MA.5 บันทึกรอบแก้ไข จุดหยุด หรือการส่งต่อให้เจ้าของเมื่อเกิดขึ้น — [Issue #1 TDD RED review](reviews/issue-1-tdd-red-independent-review.md#findings-and-repair)
   - [ ] MA.6 สรุปหลักฐาน Agent, Issue, PR และ CI สำหรับ Portfolio
 
 ## M1 — เตรียม Foundation Issue และสภาพแวดล้อม
 
-- [ ] **M1 — พร้อมเริ่มพัฒนา Foundation**
+- [x] **M1 — พร้อมเริ่มพัฒนา Foundation**
   - [x] M1.1 สร้าง GitHub Issue จริง — [Issue #1](https://github.com/porntaned/ERP-for-Factory/issues/1)
   - [x] M1.2 สร้าง Branch `chore/project-foundation` จาก `main`
   - [x] M1.3 เผยแพร่ Project brief, กฎ Agent, Scrutinize, Multi-Agent contract และ Checklist บน Branch
   - [x] M1.4 เปิด Email privacy สำหรับ Commit ใหม่ — [Commit ที่ใช้ Metadata แบบไม่เปิดเผยอีเมล](https://github.com/porntaned/ERP-for-Factory/commit/e6a5dbc633872188551c30198f005c2f127d6890)
   - [x] M1.5 เปิดกฎป้องกัน `main` — [Ruleset: Protect main](https://github.com/porntaned/ERP-for-Factory/rules/25390359)
-  - [ ] M1.6 ยืนยันเวอร์ชัน Python, Django, PostgreSQL และ Dependencies
-  - [ ] M1.7 เตรียมสภาพทดสอบ PostgreSQL ที่ใช้งานได้
-  - [ ] M1.8 กำหนด Development/Test configuration และวิธีเก็บค่าลับนอก Source
+  - [x] M1.6 ยืนยันเวอร์ชัน Python, Django, PostgreSQL และ Dependencies — [Development contract](DEVELOPMENT.md#version-contract)
+  - [x] M1.7 เตรียมสภาพทดสอบ PostgreSQL ที่ใช้งานได้ — [PostgreSQL TDD RED evidence](evidence/issue-1-tdd-red.md)
+  - [x] M1.8 กำหนด Development/Test configuration และวิธีเก็บค่าลับนอก Source — [Configuration boundary](DEVELOPMENT.md#configuration-boundary)
   - [x] M1.9 เปิด PR สำหรับ Governance/Project bootstrap โดยไม่ปิด Issue #1 — [PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2)
 
 M1.9 ตรวจรับเฉพาะเอกสารและกลไกกำกับงาน ไม่ทำให้ M2 หรือ Acceptance Criteria ของ Issue #1 เสร็จ
@@ -47,7 +47,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 ขอบเขตและเกณฑ์ตรวจรับหลักอยู่ใน [Issue #1](https://github.com/porntaned/ERP-for-Factory/issues/1)
 
 - [ ] **M2 — Foundation ผ่านการตรวจและเปิด PR**
-  - [ ] M2.1 เขียน Test และบันทึก TDD RED
+  - [x] M2.1 เขียน Test และบันทึก TDD RED — [PostgreSQL TDD RED evidence](evidence/issue-1-tdd-red.md)
   - [ ] M2.2 สร้าง Django project และโมดูล Organization, Plant, Warehouse
   - [ ] M2.3 เพิ่ม Migration และ Database constraints
   - [ ] M2.4 พิสูจน์ uniqueness, invalid parents, deletion protection และ concurrent writes บน PostgreSQL
@@ -117,3 +117,6 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - 2026-10-19: แก้รอบที่ 1 โดยบันทึกรายงาน แยกหลักฐาน Email privacy/Ruleset และเพิ่มงาน Governance PR; M2.7 ยังคงไม่เสร็จเพราะเป็นงานตรวจการพัฒนา Foundation
 - 2026-10-19: Independent re-review ที่ SHA `49fcd39f4b8efdf37ac4f197cd166cd96fc80349` ได้ verdict `ship` และบันทึกผลไว้ใน [PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2)
 - 2026-10-19: เปิด Governance-only [PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2); Issue #1 และ M2 ยังไม่เสร็จ และเจ้าของเป็นผู้ตัดสินใจ Merge
+- 2026-10-20: กู้สถานะจากรอบที่ติดลิมิตโดยเก็บงานเดิมไว้ใน `stash@{0}` และแยก branch สำรอง `backup/local-planning-draft-20261019`; ไม่ลบหรือเขียนทับงานเดิม
+- 2026-10-20: ยืนยัน stack และ configuration โดย pytest รวบรวมได้ 43 tests; Independent Scrutinize พบรอบแก้ FK transaction, deletion graph และ publishing target แล้ว re-review ผ่าน
+- 2026-10-20: Push Commit [`31ba6be`](https://github.com/porntaned/ERP-for-Factory/commit/31ba6be9cf94f50f28267734f7040a4592db3545) ไป `feat/warehouse-foundation`; [Actions run #1](https://github.com/porntaned/ERP-for-Factory/actions/runs/39355731564) ผ่าน PostgreSQL setup/check และล้มด้วย expected TDD RED ก่อนเริ่ม M2.2
