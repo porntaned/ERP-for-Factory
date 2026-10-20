@@ -74,8 +74,14 @@ jobs:
           cursor.execute('SHOW server_version');
           print('server_version=' + cursor.fetchone()[0])"
 
-      - name: Run targeted TDD RED
-        run: >-
-          uv run pytest -q
-          tests/foundation/test_hierarchy.py::test_warehouse_can_be_created_under_existing_plant
-          --tb=short
+      - name: Verify model and migration state
+        run: uv run python manage.py makemigrations --check --dry-run
+
+      - name: Apply migrations to fresh PostgreSQL
+        run: uv run python manage.py migrate --noinput
+
+      - name: Run Ruff
+        run: uv run ruff check .
+
+      - name: Run foundation tests
+        run: uv run pytest -q --tb=short
