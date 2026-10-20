@@ -1,0 +1,81 @@
+name: Foundation
+
+on:
+  push:
+    branches:
+      - feat/warehouse-foundation
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  postgresql-tdd:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:18.6-bookworm
+        env:
+          POSTGRES_DB: erp_factory
+          POSTGRES_USER: erp_factory
+          POSTGRES_PASSWORD: synthetic-ci-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U erp_factory -d erp_factory"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DJANGO_SECRET_KEY: synthetic-ci-only-not-for-production
+      DJANGO_DEBUG: "false"
+      POSTGRES_DB: erp_factory
+      POSTGRES_USER: erp_factory
+      POSTGRES_PASSWORD: synthetic-ci-only
+      POSTGRES_HOST: 127.0.0.1
+      POSTGRES_PORT: "5432"
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: 0.13.1
+          enable-cache: true
+
+      - name: Install Python
+        run: uv python install 3.14.8
+
+      - name: Synchronize locked dependencies
+        run: uv sync --locked --all-groups
+
+      - name: Record runtime versions
+        run: |
+          uv run python --version
+          uv run python -c "import django, psycopg; print('Django', django.get_version()); print('psycopg', psycopg.__version__)"
+
+      - name: Verify Django configuration
+        run: uv run python manage.py check
+
+      - name: Verify PostgreSQL connection
+        run: >-
+          uv run python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings');
+          import django; django.setup();
+          from django.db import connection;
+          connection.ensure_connection();
+          print('vendor=' + connection.vendor);
+          assert connection.vendor == 'postgresql';
+          cursor = connection.cursor();
+          cursor.execute('SHOW server_version');
+          print('server_version=' + cursor.fetchone()[0])"
+
+      - name: Run targeted TDD RED
+        run: >-
+          uv run pytest -q
+          tests/foundation/test_hierarchy.py::test_warehouse_can_be_created_under_existing_plant
+          --tb=short
