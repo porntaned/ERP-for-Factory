@@ -62,6 +62,6 @@ Hold/Released state, valuation, merge or deployment.
 - GREEN record: [PostgreSQL GREEN evidence](../evidence/issue-9-green.md)
 - Independent implementation review: [Issue #9 Warehouse role review](../reviews/issue-9-warehouse-role-independent-review.md)
 
-Owner-review pull request remains pending.
+Owner-review pull request: [PR #10 — Add Warehouse-scoped role grants](https://github.com/porntaned/ERP-for-Factory/pull/10)
 
-The owner decides whether to merge the future pull request. No merge or deployment is authorized.
+The owner decides whether to merge the open pull request. No merge or deployment is authorized.

@@ -6,7 +6,7 @@
 
 ## สถานะปัจจุบัน
 
-[Issue #5](https://github.com/porntaned/ERP-for-Factory/issues/5) ปิดแล้วหลัง [PR #6](https://github.com/porntaned/ERP-for-Factory/pull/6) Merge Item/UOM เข้า `main`; [Issue #7](https://github.com/porntaned/ERP-for-Factory/issues/7) กำลังทำ Lot identity บน `feat/lot-identity` และมี [TDD RED บน PostgreSQL 18.6](evidence/issue-7-tdd-red.md) แล้ว โดยยังไม่มีการ Deploy
+[Issue #7](https://github.com/porntaned/ERP-for-Factory/issues/7) ปิดแล้วหลัง [PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8) Merge Lot identity เข้า `main`; M3.2 Warehouse-scoped role grants ทำครบพร้อม PostgreSQL GREEN 174 tests และ Independent Scrutinize แล้วใน [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10) ซึ่งเปิดรอเจ้าของตรวจ โดยยังไม่มีการ Merge หรือ Deploy
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -71,12 +71,12 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] M3.1.8 สร้าง `inventory.Lot` และ Migration ตาม Contract ที่ล็อกไว้ — [Implementation](../inventory/models.py), [Migration](../inventory/migrations/0001_initial.py)
     - [x] M3.1.9 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN — [GREEN evidence](evidence/issue-7-green.md), [Foundation #18](https://github.com/porntaned/ERP-for-Factory/actions/runs/39395440223), [Independent review](reviews/issue-7-lot-independent-review.md)
     - [x] M3.1.10 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-7-lot-independent-review.md), [PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8)
-  - [ ] M3.2 กำหนดผู้ใช้จำลองและสิทธิ์ตามบทบาท/คลัง
+  - [x] M3.2 กำหนดผู้ใช้จำลองและสิทธิ์ตามบทบาท/คลัง — [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10)
     - [x] M3.2.1 เปิด Issue และล็อกขอบเขต Warehouse role assignment — [Issue #9](https://github.com/porntaned/ERP-for-Factory/issues/9)
     - [x] M3.2.2 บันทึก Assignment และ TDD RED บน PostgreSQL — [Assignment](assignments/issue-9-warehouse-role-grants.md), [RED evidence](evidence/issue-9-tdd-red.md), [Foundation #26](https://github.com/porntaned/ERP-for-Factory/actions/runs/39435149544)
     - [x] M3.2.3 เพิ่ม Django Auth, Warehouse role assignment และ permission interface — [Implementation](../access_control/models.py), [Policies](../access_control/policies.py), [Migration](../access_control/migrations/0001_initial.py)
     - [x] M3.2.4 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN — [GREEN evidence](evidence/issue-9-green.md), [Foundation #28](https://github.com/porntaned/ERP-for-Factory/actions/runs/39444111594)
-    - [ ] M3.2.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ
+    - [x] M3.2.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-9-warehouse-role-independent-review.md), [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10)
   - [ ] M3.3 กำหนด Audit และสถานะ Released/Hold ขั้นต่ำ
   - [ ] M3.4 แยก Issue, Test, Review และ PR สำหรับแต่ละส่วน
 
@@ -150,3 +150,5 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - 2026-10-20: เปิด [Issue #7](https://github.com/porntaned/ERP-for-Factory/issues/7) สำหรับ Lot identity และ Push RED commit [`dab4b46`](https://github.com/porntaned/ERP-for-Factory/commit/dab4b460bb5f0fea476a72d8c609746e02c708d1); [Foundation #16](https://github.com/porntaned/ERP-for-Factory/actions/runs/39394726202) ยืนยัน PostgreSQL 18.6, 96 regression tests ผ่าน และ 19 Lot tests ล้มเฉพาะเพราะยังไม่มี `inventory.Lot` ตาม TDD
 - 2026-10-20: Implementer เพิ่ม `inventory.Lot` และ Migration ที่ [`c66cab6`](https://github.com/porntaned/ERP-for-Factory/commit/c66cab65bb0f1dcb7dd1131514446651fecc47cf); [Foundation #18](https://github.com/porntaned/ERP-for-Factory/actions/runs/39395440223) ผ่าน PostgreSQL 18.6, fresh migration, Ruff และ 115 tests และ Independent Scrutinize ได้ verdict `ship`
 - 2026-10-20: เปิด owner-review [PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8) จาก `feat/lot-identity` ไป `main`; Issue #7 จะปิดเมื่อเจ้าของ Merge เท่านั้น และไม่มีการ Deploy
+- 2026-10-20: เจ้าของ Merge [PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8) ที่ [`b7a9bdd`](https://github.com/porntaned/ERP-for-Factory/commit/b7a9bddd87d258c343d17abbc76e53de9a436dcd) และ Issue #7 ปิดเป็น `completed`; ไม่มีการ Deploy
+- 2026-10-20: เปิด [Issue #9](https://github.com/porntaned/ERP-for-Factory/issues/9) และ owner-review [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10) สำหรับ Warehouse-scoped role grants; [Foundation #28](https://github.com/porntaned/ERP-for-Factory/actions/runs/39444111594) ผ่าน PostgreSQL 18.6, fresh migrations, Ruff และ 174 tests และ Independent Scrutinize ได้ verdict `ship`; PR ยังเปิดรอเจ้าของตรวจและไม่มีการ Merge หรือ Deploy
