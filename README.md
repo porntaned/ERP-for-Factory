@@ -4,11 +4,11 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 
 โครงการมีผลลัพธ์หลักสองส่วน: ระบบ ERP ที่ทำงานได้ตาม Scope และหลักฐานว่า Multi-Agent สามารถแบ่งงาน ส่งต่องาน ตรวจสอบอิสระ และควบคุมคุณภาพได้จริง
 
-> สถานะปัจจุบัน: เอกสารตั้งต้น, Security controls และ Foundation Issue พร้อมแล้ว ยังไม่มี Application code หรือฟังก์ชัน Stock ที่ผ่านการตรวจรับ
+> สถานะปัจจุบัน: Foundation `Organization → Plant → Warehouse` ผ่าน PostgreSQL 18.6, Ruff, 51 tests และ Independent Scrutinize แล้ว โดย [PR #3](https://github.com/porntaned/ERP-for-Factory/pull/3) Merge เข้า `main`; ฟังก์ชัน Stock ยังไม่เริ่มและยังไม่มีการ Deploy
 
 ## First issue
 
-[Issue #1 — Organization, Plant and Warehouse constraints](https://github.com/porntaned/ERP-for-Factory/issues/1) จะสร้างฐานข้อมูล `Organization → Plant → Warehouse` ด้วย Django และ PostgreSQL พร้อมพิสูจน์ข้อจำกัดที่ระดับฐานข้อมูลก่อนเริ่ม Stock movement
+[Issue #1 — Organization, Plant and Warehouse constraints](https://github.com/porntaned/ERP-for-Factory/issues/1) ส่งมอบฐานข้อมูล `Organization → Plant → Warehouse` ด้วย Django และ PostgreSQL พร้อมหลักฐานข้อจำกัดระดับฐานข้อมูลก่อนเริ่ม Stock movement
 
 ## Planned stack
 
