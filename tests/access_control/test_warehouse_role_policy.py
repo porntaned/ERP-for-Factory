@@ -11,8 +11,8 @@ def grant(
     user: Any,
     warehouse: Any,
     role: str,
-) -> None:
-    assignment_model.objects.create(user=user, warehouse=warehouse, role=role)
+) -> Any:
+    return assignment_model.objects.create(user=user, warehouse=warehouse, role=role)
 
 
 def warehouse_ids(warehouses: Any) -> set[int]:
@@ -31,6 +31,27 @@ def test_matching_any_requested_role_allows_exact_warehouse(
 
     assert has_warehouse_role(synthetic_user, warehouse, {"PRODUCTION"}) is True
     assert has_warehouse_role(synthetic_user, warehouse, {"APPROVER", "QUALITY"}) is True
+
+
+def test_deleting_assignment_revokes_warehouse_access(
+    assignment_model: Any,
+    has_warehouse_role: Any,
+    warehouses_for_user: Any,
+    synthetic_user: Any,
+    warehouse_scope: dict[str, Any],
+) -> None:
+    warehouse = warehouse_scope["target"]
+    assignment = grant(assignment_model, synthetic_user, warehouse, "WAREHOUSE")
+
+    assert has_warehouse_role(synthetic_user, warehouse, {"WAREHOUSE"}) is True
+    assert warehouse_ids(warehouses_for_user(synthetic_user, {"WAREHOUSE"})) == {
+        warehouse.pk
+    }
+
+    assignment.delete()
+
+    assert has_warehouse_role(synthetic_user, warehouse, {"WAREHOUSE"}) is False
+    assert warehouse_ids(warehouses_for_user(synthetic_user, {"WAREHOUSE"})) == set()
 
 
 def test_assignment_does_not_leak_across_warehouse_plant_or_organization(
