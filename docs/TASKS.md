@@ -61,6 +61,12 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 - [ ] **M3 — ข้อมูลหลักพร้อมสำหรับ Inventory**
   - [ ] M3.1 กำหนด Item, หน่วยนับ และ Lot identity
+    - [x] M3.1.1 สร้าง Issue แยกสำหรับ Item และหน่วยนับ — [Issue #5](https://github.com/porntaned/ERP-for-Factory/issues/5)
+    - [ ] M3.1.2 บันทึก Assignment และ TDD RED บน PostgreSQL
+    - [ ] M3.1.3 สร้าง Item และ Unit of Measure พร้อม Migration
+    - [ ] M3.1.4 พิสูจน์ Constraints, Concurrent writes และ Regression suite
+    - [ ] M3.1.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ
+    - [ ] M3.1.6 แยก Lot identity เป็น Issue ถัดไปหลัง Item/UOM ผ่านการตรวจ
   - [ ] M3.2 กำหนดผู้ใช้จำลองและสิทธิ์ตามบทบาท/คลัง
   - [ ] M3.3 กำหนด Audit และสถานะ Released/Hold ขั้นต่ำ
   - [ ] M3.4 แยก Issue, Test, Review และ PR สำหรับแต่ละส่วน
