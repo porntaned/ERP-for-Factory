@@ -14,7 +14,10 @@ SECRET_KEY = required_environment("DJANGO_SECRET_KEY")
 DEBUG = os.environ.get("DJANGO_DEBUG", "false").lower() == "true"
 ALLOWED_HOSTS: list[str] = []
 
-INSTALLED_APPS: list[str] = ["facilities.apps.FacilitiesConfig"]
+INSTALLED_APPS: list[str] = [
+    "facilities.apps.FacilitiesConfig",
+    "catalog.apps.CatalogConfig",
+]
 MIDDLEWARE: list[str] = []
 
 DATABASES = {
