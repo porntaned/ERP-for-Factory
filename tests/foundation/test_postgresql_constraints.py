@@ -37,6 +37,60 @@ def test_invalid_parent_reference_fails_at_database_boundary(
         )
 
 
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("model_name", "null_field"),
+    [
+        ("Organization", "code"),
+        ("Organization", "display_name"),
+        ("Plant", "organization_id"),
+        ("Plant", "code"),
+        ("Plant", "display_name"),
+        ("Warehouse", "plant_id"),
+        ("Warehouse", "code"),
+        ("Warehouse", "display_name"),
+    ],
+)
+def test_required_fields_reject_null_at_database_boundary(
+    model: Callable[[str], Any],
+    model_name: str,
+    null_field: str,
+) -> None:
+    organization_model = model("Organization")
+    if model_name == "Organization":
+        target_model = organization_model
+        values = {"code": "ORG", "display_name": "Organization"}
+    else:
+        organization = organization_model.objects.create(
+            code="PARENT",
+            display_name="Parent organization",
+        )
+        plant_model = model("Plant")
+        if model_name == "Plant":
+            target_model = plant_model
+            values = {
+                "organization_id": organization.pk,
+                "code": "PLANT",
+                "display_name": "Plant",
+            }
+        else:
+            plant = plant_model.objects.create(
+                organization=organization,
+                code="PLANT",
+                display_name="Parent plant",
+            )
+            target_model = model("Warehouse")
+            values = {
+                "plant_id": plant.pk,
+                "code": "WAREHOUSE",
+                "display_name": "Warehouse",
+            }
+
+    values[null_field] = None
+    with pytest.raises(IntegrityError), transaction.atomic():
+        target_model.objects.create(**values)
+
+
 @pytest.mark.django_db(transaction=True)
 def test_concurrent_duplicate_warehouse_creation_allows_only_one(
     model: Callable[[str], Any],
