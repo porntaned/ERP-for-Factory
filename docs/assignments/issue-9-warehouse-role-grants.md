@@ -10,7 +10,7 @@
 - Scope architect: `/root/m32_scope_architect` — read-only domain and boundary review
 - Risk reviewer: `/root/m32_risk_reviewer` — read-only authorization review
 - Test writer: `/root/m32_tdd_writer` — PostgreSQL acceptance tests only
-- Independent TDD reviewer: `/root/m32_test_reviewer` — read-only test-contract review
+- Independent TDD reviewer: `/root/m32_red_independent_review` — read-only exact-commit Scrutinize
 - Model implementer: pending assignment — Django Auth, assignment model, migration and policy interface
 - Independent implementation reviewer: pending assignment — read-only exact-commit Scrutinize
 
@@ -52,6 +52,11 @@ Hold/Released state, valuation, merge or deployment.
 
 ## Handoff evidence
 
-Evidence links remain pending until the corresponding commit and GitHub Actions run exist.
+- RED commit: [`a58c6eb02efdb324c068343476bfc317f4c5657e`](https://github.com/porntaned/ERP-for-Factory/commit/a58c6eb02efdb324c068343476bfc317f4c5657e)
+- RED run: [Foundation #26](https://github.com/porntaned/ERP-for-Factory/actions/runs/39435149544)
+- RED record: [PostgreSQL TDD RED evidence](../evidence/issue-9-tdd-red.md)
+- RED review: [Independent TDD RED review](../reviews/issue-9-tdd-red-independent-review.md)
+
+GREEN implementation, final independent review and owner-review pull request remain pending.
 
 The owner decides whether to merge the future pull request. No merge or deployment is authorized.

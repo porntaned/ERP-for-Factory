@@ -73,7 +73,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] M3.1.10 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-7-lot-independent-review.md), [PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8)
   - [ ] M3.2 กำหนดผู้ใช้จำลองและสิทธิ์ตามบทบาท/คลัง
     - [x] M3.2.1 เปิด Issue และล็อกขอบเขต Warehouse role assignment — [Issue #9](https://github.com/porntaned/ERP-for-Factory/issues/9)
-    - [ ] M3.2.2 บันทึก Assignment และ TDD RED บน PostgreSQL
+    - [x] M3.2.2 บันทึก Assignment และ TDD RED บน PostgreSQL — [Assignment](assignments/issue-9-warehouse-role-grants.md), [RED evidence](evidence/issue-9-tdd-red.md), [Foundation #26](https://github.com/porntaned/ERP-for-Factory/actions/runs/39435149544)
     - [ ] M3.2.3 เพิ่ม Django Auth, Warehouse role assignment และ permission interface
     - [ ] M3.2.4 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN
     - [ ] M3.2.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ
