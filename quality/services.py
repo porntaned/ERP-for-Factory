@@ -102,14 +102,6 @@ def transition_lot_disposition(
     request_id: UUID,
 ) -> LotDispositionEvent:
     _validate_pair(lot, warehouse)
-    if (
-        expected_disposition not in LotDisposition.values
-        or target_disposition not in LotDisposition.values
-        or expected_disposition == target_disposition
-    ):
-        raise DispositionValidationError("transition must change between HOLD and RELEASED")
-    if not isinstance(reason, str) or not reason.strip():
-        raise DispositionValidationError("reason must be nonblank")
     if not isinstance(request_id, UUID):
         raise DispositionValidationError("request_id must be a UUID")
     if not has_warehouse_role(actor, warehouse, {"QUALITY"}):
@@ -132,6 +124,17 @@ def transition_lot_disposition(
         )
         if existing is not None:
             return existing
+
+        if (
+            expected_disposition not in LotDisposition.values
+            or target_disposition not in LotDisposition.values
+            or expected_disposition == target_disposition
+        ):
+            raise DispositionValidationError(
+                "transition must change between HOLD and RELEASED"
+            )
+        if not isinstance(reason, str) or not reason.strip():
+            raise DispositionValidationError("reason must be nonblank")
 
         current_disposition = get_lot_disposition(lot=locked_lot, warehouse=warehouse)
         if current_disposition != expected_disposition:
