@@ -50,6 +50,9 @@ roles or warehouse permissions, audit, Hold/Released status, UI, API, merge or d
 - RED run: [Foundation #9](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390285346)
 - RED record: [PostgreSQL TDD RED evidence](../evidence/issue-5-tdd-red.md)
 - RED review: [Independent TDD RED review](../reviews/issue-5-tdd-red-independent-review.md)
+- GREEN implementation: [`05b7effe3eaba8a3b60b04aeee4542bd747c9308`](https://github.com/porntaned/ERP-for-Factory/commit/05b7effe3eaba8a3b60b04aeee4542bd747c9308)
+- GREEN run: [Foundation #11](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390768062)
+- GREEN record: [PostgreSQL GREEN evidence](../evidence/issue-5-green.md)
+- Independent implementation review: [Issue #5 Item/UOM review](../reviews/issue-5-item-uom-independent-review.md)
 
-GREEN implementation, final handoff, independent implementation review and pull request are
-pending. No merge or deployment is authorized.
+The owner-review pull request is pending. No merge or deployment is authorized.
