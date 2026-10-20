@@ -6,7 +6,7 @@
 
 ## สถานะปัจจุบัน
 
-Issue #1 อยู่บน `feat/warehouse-foundation`; [TDD RED](evidence/issue-1-tdd-red.md) ได้เปลี่ยนเป็น [PostgreSQL GREEN](evidence/issue-1-green.md) ที่ Commit `8fdb446` โดยผ่าน 51 tests และ [Independent Scrutinize](reviews/issue-1-foundation-independent-review.md) แล้ว [PR #3](https://github.com/porntaned/ERP-for-Factory/pull/3) เปิดรอเจ้าของตรวจโดยมี [Governance PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2) เป็นฐาน ยังไม่มี Merge หรือ Deploy
+[Issue #1](https://github.com/porntaned/ERP-for-Factory/issues/1) ปิดเป็น `completed` แล้วหลัง [Governance PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2) และ [Foundation PR #3](https://github.com/porntaned/ERP-for-Factory/pull/3) Merge เข้า `main` ตามลำดับ Foundation ผ่าน PostgreSQL 18.6, Ruff, 51 tests และ [Independent Scrutinize](reviews/issue-1-foundation-independent-review.md); M3 ยังไม่เริ่มและไม่มีการ Deploy
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -46,7 +46,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ขอบเขตและเกณฑ์ตรวจรับหลักอยู่ใน [Issue #1](https://github.com/porntaned/ERP-for-Factory/issues/1)
 
-- [x] **M2 — Foundation ผ่านการตรวจและเปิด PR**
+- [x] **M2 — Foundation ผ่านการตรวจและ Merge เข้า `main`**
   - [x] M2.1 เขียน Test และบันทึก TDD RED — [PostgreSQL TDD RED evidence](evidence/issue-1-tdd-red.md)
   - [x] M2.2 สร้าง Django project และโมดูล Organization, Plant, Warehouse — [Implementation](../facilities/models.py)
   - [x] M2.3 เพิ่ม Migration และ Database constraints — [Initial migration](../facilities/migrations/0001_initial.py)
@@ -55,6 +55,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
   - [x] M2.6 ตั้ง GitHub Actions CI และตรวจผลบน Commit ล่าสุด — [Latest branch CI](https://github.com/porntaned/ERP-for-Factory/actions/workflows/foundation.yml?query=branch%3Afeat%2Fwarehouse-foundation), [Implementation run #4](https://github.com/porntaned/ERP-for-Factory/actions/runs/39369435238)
   - [x] M2.7 ทำ Scrutinize และ Independent review ตามหลักฐานจริง — [Independent review](reviews/issue-1-foundation-independent-review.md)
   - [x] M2.8 เปิด PR พร้อม Scope, ผลตรวจและข้อจำกัดให้เจ้าของตัดสินใจ Merge — [PR #3](https://github.com/porntaned/ERP-for-Factory/pull/3)
+  - [x] M2.9 Merge Foundation และปิด Issue #1 — [Merge commit `1f7acc6`](https://github.com/porntaned/ERP-for-Factory/commit/1f7acc61d446e581d89588b96b80f7d4f25609f8), [Issue #1](https://github.com/porntaned/ERP-for-Factory/issues/1)
 
 ## M3 — Item, Lot, สิทธิ์ และ Audit
 
@@ -123,3 +124,5 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - 2026-10-20: เพิ่ม `facilities` models, Migration และ constraints ที่ Commit [`7db1db9`](https://github.com/porntaned/ERP-for-Factory/commit/7db1db96f810603650807abce5f0999c53bfa388); PostgreSQL suite เปลี่ยนเป็น GREEN
 - 2026-10-20: Independent Scrutinize พบช่องว่างการทดสอบ NOT NULL โดยตรง จึงเพิ่ม 8 regression cases ที่ Commit [`8fdb446`](https://github.com/porntaned/ERP-for-Factory/commit/8fdb446669c47f892774c2fba2c2093ba4d1c1e8); [Foundation #4](https://github.com/porntaned/ERP-for-Factory/actions/runs/39369435238) ผ่าน 51 tests และ re-review ได้ verdict `ship`
 - 2026-10-20: บันทึก GREEN/Independent review และเปิด [PR #3](https://github.com/porntaned/ERP-for-Factory/pull/3) แบบ stacked บน Governance PR #2; เจ้าของยังเป็นผู้ตัดสินใจ Merge และไม่มีการ Deploy
+- 2026-10-20: Scrutinize Governance diff แล้ว Merge [PR #2](https://github.com/porntaned/ERP-for-Factory/pull/2) เข้า `main` ที่ [`ec79831`](https://github.com/porntaned/ERP-for-Factory/commit/ec79831bf0cd3b58ec8f204cdb9b74c3fdf3f0a7); ไม่มีการ Deploy
+- 2026-10-20: เปลี่ยน Base ของ [PR #3](https://github.com/porntaned/ERP-for-Factory/pull/3) เป็น `main`, ยืนยัน Diff 6 Commits/25 ไฟล์, ไม่มี Conflict และ Check ของ Head `7d527ce` ผ่าน แล้ว Merge ที่ [`1f7acc6`](https://github.com/porntaned/ERP-for-Factory/commit/1f7acc61d446e581d89588b96b80f7d4f25609f8); Issue #1 ปิดเป็น `completed` และไม่มีการ Deploy

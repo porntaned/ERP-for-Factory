@@ -46,6 +46,8 @@ The issue is limited to three domain models, their first migration and database-
 - GREEN record: [PostgreSQL GREEN evidence](../evidence/issue-1-green.md)
 - Independent review: [Issue #1 implementation review](../reviews/issue-1-foundation-independent-review.md)
 - Owner-review PR: [#3 — Add Organization, Plant, and Warehouse foundation](https://github.com/porntaned/ERP-for-Factory/pull/3)
+- Governance merge: [`ec79831bf0cd3b58ec8f204cdb9b74c3fdf3f0a7`](https://github.com/porntaned/ERP-for-Factory/commit/ec79831bf0cd3b58ec8f204cdb9b74c3fdf3f0a7)
+- Foundation merge: [`1f7acc61d446e581d89588b96b80f7d4f25609f8`](https://github.com/porntaned/ERP-for-Factory/commit/1f7acc61d446e581d89588b96b80f7d4f25609f8)
 
 The RED run installed the locked stack, passed Django configuration, connected to PostgreSQL 18.6
 and failed because `facilities.Organization` did not exist. The GREEN run at the repaired commit
@@ -55,6 +57,7 @@ than executed because no local PostgreSQL server was available.
 
 The independent reviewer first found a direct NOT NULL regression-test gap. The integrator added
 eight database-boundary cases, and the reviewer re-traced the exact repaired commit with no
-remaining blocker, major or minor finding. PR #3 is stacked on Governance PR #2 so its diff stays
-limited to Issue #1. The owner must review the base PR first, then retarget PR #3 to `main` before
-deciding whether to merge. No merge or deployment was performed.
+remaining blocker, major or minor finding. The owner merged Governance PR #2, retargeted PR #3 to
+`main`, and verified that the comparison still contained only the six Issue #1 commits and 25
+Issue #1 files. PR #3 then merged as `1f7acc61d446e581d89588b96b80f7d4f25609f8`, closing Issue #1
+as completed. No deployment was performed.
