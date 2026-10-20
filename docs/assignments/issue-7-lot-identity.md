@@ -10,6 +10,7 @@
 - Scope reviewer: `/root/lot_scope_reviewer` — read-only issue-boundary review
 - Test reviewer: `/root/lot_test_reviewer` — read-only TDD RED review
 - Test writer: `/root/lot_tdd_writer` — PostgreSQL acceptance tests only
+- Independent TDD reviewer: `/root/lot_red_independent_review` — read-only exact-commit Scrutinize
 - Model implementer: unassigned — future `inventory.Lot` model and migration
 - Independent implementation reviewer: unassigned — future read-only end-to-end Scrutinize
 
@@ -45,5 +46,11 @@ deployment.
 
 ## Handoff evidence
 
-Pending TDD RED commit, PostgreSQL CI run and independent test review.
+- RED commit: [`dab4b460bb5f0fea476a72d8c609746e02c708d1`](https://github.com/porntaned/ERP-for-Factory/commit/dab4b460bb5f0fea476a72d8c609746e02c708d1)
+- RED run: [Foundation #16](https://github.com/porntaned/ERP-for-Factory/actions/runs/39394726202)
+- RED record: [PostgreSQL TDD RED evidence](../evidence/issue-7-tdd-red.md)
+- RED review: [Independent TDD RED review](../reviews/issue-7-tdd-red-independent-review.md)
+
+Implementation, GREEN evidence, independent implementation review and owner-review PR remain
+pending. No merge or deployment is authorized.
 
