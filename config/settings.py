@@ -17,6 +17,7 @@ ALLOWED_HOSTS: list[str] = []
 INSTALLED_APPS: list[str] = [
     "facilities.apps.FacilitiesConfig",
     "catalog.apps.CatalogConfig",
+    "inventory.apps.InventoryConfig",
 ]
 MIDDLEWARE: list[str] = []
 
