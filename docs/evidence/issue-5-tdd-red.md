@@ -1,9 +1,9 @@
 # Issue #5 PostgreSQL TDD RED evidence
 
-- Tested commit: [`ca4dacbdc349ff7b4fcf5a3be10035c02e6f2c28`](https://github.com/porntaned/ERP-for-Factory/commit/ca4dacbdc349ff7b4fcf5a3be10035c02e6f2c28)
+- Tested commit: [`139eb14a1d99ab2a31fb940cdcd093b93f6602c7`](https://github.com/porntaned/ERP-for-Factory/commit/139eb14a1d99ab2a31fb940cdcd093b93f6602c7)
 - Branch: `feat/item-uom-foundation`
-- GitHub Actions run: [Foundation #8](https://github.com/porntaned/ERP-for-Factory/actions/runs/39389877487)
-- Job: [`postgresql-tdd`](https://github.com/porntaned/ERP-for-Factory/actions/runs/39389877487/job/118518530320)
+- GitHub Actions run: [Foundation #9](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390285346)
+- Job: [`postgresql-tdd`](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390285346/job/118519897211)
 - Environment: GitHub-hosted Ubuntu 24.04 runner with PostgreSQL 18.6
 - Result: expected RED
 
@@ -28,8 +28,8 @@ implemented. The repeated explicit failure was:
 catalog.UnitOfMeasure is not registered; expected RED until Issue #5 is implemented
 ```
 
-Final pytest result: `11 failed, 51 passed, 32 errors in 0.65s`. The failures and setup errors are
-the 43 new catalog cases; the 51 existing tests remained GREEN. This is a valid behavioral RED
+Final pytest result: `11 failed, 51 passed, 34 errors in 0.89s`. The failures and setup errors are
+the 45 new catalog cases; the 51 existing tests remained GREEN. This is a valid behavioral RED
 because dependencies, Django configuration, PostgreSQL startup and connection, migrations, Ruff,
 test collection and the existing regression suite succeeded first.
 
@@ -45,4 +45,5 @@ git diff --check
 ```
 
 Results: Django reported no issues, pytest collected 94 tests, Ruff passed and the diff check
-passed. Database behavior was executed by the GitHub Actions PostgreSQL environment above.
+passed. After the independent-review repair, pytest collected 96 tests. Database behavior was
+executed by the GitHub Actions PostgreSQL environment above.

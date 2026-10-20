@@ -21,7 +21,16 @@ rejection only. An implementation could therefore add a non-empty database const
 suite and violate the locked decision.
 
 The repair adds database-backed creation and refresh cases for both UnitOfMeasure and Item with
-`display_name=""`. Repaired commit, CI run and re-review verdict are recorded after they exist.
+`display_name=""`.
+
+- Repaired commit: [`139eb14a1d99ab2a31fb940cdcd093b93f6602c7`](https://github.com/porntaned/ERP-for-Factory/commit/139eb14a1d99ab2a31fb940cdcd093b93f6602c7)
+- Repaired run: [Foundation #9](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390285346)
+- Re-review verdict: `ship`
+
+The reviewer confirmed that both repaired cases write an empty name, reload it from PostgreSQL and
+assert the stored value. Run #9 checked out the repaired SHA, passed setup/migrations/Ruff and all
+51 regressions, then produced the intended missing-model RED for all 45 catalog cases. The original
+Major is closed and no new blocker, major or minor finding remains.
 
 ## Verified coverage at the initial commit
 

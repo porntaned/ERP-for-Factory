@@ -46,8 +46,8 @@ roles or warehouse permissions, audit, Hold/Released status, UI, API, merge or d
 
 ## Handoff evidence
 
-- RED commit: [`ca4dacbdc349ff7b4fcf5a3be10035c02e6f2c28`](https://github.com/porntaned/ERP-for-Factory/commit/ca4dacbdc349ff7b4fcf5a3be10035c02e6f2c28)
-- RED run: [Foundation #8](https://github.com/porntaned/ERP-for-Factory/actions/runs/39389877487)
+- RED commit: [`139eb14a1d99ab2a31fb940cdcd093b93f6602c7`](https://github.com/porntaned/ERP-for-Factory/commit/139eb14a1d99ab2a31fb940cdcd093b93f6602c7)
+- RED run: [Foundation #9](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390285346)
 - RED record: [PostgreSQL TDD RED evidence](../evidence/issue-5-tdd-red.md)
 - RED review: [Independent TDD RED review](../reviews/issue-5-tdd-red-independent-review.md)
 
