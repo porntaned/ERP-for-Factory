@@ -60,7 +60,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 ## M3 — Item, Lot, สิทธิ์ และ Audit
 
 - [ ] **M3 — ข้อมูลหลักพร้อมสำหรับ Inventory**
-  - [ ] M3.1 กำหนด Item, หน่วยนับ และ Lot identity
+  - [x] M3.1 กำหนด Item, หน่วยนับ และ Lot identity — [Item/UOM PR #6](https://github.com/porntaned/ERP-for-Factory/pull/6), [Lot PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8), [merge commit](https://github.com/porntaned/ERP-for-Factory/commit/b7a9bddd87d258c343d17abbc76e53de9a436dcd)
     - [x] M3.1.1 สร้าง Issue แยกสำหรับ Item และหน่วยนับ — [Issue #5](https://github.com/porntaned/ERP-for-Factory/issues/5)
     - [x] M3.1.2 บันทึก Assignment และ TDD RED บน PostgreSQL — [Assignment](assignments/issue-5-item-uom.md), [RED evidence](evidence/issue-5-tdd-red.md), [Independent review](reviews/issue-5-tdd-red-independent-review.md), [Foundation #9](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390285346)
     - [x] M3.1.3 สร้าง Item และ Unit of Measure พร้อม Migration — [Implementation](../catalog/models.py), [Migration](../catalog/migrations/0001_initial.py)
@@ -72,6 +72,11 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] M3.1.9 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN — [GREEN evidence](evidence/issue-7-green.md), [Foundation #18](https://github.com/porntaned/ERP-for-Factory/actions/runs/39395440223), [Independent review](reviews/issue-7-lot-independent-review.md)
     - [x] M3.1.10 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-7-lot-independent-review.md), [PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8)
   - [ ] M3.2 กำหนดผู้ใช้จำลองและสิทธิ์ตามบทบาท/คลัง
+    - [x] M3.2.1 เปิด Issue และล็อกขอบเขต Warehouse role assignment — [Issue #9](https://github.com/porntaned/ERP-for-Factory/issues/9)
+    - [ ] M3.2.2 บันทึก Assignment และ TDD RED บน PostgreSQL
+    - [ ] M3.2.3 เพิ่ม Django Auth, Warehouse role assignment และ permission interface
+    - [ ] M3.2.4 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN
+    - [ ] M3.2.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ
   - [ ] M3.3 กำหนด Audit และสถานะ Released/Hold ขั้นต่ำ
   - [ ] M3.4 แยก Issue, Test, Review และ PR สำหรับแต่ละส่วน
 

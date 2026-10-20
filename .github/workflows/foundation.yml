@@ -6,6 +6,7 @@ on:
       - feat/warehouse-foundation
       - feat/item-uom-foundation
       - feat/lot-identity
+      - codex/role-warehouse-permissions
   pull_request:
     branches:
       - main
