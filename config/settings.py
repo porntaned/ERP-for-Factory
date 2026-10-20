@@ -15,9 +15,12 @@ DEBUG = os.environ.get("DJANGO_DEBUG", "false").lower() == "true"
 ALLOWED_HOSTS: list[str] = []
 
 INSTALLED_APPS: list[str] = [
+    "django.contrib.contenttypes",
+    "django.contrib.auth",
     "facilities.apps.FacilitiesConfig",
     "catalog.apps.CatalogConfig",
     "inventory.apps.InventoryConfig",
+    "access_control.apps.AccessControlConfig",
 ]
 MIDDLEWARE: list[str] = []
 
