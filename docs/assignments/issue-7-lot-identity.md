@@ -54,6 +54,7 @@ deployment.
 - GREEN run: [Foundation #18](https://github.com/porntaned/ERP-for-Factory/actions/runs/39395440223)
 - GREEN record: [PostgreSQL GREEN evidence](../evidence/issue-7-green.md)
 - Independent implementation review: [Issue #7 Lot review](../reviews/issue-7-lot-independent-review.md)
+- Owner-review pull request: [#8 — Add Lot identity foundation](https://github.com/porntaned/ERP-for-Factory/pull/8)
 
-The owner-review PR remains pending. No merge or deployment is authorized.
+The owner decides whether to merge PR #8. No merge or deployment is authorized.
 
