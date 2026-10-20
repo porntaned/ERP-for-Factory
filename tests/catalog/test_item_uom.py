@@ -39,6 +39,22 @@ def test_unicode_uom_and_item_can_be_stored(
     assert item.base_uom_id == each_uom.pk
 
 
+@pytest.mark.parametrize("model_name", ["UnitOfMeasure", "Item"])
+def test_empty_display_name_is_allowed_by_the_locked_contract(
+    catalog_model: Callable[[str], Any],
+    organization: Any,
+    each_uom: Any,
+    model_name: str,
+) -> None:
+    if model_name == "UnitOfMeasure":
+        record = catalog_model(model_name).objects.create(code="EMPTY", display_name="")
+    else:
+        record = create_item(catalog_model, organization, each_uom, display_name="")
+
+    record.refresh_from_db()
+    assert record.display_name == ""
+
+
 def test_uom_code_is_globally_unique(catalog_model: Callable[[str], Any]) -> None:
     uom_model = catalog_model("UnitOfMeasure")
     uom_model.objects.create(code="EA", display_name="Each")

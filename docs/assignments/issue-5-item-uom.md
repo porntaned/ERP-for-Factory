@@ -46,4 +46,10 @@ roles or warehouse permissions, audit, Hold/Released status, UI, API, merge or d
 
 ## Handoff evidence
 
-Pending. Evidence is added only after the corresponding commit and GitHub Actions run exist.
+- RED commit: [`ca4dacbdc349ff7b4fcf5a3be10035c02e6f2c28`](https://github.com/porntaned/ERP-for-Factory/commit/ca4dacbdc349ff7b4fcf5a3be10035c02e6f2c28)
+- RED run: [Foundation #8](https://github.com/porntaned/ERP-for-Factory/actions/runs/39389877487)
+- RED record: [PostgreSQL TDD RED evidence](../evidence/issue-5-tdd-red.md)
+- RED review: [Independent TDD RED review](../reviews/issue-5-tdd-red-independent-review.md)
+
+GREEN implementation, final handoff, independent implementation review and pull request are
+pending. No merge or deployment is authorized.
