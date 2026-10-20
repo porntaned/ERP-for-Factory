@@ -54,5 +54,6 @@ roles or warehouse permissions, audit, Hold/Released status, UI, API, merge or d
 - GREEN run: [Foundation #11](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390768062)
 - GREEN record: [PostgreSQL GREEN evidence](../evidence/issue-5-green.md)
 - Independent implementation review: [Issue #5 Item/UOM review](../reviews/issue-5-item-uom-independent-review.md)
+- Owner-review pull request: [#6 — Add Item and unit of measure foundation](https://github.com/porntaned/ERP-for-Factory/pull/6)
 
-The owner-review pull request is pending. No merge or deployment is authorized.
+The owner decides whether to merge PR #6. No merge or deployment is authorized.
