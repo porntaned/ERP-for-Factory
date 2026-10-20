@@ -9,9 +9,8 @@
 - Manager and integrator: `/root`
 - Scope architect: `/root/m33_scope_architect` — read-only boundary and simpler-alternative review
 - Risk reviewer: `/root/m33_risk_reviewer` — read-only authorization, ownership and concurrency review
-- Test-contract reviewer: `/root/m33_test_contract` — read-only PostgreSQL TDD contract review
-- Test writer: pending assignment
-- Independent TDD reviewer: pending assignment
+- Test-contract reviewer and test writer: `/root/m33_test_contract`
+- Independent TDD reviewer: `/root/m33_red_independent_review` — read-only exact-commit review
 - Implementer: pending assignment
 - Independent implementation reviewer: pending assignment
 
@@ -57,7 +56,8 @@ blocks movement of a held Lot.
 ## Handoff evidence
 
 - Scope review: [Independent M3.3 scope review](../reviews/issue-11-scope-independent-review.md)
-- TDD RED: pending
+- TDD RED: [PostgreSQL RED evidence](../evidence/issue-11-tdd-red.md)
+- Independent TDD review: [exact-commit review](../reviews/issue-11-tdd-red-independent-review.md)
 - GREEN implementation: pending
 - Owner-review pull request: pending
 
