@@ -6,7 +6,7 @@
 
 ## สถานะปัจจุบัน
 
-[Issue #7](https://github.com/porntaned/ERP-for-Factory/issues/7) ปิดแล้วหลัง [PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8) Merge Lot identity เข้า `main`; M3.2 Warehouse-scoped role grants ทำครบพร้อม PostgreSQL GREEN 174 tests และ Independent Scrutinize แล้วใน [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10) ซึ่งเปิดรอเจ้าของตรวจ โดยยังไม่มีการ Merge หรือ Deploy
+[PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10) Merge Warehouse-scoped role grants เข้า `main` แล้วที่ [`6f6e06b`](https://github.com/porntaned/ERP-for-Factory/commit/6f6e06b); [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11) เริ่ม M3.3 บน `codex/audit-release-hold` โดยล็อกขอบเขตเป็นประวัติ HOLD/RELEASED ต่อคู่ Lot–Warehouse และยังไม่มีการ Deploy
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -77,7 +77,12 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] M3.2.3 เพิ่ม Django Auth, Warehouse role assignment และ permission interface — [Implementation](../access_control/models.py), [Policies](../access_control/policies.py), [Migration](../access_control/migrations/0001_initial.py)
     - [x] M3.2.4 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN — [GREEN evidence](evidence/issue-9-green.md), [Foundation #28](https://github.com/porntaned/ERP-for-Factory/actions/runs/39444111594)
     - [x] M3.2.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-9-warehouse-role-independent-review.md), [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10)
-  - [ ] M3.3 กำหนด Audit และสถานะ Released/Hold ขั้นต่ำ
+  - [ ] M3.3 กำหนด Audit และสถานะ Released/Hold ขั้นต่ำ — [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11)
+    - [x] M3.3.1 เปิด Issue และล็อกขอบเขต Warehouse-scoped Lot disposition — [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11), [Scope review](reviews/issue-11-scope-independent-review.md)
+    - [ ] M3.3.2 บันทึก Assignment และ TDD RED บน PostgreSQL — [Assignment](assignments/issue-11-lot-disposition-audit.md)
+    - [ ] M3.3.3 เพิ่ม Quality disposition history, transition interface และ Migration
+    - [ ] M3.3.4 พิสูจน์ Authorization, Constraints, Immutability, Retry, Concurrency และ Regression suite เป็น GREEN
+    - [ ] M3.3.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ
   - [ ] M3.4 แยก Issue, Test, Review และ PR สำหรับแต่ละส่วน
 
 ## M4 — Inventory MVP
@@ -152,3 +157,5 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - 2026-10-20: เปิด owner-review [PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8) จาก `feat/lot-identity` ไป `main`; Issue #7 จะปิดเมื่อเจ้าของ Merge เท่านั้น และไม่มีการ Deploy
 - 2026-10-20: เจ้าของ Merge [PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8) ที่ [`b7a9bdd`](https://github.com/porntaned/ERP-for-Factory/commit/b7a9bddd87d258c343d17abbc76e53de9a436dcd) และ Issue #7 ปิดเป็น `completed`; ไม่มีการ Deploy
 - 2026-10-20: เปิด [Issue #9](https://github.com/porntaned/ERP-for-Factory/issues/9) และ owner-review [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10) สำหรับ Warehouse-scoped role grants; [Foundation #28](https://github.com/porntaned/ERP-for-Factory/actions/runs/39444111594) ผ่าน PostgreSQL 18.6, fresh migrations, Ruff และ 174 tests และ Independent Scrutinize ได้ verdict `ship`; PR ยังเปิดรอเจ้าของตรวจและไม่มีการ Merge หรือ Deploy
+- 2026-10-20: เจ้าของตรวจและอนุมัติ Merge [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10) เข้า `main` ที่ [`6f6e06b`](https://github.com/porntaned/ERP-for-Factory/commit/6f6e06b); [Issue #9](https://github.com/porntaned/ERP-for-Factory/issues/9) ปิดเป็น `completed` และไม่มีการ Deploy
+- 2026-10-20: เริ่ม M3.3 ด้วย [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11) และ branch `codex/audit-release-hold`; Independent scope agents พบว่าห้ามใช้สถานะกลางบน Lot เพราะสิทธิ์เป็น Warehouse-scoped จึงล็อก Contract เป็น typed append-only HOLD/RELEASED history ต่อคู่ Lot–Warehouse — [Scope review](reviews/issue-11-scope-independent-review.md)
