@@ -63,9 +63,9 @@ blocks movement of a held Lot.
 - M3.3.3 implementation: [implementation handoff](#m333-implementation-handoff)
 - GREEN implementation: [M3.3.4 evidence and repair verification](../evidence/issue-11-green.md), latest [Foundation #42](https://github.com/porntaned/ERP-for-Factory/actions/runs/39528381765) at `44b466fdd4e9d0134564c77aef7a316c1a2b8b7e`
 - Independent implementation review: [review and repair record](../reviews/issue-11-lot-disposition-independent-review.md), final verdict `ship` at `44b466f`
-- Owner-review pull request: [PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12), `codex/audit-release-hold` → `main`; [UI proof](../evidence/issue-11-pr.jpg)
+- Owner-review pull request: [PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12), merged with owner authorization into main at `9b1d182eb6867b70f076e95a63dc03f1814f00ec`; [merge proof](../evidence/pr-12-merged.jpg)
 
-The owner decides whether to merge the future pull request. No deployment is authorized.
+The owner authorized merging PR #12 on 2026-10-21. No deployment is authorized.
 
 ## M3.3.3 implementation handoff
 
@@ -120,6 +120,8 @@ completed with the [GREEN evidence report](../evidence/issue-11-green.md): Run #
 tests on PostgreSQL at `7ce4ef84570628234d4097e0b95643bbf38880db`. M3.3.5 was then authorized:
 independent review found three integrity defects, the repair agent fixed them, and exact-commit
 re-review returned `ship` at `44b466f` with 261 passing PostgreSQL tests. Owner-review
-[PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12) is open; the owner decides whether to
-merge. Issue #11 remains open until that decision; no deployment has been performed.
+[PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12) was merged with owner authorization at
+`9b1d182`; Issue #11 is closed as completed. A broader [post-merge project audit](../reviews/project-audit-after-pr12.md)
+found additional policy/event-ID defects for follow-up; its reproductions remain RED on a separate
+audit branch. No deployment has been performed.
 Stock movement enforcement, inspections and UI remain outside this issue.
