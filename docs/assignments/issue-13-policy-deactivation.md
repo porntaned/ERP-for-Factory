@@ -20,7 +20,7 @@
 ## Progress
 
 - [x] Issue and scope confirmed; retained test draft inspected.
-- [ ] New scoped PostgreSQL RED recorded.
-- [ ] Minimal fix and PostgreSQL GREEN recorded.
-- [ ] Independent Scrutinize recorded.
+- [x] New scoped PostgreSQL RED recorded — [evidence](../evidence/issue-13-policy-deactivation.md#red).
+- [x] Minimal fix and PostgreSQL GREEN recorded — [evidence](../evidence/issue-13-policy-deactivation.md#green).
+- [x] Independent Scrutinize recorded — reviewer `/root/issue13_independent_review`, [report](../reviews/issue-13-policy-deactivation-independent-review.md), verdict `ship` at `abe63e154de62e7d37f3ff4c47252f6a88c07587`.
 - [ ] Owner-review PR opened.
