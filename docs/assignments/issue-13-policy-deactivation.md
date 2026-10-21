@@ -23,4 +23,11 @@
 - [x] New scoped PostgreSQL RED recorded — [evidence](../evidence/issue-13-policy-deactivation.md#red).
 - [x] Minimal fix and PostgreSQL GREEN recorded — [evidence](../evidence/issue-13-policy-deactivation.md#green).
 - [x] Independent Scrutinize recorded — reviewer `/root/issue13_independent_review`, [report](../reviews/issue-13-policy-deactivation-independent-review.md), verdict `ship` at `abe63e154de62e7d37f3ff4c47252f6a88c07587`.
-- [ ] Owner-review PR opened.
+- [x] Owner-review [PR #14](https://github.com/porntaned/ERP-for-Factory/pull/14) opened — [UI proof](../evidence/issue-13-pr.jpg).
+
+## Handoff
+
+Finding 1 delivered for owner review. Production change by `/root`; independent review
+by `/root/issue13_independent_review`. RED `b332c10`, GREEN/reviewed code `abe63e1`;
+later commits only record evidence/checklist/PR. Issue remains open until owner merge.
+Finding 2 and subsequent audit work have not started; no merge or deployment performed.

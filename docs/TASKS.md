@@ -92,7 +92,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] PA.4 แก้ shared policies ครบ Findings 1–2
   - [x] PA.4.1 เปิด Issue และกำหนดขอบเขตเฉพาะ Finding 1 — [Issue #13](https://github.com/porntaned/ERP-for-Factory/issues/13), [Assignment](assignments/issue-13-policy-deactivation.md)
   - [x] PA.4.2 พิสูจน์ RED และแก้ persisted-active filtering ผ่าน PostgreSQL GREEN — [หลักฐาน](evidence/issue-13-policy-deactivation.md)
-  - [ ] PA.4.3 Independent Scrutinize และเปิด PR สำหรับ Finding 1
+  - [x] PA.4.3 Independent Scrutinize และเปิด PR สำหรับ Finding 1 — [Review](reviews/issue-13-policy-deactivation-independent-review.md), [PR #14](https://github.com/porntaned/ERP-for-Factory/pull/14)
   - [ ] PA.4.4 เจ้าของตรวจรับและ Merge Finding 1
   - [ ] PA.4.5 Finding 2: unsaved User ที่ใส่ PK มาเอง — รออนุมัติ ห้ามเริ่มต่ออัตโนมัติ
 - [ ] PA.5 Finding 3: explicit high event ID — ยังไม่เริ่ม
