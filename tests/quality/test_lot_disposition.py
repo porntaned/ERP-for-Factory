@@ -253,6 +253,21 @@ def test_revoked_quality_grant_cannot_record_a_decision(
     assert disposition_contract["event_model"].objects.count() == 0
 
 
+def test_stale_active_actor_cannot_bypass_persisted_deactivation(
+    disposition_contract: dict[str, Any],
+    quality_scope: dict[str, Any],
+    quality_user: Any,
+    grant_role: Any,
+) -> None:
+    authorize_quality(grant_role, quality_user, quality_scope)
+    type(quality_user).objects.filter(pk=quality_user.pk).update(is_active=False)
+    assert quality_user.is_active  # Caller holds a stale in-memory user.
+
+    with pytest.raises(disposition_contract["authorization_error"]):
+        disposition_contract["transition"](**transition_values(quality_scope, quality_user))
+    assert disposition_contract["event_model"].objects.count() == 0
+
+
 def test_lot_and_warehouse_must_belong_to_same_organization(
     disposition_contract: dict[str, Any],
     quality_scope: dict[str, Any],

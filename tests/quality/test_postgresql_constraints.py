@@ -1,5 +1,6 @@
 from queue import Queue
-from threading import Barrier, Thread
+from threading import Barrier, Event, Thread
+from time import monotonic
 from typing import Any
 from uuid import uuid4
 
@@ -13,6 +14,7 @@ from django.db import (
     connections,
     transaction,
 )
+from django.db.migrations.executor import MigrationExecutor
 from django.db.models.deletion import ProtectedError
 from django.utils import timezone
 
@@ -49,6 +51,29 @@ def test_quality_suite_uses_postgresql(disposition_contract: dict[str, Any]) -> 
     assert connection.vendor == "postgresql"
 
 
+@pytest.mark.django_db(transaction=True)
+def test_history_identity_migration_reverses_and_reapplies() -> None:
+    latest = [("quality", "0002_preserve_history_identity")]
+    try:
+        MigrationExecutor(connection).migrate([("quality", "0001_initial")])
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT proname FROM pg_proc WHERE oid = ("
+                "SELECT tgfoid FROM pg_trigger WHERE tgname = %s)",
+                ["quality_lot_disposition_validate_insert"],
+            )
+            assert cursor.fetchone()[0] == "quality_validate_lot_disposition_insert"
+    finally:
+        MigrationExecutor(connection).migrate(latest)
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT proname FROM pg_proc WHERE oid = ("
+            "SELECT tgfoid FROM pg_trigger WHERE tgname = %s)",
+            ["quality_lot_disposition_validate_insert"],
+        )
+        assert cursor.fetchone()[0] == "quality_validate_lot_disposition_insert_v2"
+
+
 def test_created_at_is_required_and_direct_insert_supplies_aware_server_time(
     disposition_contract: dict[str, Any],
     quality_scope: dict[str, Any],
@@ -60,9 +85,7 @@ def test_created_at_is_required_and_direct_insert_supplies_aware_server_time(
     assert event_model._meta.get_field("created_at").null is False
     before = timezone.now()
 
-    event = event_model.objects.create(
-        **direct_event_values(quality_scope, quality_user)
-    )
+    event = event_model.objects.create(**direct_event_values(quality_scope, quality_user))
     event.refresh_from_db()
     after = timezone.now()
 
@@ -192,6 +215,223 @@ def test_direct_write_cannot_forge_the_event_chain(
     assert event_model.objects.count() == 1
 
 
+def test_descending_event_id_is_rejected_without_hiding_the_next_decision(
+    disposition_contract: dict[str, Any],
+    quality_scope: dict[str, Any],
+    quality_user: Any,
+) -> None:
+    event_model = disposition_contract["event_model"]
+    released = event_model.objects.create(**direct_event_values(quality_scope, quality_user))
+    hold_values = direct_event_values(
+        quality_scope,
+        quality_user,
+        from_disposition="RELEASED",
+        to_disposition="HOLD",
+    )
+    with pytest.raises(IntegrityError), transaction.atomic():
+        event_model.objects.create(id=released.pk - 1, **hold_values)
+    assert (
+        disposition_contract["get_disposition"](
+            lot=quality_scope["lot"],
+            warehouse=quality_scope["warehouse"],
+        )
+        == "RELEASED"
+    )
+    held = event_model.objects.create(**hold_values)
+    assert held.pk > released.pk
+    assert (
+        disposition_contract["get_disposition"](
+            lot=quality_scope["lot"],
+            warehouse=quality_scope["warehouse"],
+        )
+        == "HOLD"
+    )
+
+
+def identity_update(scope: dict[str, Any], edge: str) -> tuple[Any, dict[str, int]]:
+    lot = scope["lot"]
+    warehouse = scope["warehouse"]
+    other_plant = scope["other_warehouse"].plant
+    if edge == "lot_item":
+        item = lot.item
+        replacement = type(item).objects.create(
+            organization=item.organization,
+            code="REPLACEMENT",
+            display_name="Replacement item",
+            item_type="RAW",
+            base_uom=item.base_uom,
+        )
+        return lot, {"item_id": replacement.pk}
+    if edge == "item_organization":
+        return lot.item, {"organization_id": other_plant.organization_id}
+    if edge == "warehouse_plant":
+        return warehouse, {"plant_id": other_plant.pk}
+    return warehouse.plant, {"organization_id": other_plant.organization_id}
+
+
+@pytest.mark.parametrize(
+    "edge",
+    ["lot_item", "item_organization", "warehouse_plant", "plant_organization"],
+)
+def test_recorded_history_prevents_identity_edge_reassignment(
+    disposition_contract: dict[str, Any],
+    quality_scope: dict[str, Any],
+    quality_user: Any,
+    edge: str,
+) -> None:
+    record, changes = identity_update(quality_scope, edge)
+    original = {field: getattr(record, field) for field in changes}
+    disposition_contract["event_model"].objects.create(
+        **direct_event_values(quality_scope, quality_user)
+    )
+    with pytest.raises(IntegrityError), transaction.atomic():
+        type(record).objects.filter(pk=record.pk).update(**changes)
+    record.refresh_from_db()
+    assert {field: getattr(record, field) for field in changes} == original
+
+
+@pytest.mark.parametrize(
+    "edge",
+    ["lot_item", "item_organization", "warehouse_plant", "plant_organization"],
+)
+def test_unreferenced_identity_edge_can_still_change(
+    disposition_contract: dict[str, Any],
+    quality_scope: dict[str, Any],
+    edge: str,
+) -> None:
+    record, changes = identity_update(quality_scope, edge)
+    assert type(record).objects.filter(pk=record.pk).update(**changes) == 1
+    record.refresh_from_db()
+    assert {field: getattr(record, field) for field in changes} == changes
+
+
+def test_history_allows_metadata_and_unchanged_identity_updates(
+    disposition_contract: dict[str, Any],
+    quality_scope: dict[str, Any],
+    quality_user: Any,
+) -> None:
+    disposition_contract["event_model"].objects.create(
+        **direct_event_values(quality_scope, quality_user)
+    )
+    lot = quality_scope["lot"]
+    warehouse = quality_scope["warehouse"]
+    records = [lot, lot.item, warehouse, warehouse.plant]
+    for record in records:
+        changes = {"code": record.code + "-EDIT"}
+        if record is lot:
+            changes["item_id"] = record.item_id
+        elif record is warehouse:
+            changes["plant_id"] = record.plant_id
+        else:
+            changes["organization_id"] = record.organization_id
+        assert type(record).objects.filter(pk=record.pk).update(**changes) == 1
+
+
+def wait_for_database_block(worker_pid: int) -> None:
+    deadline = monotonic() + 10
+    while monotonic() < deadline:
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT pg_backend_pid() = ANY(pg_blocking_pids(%s))", [worker_pid])
+            if cursor.fetchone()[0]:
+                return
+        Event().wait(0.01)
+    pytest.fail("worker did not reach the expected PostgreSQL row lock")
+
+
+@pytest.mark.django_db(transaction=True)
+def test_grant_revoked_while_waiting_for_lot_lock_denies_append(
+    disposition_contract: dict[str, Any],
+    quality_scope: dict[str, Any],
+    quality_user: Any,
+    grant_role: Any,
+) -> None:
+    assignment = authorize_quality(grant_role, quality_user, quality_scope)
+    pids: Queue[int] = Queue()
+    outcomes: Queue[str] = Queue()
+
+    def transition() -> None:
+        close_old_connections()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT pg_backend_pid()")
+                pids.put(cursor.fetchone()[0])
+            disposition_contract["transition"](
+                lot=quality_scope["lot"],
+                warehouse=quality_scope["warehouse"],
+                actor=quality_user,
+                expected_disposition="HOLD",
+                target_disposition="RELEASED",
+                reason="Revocation during wait",
+                request_id=uuid4(),
+            )
+            outcomes.put("created")
+        except disposition_contract["authorization_error"]:
+            outcomes.put("denied")
+        except Exception as error:
+            outcomes.put(f"unexpected:{type(error).__name__}:{error}")
+        finally:
+            connections.close_all()
+
+    worker = Thread(target=transition)
+    try:
+        with transaction.atomic():
+            type(quality_scope["lot"]).objects.select_for_update().get(pk=quality_scope["lot"].pk)
+            worker.start()
+            wait_for_database_block(pids.get(timeout=10))
+            assignment.delete()
+    finally:
+        if worker.ident is not None:
+            worker.join(timeout=15)
+    assert not worker.is_alive()
+    assert outcomes.get(timeout=1) == "denied"
+    assert disposition_contract["event_model"].objects.count() == 0
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize(
+    "edge",
+    ["lot_item", "item_organization", "warehouse_plant", "plant_organization"],
+)
+def test_identity_update_waits_for_new_history_then_rejects_reassignment(
+    disposition_contract: dict[str, Any],
+    quality_scope: dict[str, Any],
+    quality_user: Any,
+    edge: str,
+) -> None:
+    record, changes = identity_update(quality_scope, edge)
+    pids: Queue[int] = Queue()
+    outcomes: Queue[str] = Queue()
+
+    def reassign() -> None:
+        close_old_connections()
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute("SELECT pg_backend_pid()")
+                pids.put(cursor.fetchone()[0])
+            type(record).objects.filter(pk=record.pk).update(**changes)
+            outcomes.put("changed")
+        except IntegrityError:
+            outcomes.put("rejected")
+        except Exception as error:
+            outcomes.put(f"unexpected:{type(error).__name__}:{error}")
+        finally:
+            connections.close_all()
+
+    worker = Thread(target=reassign)
+    try:
+        with transaction.atomic():
+            disposition_contract["event_model"].objects.create(
+                **direct_event_values(quality_scope, quality_user)
+            )
+            worker.start()
+            wait_for_database_block(pids.get(timeout=10))
+    finally:
+        if worker.ident is not None:
+            worker.join(timeout=15)
+    assert not worker.is_alive()
+    assert outcomes.get(timeout=1) == "rejected"
+
+
 def test_direct_write_rejects_cross_organization_pair(
     disposition_contract: dict[str, Any],
     quality_scope: dict[str, Any],
@@ -218,9 +458,7 @@ def test_recorded_event_cannot_be_updated_or_deleted(
 ) -> None:
     authorize_quality(grant_role, quality_user, quality_scope)
     event_model = disposition_contract["event_model"]
-    event = event_model.objects.create(
-        **direct_event_values(quality_scope, quality_user)
-    )
+    event = event_model.objects.create(**direct_event_values(quality_scope, quality_user))
 
     with pytest.raises(IntegrityError), transaction.atomic():
         event_model.objects.filter(pk=event.pk).update(reason="Rewritten reason")

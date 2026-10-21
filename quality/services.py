@@ -1,9 +1,10 @@
 from typing import Any
 from uuid import UUID
 
+from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 
-from access_control.policies import has_warehouse_role
+from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from facilities.models import Warehouse
 from inventory.models import Lot
 
@@ -104,14 +105,27 @@ def transition_lot_disposition(
     _validate_pair(lot, warehouse)
     if not isinstance(request_id, UUID):
         raise DispositionValidationError("request_id must be a UUID")
-    if not has_warehouse_role(actor, warehouse, {"QUALITY"}):
-        raise DispositionAuthorizationError(
-            "actor needs an active QUALITY grant for this warehouse"
-        )
-
     with transaction.atomic():
         locked_lot = Lot.objects.select_for_update().get(pk=lot.pk)
         _validate_pair(locked_lot, warehouse)
+        user_model = get_user_model()
+        if not isinstance(actor, user_model) or actor.pk is None or actor._state.adding:
+            raise DispositionAuthorizationError("actor must be a saved active user")
+        saved_actor = user_model.objects.select_for_update().filter(pk=actor.pk).first()
+        grant = (
+            WarehouseRoleAssignment.objects.select_for_update()
+            .filter(
+                user_id=actor.pk,
+                warehouse_id=warehouse.pk,
+                role=WarehouseRole.QUALITY,
+            )
+            .first()
+        )
+        if saved_actor is None or not saved_actor.is_active or grant is None:
+            raise DispositionAuthorizationError(
+                "actor needs an active QUALITY grant for this warehouse"
+            )
+        actor = saved_actor
 
         existing = _resolve_existing_request(
             request_id,
@@ -130,9 +144,7 @@ def transition_lot_disposition(
             or target_disposition not in LotDisposition.values
             or expected_disposition == target_disposition
         ):
-            raise DispositionValidationError(
-                "transition must change between HOLD and RELEASED"
-            )
+            raise DispositionValidationError("transition must change between HOLD and RELEASED")
         if not isinstance(reason, str) or not reason.strip():
             raise DispositionValidationError("reason must be nonblank")
 
