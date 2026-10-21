@@ -8,6 +8,7 @@ on:
       - feat/lot-identity
       - codex/role-warehouse-permissions
       - codex/audit-release-hold
+      - codex/fix-policy-deactivation
   pull_request:
     branches:
       - main
