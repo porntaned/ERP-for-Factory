@@ -11,7 +11,7 @@
 - Risk reviewer: `/root/m33_risk_reviewer` — read-only authorization, ownership and concurrency review
 - Test-contract reviewer and test writer: `/root/m33_test_contract`
 - Independent TDD reviewer: `/root/m33_red_independent_review` — read-only exact-commit review
-- Implementer: pending assignment
+- Implementer: `/root/m33_implementer` — production implementation and request-conflict repair
 - Independent implementation reviewer: pending assignment
 
 ## Authorized scope
@@ -58,7 +58,60 @@ blocks movement of a held Lot.
 - Scope review: [Independent M3.3 scope review](../reviews/issue-11-scope-independent-review.md)
 - TDD RED: [PostgreSQL RED evidence](../evidence/issue-11-tdd-red.md)
 - Independent TDD review: [exact-commit review](../reviews/issue-11-tdd-red-independent-review.md)
+- M3.3.3 implementation: [implementation handoff](#m333-implementation-handoff)
 - GREEN implementation: pending
 - Owner-review pull request: pending
 
 The owner decides whether to merge the future pull request. No deployment is authorized.
+
+## M3.3.3 implementation handoff
+
+Recorded on 2026-10-21 by `/root` from the existing implementation and GitHub evidence.
+The owner authorized completing M3.3.3 only; M3.3.4 evidence recording and M3.3.5 independent
+implementation review / pull request remain pending.
+
+- Implementer: `/root/m33_implementer`; manager and handoff recorder: `/root`.
+- Initial implementation: [`b1bc0405f26052d701181fc174e03ae08edb3170`](https://github.com/porntaned/ERP-for-Factory/commit/b1bc0405f26052d701181fc174e03ae08edb3170).
+- Latest production commit: [`825b34fea7ad16605210ef4760a41627f0965c06`](https://github.com/porntaned/ERP-for-Factory/commit/825b34fea7ad16605210ef4760a41627f0965c06).
+- Files: [Quality model](../../quality/models.py), [query/transition services](../../quality/services.py),
+  [initial migration](../../quality/migrations/0001_initial.py), [app configuration](../../quality/apps.py),
+  package initialization files and [Django settings](../../config/settings.py).
+
+### Delivered implementation
+
+- Typed `LotDispositionEvent` for an exact Lot/Warehouse pair, with protected references, UUID
+  request key, from/to disposition, reason and database-generated time.
+- `get_lot_disposition` returns the latest decision or `HOLD` when history is absent.
+- `transition_lot_disposition` uses the existing exact-Warehouse QUALITY policy, validates the
+  Organization boundary, locks the Lot, resolves retries, checks expected state and appends an event.
+- Migration creates the model and constraints, plus PostgreSQL insert/immutability triggers.
+- The request-conflict repair resolves an existing request key before validating a new transition.
+
+### Existing verification and handoff checks
+
+At production commit `825b34fea7ad16605210ef4760a41627f0965c06`,
+[Foundation #38](https://github.com/porntaned/ERP-for-Factory/actions/runs/39454155496)
+completed successfully. Its PostgreSQL connection check, `uv run python manage.py check`,
+`uv run python manage.py makemigrations --check --dry-run`,
+`uv run python manage.py migrate --noinput`, `uv run ruff check .` and
+`uv run pytest -q --tb=short` steps all passed. This links existing CI evidence for the delivered
+implementation; the separate M3.3.4 GREEN report is still pending.
+
+On 2026-10-21, `/root` confirmed the local and GitHub branch heads both matched `825b34f`, with a
+clean working tree before documentation changes. Local self-verification in the Windows `.venv`
+with synthetic environment values ran:
+
+```powershell
+.\.venv\Scripts\ruff.exe check quality config/settings.py
+.\.venv\Scripts\python.exe manage.py check
+```
+
+Results: `All checks passed!` and `System check identified no issues (0 silenced).`
+These local checks did not execute PostgreSQL tests and are not independent review.
+
+### Remaining work
+
+M3.3.3 is delivered on the feature branch. It does not mark the whole Issue #11 complete, approve
+merge, or establish an independent implementation verdict. Next roles are verifier/evidence recorder
+for M3.3.4 and independent implementation reviewer for M3.3.5, after owner authorization to continue.
+Stock movement enforcement, inspections and UI remain outside this issue.
