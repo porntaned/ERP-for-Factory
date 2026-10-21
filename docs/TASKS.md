@@ -4,13 +4,13 @@
 
 `[x]` หมายถึงงานเสร็จและมีหลักฐานที่ลิงก์ไว้ ส่วนงานที่กำลังทำ ติดขัด หรือยังไม่ได้ตรวจรับใช้ `[ ]` งานใหญ่เสร็จเมื่อทุกงานย่อยและเกณฑ์ตรวจรับเสร็จเท่านั้น
 
-## ## สถานะปัจจุบัน
+## สถานะปัจจุบัน
 
 [PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12) Merge เข้า main ที่ `9b1d182eb6867b70f076e95a63dc03f1814f00ec` แล้ว; Issue #11 ปิด ส่วนผล [Audit หลัง Merge](https://github.com/porntaned/ERP-for-Factory/blob/codex/project-audit-after-pr12/docs/reviews/project-audit-after-pr12.md) ยังมีงานแก้ก่อนเริ่ม Inventory
 
 กำลังส่งมอบเฉพาะ Finding 1 ใน [Issue #13](https://github.com/porntaned/ERP-for-Factory/issues/13): PostgreSQL RED 3 failed/261 passed → GREEN 264 passed ที่ `abe63e1` — [หลักฐาน](evidence/issue-13-policy-deactivation.md) ข้อ 2–5 ยังไม่ได้แก้ ไม่มีการ Merge หรือ Deploy ในงานนี้
 
-M0 — กำหนดโครงการและวิธีทำงาน
+## M0 — กำหนดโครงการและวิธีทำงาน
 
 - [x] **M0 — เอกสารตั้งต้นอยู่บน GitHub Branch**
   - [x] M0.1 กำหนดเป้าหมาย Portfolio และโรงงานจำลอง — [Project brief](PROJECT.md)
