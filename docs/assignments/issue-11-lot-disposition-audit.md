@@ -12,6 +12,7 @@
 - Test-contract reviewer and test writer: `/root/m33_test_contract`
 - Independent TDD reviewer: `/root/m33_red_independent_review` — read-only exact-commit review
 - Implementer: `/root/m33_implementer` — production implementation and request-conflict repair
+- GREEN evidence verifier: `/root` — project self-verification from exact-commit GitHub Actions logs
 - Independent implementation reviewer: pending assignment
 
 ## Authorized scope
@@ -59,7 +60,7 @@ blocks movement of a held Lot.
 - TDD RED: [PostgreSQL RED evidence](../evidence/issue-11-tdd-red.md)
 - Independent TDD review: [exact-commit review](../reviews/issue-11-tdd-red-independent-review.md)
 - M3.3.3 implementation: [implementation handoff](#m333-implementation-handoff)
-- GREEN implementation: pending
+- GREEN implementation: [M3.3.4 evidence](../evidence/issue-11-green.md), [Foundation #39](https://github.com/porntaned/ERP-for-Factory/actions/runs/39526993055) at `7ce4ef84570628234d4097e0b95643bbf38880db`
 - Owner-review pull request: pending
 
 The owner decides whether to merge the future pull request. No deployment is authorized.
@@ -67,8 +68,8 @@ The owner decides whether to merge the future pull request. No deployment is aut
 ## M3.3.3 implementation handoff
 
 Recorded on 2026-10-21 by `/root` from the existing implementation and GitHub evidence.
-The owner authorized completing M3.3.3 only; M3.3.4 evidence recording and M3.3.5 independent
-implementation review / pull request remain pending.
+At that handoff, the owner had authorized completing M3.3.3 only. The subsequent M3.3.4
+authorization and completion are recorded in the remaining-work status below.
 
 - Implementer: `/root/m33_implementer`; manager and handoff recorder: `/root`.
 - Initial implementation: [`b1bc0405f26052d701181fc174e03ae08edb3170`](https://github.com/porntaned/ERP-for-Factory/commit/b1bc0405f26052d701181fc174e03ae08edb3170).
@@ -95,7 +96,7 @@ completed successfully. Its PostgreSQL connection check, `uv run python manage.p
 `uv run python manage.py makemigrations --check --dry-run`,
 `uv run python manage.py migrate --noinput`, `uv run ruff check .` and
 `uv run pytest -q --tb=short` steps all passed. This links existing CI evidence for the delivered
-implementation; the separate M3.3.4 GREEN report is still pending.
+implementation. The later M3.3.4 report uses Run #39 at the newer tested commit linked above.
 
 On 2026-10-21, `/root` confirmed the local and GitHub branch heads both matched `825b34f`, with a
 clean working tree before documentation changes. Local self-verification in the Windows `.venv`
@@ -112,6 +113,8 @@ These local checks did not execute PostgreSQL tests and are not independent revi
 ### Remaining work
 
 M3.3.3 is delivered on the feature branch. It does not mark the whole Issue #11 complete, approve
-merge, or establish an independent implementation verdict. Next roles are verifier/evidence recorder
-for M3.3.4 and independent implementation reviewer for M3.3.5, after owner authorization to continue.
+merge, or establish an independent implementation verdict. M3.3.4 was subsequently authorized and
+completed with the [GREEN evidence report](../evidence/issue-11-green.md): Run #39 verified all 244
+tests on PostgreSQL at `7ce4ef84570628234d4097e0b95643bbf38880db`. The next role is the independent
+implementation reviewer for M3.3.5, after owner authorization to continue.
 Stock movement enforcement, inspections and UI remain outside this issue.
