@@ -228,7 +228,7 @@ def test_descending_event_id_is_rejected_without_hiding_the_next_decision(
         from_disposition="RELEASED",
         to_disposition="HOLD",
     )
-    with pytest.raises(IntegrityError), transaction.atomic():
+    with pytest.raises(IntegrityError, match="event id must increase"), transaction.atomic():
         event_model.objects.create(id=released.pk - 1, **hold_values)
     assert (
         disposition_contract["get_disposition"](
@@ -251,7 +251,6 @@ def test_descending_event_id_is_rejected_without_hiding_the_next_decision(
 def identity_update(scope: dict[str, Any], edge: str) -> tuple[Any, dict[str, int]]:
     lot = scope["lot"]
     warehouse = scope["warehouse"]
-    other_plant = scope["other_warehouse"].plant
     if edge == "lot_item":
         item = lot.item
         replacement = type(item).objects.create(
@@ -262,11 +261,18 @@ def identity_update(scope: dict[str, Any], edge: str) -> tuple[Any, dict[str, in
             base_uom=item.base_uom,
         )
         return lot, {"item_id": replacement.pk}
+    organization_model = apps.get_model("facilities", "Organization")
+    target_organization = organization_model.objects.create(
+        code="REPARENT", display_name="Synthetic reassignment target"
+    )
     if edge == "item_organization":
-        return lot.item, {"organization_id": other_plant.organization_id}
+        return lot.item, {"organization_id": target_organization.pk}
     if edge == "warehouse_plant":
-        return warehouse, {"plant_id": other_plant.pk}
-    return warehouse.plant, {"organization_id": other_plant.organization_id}
+        target_plant = type(warehouse.plant).objects.create(
+            organization=target_organization, code="TARGET", display_name="Target plant"
+        )
+        return warehouse, {"plant_id": target_plant.pk}
+    return warehouse.plant, {"organization_id": target_organization.pk}
 
 
 @pytest.mark.parametrize(
@@ -284,7 +290,10 @@ def test_recorded_history_prevents_identity_edge_reassignment(
     disposition_contract["event_model"].objects.create(
         **direct_event_values(quality_scope, quality_user)
     )
-    with pytest.raises(IntegrityError), transaction.atomic():
+    with (
+        pytest.raises(IntegrityError, match="recorded disposition identity"),
+        transaction.atomic(),
+    ):
         type(record).objects.filter(pk=record.pk).update(**changes)
     record.refresh_from_db()
     assert {field: getattr(record, field) for field in changes} == original
@@ -410,8 +419,8 @@ def test_identity_update_waits_for_new_history_then_rejects_reassignment(
                 pids.put(cursor.fetchone()[0])
             type(record).objects.filter(pk=record.pk).update(**changes)
             outcomes.put("changed")
-        except IntegrityError:
-            outcomes.put("rejected")
+        except IntegrityError as error:
+            outcomes.put(str(error))
         except Exception as error:
             outcomes.put(f"unexpected:{type(error).__name__}:{error}")
         finally:
@@ -429,7 +438,7 @@ def test_identity_update_waits_for_new_history_then_rejects_reassignment(
         if worker.ident is not None:
             worker.join(timeout=15)
     assert not worker.is_alive()
-    assert outcomes.get(timeout=1) == "rejected"
+    assert "recorded disposition identity" in outcomes.get(timeout=1)
 
 
 def test_direct_write_rejects_cross_organization_pair(
