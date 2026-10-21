@@ -6,9 +6,9 @@
 
 ## สถานะปัจจุบัน
 
-[PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10) Merge Warehouse-scoped role grants เข้า `main` แล้วที่ [`6f6e06b`](https://github.com/porntaned/ERP-for-Factory/commit/6f6e06b); [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11) เริ่ม M3.3 บน `codex/audit-release-hold` โดยล็อกขอบเขตเป็นประวัติ HOLD/RELEASED ต่อคู่ Lot–Warehouse และยังไม่มีการ Deploy
+[PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12) Merge เข้า main ที่ `9b1d182eb6867b70f076e95a63dc03f1814f00ec` แล้ว; Issue #11 ปิด ส่วนผล [Audit หลัง Merge](https://github.com/porntaned/ERP-for-Factory/blob/codex/project-audit-after-pr12/docs/reviews/project-audit-after-pr12.md) ยังมีงานแก้ก่อนเริ่ม Inventory
 
-M3.3.5 เสร็จแล้วและเปิด [PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12) ให้เจ้าของตรวจ — [Review](reviews/issue-11-lot-disposition-independent-review.md) verdict `ship` หลังแก้ 3 finding, [Foundation #42](https://github.com/porntaned/ERP-for-Factory/actions/runs/39528381765) ผ่าน 261 tests ที่ `44b466f`; Issue #11 และ M3.3 ยังรอเจ้าของตรวจรับและ Merge ไม่มีการ Deploy
+กำลังส่งมอบเฉพาะ Finding 1 ใน [Issue #13](https://github.com/porntaned/ERP-for-Factory/issues/13): PostgreSQL RED 3 failed/261 passed → GREEN 264 passed ที่ `abe63e1` — [หลักฐาน](evidence/issue-13-policy-deactivation.md) ข้อ 2–5 ยังไม่ได้แก้ ไม่มีการ Merge หรือ Deploy ในงานนี้
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -79,13 +79,25 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] M3.2.3 เพิ่ม Django Auth, Warehouse role assignment และ permission interface — [Implementation](../access_control/models.py), [Policies](../access_control/policies.py), [Migration](../access_control/migrations/0001_initial.py)
     - [x] M3.2.4 พิสูจน์ Constraints, Concurrent writes และ Regression suite เป็น GREEN — [GREEN evidence](evidence/issue-9-green.md), [Foundation #28](https://github.com/porntaned/ERP-for-Factory/actions/runs/39444111594)
     - [x] M3.2.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-9-warehouse-role-independent-review.md), [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10)
-  - [ ] M3.3 กำหนด Audit และสถานะ Released/Hold ขั้นต่ำ — [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11)
+  - [x] M3.3 ส่งมอบ Audit และสถานะ Released/Hold ขั้นต่ำผ่าน PR #12; follow-up อยู่ใน PA — [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11)
     - [x] M3.3.1 เปิด Issue และล็อกขอบเขต Warehouse-scoped Lot disposition — [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11), [Scope review](reviews/issue-11-scope-independent-review.md)
     - [x] M3.3.2 บันทึก Assignment และ TDD RED บน PostgreSQL — [Assignment](assignments/issue-11-lot-disposition-audit.md), [RED evidence](evidence/issue-11-tdd-red.md), [Independent review](reviews/issue-11-tdd-red-independent-review.md), [Foundation #35](https://github.com/porntaned/ERP-for-Factory/actions/runs/39452581694)
     - [x] M3.3.3 เพิ่ม Quality disposition history, transition interface และ Migration — [Implementation](../quality/models.py), [Services](../quality/services.py), [Migration](../quality/migrations/0001_initial.py), [Handoff](assignments/issue-11-lot-disposition-audit.md#m333-implementation-handoff), [Commit `825b34f`](https://github.com/porntaned/ERP-for-Factory/commit/825b34fea7ad16605210ef4760a41627f0965c06)
     - [x] M3.3.4 พิสูจน์ Authorization, Constraints, Immutability, Retry, Concurrency และ Regression suite เป็น GREEN — [GREEN evidence](evidence/issue-11-green.md), [Foundation #39](https://github.com/porntaned/ERP-for-Factory/actions/runs/39526993055) ที่ `7ce4ef84570628234d4097e0b95643bbf38880db`
     - [x] M3.3.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-11-lot-disposition-independent-review.md) verdict `ship`, [PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12)
   - [ ] M3.4 แยก Issue, Test, Review และ PR สำหรับแต่ละส่วน
+
+## PA — งานแก้จาก Audit หลัง PR #12
+
+- [ ] PA.4 แก้ shared policies ครบ Findings 1–2
+  - [x] PA.4.1 เปิด Issue และกำหนดขอบเขตเฉพาะ Finding 1 — [Issue #13](https://github.com/porntaned/ERP-for-Factory/issues/13), [Assignment](assignments/issue-13-policy-deactivation.md)
+  - [x] PA.4.2 พิสูจน์ RED และแก้ persisted-active filtering ผ่าน PostgreSQL GREEN — [หลักฐาน](evidence/issue-13-policy-deactivation.md)
+  - [x] PA.4.3 Independent Scrutinize และเปิด PR สำหรับ Finding 1 — [Review](reviews/issue-13-policy-deactivation-independent-review.md), [PR #14](https://github.com/porntaned/ERP-for-Factory/pull/14)
+  - [ ] PA.4.4 เจ้าของตรวจรับและ Merge Finding 1
+  - [ ] PA.4.5 Finding 2: unsaved User ที่ใส่ PK มาเอง — รออนุมัติ ห้ามเริ่มต่ออัตโนมัติ
+- [ ] PA.5 Finding 3: explicit high event ID — ยังไม่เริ่ม
+- [ ] PA.6 Finding 4: CI trigger ทั่วไป — ยังไม่เริ่ม; Issue #13 เพิ่มเฉพาะ branch ที่ใช้พิสูจน์งานนี้
+- [ ] PA.7 Finding 5: README status — ยังไม่เริ่ม
 
 ## M4 — Inventory MVP
 

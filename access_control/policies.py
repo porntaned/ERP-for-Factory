@@ -53,6 +53,7 @@ def has_warehouse_role(
 
     return WarehouseRoleAssignment.objects.filter(
         user_id=user.pk,
+        user__is_active=True,
         warehouse_id=warehouse.pk,
         role__in=roles,
     ).exists()
@@ -65,5 +66,6 @@ def warehouses_for_user(user: Any, allowed_roles: object) -> QuerySet[Warehouse]
 
     return Warehouse.objects.filter(
         role_assignments__user_id=user.pk,
+        role_assignments__user__is_active=True,
         role_assignments__role__in=roles,
     ).distinct()
