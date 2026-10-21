@@ -8,7 +8,7 @@
 
 [PR #10](https://github.com/porntaned/ERP-for-Factory/pull/10) Merge Warehouse-scoped role grants เข้า `main` แล้วที่ [`6f6e06b`](https://github.com/porntaned/ERP-for-Factory/commit/6f6e06b); [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11) เริ่ม M3.3 บน `codex/audit-release-hold` โดยล็อกขอบเขตเป็นประวัติ HOLD/RELEASED ต่อคู่ Lot–Warehouse และยังไม่มีการ Deploy
 
-M3.3.3 ส่งมอบโค้ดบน feature branch แล้ว — [Implementation handoff](assignments/issue-11-lot-disposition-audit.md#m333-implementation-handoff) และ M3.3.4 บันทึก [GREEN evidence](evidence/issue-11-green.md) จาก [Foundation #39](https://github.com/porntaned/ERP-for-Factory/actions/runs/39526993055) ผ่าน 244 tests บน PostgreSQL แล้ว; M3.3.5 ยังรอ Independent implementation review/PR และยังไม่ได้เริ่มในรอบนี้
+M3.3.5 ผ่าน Independent Scrutinize หลังแก้ 3 finding แล้ว — [Review](reviews/issue-11-lot-disposition-independent-review.md), [Foundation #42](https://github.com/porntaned/ERP-for-Factory/actions/runs/39528381765) ผ่าน 261 tests ที่ `44b466f`; กำลังเตรียม owner-review PR และยังไม่มีการ Merge/Deploy
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -84,7 +84,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] M3.3.2 บันทึก Assignment และ TDD RED บน PostgreSQL — [Assignment](assignments/issue-11-lot-disposition-audit.md), [RED evidence](evidence/issue-11-tdd-red.md), [Independent review](reviews/issue-11-tdd-red-independent-review.md), [Foundation #35](https://github.com/porntaned/ERP-for-Factory/actions/runs/39452581694)
     - [x] M3.3.3 เพิ่ม Quality disposition history, transition interface และ Migration — [Implementation](../quality/models.py), [Services](../quality/services.py), [Migration](../quality/migrations/0001_initial.py), [Handoff](assignments/issue-11-lot-disposition-audit.md#m333-implementation-handoff), [Commit `825b34f`](https://github.com/porntaned/ERP-for-Factory/commit/825b34fea7ad16605210ef4760a41627f0965c06)
     - [x] M3.3.4 พิสูจน์ Authorization, Constraints, Immutability, Retry, Concurrency และ Regression suite เป็น GREEN — [GREEN evidence](evidence/issue-11-green.md), [Foundation #39](https://github.com/porntaned/ERP-for-Factory/actions/runs/39526993055) ที่ `7ce4ef84570628234d4097e0b95643bbf38880db`
-    - [ ] M3.3.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ
+    - [ ] M3.3.5 ทำ Independent Scrutinize และเปิด PR ให้เจ้าของตรวจ — [Independent review](reviews/issue-11-lot-disposition-independent-review.md) verdict `ship`; รอเปิด PR
   - [ ] M3.4 แยก Issue, Test, Review และ PR สำหรับแต่ละส่วน
 
 ## M4 — Inventory MVP
@@ -164,3 +164,4 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - 2026-10-20: [Foundation #35](https://github.com/porntaned/ERP-for-Factory/actions/runs/39452581694) ที่ [`78b2a8a`](https://github.com/porntaned/ERP-for-Factory/commit/78b2a8a8a00537ba70b9894e7443ddf792d91ee8) ยืนยัน PostgreSQL 18.6, checks, migrations และ Ruff ผ่าน; 174 regression tests ผ่านและ 70 Quality tests เป็น controlled RED หลัง Independent Agent ตรวจและยืนยัน verdict `ship` — [หลักฐาน](evidence/issue-11-tdd-red.md)
 - 2026-10-21: ปิดงานส่งมอบเฉพาะ M3.3.3 โดยยืนยันโค้ดที่ [`825b34f`](https://github.com/porntaned/ERP-for-Factory/commit/825b34fea7ad16605210ef4760a41627f0965c06), บันทึก Implementer/Handoff และเชื่อม CI เดิม [Foundation #38](https://github.com/porntaned/ERP-for-Factory/actions/runs/39454155496); Ruff และ Django check ในเครื่องผ่าน — [Handoff](assignments/issue-11-lot-disposition-audit.md#m333-implementation-handoff) ส่วน M3.3.4–M3.3.5 คงค้างตามขอบเขตที่เจ้าของกำหนด
 - 2026-10-21: เจ้าของอนุมัติทำ M3.3.4; ตรวจ checkout SHA, environment, commands และ logs ของ [Foundation #39](https://github.com/porntaned/ERP-for-Factory/actions/runs/39526993055) ที่ `7ce4ef84570628234d4097e0b95643bbf38880db`: PostgreSQL 18.6, fresh migrations, Django checks, Ruff และ `244 passed in 2.71s`; บันทึก [GREEN evidence](evidence/issue-11-green.md) และเช็กเฉพาะ M3.3.4 ส่วน M3.3.5 ยังไม่เริ่ม
+- 2026-10-21: เริ่ม M3.3.5 ด้วย Agent อิสระ `/root/m335_independent_review`; พบ event order, stale authorization และ parent reassignment จึงแก้ที่ `6253fd2` พร้อม 17 regressions และแก้ fixture ที่ `44b466f`; [Foundation #42](https://github.com/porntaned/ERP-for-Factory/actions/runs/39528381765) ผ่าน `261 passed in 4.54s` บน PostgreSQL 18.6, re-review exact SHA ได้ verdict `ship` — [Review](reviews/issue-11-lot-disposition-independent-review.md); รอเปิด PR

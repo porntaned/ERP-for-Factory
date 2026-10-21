@@ -13,7 +13,8 @@
 - Independent TDD reviewer: `/root/m33_red_independent_review` — read-only exact-commit review
 - Implementer: `/root/m33_implementer` — production implementation and request-conflict repair
 - GREEN evidence verifier: `/root` — project self-verification from exact-commit GitHub Actions logs
-- Independent implementation reviewer: pending assignment
+- Independent implementation reviewer: `/root/m335_independent_review` — read-only review/re-review
+- Review repair implementer: `/root/m335_repair` — production and regression-test fixes
 
 ## Authorized scope
 
@@ -60,7 +61,8 @@ blocks movement of a held Lot.
 - TDD RED: [PostgreSQL RED evidence](../evidence/issue-11-tdd-red.md)
 - Independent TDD review: [exact-commit review](../reviews/issue-11-tdd-red-independent-review.md)
 - M3.3.3 implementation: [implementation handoff](#m333-implementation-handoff)
-- GREEN implementation: [M3.3.4 evidence](../evidence/issue-11-green.md), [Foundation #39](https://github.com/porntaned/ERP-for-Factory/actions/runs/39526993055) at `7ce4ef84570628234d4097e0b95643bbf38880db`
+- GREEN implementation: [M3.3.4 evidence and repair verification](../evidence/issue-11-green.md), latest [Foundation #42](https://github.com/porntaned/ERP-for-Factory/actions/runs/39528381765) at `44b466fdd4e9d0134564c77aef7a316c1a2b8b7e`
+- Independent implementation review: [review and repair record](../reviews/issue-11-lot-disposition-independent-review.md), final verdict `ship` at `44b466f`
 - Owner-review pull request: pending
 
 The owner decides whether to merge the future pull request. No deployment is authorized.
@@ -115,6 +117,7 @@ These local checks did not execute PostgreSQL tests and are not independent revi
 M3.3.3 is delivered on the feature branch. It does not mark the whole Issue #11 complete, approve
 merge, or establish an independent implementation verdict. M3.3.4 was subsequently authorized and
 completed with the [GREEN evidence report](../evidence/issue-11-green.md): Run #39 verified all 244
-tests on PostgreSQL at `7ce4ef84570628234d4097e0b95643bbf38880db`. The next role is the independent
-implementation reviewer for M3.3.5, after owner authorization to continue.
+tests on PostgreSQL at `7ce4ef84570628234d4097e0b95643bbf38880db`. M3.3.5 was then authorized:
+independent review found three integrity defects, the repair agent fixed them, and exact-commit
+re-review returned `ship` at `44b466f` with 261 passing PostgreSQL tests. The owner-review PR is pending.
 Stock movement enforcement, inspections and UI remain outside this issue.

@@ -1,6 +1,32 @@
 # Issue #11 — PostgreSQL GREEN evidence (M3.3.4)
 
-## Identity and scope
+## Latest verification after M3.3.5 review repairs
+
+- Tested and independently reviewed SHA: `44b466fdd4e9d0134564c77aef7a316c1a2b8b7e`.
+- [Foundation #42](https://github.com/porntaned/ERP-for-Factory/actions/runs/39528381765),
+  [postgresql-tdd logs](https://github.com/porntaned/ERP-for-Factory/actions/runs/39528381765/job/118988295071).
+- Result: **`261 passed in 4.54s`** on PostgreSQL 18.6; Python/Django/psycopg versions and commands
+  remain the same as recorded below. Fresh migration `quality.0002_preserve_history_identity` applied
+  successfully; Django check, migration drift check and Ruff passed.
+- Evidence verifier: `/root`, from actual checkout/runtime/migration/test logs. Independent review:
+  [review record](../reviews/issue-11-lot-disposition-independent-review.md).
+
+The additional 17 cases verify event-ID order, stale persisted active status, grant revocation while
+waiting for the Lot lock, all four identity guards (sequential and observed concurrent waits),
+permitted unreferenced/metadata updates and migration reverse/reapply. Invalid identity/order writes
+assert the specific trigger message. See `test_descending_event_id_is_rejected_without_hiding_the_next_decision`,
+`test_stale_active_actor_cannot_bypass_persisted_deactivation`,
+`test_grant_revoked_while_waiting_for_lot_lock_denies_append`,
+`test_recorded_history_prevents_identity_edge_reassignment`,
+`test_identity_update_waits_for_new_history_then_rejects_reassignment` and
+`test_history_identity_migration_reverses_and_reapplies` in the existing Quality test files.
+
+Repair CI #41 initially reported `259 passed, 2 failed` from unrelated target-code collisions in
+the allowed-reassignment fixtures. The fixture correction at `44b466f` removed those collisions and
+strengthened rejection assertions; production fixes are in `6253fd2`. The earlier 244-test evidence
+below is retained as the baseline before review repairs.
+
+## Baseline identity and scope (before M3.3.5 repairs)
 
 - Recorded: 2026-10-21 by `/root`, acting as manager and CI evidence verifier.
 - Verification classification: project self-verification using GitHub Actions; this is not independent Scrutinize.
@@ -76,4 +102,5 @@ tests cover the specific two-caller scenarios listed above, not every possible s
 database operation. Exact-Warehouse authorization is exercised through the service; direct-insert
 tests establish the listed integrity constraints, not database-level role authorization.
 There is no stock ledger, inspection or movement-enforcement claim. Independent Scrutinize and
-the owner-review PR remain M3.3.5; no merge or deployment is authorized by this report.
+the owner-review PR belong to M3.3.5; their subsequent status is recorded in the review and assignment
+records. No merge or deployment is authorized by this report.
