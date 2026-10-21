@@ -8,6 +8,7 @@ on:
       - feat/lot-identity
       - codex/role-warehouse-permissions
       - codex/audit-release-hold
+      - codex/project-audit-after-pr12
   pull_request:
     branches:
       - main
