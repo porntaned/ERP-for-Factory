@@ -61,3 +61,18 @@ rendered proof also inspected; later evidence/bookkeeping do not change the para
 Final documentation gets diff/link checks. Stop at owner-review PR, keeping Issue #22
 and PA.7 pending owner acceptance. No source/test/schema/workflow/dependency change,
 M3 acceptance, Inventory work, merge or deployment in this task.
+
+## Owner-review delivery
+
+[PR #23](https://github.com/porntaned/ERP-for-Factory/pull/23) is Open, targeting main
+from `codex/docs/readme-status`; [visible proof](issue-22-pr.jpg). It was opened after
+self-verification and independent `ship`. Evidence/review commit
+`c27165e46fcc45f7bc1ef4ed6170f3ed9332874f` does not change README or runtime files from
+the reviewed implementation. Final handoff bookkeeping only adds the PR link/screenshot
+and progress status. Final diff/link checking and latest-head PR checks are the last
+manager checks before handoff; historical runs above retain their exact tested SHA.
+Final local target/ASCII-anchor check after adding delivery links: **7 Markdown
+documents, 117 targets passed**; diff checking passed and the README/runtime diff
+from reviewed implementation remained empty.
+Issue #22 and overall PA.7 remain pending owner review/merge. No merge, deployment or
+next milestone work is performed.

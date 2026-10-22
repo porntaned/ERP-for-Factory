@@ -37,3 +37,11 @@ Independent read-only reviewer `/root/issue22_independent_review` returned
 [ship](../reviews/issue-22-readme-status-independent-review.md). No repair cycle.
 Evidence/review bookkeeping changes only documentation. Next: open owner-review PR,
 check latest-head CI and leave Issue #22/PA.7 for owner acceptance. No merge or deploy.
+
+## Final delivery
+
+[PR #23](https://github.com/porntaned/ERP-for-Factory/pull/23) is open for owner review,
+with [proof](../evidence/issue-22-pr.jpg). Earlier next-action wording is historical.
+The final bookkeeping preserves the reviewed README and all runtime files; manager
+checks diff/links and latest-head CI before handoff. Work stops at this PR. The next
+responsible role is the owner; Issue #22/PA.7 remain pending acceptance and merge.

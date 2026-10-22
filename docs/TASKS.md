@@ -16,7 +16,7 @@ Finding 3 เสร็จแล้ว: เจ้าของตรวจแล�
 
 Finding 4 เสร็จแล้ว: เจ้าของอนุญาตให้ Merge [PR #21](https://github.com/porntaned/ERP-for-Factory/pull/21) เข้า `main` ที่ `a294080133cc31ee6ce0b0e1fc808280d669f203`; [Issue #20](https://github.com/porntaned/ERP-for-Factory/issues/20) ปิดเป็น completed และ [actual main push CI](https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324) ผ่าน PostgreSQL 18.6 / 281 tests — [หลักฐาน](evidence/issue-20-ci-triggers.md#owner-authorized-merge-and-main-push) ไม่มีการ Deploy
 
-รอบนี้ทำเฉพาะ Finding 5/README และบันทึกสถานะ Finding 4 ใน [Issue #22](https://github.com/porntaned/ERP-for-Factory/issues/22) — [หลักฐาน](evidence/issue-22-readme-status.md), [Independent review](reviews/issue-22-readme-status-independent-review.md) `ship` ที่ `cf9f010`; รอ owner-review PR ไม่เริ่ม M3 acceptance หรือ Inventory และไม่มีการ Merge/Deploy ในงานนี้
+รอบนี้ส่งมอบเฉพาะ Finding 5/README และบันทึกสถานะ Finding 4 ใน [Issue #22](https://github.com/porntaned/ERP-for-Factory/issues/22) — [หลักฐาน](evidence/issue-22-readme-status.md), [Independent review](reviews/issue-22-readme-status-independent-review.md) `ship` ที่ `cf9f010`, [PR #23 รอเจ้าของตรวจ](https://github.com/porntaned/ERP-for-Factory/pull/23) ไม่เริ่ม M3 acceptance หรือ Inventory และไม่มีการ Merge/Deploy ในงานนี้
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -122,7 +122,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] PA.7 Finding 5: README status — [Issue #22](https://github.com/porntaned/ERP-for-Factory/issues/22), [Assignment](assignments/issue-22-readme-status.md)
   - [x] แก้สถานะ README และตรวจ Markdown/rendered links — [หลักฐาน](evidence/issue-22-readme-status.md)
   - [x] Independent Scrutinize — [Review](reviews/issue-22-readme-status-independent-review.md), `ship` ที่ `cf9f010d212261ddc2e2c8a23bc60dfdc18ebf7b`
-  - [ ] เปิด PR ให้เจ้าของตรวจ
+  - [x] เปิด PR ให้เจ้าของตรวจ — [PR #23](https://github.com/porntaned/ERP-for-Factory/pull/23), [ภาพหลักฐาน](evidence/issue-22-pr.jpg)
   - [ ] เจ้าของตรวจรับและ Merge Finding 5
 
 ## M4 — Inventory MVP
