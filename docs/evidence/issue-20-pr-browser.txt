@@ -1,0 +1,1716 @@
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests (1)":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+        - generic: "1"
+        - generic: (1)
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "currently running:"
+  - 'heading "ci: run Foundation on main and feature branch prefixes #73" [level=1]':
+    - generic: "ci: run Foundation on main and feature branch prefixes #73"
+  - button "Cancel workflow"
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305
+          - img "Currently running"
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: Started 2026-10-22 11:30:56 35s ago
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 1s":
+      - generic: Set up job
+      - generic: 1s
+    - generic "Initialize containers 15s":
+      - generic: Initialize containers
+      - generic: 15s
+    - generic "Check out repository 0s" [active]:
+      - generic: Check out repository
+      - generic: 0s
+    - link "52":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:3:56
+    - generic "Disabling automatic garbage collection":
+      - generic: Disabling automatic garbage collection
+    - link "54":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:3:59
+    - generic "Setting up auth":
+      - generic: Setting up auth
+    - link "69":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:3:75
+    - generic "Fetching the repository":
+      - generic: Fetching the repository
+    - link "73":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:3:80
+    - generic "Determining the checkout info":
+      - generic: Determining the checkout info
+    - link "74":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:3:82
+    - generic: /usr/bin/git sparse-checkout disable
+    - link "75":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:3:83
+    - generic: /usr/bin/git config --local --unset-all extensions.worktreeConfig
+    - link "76":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:3:84
+    - generic "Checking out the ref":
+      - generic: Checking out the ref
+    - link "96":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:3:105
+    - generic: /usr/bin/git log -1 --format=%H
+    - link "97":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:3:106
+    - generic: 2dfc5aeb0ec5b64c99e5641aea0578e41a5c1426
+    - generic "Install uv 1s":
+      - generic: Install uv
+      - generic: 1s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 1s":
+      - generic: Record runtime versions
+      - generic: 1s
+    - generic "Verify Django configuration 0s":
+      - generic: Verify Django configuration
+      - generic: 0s
+    - generic "Verify PostgreSQL connection 1s":
+      - generic: Verify PostgreSQL connection
+      - generic: 1s
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "In progress Run ERP tests Started at 1792643483000 8s":
+      - img "In progress"
+      - generic: Run ERP tests
+      - generic "Oct 22, 2026, 11:31 AM GMT+7": Started at 1792643483000 8s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:1
+    - generic "Run uv run pytest -q --tb=short":
+      - generic: Run uv run pytest -q --tb=short
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:15
+    - generic: ........................................................................ [ 25%]
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:16
+    - generic: ........................................................................ [ 51%]
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:17
+    - generic: ........................................................................ [ 76%]
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:18
+    - generic: ................................................................. [100%]
+    - link "18":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:19
+    - generic: 281 passed in 5.52s
+    - generic "In progress Post Install uv":
+      - img "In progress"
+      - generic: Post Install uv
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:30:1
+    - generic: Post job cleanup.
+    - link "2":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:30:2
+    - generic: UV_CACHE_DIR is already set to /home/runner/work/_temp/setup-uv-cache
+    - link "3":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:30:3
+    - generic: UV_PYTHON_INSTALL_DIR is already set to /home/runner/work/_temp/uv-python-dir
+    - link "4":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:30:4
+    - generic: "Including uv cache path: /home/runner/work/_temp/setup-uv-cache"
+    - link "5":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:30:5
+    - generic: /usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/ERP-for-Factory/ERP-for-Factory --files-from manifest.txt --use-compress-program zstdmt
+    - link "6":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:30:6
+    - generic: Sent 21765185 of 21765185 (100.0%), 46.3 MBs/sec
+    - link "7":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:30:7
+    - generic: "uv cache saved with key: setup-uv-2-x86_64-unknown-linux-gnu-ubuntu-24.04-unknown-7a388c836ee7b8b5b8a2271c5a444e1de2392f4dd2437300a45f47cc7b86ad35"
+    - generic "In progress Post Check out repository":
+      - img "In progress"
+      - generic: Post Check out repository
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:1
+    - generic: Post job cleanup.
+    - link "2":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:2
+    - generic: /usr/bin/git version
+    - link "3":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:3
+    - generic: git version 2.55.0
+    - link "4":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:4
+    - generic: Temporarily overriding HOME='/home/runner/work/_temp/c9400c52-f908-4fe5-8978-8e5188ee24f1' before making global git config changes
+    - link "5":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:5
+    - generic: Adding repository directory to the temporary git global config as a safe directory
+    - link "6":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:6
+    - generic: /usr/bin/git config --global --add safe.directory /home/runner/work/ERP-for-Factory/ERP-for-Factory
+    - link "7":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:7
+    - generic: Removing SSH command configuration
+    - link "8":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:8
+    - generic: /usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+    - link "9":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:9
+    - generic: /usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+    - link "10":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:10
+    - generic: Removing HTTP extra header
+    - link "11":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:11
+    - generic: /usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+    - link "12":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:12
+    - text: /usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.
+    - link "https://github.com/.extraheader":
+      - /url: https://github.com/.extraheader
+    - text: "' || :\""
+    - link "13":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:13
+    - generic: Removing includeIf entries pointing to credentials config files
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:14
+    - generic: "/usr/bin/git config --local --name-only --get-regexp ^includeIf\\.gitdir:"
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:15
+    - generic: includeif.gitdir:/home/runner/work/ERP-for-Factory/ERP-for-Factory/.git.path
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:16
+    - generic: includeif.gitdir:/home/runner/work/ERP-for-Factory/ERP-for-Factory/.git/worktrees/*.path
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:17
+    - generic: includeif.gitdir:/github/workspace/.git.path
+    - link "18":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:18
+    - generic: includeif.gitdir:/github/workspace/.git/worktrees/*.path
+    - link "19":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:19
+    - generic: /usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/ERP-for-Factory/ERP-for-Factory/.git.path
+    - link "20":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:20
+    - generic: /home/runner/work/_temp/git-credentials-aa5c26f1-8cf5-4edf-bb48-4fab7ada90bd.config
+    - link "21":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:21
+    - generic: /usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/ERP-for-Factory/ERP-for-Factory/.git.path \/home\/runner\/work\/_temp\/git\-credentials\-aa5c26f1\-8cf5\-4edf\-bb48\-4fab7ada90bd\.config
+    - link "22":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:22
+    - generic: /usr/bin/git config --local --get-all includeif.gitdir:/home/runner/work/ERP-for-Factory/ERP-for-Factory/.git/worktrees/*.path
+    - link "23":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:23
+    - generic: /home/runner/work/_temp/git-credentials-aa5c26f1-8cf5-4edf-bb48-4fab7ada90bd.config
+    - link "24":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:24
+    - generic: /usr/bin/git config --local --unset includeif.gitdir:/home/runner/work/ERP-for-Factory/ERP-for-Factory/.git/worktrees/*.path \/home\/runner\/work\/_temp\/git\-credentials\-aa5c26f1\-8cf5\-4edf\-bb48\-4fab7ada90bd\.config
+    - link "25":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:25
+    - generic: /usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git.path
+    - link "26":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:26
+    - generic: /github/runner_temp/git-credentials-aa5c26f1-8cf5-4edf-bb48-4fab7ada90bd.config
+    - link "27":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:27
+    - generic: /usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git.path \/github\/runner_temp\/git\-credentials\-aa5c26f1\-8cf5\-4edf\-bb48\-4fab7ada90bd\.config
+    - link "28":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:28
+    - generic: /usr/bin/git config --local --get-all includeif.gitdir:/github/workspace/.git/worktrees/*.path
+    - link "29":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:29
+    - generic: /github/runner_temp/git-credentials-aa5c26f1-8cf5-4edf-bb48-4fab7ada90bd.config
+    - link "30":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:30
+    - generic: /usr/bin/git config --local --unset includeif.gitdir:/github/workspace/.git/worktrees/*.path \/github\/runner_temp\/git\-credentials\-aa5c26f1\-8cf5\-4edf\-bb48\-4fab7ada90bd\.config
+    - link "31":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:31
+    - generic: /usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+    - link "32":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:31:32
+    - generic: Removing credentials config '/home/runner/work/_temp/git-credentials-aa5c26f1-8cf5-4edf-bb48-4fab7ada90bd.config'
+    - generic "In progress Stop containers":
+      - img "In progress"
+      - generic: Stop containers
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:1
+    - generic: "Print service container logs: e0a6effc0cd542b1a768178cc3c56b58_postgres186bookworm_887244"
+    - link "2":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:2
+    - generic: /usr/bin/docker logs --details 751703a13b674646d1c1b3de592574ffd52b3f8955679523308734e359063649
+    - link "3":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:3
+    - generic: The files belonging to this database system will be owned by user "postgres".
+    - link "4":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:4
+    - generic: This user must also own the server process.
+    - link "5":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:5
+    - link "6":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:6
+    - generic: The database cluster will be initialized with locale "en_US.utf8".
+    - link "7":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:7
+    - generic: The default database encoding has accordingly been set to "UTF8".
+    - link "8":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:8
+    - generic: The default text search configuration will be set to "english".
+    - link "9":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:9
+    - link "10":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:10
+    - generic: Data page checksums are enabled.
+    - link "11":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:11
+    - link "12":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:12
+    - generic: fixing permissions on existing directory /var/lib/postgresql/18/docker ... ok
+    - link "13":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:13
+    - generic: "initdb: warning: enabling \"trust\" authentication for local connections"
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:14
+    - generic: creating subdirectories ... ok
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:15
+    - generic: "initdb: hint: You can change this by editing pg_hba.conf or using the option -A, or --auth-local and --auth-host, the next time you run initdb."
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:16
+    - generic: selecting dynamic shared memory implementation ... posix
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:17
+    - generic: "2026-10-22 04:31:08.033 UTC [1] LOG: starting PostgreSQL 18.6 (Debian 18.6-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit"
+    - link "18":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:18
+    - generic: selecting default "max_connections" ... 100
+    - link "19":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:19
+    - generic: "2026-10-22 04:31:08.033 UTC [1] LOG: listening on IPv4 address \"0.0.0.0\", port 5432"
+    - link "20":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:20
+    - generic: selecting default "shared_buffers" ... 128MB
+    - link "21":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:21
+    - generic: "2026-10-22 04:31:08.033 UTC [1] LOG: listening on IPv6 address \"::\", port 5432"
+    - link "22":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:22
+    - generic: selecting default time zone ... Etc/UTC
+    - link "23":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:23
+    - generic: creating configuration files ... ok
+    - link "24":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:24
+    - generic: running bootstrap script ... ok
+    - link "25":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:25
+    - generic: "2026-10-22 04:31:08.034 UTC [1] LOG: listening on Unix socket \"/var/run/postgresql/.s.PGSQL.5432\""
+    - link "26":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:26
+    - generic: "2026-10-22 04:31:08.038 UTC [76] LOG: database system was shut down at 2026-10-22 04:31:07 UTC"
+    - link "27":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:27
+    - generic: "2026-10-22 04:31:08.041 UTC [1] LOG: database system is ready to accept connections"
+    - link "28":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:28
+    - generic: "2026-10-22 04:31:20.451 UTC [74] LOG: checkpoint starting: immediate force wait"
+    - link "29":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:29
+    - generic: "2026-10-22 04:31:20.474 UTC [74] LOG: checkpoint complete: wrote 160 buffers (1.0%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 1 recycled; write=0.004 s, sync=0.018 s, total=0.024 s; sync files=154, longest=0.001 s, average=0.001 s; distance=5957 kB, estimate=5957 kB; lsn=0/2166400, redo lsn=0/21663A8"
+    - link "30":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:30
+    - generic: "2026-10-22 04:31:21.349 UTC [74] LOG: checkpoint starting: immediate force wait"
+    - link "31":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:31
+    - generic: "2026-10-22 04:31:21.351 UTC [74] LOG: checkpoint complete: wrote 3 buffers (0.0%), wrote 1 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.003 s; sync files=4, longest=0.001 s, average=0.001 s; distance=4940 kB, estimate=5855 kB; lsn=0/26397B8, redo lsn=0/2639760"
+    - link "32":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:32
+    - generic: performing post-bootstrap initialization ... ok
+    - link "33":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:33
+    - generic: "2026-10-22 04:31:22.161 UTC [106] ERROR: cannot insert a non-DEFAULT value into column \"id\""
+    - link "34":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:34
+    - generic: syncing data to disk ... ok
+    - link "35":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:35
+    - link "36":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:36
+    - link "37":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:37
+    - generic: "Success. You can now start the database server using:"
+    - link "38":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:38
+    - link "39":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:39
+    - generic: pg_ctl -D /var/lib/postgresql/18/docker -l logfile start
+    - link "40":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:40
+    - link "41":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:41
+    - generic: "waiting for server to start....2026-10-22 04:31:07.710 UTC [54] LOG: starting PostgreSQL 18.6 (Debian 18.6-1.pgdg12+2) on x86_64-pc-linux-gnu, compiled by gcc (Debian 12.2.0-14+deb12u1) 12.2.0, 64-bit"
+    - link "42":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:42
+    - generic: "2026-10-22 04:31:07.711 UTC [54] LOG: listening on Unix socket \"/var/run/postgresql/.s.PGSQL.5432\""
+    - link "43":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:43
+    - generic: "2026-10-22 04:31:07.714 UTC [60] LOG: database system was shut down at 2026-10-22 04:31:07 UTC"
+    - link "44":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:44
+    - generic: "2026-10-22 04:31:07.717 UTC [54] LOG: database system is ready to accept connections"
+    - link "45":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:45
+    - generic: done
+    - link "46":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:46
+    - generic: server started
+    - link "47":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:47
+    - generic: CREATE DATABASE
+    - link "48":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:48
+    - link "49":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:49
+    - link "50":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:50
+    - generic: "/usr/local/bin/docker-entrypoint.sh: ignoring /docker-entrypoint-initdb.d/*"
+    - link "51":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:51
+    - link "52":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:52
+    - generic: "waiting for server to shut down...2026-10-22 04:31:07.908 UTC [54] LOG: received fast shutdown request"
+    - link "53":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:53
+    - generic: ".2026-10-22 04:31:07.908 UTC [54] LOG: aborting any active transactions"
+    - link "54":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:54
+    - generic: "2026-10-22 04:31:07.911 UTC [54] LOG: background worker \"logical replication launcher\" (PID 63) exited with exit code 1"
+    - link "55":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:55
+    - generic: "2026-10-22 04:31:07.911 UTC [58] LOG: shutting down"
+    - link "56":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:56
+    - generic: "2026-10-22 04:31:07.912 UTC [58] LOG: checkpoint starting: shutdown immediate"
+    - link "57":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:57
+    - generic: "2026-10-22 04:31:07.926 UTC [58] LOG: checkpoint complete: wrote 941 buffers (5.7%), wrote 3 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.012 s, sync=0.003 s, total=0.015 s; sync files=303, longest=0.002 s, average=0.001 s; distance=4334 kB, estimate=4334 kB; lsn=0/1B94F70, redo lsn=0/1B94F70"
+    - link "58":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:58
+    - generic: "2026-10-22 04:31:07.937 UTC [54] LOG: database system is shut down"
+    - link "59":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:59
+    - generic: done
+    - link "60":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:60
+    - generic: server stopped
+    - link "61":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:61
+    - link "62":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:62
+    - generic: PostgreSQL init process complete; ready for start up.
+    - link "63":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:63
+    - link "64":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:64
+    - generic: "2026-10-22 04:31:22.161 UTC [106] DETAIL: Column \"id\" is an identity column defined as GENERATED ALWAYS."
+    - link "65":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:65
+    - generic: "2026-10-22 04:31:22.161 UTC [106] HINT: Use OVERRIDING SYSTEM VALUE to override."
+    - link "66":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:66
+    - generic: "2026-10-22 04:31:22.161 UTC [106] STATEMENT: INSERT INTO \"quality_lotdispositionevent\" (\"id\", \"lot_id\", \"warehouse_id\", \"actor_id\", \"request_id\", \"from_disposition\", \"to_disposition\", \"reason\", \"created_at\") VALUES (1, 1, 1, 1, '97d983df99e7467d83ccc75a86d992d8'::uuid, 'HOLD', 'RELEASED', 'Synthetic explicit-ID boundary regression', DEFAULT) RETURNING \"quality_lotdispositionevent\".\"id\", \"quality_lotdispositionevent\".\"created_at\""
+    - link "67":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:67
+    - generic: "2026-10-22 04:31:22.195 UTC [106] ERROR: cannot insert a non-DEFAULT value into column \"id\""
+    - link "68":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:68
+    - generic: "2026-10-22 04:31:22.195 UTC [106] DETAIL: Column \"id\" is an identity column defined as GENERATED ALWAYS."
+    - link "69":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:69
+    - generic: "2026-10-22 04:31:22.195 UTC [106] HINT: Use OVERRIDING SYSTEM VALUE to override."
+    - link "70":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:70
+    - generic: "2026-10-22 04:31:22.195 UTC [106] STATEMENT: INSERT INTO quality_lotdispositionevent (id, lot_id, warehouse_id, actor_id, request_id, from_disposition, to_disposition, reason) VALUES (1, 3, 4, 2, 'ea5471e7364a44449becb5f330e92784'::uuid, 'HOLD', 'RELEASED', 'Synthetic explicit-ID SQL regression')"
+    - link "71":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:71
+    - generic: "2026-10-22 04:31:22.226 UTC [106] ERROR: cannot insert a non-DEFAULT value into column \"id\""
+    - link "72":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:72
+    - generic: "2026-10-22 04:31:22.226 UTC [106] DETAIL: Column \"id\" is an identity column defined as GENERATED ALWAYS."
+    - link "73":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:73
+    - generic: "2026-10-22 04:31:22.226 UTC [106] HINT: Use OVERRIDING SYSTEM VALUE to override."
+    - link "74":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:74
+    - generic: "2026-10-22 04:31:22.226 UTC [106] STATEMENT: INSERT INTO \"quality_lotdispositionevent\" (\"id\", \"lot_id\", \"warehouse_id\", \"actor_id\", \"request_id\", \"from_disposition\", \"to_disposition\", \"reason\", \"created_at\") VALUES (1000000000, 5, 7, 3, 'c9c6f6f6a3e1478c9267b2786c691781'::uuid, 'HOLD', 'RELEASED', 'Synthetic explicit-ID boundary regression', DEFAULT) RETURNING \"quality_lotdispositionevent\".\"id\", \"quality_lotdispositionevent\".\"created_at\""
+    - link "75":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:75
+    - generic: "2026-10-22 04:31:22.259 UTC [106] ERROR: cannot insert a non-DEFAULT value into column \"id\""
+    - link "76":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:76
+    - generic: "2026-10-22 04:31:22.259 UTC [106] DETAIL: Column \"id\" is an identity column defined as GENERATED ALWAYS."
+    - link "77":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:77
+    - generic: "2026-10-22 04:31:22.259 UTC [106] HINT: Use OVERRIDING SYSTEM VALUE to override."
+    - link "78":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:78
+    - generic: "2026-10-22 04:31:22.259 UTC [106] STATEMENT: INSERT INTO quality_lotdispositionevent (id, lot_id, warehouse_id, actor_id, request_id, from_disposition, to_disposition, reason) VALUES (1000000000, 7, 10, 4, '9f460ce193db4716943bfe561629b26a'::uuid, 'HOLD', 'RELEASED', 'Synthetic explicit-ID SQL regression')"
+    - link "79":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:79
+    - generic: "2026-10-22 04:31:23.212 UTC [119] ERROR: Quality event ID space exhausted; migration aborted"
+    - link "80":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:80
+    - generic: "2026-10-22 04:31:23.212 UTC [119] CONTEXT: PL/pgSQL function inline_code_block line 23 at RAISE"
+    - link "81":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:81
+    - generic: "2026-10-22 04:31:23.212 UTC [119] STATEMENT:"
+    - link "82":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:82
+    - generic: "-- This ACCESS EXCLUSIVE table lock is retained by the atomic migration."
+    - link "83":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:83
+    - generic: "-- Ordinary inserts cannot race the history/sequence inspection below."
+    - link "84":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:84
+    - generic: ALTER TABLE quality_lotdispositionevent
+    - link "85":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:85
+    - generic: ALTER COLUMN id SET GENERATED ALWAYS;
+    - link "86":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:86
+    - link "87":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:87
+    - generic: DO $$
+    - link "88":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:88
+    - generic: DECLARE
+    - link "89":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:89
+    - generic: sequence_name regclass;
+    - link "90":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:90
+    - generic: sequence_value bigint;
+    - link "91":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:91
+    - generic: sequence_called boolean;
+    - link "92":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:92
+    - generic: largest_id bigint;
+    - link "93":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:93
+    - generic: next_sequence_value numeric;
+    - link "94":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:94
+    - generic: next_event_id numeric;
+    - link "95":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:95
+    - generic: BEGIN
+    - link "96":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:96
+    - generic: sequence_name := pg_get_serial_sequence(
+    - link "97":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:97
+    - generic: "'quality_lotdispositionevent', 'id'"
+    - link "98":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:98
+    - generic: )::regclass;
+    - link "99":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:99
+    - generic: EXECUTE format('SELECT last_value, is_called FROM %s', sequence_name)
+    - link "100":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:100
+    - generic: INTO sequence_value, sequence_called;
+    - link "101":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:101
+    - generic: SELECT max(id) INTO largest_id FROM quality_lotdispositionevent;
+    - link "102":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:102
+    - link "103":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:103
+    - generic: next_sequence_value := sequence_value::numeric
+    - link "104":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:104
+    - generic: + CASE WHEN sequence_called THEN 1 ELSE 0 END;
+    - link "105":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:105
+    - generic: next_event_id := GREATEST(
+    - link "106":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:106
+    - generic: COALESCE(largest_id, 0)::numeric + 1, next_sequence_value
+    - link "107":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:107
+    - generic: );
+    - link "108":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:108
+    - generic: IF next_event_id > 9223372036854775807 THEN
+    - link "109":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:109
+    - generic: RAISE EXCEPTION 'Quality event ID space exhausted; migration aborted'
+    - link "110":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:110
+    - generic: USING ERRCODE = '22003';
+    - link "111":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:111
+    - generic: END IF;
+    - link "112":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:112
+    - link "113":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:113
+    - generic: IF next_event_id > next_sequence_value THEN
+    - link "114":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:114
+    - generic: "-- RESTART is transactional; setval would survive a rollback."
+    - link "115":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:115
+    - generic: "-- Preserve an ahead/unused sequence and never rewrite history."
+    - link "116":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:116
+    - generic: EXECUTE format(
+    - link "117":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:117
+    - generic: "'ALTER TABLE quality_lotdispositionevent '"
+    - link "118":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:118
+    - generic: "'ALTER COLUMN id RESTART WITH %s', next_event_id"
+    - link "119":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:119
+    - generic: );
+    - link "120":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:120
+    - generic: END IF;
+    - link "121":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:121
+    - generic: END;
+    - link "122":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:122
+    - generic: $$;
+    - link "123":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:123
+    - link "124":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:124
+    - generic: "2026-10-22 04:31:23.288 UTC [74] LOG: checkpoint starting: immediate force wait"
+    - link "125":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:125
+    - generic: "2026-10-22 04:31:23.292 UTC [74] LOG: checkpoint complete: wrote 3 buffers (0.0%), wrote 2 SLRU buffers; 0 WAL file(s) added, 0 removed, 0 recycled; write=0.001 s, sync=0.001 s, total=0.004 s; sync files=4, longest=0.001 s, average=0.001 s; distance=5524 kB, estimate=5822 kB; lsn=0/2B9EA38, redo lsn=0/2B9E9E0"
+    - link "126":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:126
+    - generic: "2026-10-22 04:31:24.380 UTC [122] ERROR: new row for relation \"access_control_warehouseroleassignment\" violates check constraint \"warehouse_role_assignment_role_valid\""
+    - link "127":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:127
+    - generic: "2026-10-22 04:31:24.380 UTC [122] DETAIL: Failing row contains (14, , 14, 53)."
+    - link "128":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:128
+    - generic: "2026-10-22 04:31:24.380 UTC [122] STATEMENT: INSERT INTO \"access_control_warehouseroleassignment\" (\"user_id\", \"warehouse_id\", \"role\") VALUES (14, 53, '') RETURNING \"access_control_warehouseroleassignment\".\"id\""
+    - link "129":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:129
+    - generic: "2026-10-22 04:31:24.389 UTC [122] ERROR: new row for relation \"access_control_warehouseroleassignment\" violates check constraint \"warehouse_role_assignment_role_valid\""
+    - link "130":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:130
+    - generic: "2026-10-22 04:31:24.389 UTC [122] DETAIL: Failing row contains (15, MANAGER, 15, 57)."
+    - link "131":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:131
+    - generic: "2026-10-22 04:31:24.389 UTC [122] STATEMENT: INSERT INTO \"access_control_warehouseroleassignment\" (\"user_id\", \"warehouse_id\", \"role\") VALUES (15, 57, 'MANAGER') RETURNING \"access_control_warehouseroleassignment\".\"id\""
+    - link "132":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:132
+    - generic: "2026-10-22 04:31:24.397 UTC [122] ERROR: new row for relation \"access_control_warehouseroleassignment\" violates check constraint \"warehouse_role_assignment_role_valid\""
+    - link "133":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:133
+    - generic: "2026-10-22 04:31:24.397 UTC [122] DETAIL: Failing row contains (16, warehouse, 16, 61)."
+    - link "134":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:134
+    - generic: "2026-10-22 04:31:24.397 UTC [122] STATEMENT: INSERT INTO \"access_control_warehouseroleassignment\" (\"user_id\", \"warehouse_id\", \"role\") VALUES (16, 61, 'warehouse') RETURNING \"access_control_warehouseroleassignment\".\"id\""
+    - link "135":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:135
+    - generic: "2026-10-22 04:31:24.406 UTC [122] ERROR: new row for relation \"access_control_warehouseroleassignment\" violates check constraint \"warehouse_role_assignment_role_valid\""
+    - link "136":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:136
+    - generic: "2026-10-22 04:31:24.406 UTC [122] DETAIL: Failing row contains (17, คลัง, 17, 65)."
+    - link "137":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:137
+    - generic: "2026-10-22 04:31:24.406 UTC [122] STATEMENT: INSERT INTO \"access_control_warehouseroleassignment\" (\"user_id\", \"warehouse_id\", \"role\") VALUES (17, 65, 'คลัง') RETURNING \"access_control_warehouseroleassignment\".\"id\""
+    - link "138":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:138
+    - generic: "2026-10-22 04:31:24.414 UTC [122] ERROR: null value in column \"user_id\" of relation \"access_control_warehouseroleassignment\" violates not-null constraint"
+    - link "139":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:139
+    - generic: "2026-10-22 04:31:24.414 UTC [122] DETAIL: Failing row contains (18, WAREHOUSE, null, 69)."
+    - link "140":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:140
+    - generic: "2026-10-22 04:31:24.414 UTC [122] STATEMENT: INSERT INTO \"access_control_warehouseroleassignment\" (\"user_id\", \"warehouse_id\", \"role\") VALUES (NULL, 69, 'WAREHOUSE') RETURNING \"access_control_warehouseroleassignment\".\"id\""
+    - link "141":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:141
+    - generic: "2026-10-22 04:31:24.422 UTC [122] ERROR: null value in column \"warehouse_id\" of relation \"access_control_warehouseroleassignment\" violates not-null constraint"
+    - link "142":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:142
+    - generic: "2026-10-22 04:31:24.422 UTC [122] DETAIL: Failing row contains (19, WAREHOUSE, 19, null)."
+    - link "143":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:143
+    - generic: "2026-10-22 04:31:24.422 UTC [122] STATEMENT: INSERT INTO \"access_control_warehouseroleassignment\" (\"user_id\", \"warehouse_id\", \"role\") VALUES (19, NULL, 'WAREHOUSE') RETURNING \"access_control_warehouseroleassignment\".\"id\""
+    - link "144":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:144
+    - generic: "2026-10-22 04:31:24.430 UTC [122] ERROR: null value in column \"role\" of relation \"access_control_warehouseroleassignment\" violates not-null constraint"
+    - link "145":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:145
+    - generic: "2026-10-22 04:31:24.430 UTC [122] DETAIL: Failing row contains (20, null, 20, 77)."
+    - link "146":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:146
+    - generic: "2026-10-22 04:31:24.430 UTC [122] STATEMENT: INSERT INTO \"access_control_warehouseroleassignment\" (\"user_id\", \"warehouse_id\", \"role\") VALUES (20, 77, NULL) RETURNING \"access_control_warehouseroleassignment\".\"id\""
+    - link "147":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:147
+    - generic: "2026-10-22 04:31:24.439 UTC [122] ERROR: duplicate key value violates unique constraint \"warehouse_role_assignment_unique\""
+    - link "148":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:148
+    - generic: "2026-10-22 04:31:24.439 UTC [122] DETAIL: Key (user_id, warehouse_id, role)=(21, 81, WAREHOUSE) already exists."
+    - link "149":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:149
+    - generic: "2026-10-22 04:31:24.439 UTC [122] STATEMENT: INSERT INTO \"access_control_warehouseroleassignment\" (\"user_id\", \"warehouse_id\", \"role\") VALUES (21, 81, 'WAREHOUSE') RETURNING \"access_control_warehouseroleassignment\".\"id\""
+    - link "150":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:150
+    - generic: "2026-10-22 04:31:24.792 UTC [122] ERROR: duplicate key value violates unique constraint \"catalog_unitofmeasure_code_key\""
+    - link "151":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:151
+    - generic: "2026-10-22 04:31:24.792 UTC [122] DETAIL: Key (code)=(EA) already exists."
+    - link "152":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:152
+    - generic: "2026-10-22 04:31:24.792 UTC [122] STATEMENT: INSERT INTO \"catalog_unitofmeasure\" (\"code\", \"display_name\") VALUES ('EA', 'Duplicate') RETURNING \"catalog_unitofmeasure\".\"id\""
+    - link "153":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:153
+    - generic: "2026-10-22 04:31:24.798 UTC [122] ERROR: duplicate key value violates unique constraint \"item_organization_code_unique\""
+    - link "154":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:154
+    - generic: "2026-10-22 04:31:24.798 UTC [122] DETAIL: Key (organization_id, code)=(124, LED-PANEL) already exists."
+    - link "155":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:155
+    - generic: "2026-10-22 04:31:24.798 UTC [122] STATEMENT: INSERT INTO \"catalog_item\" (\"organization_id\", \"code\", \"display_name\", \"item_type\", \"base_uom_id\") VALUES (124, 'LED-PANEL', 'Duplicate', 'FINISHED', 7) RETURNING \"catalog_item\".\"id\""
+    - link "156":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:156
+    - generic: "2026-10-22 04:31:24.803 UTC [122] ERROR: new row for relation \"catalog_unitofmeasure\" violates check constraint \"unit_of_measure_code_format\""
+    - link "157":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:157
+    - generic: "2026-10-22 04:31:24.803 UTC [122] DETAIL: Failing row contains (9, , Invalid)."
+    - link "158":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:158
+    - generic: "2026-10-22 04:31:24.803 UTC [122] STATEMENT: INSERT INTO \"catalog_unitofmeasure\" (\"code\", \"display_name\") VALUES ('', 'Invalid') RETURNING \"catalog_unitofmeasure\".\"id\""
+    - link "159":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:159
+    - generic: "2026-10-22 04:31:24.808 UTC [122] ERROR: new row for relation \"catalog_unitofmeasure\" violates check constraint \"unit_of_measure_code_format\""
+    - link "160":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:160
+    - generic: "2026-10-22 04:31:24.808 UTC [122] DETAIL: Failing row contains (11, lower, Invalid)."
+    - link "161":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:161
+    - generic: "2026-10-22 04:31:24.808 UTC [122] STATEMENT: INSERT INTO \"catalog_unitofmeasure\" (\"code\", \"display_name\") VALUES ('lower', 'Invalid') RETURNING \"catalog_unitofmeasure\".\"id\""
+    - link "162":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:162
+    - generic: "2026-10-22 04:31:24.813 UTC [122] ERROR: new row for relation \"catalog_unitofmeasure\" violates check constraint \"unit_of_measure_code_format\""
+    - link "163":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:163
+    - generic: "2026-10-22 04:31:24.813 UTC [122] DETAIL: Failing row contains (13, 1FIRST, Invalid)."
+    - link "164":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:164
+    - generic: "2026-10-22 04:31:24.813 UTC [122] STATEMENT: INSERT INTO \"catalog_unitofmeasure\" (\"code\", \"display_name\") VALUES ('1FIRST', 'Invalid') RETURNING \"catalog_unitofmeasure\".\"id\""
+    - link "165":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:165
+    - generic: "2026-10-22 04:31:24.818 UTC [122] ERROR: new row for relation \"catalog_unitofmeasure\" violates check constraint \"unit_of_measure_code_format\""
+    - link "166":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:166
+    - generic: "2026-10-22 04:31:24.818 UTC [122] DETAIL: Failing row contains (15, HAS SPACE, Invalid)."
+    - link "167":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:167
+    - generic: "2026-10-22 04:31:24.818 UTC [122] STATEMENT: INSERT INTO \"catalog_unitofmeasure\" (\"code\", \"display_name\") VALUES ('HAS SPACE', 'Invalid') RETURNING \"catalog_unitofmeasure\".\"id\""
+    - link "168":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:168
+    - generic: "2026-10-22 04:31:24.823 UTC [122] ERROR: new row for relation \"catalog_unitofmeasure\" violates check constraint \"unit_of_measure_code_format\""
+    - link "169":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:169
+    - generic: "2026-10-22 04:31:24.823 UTC [122] DETAIL: Failing row contains (17, HAS/SLASH, Invalid)."
+    - link "170":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:170
+    - generic: "2026-10-22 04:31:24.823 UTC [122] STATEMENT: INSERT INTO \"catalog_unitofmeasure\" (\"code\", \"display_name\") VALUES ('HAS/SLASH', 'Invalid') RETURNING \"catalog_unitofmeasure\".\"id\""
+    - link "171":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:171
+    - generic: "2026-10-22 04:31:24.828 UTC [122] ERROR: new row for relation \"catalog_unitofmeasure\" violates check constraint \"unit_of_measure_code_format\""
+    - link "172":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:172
+    - generic: "2026-10-22 04:31:24.828 UTC [122] DETAIL: Failing row contains (19, หน่วย, Invalid)."
+    - link "173":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:173
+    - generic: "2026-10-22 04:31:24.828 UTC [122] STATEMENT: INSERT INTO \"catalog_unitofmeasure\" (\"code\", \"display_name\") VALUES ('หน่วย', 'Invalid') RETURNING \"catalog_unitofmeasure\".\"id\""
+    - link "174":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:174
+    - generic: "2026-10-22 04:31:24.833 UTC [122] ERROR: value too long for type character varying(32)"
+    - link "175":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:175
+    - generic: "2026-10-22 04:31:24.833 UTC [122] STATEMENT: INSERT INTO \"catalog_unitofmeasure\" (\"code\", \"display_name\") VALUES ('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'Invalid') RETURNING \"catalog_unitofmeasure\".\"id\""
+    - link "176":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:176
+    - generic: "2026-10-22 04:31:24.838 UTC [122] ERROR: new row for relation \"catalog_item\" violates check constraint \"item_code_format\""
+    - link "177":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:177
+    - generic: "2026-10-22 04:31:24.838 UTC [122] DETAIL: Failing row contains (6, , แผงไฟ LED, FINISHED, 133, 21)."
+    - link "178":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:178
+    - generic: "2026-10-22 04:31:24.838 UTC [122] STATEMENT: INSERT INTO \"catalog_item\" (\"organization_id\", \"code\", \"display_name\", \"item_type\", \"base_uom_id\") VALUES (133, '', 'แผงไฟ LED', 'FINISHED', 21) RETURNING \"catalog_item\".\"id\""
+    - link "179":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:179
+    - generic: "2026-10-22 04:31:24.842 UTC [122] ERROR: new row for relation \"catalog_item\" violates check constraint \"item_code_format\""
+    - link "180":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:180
+    - generic: "2026-10-22 04:31:24.842 UTC [122] DETAIL: Failing row contains (7, lower, แผงไฟ LED, FINISHED, 134, 22)."
+    - link "181":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:181
+    - generic: "2026-10-22 04:31:24.842 UTC [122] STATEMENT: INSERT INTO \"catalog_item\" (\"organization_id\", \"code\", \"display_name\", \"item_type\", \"base_uom_id\") VALUES (134, 'lower', 'แผงไฟ LED', 'FINISHED', 22) RETURNING \"catalog_item\".\"id\""
+    - link "182":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:182
+    - generic: "2026-10-22 04:31:24.847 UTC [122] ERROR: new row for relation \"catalog_item\" violates check constraint \"item_code_format\""
+    - link "183":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:183
+    - generic: "2026-10-22 04:31:24.847 UTC [122] DETAIL: Failing row contains (8, 1FIRST, แผงไฟ LED, FINISHED, 135, 23)."
+    - link "184":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:184
+    - generic: "2026-10-22 04:31:24.847 UTC [122] STATEMENT: INSERT INTO \"catalog_item\" (\"organization_id\", \"code\", \"display_name\", \"item_type\", \"base_uom_id\") VALUES (135, '1FIRST', 'แผงไฟ LED', 'FINISHED', 23) RETURNING \"catalog_item\".\"id\""
+    - link "185":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:185
+    - generic: "2026-10-22 04:31:24.852 UTC [122] ERROR: new row for relation \"catalog_item\" violates check constraint \"item_code_format\""
+    - link "186":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:186
+    - generic: "2026-10-22 04:31:24.852 UTC [122] DETAIL: Failing row contains (9, HAS SPACE, แผงไฟ LED, FINISHED, 136, 24)."
+    - link "187":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:187
+    - generic: "2026-10-22 04:31:24.852 UTC [122] STATEMENT: INSERT INTO \"catalog_item\" (\"organization_id\", \"code\", \"display_name\", \"item_type\", \"base_uom_id\") VALUES (136, 'HAS SPACE', 'แผงไฟ LED', 'FINISHED', 24) RETURNING \"catalog_item\".\"id\""
+    - link "188":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:188
+    - generic: "2026-10-22 04:31:24.857 UTC [122] ERROR: new row for relation \"catalog_item\" violates check constraint \"item_code_format\""
+    - link "189":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:189
+    - generic: "2026-10-22 04:31:24.857 UTC [122] DETAIL: Failing row contains (10, HAS/SLASH, แผงไฟ LED, FINISHED, 137, 25)."
+    - link "190":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:190
+    - generic: "2026-10-22 04:31:24.857 UTC [122] STATEMENT: INSERT INTO \"catalog_item\" (\"organization_id\", \"code\", \"display_name\", \"item_type\", \"base_uom_id\") VALUES (137, 'HAS/SLASH', 'แผงไฟ LED', 'FINISHED', 25) RETURNING \"catalog_item\".\"id\""
+    - link "191":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:191
+    - generic: "2026-10-22 04:31:24.862 UTC [122] ERROR: new row for relation \"catalog_item\" violates check constraint \"item_code_format\""
+    - link "192":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:192
+    - generic: "2026-10-22 04:31:24.862 UTC [122] DETAIL: Failing row contains (11, หน่วย, แผงไฟ LED, FINISHED, 138, 26)."
+    - link "193":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:193
+    - generic: "2026-10-22 04:31:24.862 UTC [122] STATEMENT: INSERT INTO \"catalog_item\" (\"organization_id\", \"code\", \"display_name\", \"item_type\", \"base_uom_id\") VALUES (138, 'หน่วย', 'แผงไฟ LED', 'FINISHED', 26) RETURNING \"catalog_item\".\"id\""
+    - link "194":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:194
+    - generic: "2026-10-22 04:31:24.867 UTC [122] ERROR: value too long for type character varying(32)"
+    - link "195":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:195
+    - generic: "2026-10-22 04:31:24.867 UTC [122] STATEMENT: INSERT INTO \"catalog_item\" (\"organization_id\", \"code\", \"display_name\", \"item_type\", \"base_uom_id\") VALUES (139, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'แผงไฟ LED', 'FINISHED', 27) RETURNING \"catalog_item\".\"id\""
+    - link "196":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:196
+    - generic: "2026-10-22 04:31:24.916 UTC [122] ERROR: new row for relation \"catalog_item\" violates check constraint \"item_type_valid\""
+    - link "197":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:197
+    - generic: "2026-10-22 04:31:24.916 UTC [122] DETAIL: Failing row contains (19, LED-PANEL, แผงไฟ LED, , 151, 43)."
+    - link "198":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:198
+    - generic: "2026-10-22 04:31:24.916 UTC [122] STATEMENT: INSERT INTO \"catalog_item\" (\"organization_id\", \"code\", \"display_name\", \"item_type\", \"base_uom_id\") VALUES (151, 'LED-PANEL', 'แผงไฟ LED', '', 43) RETURNING \"catalog_item\".\"id\""
+    - link "199":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:199
+    - generic: "2026-10-22 04:31:24.921 UTC [122] ERROR: new row for relation \"catalog_item\" violates check constraint \"item_type_valid\""
+    - link "200":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:200
+    - generic: "2026-10-22 04:31:24.921 UTC [122] DETAIL: Failing row contains (20, LED-PANEL, แผงไฟ LED, SERVICE, 152, 44)."
+
+ERP SUITE
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests (1)":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+        - generic: "1"
+        - generic: (1)
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "ci: run Foundation on main and feature branch prefixes #73" [level=1]':
+    - generic: "ci: run Foundation on main and feature branch prefixes #73"
+  - button "Re-run all jobs":
+    - generic: Re-run all jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: succeeded Oct 22, 2026now in 36s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 1s":
+      - generic: Set up job
+      - generic: 1s
+    - generic "Initialize containers 15s":
+      - generic: Initialize containers
+      - generic: 15s
+    - generic "Check out repository 0s":
+      - generic: Check out repository
+      - generic: 0s
+    - generic "Install uv 1s":
+      - generic: Install uv
+      - generic: 1s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 1s":
+      - generic: Record runtime versions
+      - generic: 1s
+    - generic "Verify Django configuration 0s":
+      - generic: Verify Django configuration
+      - generic: 0s
+    - generic "Verify PostgreSQL connection 1s":
+      - generic: Verify PostgreSQL connection
+      - generic: 1s
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run ERP tests 6s":
+      - generic: Run ERP tests
+      - generic: 6s
+    - generic "Post Install uv 1s":
+      - generic: Post Install uv
+      - generic: 1s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 1s":
+      - generic: Stop containers
+      - generic: 1s
+    - link "251":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:251
+    - generic: "2026-10-22 04:31:25.011 UTC [122] DETAIL: Failing row contains (172, คลัง, Coded organization)."
+    - link "252":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:252
+    - generic: "2026-10-22 04:31:25.011 UTC [122] STATEMENT: INSERT INTO \"facilities_organization\" (\"code\", \"display_name\") VALUES ('คลัง', 'Coded organization') RETURNING \"facilities_organization\".\"id\""
+    - link "253":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:253
+    - generic: "2026-10-22 04:31:25.018 UTC [122] ERROR: value too long for type character varying(32)"
+    - link "254":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:254
+    - generic: "2026-10-22 04:31:25.018 UTC [122] STATEMENT: INSERT INTO \"facilities_organization\" (\"code\", \"display_name\") VALUES ('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'Coded organization') RETURNING \"facilities_organization\".\"id\""
+    - link "255":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:255
+    - generic: "2026-10-22 04:31:25.023 UTC [122] ERROR: new row for relation \"facilities_plant\" violates check constraint \"plant_code_format\""
+    - link "256":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:256
+    - generic: "2026-10-22 04:31:25.023 UTC [122] DETAIL: Failing row contains (187, , Coded plant, 173)."
+    - link "257":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:257
+    - generic: "2026-10-22 04:31:25.023 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (173, '', 'Coded plant') RETURNING \"facilities_plant\".\"id\""
+    - link "258":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:258
+    - generic: "2026-10-22 04:31:25.027 UTC [122] ERROR: new row for relation \"facilities_plant\" violates check constraint \"plant_code_format\""
+    - link "259":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:259
+    - generic: "2026-10-22 04:31:25.027 UTC [122] DETAIL: Failing row contains (188, lower, Coded plant, 174)."
+    - link "260":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:260
+    - generic: "2026-10-22 04:31:25.027 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (174, 'lower', 'Coded plant') RETURNING \"facilities_plant\".\"id\""
+    - link "261":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:261
+    - generic: "2026-10-22 04:31:25.031 UTC [122] ERROR: new row for relation \"facilities_plant\" violates check constraint \"plant_code_format\""
+    - link "262":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:262
+    - generic: "2026-10-22 04:31:25.031 UTC [122] DETAIL: Failing row contains (189, 1FIRST, Coded plant, 175)."
+    - link "263":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:263
+    - generic: "2026-10-22 04:31:25.031 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (175, '1FIRST', 'Coded plant') RETURNING \"facilities_plant\".\"id\""
+    - link "264":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:264
+    - generic: "2026-10-22 04:31:25.035 UTC [122] ERROR: new row for relation \"facilities_plant\" violates check constraint \"plant_code_format\""
+    - link "265":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:265
+    - generic: "2026-10-22 04:31:25.035 UTC [122] DETAIL: Failing row contains (190, HAS SPACE, Coded plant, 176)."
+    - link "266":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:266
+    - generic: "2026-10-22 04:31:25.035 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (176, 'HAS SPACE', 'Coded plant') RETURNING \"facilities_plant\".\"id\""
+    - link "267":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:267
+    - generic: "2026-10-22 04:31:25.040 UTC [122] ERROR: new row for relation \"facilities_plant\" violates check constraint \"plant_code_format\""
+    - link "268":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:268
+    - generic: "2026-10-22 04:31:25.040 UTC [122] DETAIL: Failing row contains (191, HAS/SLASH, Coded plant, 177)."
+    - link "269":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:269
+    - generic: "2026-10-22 04:31:25.040 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (177, 'HAS/SLASH', 'Coded plant') RETURNING \"facilities_plant\".\"id\""
+    - link "270":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:270
+    - generic: "2026-10-22 04:31:25.044 UTC [122] ERROR: new row for relation \"facilities_plant\" violates check constraint \"plant_code_format\""
+    - link "271":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:271
+    - generic: "2026-10-22 04:31:25.044 UTC [122] DETAIL: Failing row contains (192, คลัง, Coded plant, 178)."
+    - link "272":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:272
+    - generic: "2026-10-22 04:31:25.044 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (178, 'คลัง', 'Coded plant') RETURNING \"facilities_plant\".\"id\""
+    - link "273":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:273
+    - generic: "2026-10-22 04:31:25.049 UTC [122] ERROR: value too long for type character varying(32)"
+    - link "274":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:274
+    - generic: "2026-10-22 04:31:25.049 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (179, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'Coded plant') RETURNING \"facilities_plant\".\"id\""
+    - link "275":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:275
+    - generic: "2026-10-22 04:31:25.053 UTC [122] ERROR: new row for relation \"facilities_warehouse\" violates check constraint \"warehouse_code_format\""
+    - link "276":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:276
+    - generic: "2026-10-22 04:31:25.053 UTC [122] DETAIL: Failing row contains (245, , Coded warehouse, 193)."
+    - link "277":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:277
+    - generic: "2026-10-22 04:31:25.053 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (193, '', 'Coded warehouse') RETURNING \"facilities_warehouse\".\"id\""
+    - link "278":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:278
+    - generic: "2026-10-22 04:31:25.059 UTC [122] ERROR: new row for relation \"facilities_warehouse\" violates check constraint \"warehouse_code_format\""
+    - link "279":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:279
+    - generic: "2026-10-22 04:31:25.059 UTC [122] DETAIL: Failing row contains (246, lower, Coded warehouse, 194)."
+    - link "280":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:280
+    - generic: "2026-10-22 04:31:25.059 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (194, 'lower', 'Coded warehouse') RETURNING \"facilities_warehouse\".\"id\""
+    - link "281":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:281
+    - generic: "2026-10-22 04:31:25.063 UTC [122] ERROR: new row for relation \"facilities_warehouse\" violates check constraint \"warehouse_code_format\""
+    - link "282":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:282
+    - generic: "2026-10-22 04:31:25.063 UTC [122] DETAIL: Failing row contains (247, 1FIRST, Coded warehouse, 195)."
+    - link "283":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:283
+    - generic: "2026-10-22 04:31:25.063 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (195, '1FIRST', 'Coded warehouse') RETURNING \"facilities_warehouse\".\"id\""
+    - link "284":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:284
+    - generic: "2026-10-22 04:31:25.068 UTC [122] ERROR: new row for relation \"facilities_warehouse\" violates check constraint \"warehouse_code_format\""
+    - link "285":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:285
+    - generic: "2026-10-22 04:31:25.068 UTC [122] DETAIL: Failing row contains (248, HAS SPACE, Coded warehouse, 196)."
+    - link "286":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:286
+    - generic: "2026-10-22 04:31:25.068 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (196, 'HAS SPACE', 'Coded warehouse') RETURNING \"facilities_warehouse\".\"id\""
+    - link "287":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:287
+    - generic: "2026-10-22 04:31:25.072 UTC [122] ERROR: new row for relation \"facilities_warehouse\" violates check constraint \"warehouse_code_format\""
+    - link "288":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:288
+    - generic: "2026-10-22 04:31:25.072 UTC [122] DETAIL: Failing row contains (249, HAS/SLASH, Coded warehouse, 197)."
+    - link "289":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:289
+    - generic: "2026-10-22 04:31:25.072 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (197, 'HAS/SLASH', 'Coded warehouse') RETURNING \"facilities_warehouse\".\"id\""
+    - link "290":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:290
+    - generic: "2026-10-22 04:31:25.077 UTC [122] ERROR: new row for relation \"facilities_warehouse\" violates check constraint \"warehouse_code_format\""
+    - link "291":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:291
+    - generic: "2026-10-22 04:31:25.077 UTC [122] DETAIL: Failing row contains (250, คลัง, Coded warehouse, 198)."
+    - link "292":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:292
+    - generic: "2026-10-22 04:31:25.077 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (198, 'คลัง', 'Coded warehouse') RETURNING \"facilities_warehouse\".\"id\""
+    - link "293":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:293
+    - generic: "2026-10-22 04:31:25.082 UTC [122] ERROR: value too long for type character varying(32)"
+    - link "294":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:294
+    - generic: "2026-10-22 04:31:25.082 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (199, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'Coded warehouse') RETURNING \"facilities_warehouse\".\"id\""
+    - link "295":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:295
+    - generic: "2026-10-22 04:31:25.138 UTC [122] ERROR: null value in column \"code\" of relation \"facilities_organization\" violates not-null constraint"
+    - link "296":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:296
+    - generic: "2026-10-22 04:31:25.138 UTC [122] DETAIL: Failing row contains (201, null, Organization)."
+    - link "297":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:297
+    - generic: "2026-10-22 04:31:25.138 UTC [122] STATEMENT: INSERT INTO \"facilities_organization\" (\"code\", \"display_name\") VALUES (NULL, 'Organization') RETURNING \"facilities_organization\".\"id\""
+    - link "298":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:298
+    - generic: "2026-10-22 04:31:25.142 UTC [122] ERROR: null value in column \"display_name\" of relation \"facilities_organization\" violates not-null constraint"
+    - link "299":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:299
+    - generic: "2026-10-22 04:31:25.142 UTC [122] DETAIL: Failing row contains (202, ORG, null)."
+    - link "300":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:300
+    - generic: "2026-10-22 04:31:25.142 UTC [122] STATEMENT: INSERT INTO \"facilities_organization\" (\"code\", \"display_name\") VALUES ('ORG', NULL) RETURNING \"facilities_organization\".\"id\""
+    - link "301":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:301
+    - generic: "2026-10-22 04:31:25.146 UTC [122] ERROR: null value in column \"organization_id\" of relation \"facilities_plant\" violates not-null constraint"
+    - link "302":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:302
+    - generic: "2026-10-22 04:31:25.146 UTC [122] DETAIL: Failing row contains (210, PLANT, Plant, null)."
+    - link "303":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:303
+    - generic: "2026-10-22 04:31:25.146 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (NULL, 'PLANT', 'Plant') RETURNING \"facilities_plant\".\"id\""
+    - link "304":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:304
+    - generic: "2026-10-22 04:31:25.150 UTC [122] ERROR: null value in column \"code\" of relation \"facilities_plant\" violates not-null constraint"
+    - link "305":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:305
+    - generic: "2026-10-22 04:31:25.150 UTC [122] DETAIL: Failing row contains (211, null, Plant, 204)."
+    - link "306":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:306
+    - generic: "2026-10-22 04:31:25.150 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (204, NULL, 'Plant') RETURNING \"facilities_plant\".\"id\""
+    - link "307":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:307
+    - generic: "2026-10-22 04:31:25.155 UTC [122] ERROR: null value in column \"display_name\" of relation \"facilities_plant\" violates not-null constraint"
+    - link "308":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:308
+    - generic: "2026-10-22 04:31:25.155 UTC [122] DETAIL: Failing row contains (212, PLANT, null, 205)."
+    - link "309":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:309
+    - generic: "2026-10-22 04:31:25.155 UTC [122] STATEMENT: INSERT INTO \"facilities_plant\" (\"organization_id\", \"code\", \"display_name\") VALUES (205, 'PLANT', NULL) RETURNING \"facilities_plant\".\"id\""
+    - link "310":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:310
+    - generic: "2026-10-22 04:31:25.159 UTC [122] ERROR: null value in column \"plant_id\" of relation \"facilities_warehouse\" violates not-null constraint"
+    - link "311":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:311
+    - generic: "2026-10-22 04:31:25.159 UTC [122] DETAIL: Failing row contains (256, WAREHOUSE, Warehouse, null)."
+    - link "312":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:312
+    - generic: "2026-10-22 04:31:25.159 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (NULL, 'WAREHOUSE', 'Warehouse') RETURNING \"facilities_warehouse\".\"id\""
+    - link "313":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:313
+    - generic: "2026-10-22 04:31:25.164 UTC [122] ERROR: null value in column \"code\" of relation \"facilities_warehouse\" violates not-null constraint"
+    - link "314":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:314
+    - generic: "2026-10-22 04:31:25.164 UTC [122] DETAIL: Failing row contains (257, null, Warehouse, 214)."
+    - link "315":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:315
+    - generic: "2026-10-22 04:31:25.164 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (214, NULL, 'Warehouse') RETURNING \"facilities_warehouse\".\"id\""
+    - link "316":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:316
+    - generic: "2026-10-22 04:31:25.169 UTC [122] ERROR: null value in column \"display_name\" of relation \"facilities_warehouse\" violates not-null constraint"
+    - link "317":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:317
+    - generic: "2026-10-22 04:31:25.169 UTC [122] DETAIL: Failing row contains (258, WAREHOUSE, null, 215)."
+    - link "318":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:318
+    - generic: "2026-10-22 04:31:25.169 UTC [122] STATEMENT: INSERT INTO \"facilities_warehouse\" (\"plant_id\", \"code\", \"display_name\") VALUES (215, 'WAREHOUSE', NULL) RETURNING \"facilities_warehouse\".\"id\""
+    - link "319":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:319
+    - generic: "2026-10-22 04:31:25.197 UTC [122] ERROR: new row for relation \"inventory_lot\" violates check constraint \"lot_code_format\""
+    - link "320":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:320
+    - generic: "2026-10-22 04:31:25.197 UTC [122] DETAIL: Failing row contains (5, , 33)."
+    - link "321":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:321
+    - generic: "2026-10-22 04:31:25.197 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (33, '') RETURNING \"inventory_lot\".\"id\""
+    - link "322":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:322
+    - generic: "2026-10-22 04:31:25.203 UTC [122] ERROR: new row for relation \"inventory_lot\" violates check constraint \"lot_code_format\""
+    - link "323":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:323
+    - generic: "2026-10-22 04:31:25.203 UTC [122] DETAIL: Failing row contains (6, lower, 34)."
+    - link "324":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:324
+    - generic: "2026-10-22 04:31:25.203 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (34, 'lower') RETURNING \"inventory_lot\".\"id\""
+    - link "325":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:325
+    - generic: "2026-10-22 04:31:25.208 UTC [122] ERROR: new row for relation \"inventory_lot\" violates check constraint \"lot_code_format\""
+    - link "326":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:326
+    - generic: "2026-10-22 04:31:25.208 UTC [122] DETAIL: Failing row contains (7, 1FIRST, 35)."
+    - link "327":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:327
+    - generic: "2026-10-22 04:31:25.208 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (35, '1FIRST') RETURNING \"inventory_lot\".\"id\""
+    - link "328":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:328
+    - generic: "2026-10-22 04:31:25.214 UTC [122] ERROR: new row for relation \"inventory_lot\" violates check constraint \"lot_code_format\""
+    - link "329":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:329
+    - generic: "2026-10-22 04:31:25.214 UTC [122] DETAIL: Failing row contains (8, HAS SPACE, 36)."
+    - link "330":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:330
+    - generic: "2026-10-22 04:31:25.214 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (36, 'HAS SPACE') RETURNING \"inventory_lot\".\"id\""
+    - link "331":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:331
+    - generic: "2026-10-22 04:31:25.219 UTC [122] ERROR: new row for relation \"inventory_lot\" violates check constraint \"lot_code_format\""
+    - link "332":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:332
+    - generic: "2026-10-22 04:31:25.219 UTC [122] DETAIL: Failing row contains (9, HAS/SLASH, 37)."
+    - link "333":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:333
+    - generic: "2026-10-22 04:31:25.219 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (37, 'HAS/SLASH') RETURNING \"inventory_lot\".\"id\""
+    - link "334":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:334
+    - generic: "2026-10-22 04:31:25.224 UTC [122] ERROR: new row for relation \"inventory_lot\" violates check constraint \"lot_code_format\""
+    - link "335":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:335
+    - generic: "2026-10-22 04:31:25.224 UTC [122] DETAIL: Failing row contains (10, ล็อต, 38)."
+    - link "336":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:336
+    - generic: "2026-10-22 04:31:25.224 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (38, 'ล็อต') RETURNING \"inventory_lot\".\"id\""
+    - link "337":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:337
+    - generic: "2026-10-22 04:31:25.230 UTC [122] ERROR: value too long for type character varying(32)"
+    - link "338":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:338
+    - generic: "2026-10-22 04:31:25.230 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (39, 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA') RETURNING \"inventory_lot\".\"id\""
+    - link "339":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:339
+    - generic: "2026-10-22 04:31:25.236 UTC [122] ERROR: duplicate key value violates unique constraint \"lot_item_code_unique\""
+    - link "340":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:340
+    - generic: "2026-10-22 04:31:25.236 UTC [122] DETAIL: Key (item_id, code)=(40, LOT-2026_001) already exists."
+    - link "341":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:341
+    - generic: "2026-10-22 04:31:25.236 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (40, 'LOT-2026_001') RETURNING \"inventory_lot\".\"id\""
+    - link "342":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:342
+    - generic: "2026-10-22 04:31:25.251 UTC [122] ERROR: null value in column \"item_id\" of relation \"inventory_lot\" violates not-null constraint"
+    - link "343":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:343
+    - generic: "2026-10-22 04:31:25.251 UTC [122] DETAIL: Failing row contains (16, LOT-001, null)."
+    - link "344":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:344
+    - generic: "2026-10-22 04:31:25.251 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (NULL, 'LOT-001') RETURNING \"inventory_lot\".\"id\""
+    - link "345":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:345
+    - generic: "2026-10-22 04:31:25.257 UTC [122] ERROR: null value in column \"code\" of relation \"inventory_lot\" violates not-null constraint"
+    - link "346":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:346
+    - generic: "2026-10-22 04:31:25.257 UTC [122] DETAIL: Failing row contains (17, null, 45)."
+    - link "347":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:347
+    - generic: "2026-10-22 04:31:25.257 UTC [122] STATEMENT: INSERT INTO \"inventory_lot\" (\"item_id\", \"code\") VALUES (45, NULL) RETURNING \"inventory_lot\".\"id\""
+    - link "348":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:348
+    - generic: "2026-10-22 04:31:25.267 UTC [122] ERROR: cannot insert a non-DEFAULT value into column \"id\""
+    - link "349":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:349
+    - generic: "2026-10-22 04:31:25.267 UTC [122] DETAIL: Column \"id\" is an identity column defined as GENERATED ALWAYS."
+    - link "350":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:32:350
+    - generic: "2026-10-22 04:31:25.267 UTC [122] HINT: Use OVERRIDING SYSTEM VALUE to override."
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
+
+RUN SUMMARY
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests (1)":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+        - generic: "1"
+        - generic: (1)
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "ci: run Foundation on main and feature branch prefixes #73" [level=1]':
+    - generic: "ci: run Foundation on main and feature branch prefixes #73"
+  - button "Re-run all jobs":
+    - generic: Re-run all jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/lockfile
+          - generic: Lockfile
+  - region "Workflow run summary":
+    - generic: Triggered via pull request October 22, 2026 11:30now
+    - link "@porntaned porntaned":
+      - /url: /porntaned
+      - img "@porntaned"
+      - text: porntaned
+    - generic: opened
+    - link "#21":
+      - /url: /porntaned/ERP-for-Factory/pull/21
+    - link "codex/ci/general-triggers":
+      - /url: /porntaned/ERP-for-Factory/tree/refs/heads/codex/ci/general-triggers
+    - generic: Status
+    - text: Success
+    - generic: Total duration
+    - link "39s":
+      - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/usage
+    - generic: Artifacts
+    - text: –
+  - region "Workflow run graph":
+    - heading "foundation.yml" [level=2]:
+      - link "foundation.yml":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/workflow
+    - generic: "on: pull_request"
+    - 'link "completed successfully: postgresql-tdd 36s"':
+      - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305
+      - img "completed successfully:"
+      - generic: postgresql-tdd
+      - generic: 36s
+    - paragraph: Oh hello! Nice to see you.
+    - paragraph:
+      - text: Made with ❤️ by
+      - link:
+        - /url: https://actions.github.io/humans.txt
+        - text: humans.txt
+    - button "Fit to window" [disabled]:
+    - button "Zoom out" [disabled]:
+    - button "Zoom in" [disabled]:
+  - region "Annotations"
+
+COMPLETED ERP SUITE
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests (1)":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+        - generic: "1"
+        - generic: (1)
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "ci: run Foundation on main and feature branch prefixes #73" [level=1]':
+    - generic: "ci: run Foundation on main and feature branch prefixes #73"
+  - button "Re-run all jobs":
+    - generic: Re-run all jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39722800434/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: succeeded Oct 22, 2026now in 36s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 1s":
+      - generic: Set up job
+      - generic: 1s
+    - generic "Initialize containers 15s":
+      - generic: Initialize containers
+      - generic: 15s
+    - generic "Check out repository 0s":
+      - generic: Check out repository
+      - generic: 0s
+    - generic "Install uv 1s":
+      - generic: Install uv
+      - generic: 1s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 1s":
+      - generic: Record runtime versions
+      - generic: 1s
+    - generic "Verify Django configuration 0s":
+      - generic: Verify Django configuration
+      - generic: 0s
+    - generic "Verify PostgreSQL connection 1s":
+      - generic: Verify PostgreSQL connection
+      - generic: 1s
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run ERP tests 6s" [active]:
+      - generic: Run ERP tests
+      - generic: 6s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:1
+    - generic "Run uv run pytest -q --tb=short":
+      - generic: Run uv run pytest -q --tb=short
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:15
+    - generic: ........................................................................ [ 25%]
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:16
+    - generic: ........................................................................ [ 51%]
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:17
+    - generic: ........................................................................ [ 76%]
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:18
+    - generic: ................................................................. [100%]
+    - link "18":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434/job/119639878305#step:16:19
+    - generic: 281 passed in 5.52s
+    - generic "Post Install uv 1s":
+      - generic: Post Install uv
+      - generic: 1s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 1s":
+      - generic: Stop containers
+      - generic: 1s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s

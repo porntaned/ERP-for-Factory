@@ -3,14 +3,9 @@ name: Foundation
 on:
   push:
     branches:
-      - feat/warehouse-foundation
-      - feat/item-uom-foundation
-      - feat/lot-identity
-      - codex/role-warehouse-permissions
-      - codex/audit-release-hold
-      - codex/fix-policy-deactivation
-      - codex/fix-unsaved-user-policy
-      - codex/fix-quality-event-identity
+      - main
+      - 'codex/**'
+      - 'feat/**'
   pull_request:
     branches:
       - main
