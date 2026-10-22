@@ -95,7 +95,7 @@ jobs:
         run: uv run pytest -q tests/quality/test_event_identity.py tests/quality/test_event_identity_migration.py --tb=short
 
       - name: Run stock ledger integrity tests
-        run: uv run pytest -q tests/inventory/test_stock_ledger.py tests/inventory/test_stock_ledger_concurrency.py --tb=short
+        run: uv run pytest -q tests/inventory/test_stock_ledger.py tests/inventory/test_stock_ledger_concurrency.py tests/inventory/test_stock_parent_lifetime.py --tb=short
 
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
