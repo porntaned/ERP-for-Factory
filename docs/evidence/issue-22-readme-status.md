@@ -56,6 +56,9 @@ No failing business RED was invented for a documentation correction.
 
 ## Limits and next gate
 
+This and the next section record the pre-merge handoff. The owner-authorized merge
+below supersedes their pending PR/Issue status.
+
 No repair cycle needed. Reviewer verdict applies to the implementation SHA, with the
 rendered proof also inspected; later evidence/bookkeeping do not change the paragraph.
 Final documentation gets diff/link checks. Stop at owner-review PR, keeping Issue #22
@@ -76,3 +79,19 @@ documents, 117 targets passed**; diff checking passed and the README/runtime dif
 from reviewed implementation remained empty.
 Issue #22 and overall PA.7 remain pending owner review/merge. No merge, deployment or
 next milestone work is performed.
+
+## Owner-authorized merge
+
+After owner approval, [PR #23](https://github.com/porntaned/ERP-for-Factory/pull/23)
+merged through the prepared browser on 2026-10-22 at
+[`e6cd22c9bddd533b40d293dbad509076ae41172c`](https://github.com/porntaned/ERP-for-Factory/commit/e6cd22c9bddd533b40d293dbad509076ae41172c).
+[Issue #22](https://github.com/porntaned/ERP-for-Factory/issues/22) is Closed/completed.
+[Visible merge proof](issue-22-merged.jpg).
+
+Actual main push [Foundation 39754340827](https://github.com/porntaned/ERP-for-Factory/actions/runs/39754340827),
+job 119742446278, succeeded with **281 passed in 5.52s** at that exact merge SHA.
+It was re-inspected during separately authorized Issue #24; event/ref/runtime/result
+are in [main proof](issue-24-main-ci-browser.txt). `git fetch origin` confirms main;
+its tree equals PR head `d215f403932b6d5d9db2bc2a105508f039f1a7d0`.
+This is manager self-verification, not a new independent database run. PA.7 is reconciled
+in Issue #24 without repeating Finding 5. No deployment occurred.
