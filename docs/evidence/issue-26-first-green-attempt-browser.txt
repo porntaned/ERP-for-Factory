@@ -1,0 +1,147 @@
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "currently running:"
+  - 'heading "feat: enforce immutable nonnegative stock ledger on PostgreSQL #90" [level=1]':
+    - generic: "feat: enforce immutable nonnegative stock ledger on PostgreSQL #90"
+  - button "Cancel workflow"
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39797622814
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39797622814/job/119888964271
+          - img "Currently running"
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39797622814/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39797622814/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39797622814/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: Started 2026-10-22 21:39:51 6m 14s ago
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job":
+      - generic: Set up job
+    - generic "Initialize containers":
+      - generic: Initialize containers
+    - generic "Check out repository":
+      - generic: Check out repository
+    - generic "Install uv":
+      - generic: Install uv
+    - generic "Install Python":
+      - generic: Install Python
+    - generic "Synchronize locked dependencies":
+      - generic: Synchronize locked dependencies
+    - generic "Record runtime versions":
+      - generic: Record runtime versions
+    - generic "Verify Django configuration":
+      - generic: Verify Django configuration
+    - generic "Verify PostgreSQL connection":
+      - generic: Verify PostgreSQL connection
+    - generic "Verify model and migration state":
+      - generic: Verify model and migration state
+    - generic "Apply migrations to fresh PostgreSQL":
+      - generic: Apply migrations to fresh PostgreSQL
+    - generic "Run Ruff":
+      - generic: Run Ruff
+    - generic "Run persisted-deactivation regressions":
+      - generic: Run persisted-deactivation regressions
+    - generic "Run unsaved-user policy regressions":
+      - generic: Run unsaved-user policy regressions
+    - generic "Run authoritative event-identity regressions":
+      - generic: Run authoritative event-identity regressions
+    - generic "Run stock ledger integrity tests":
+      - generic: Run stock ledger integrity tests
+    - generic "Run ERP tests":
+      - generic: Run ERP tests
+    - generic "Post Install uv":
+      - generic: Post Install uv
+    - generic "Post Check out repository":
+      - generic: Post Check out repository
+    - generic "Stop containers":
+      - generic: Stop containers
+    - generic "Complete job":
+      - generic: Complete job

@@ -1,0 +1,163 @@
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+  - button "Create new...":
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+    - button "More items":
+      - text: More
+      - generic: items
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "fix: require existing locked stock parents before ledger insert #91" [level=1]':
+    - generic: "fix: require existing locked stock parents before ledger insert #91"
+  - generic "Show options":
+    - img "Show options"
+  - 'button "completed successfully: postgresql-tdd"':
+    - img "completed successfully:"
+    - heading "postgresql-tdd" [level=2]:
+      - generic: postgresql-tdd
+  - region "Check run summary":
+    - heading "postgresql-tdd" [level=4]:
+      - generic: postgresql-tdd
+    - generic: succeeded Oct 22, 202611 minutes ago in 48s
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 2s":
+      - generic: Set up job
+      - generic: 2s
+    - generic "Initialize containers 15s":
+      - generic: Initialize containers
+      - generic: 15s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 3s":
+      - generic: Install uv
+      - generic: 3s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 0s":
+      - generic: Record runtime versions
+      - generic: 0s
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 0s":
+      - generic: Verify PostgreSQL connection
+      - generic: 0s
+    - generic "Verify model and migration state 1s":
+      - generic: Verify model and migration state
+      - generic: 1s
+    - generic "Apply migrations to fresh PostgreSQL 0s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 0s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run stock ledger integrity tests 5s":
+      - generic: Run stock ledger integrity tests
+      - generic: 5s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:16:1
+    - generic "Run uv run pytest -q tests/inventory/test_stock_ledger.py tests/inventory/test_stock_ledger_concurrency.py --tb=short":
+      - generic: Run uv run pytest -q tests/inventory/test_stock_ledger.py tests/inventory/test_stock_ledger_concurrency.py --tb=short
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:16:15
+    - generic: ........................................................................ [ 93%]
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:16:16
+    - generic: ..... [100%]
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:16:17
+    - generic: 77 passed in 4.56s
+    - generic "Run ERP tests 8s" [active]:
+      - generic: Run ERP tests
+      - generic: 8s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:17:1
+    - generic "Run uv run pytest -q --tb=short":
+      - generic: Run uv run pytest -q --tb=short
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:17:15
+    - generic: ........................................................................ [ 20%]
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:17:16
+    - generic: ........................................................................ [ 40%]
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:17:17
+    - generic: ........................................................................ [ 60%]
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:17:18
+    - generic: ........................................................................ [ 80%]
+    - link "18":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:17:19
+    - generic: ...................................................................... [100%]
+    - link "19":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39798470416/job/119892066113#step:17:20
+    - generic: 358 passed in 8.37s
+    - generic "Post Install uv 1s":
+      - generic: Post Install uv
+      - generic: 1s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 0s":
+      - generic: Stop containers
+      - generic: 0s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
