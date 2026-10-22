@@ -104,3 +104,16 @@ real-data migration, deployment or load testing is claimed.
 
 Finding 4/general CI triggers and Finding 5/README remain pending. CI only adds this
 exact branch and the targeted step. Stop at owner-review PR; no merge or deployment.
+
+## Owner-review delivery
+
+- [PR #19](https://github.com/porntaned/ERP-for-Factory/pull/19), opened through the
+  prepared browser on 2026-10-22 — [visible proof](issue-18-pr.jpg).
+- Documentation head `6bcdabfc1489d281ad3ee2d78c3ad8cead0eb600` passed
+  [Foundation #66](https://github.com/porntaned/ERP-for-Factory/actions/runs/39719868596);
+  manager inspected its actual browser run summary. Detailed counts above remain tied
+  to implementation `1c199817`, not a separate independent execution claim.
+- Final relative links/diff were checked. Later delivery changes only add PR linkage
+  and screenshot; production/tests/workflow are unchanged from reviewed GREEN.
+- Issue #18, PA.5 and owner acceptance remain pending owner merge. No merge, deployment
+  or Finding 4/5 work performed.

@@ -50,3 +50,16 @@ local lint/diff checks are supplementary. GitHub work uses the owner's prepared 
   [final Scrutinize](../reviews/issue-18-event-identity-independent-review.md): **ship**.
   This is independent evidence inspection, not separate runtime execution.
 - No repair cycle needed. No merge/deployment or Finding 4/5 work. Next gate: owner-review PR.
+
+## Delivery and stop
+
+[PR #19](https://github.com/porntaned/ERP-for-Factory/pull/19) opened through the prepared
+browser on 2026-10-22 from `codex/fix-quality-event-identity` to `main` —
+[visible proof](../evidence/issue-18-pr.jpg). Documentation head
+`6bcdabfc1489d281ad3ee2d78c3ad8cead0eb600` passed
+[Foundation #66](https://github.com/porntaned/ERP-for-Factory/actions/runs/39719868596).
+The final delivery bookkeeping only records this link/screenshot; production/tests/workflow
+remain identical to reviewed GREEN `1c199817`.
+PA.5 and owner acceptance remain unchecked. Issue #18 stays open until owner acceptance
+and merge. Work stops at this PR; the next responsible role is the owner. No deployment
+or subsequent audit finding work performed.
