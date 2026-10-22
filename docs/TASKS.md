@@ -18,7 +18,7 @@ Finding 4 เสร็จแล้ว: เจ้าของอนุญาต�
 
 Finding 5 เสร็จแล้ว: เจ้าของอนุญาตให้ Merge [PR #23](https://github.com/porntaned/ERP-for-Factory/pull/23) เข้า `main` ที่ `e6cd22c9bddd533b40d293dbad509076ae41172c`; [Issue #22](https://github.com/porntaned/ERP-for-Factory/issues/22) ปิดเป็น completed — [หลักฐาน Merge](evidence/issue-22-readme-status.md#owner-authorized-merge), [main CI 281 passed](https://github.com/porntaned/ERP-for-Factory/actions/runs/39754340827) ไม่มีการ Deploy
 
-รอบนี้ทำเฉพาะรายการหลักข้อ 2 ใน [Issue #24](https://github.com/porntaned/ERP-for-Factory/issues/24): ตรวจหลักฐาน M3 ก่อน Inventory — [Assignment](assignments/issue-24-m3-readiness.md), [Matrix/ข้อจำกัด](evidence/issue-24-m3-readiness.md) รอ Independent review และ owner-review PR; M3 ทั้งหมดยังรอเจ้าของตรวจรับ ไม่เริ่ม M4 และไม่มีการ Merge/Deploy ในงานนี้
+รอบนี้ทำเฉพาะรายการหลักข้อ 2 ใน [Issue #24](https://github.com/porntaned/ERP-for-Factory/issues/24): ตรวจหลักฐาน M3 ก่อน Inventory — [Matrix/ข้อจำกัด](evidence/issue-24-m3-readiness.md), [Independent review](reviews/issue-24-m3-readiness-independent-review.md) `ship` ที่ `f7ef284`; รอ owner-review PR และเจ้าของตรวจรับ M3 ไม่เริ่ม M4 และไม่มีการ Merge/Deploy ในงานนี้
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 

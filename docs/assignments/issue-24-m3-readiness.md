@@ -25,3 +25,15 @@
   New confirmed code defects are blockers for separately scoped work, not silent repairs.
 - Repair limit: two cycles for the same review finding; third recurrence stops for owner review.
 - Stop: owner-review PR. Owner retains M3 readiness acceptance and permission for any later M4 issue.
+
+## Implementation/review handoff
+
+Core matrix and GitHub/Git/current-main evidence: `ee4b4c891ee6bb9d05d9bbd9beccdb14c60977c5`.
+Final presentation correction and refreshed merge screenshot:
+`f7ef2843c0fa0256e9db933c8a73f4f114663da2`. Runtime files are unchanged from base.
+[Readiness matrix/commands/results](../evidence/issue-24-m3-readiness.md).
+Own check passed 165 local Markdown targets and ASCII anchors; independent read-only
+reviewer `/root/m3_readiness_review` checked source/contracts/captured evidence and
+returned [ship](../reviews/issue-24-m3-readiness-independent-review.md) at final SHA.
+One self-render presentation correction; no application repair. Next: owner-review PR,
+final bookkeeping/link/latest-head checks, then stop. Overall M3 remains pending owner.

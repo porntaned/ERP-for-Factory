@@ -154,6 +154,14 @@ connection/SHOW server_version, `makemigrations --check --dry-run`, `migrate --n
 Local review used `git fetch origin`, merge history/ancestor commands in the Git proof,
 `rg`/source reads and diff/link checking. No SQLite, mocks, new tests or new RED claim.
 
+Manager's one-off Python standard-library local check, run through PowerShell here-string
+piped to `.venv/Scripts/python.exe -`, resolved local Markdown paths within the repository
+and ASCII heading anchors: **5 documents, 165 targets passed** before core commit.
+`git diff --check` passed. GitHub rendered both evidence tables; a self-render check
+found glob stars interpreted as Markdown emphasis, corrected to individual code spans.
+The merge screenshot was refreshed to remove transient pre-refresh UI. This was a
+single documentation presentation repair, not an application/contract repair.
+
 ## Readiness assessment and next boundary
 
 Within the implemented M3 contracts and inspected paths, no unresolved blocker from
@@ -185,5 +193,9 @@ No real stock adjustment or privileged integration is authorized by a readiness 
 M3.4 can be evidenced from the matrix; overall M3 remains pending owner acceptance of
 the readiness PR. Do not start M4 on the basis of this report. This documentation-only
 review changes no application/test/schema/workflow/dependency. No merge or deployment.
-Final independent Scrutinize, exact reviewed documentation SHA and owner-review PR
-are recorded in the handoff before delivery.
+Independent reviewer `/root/m3_readiness_review` inspected source/contracts/captured
+proof and returned [ship](../reviews/issue-24-m3-readiness-independent-review.md) at
+`f7ef2843c0fa0256e9db933c8a73f4f114663da2`, following initial review at
+`ee4b4c891ee6bb9d05d9bbd9beccdb14c60977c5`. The reviewer checked 165 local file targets
+and diff/runtime scope; anchors are manager checks. No separate reviewer live retrieval
+or PostgreSQL execution is claimed. Owner-review PR is the next gate.
