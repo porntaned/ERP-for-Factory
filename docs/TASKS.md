@@ -14,7 +14,9 @@ Finding 2 เสร็จแล้ว: เจ้าของอนุญาต�
 
 Finding 3 เสร็จแล้ว: เจ้าของตรวจและอนุญาตให้ Merge [PR #19](https://github.com/porntaned/ERP-for-Factory/pull/19) เข้า `main` ที่ `95d612bc41b4bda184598ba30f7072c4896f976d`; [Issue #18](https://github.com/porntaned/ERP-for-Factory/issues/18) ปิดเป็น completed — [หลักฐาน Merge](evidence/issue-18-event-identity.md#owner-authorized-merge), [Independent review](reviews/issue-18-event-identity-independent-review.md) ไม่มีการ Deploy
 
-Finding 4 ใน [Issue #20](https://github.com/porntaned/ERP-for-Factory/issues/20): actual nested codex/feat push และ pull_request ผ่าน PostgreSQL 281 tests — [หลักฐาน](evidence/issue-20-ci-triggers.md), [Independent review](reviews/issue-20-ci-triggers-independent-review.md) `ship`, [PR #21 รอเจ้าของตรวจ](https://github.com/porntaned/ERP-for-Factory/pull/21) ยังรอตรวจ actual main push หลังเจ้าของ Merge Finding 5/README ยังไม่เริ่ม ไม่มีการ Merge หรือ Deploy ในงานนี้
+Finding 4 เสร็จแล้ว: เจ้าของอนุญาตให้ Merge [PR #21](https://github.com/porntaned/ERP-for-Factory/pull/21) เข้า `main` ที่ `a294080133cc31ee6ce0b0e1fc808280d669f203`; [Issue #20](https://github.com/porntaned/ERP-for-Factory/issues/20) ปิดเป็น completed และ [actual main push CI](https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324) ผ่าน PostgreSQL 18.6 / 281 tests — [หลักฐาน](evidence/issue-20-ci-triggers.md#owner-authorized-merge-and-main-push) ไม่มีการ Deploy
+
+รอบนี้ทำเฉพาะ Finding 5/README และบันทึกสถานะ Finding 4 ใน [Issue #22](https://github.com/porntaned/ERP-for-Factory/issues/22) — [Assignment](assignments/issue-22-readme-status.md) รอการตรวจเอกสาร, Independent review และ owner-review PR; ไม่เริ่ม M3 acceptance หรือ Inventory และไม่มีการ Merge/Deploy ในงานนี้
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -112,12 +114,12 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
   - [x] Independent Scrutinize — [Review](reviews/issue-18-event-identity-independent-review.md), verdict `ship` ที่ `1c19981778b2f1cd45279de1b30945523d5827e0`
   - [x] เปิด PR ให้เจ้าของตรวจ — [PR #19](https://github.com/porntaned/ERP-for-Factory/pull/19), [ภาพหลักฐาน](evidence/issue-18-pr.jpg)
   - [x] เจ้าของตรวจรับและ Merge Finding 3 — [Commit `95d612b`](https://github.com/porntaned/ERP-for-Factory/commit/95d612bc41b4bda184598ba30f7072c4896f976d), [Issue #18 ปิด](https://github.com/porntaned/ERP-for-Factory/issues/18)
-- [ ] PA.6 Finding 4: CI trigger ทั่วไป — [Issue #20](https://github.com/porntaned/ERP-for-Factory/issues/20), [Assignment](assignments/issue-20-ci-triggers.md)
+- [x] PA.6 Finding 4: CI trigger ทั่วไป — [Issue #20 ปิด](https://github.com/porntaned/ERP-for-Factory/issues/20), [หลักฐาน Merge/main push](evidence/issue-20-ci-triggers.md#owner-authorized-merge-and-main-push)
   - [x] เปลี่ยน push filter และพิสูจน์ nested codex/feat events — [หลักฐาน](evidence/issue-20-ci-triggers.md)
   - [x] Independent Scrutinize ก่อน PR — [Review](reviews/issue-20-ci-triggers-independent-review.md), `ship` ที่ `56a0d80f05250751b3e5025b1c28ec5f6137d60c`
   - [x] เปิด PR และตรวจ actual pull_request event — [PR #21](https://github.com/porntaned/ERP-for-Factory/pull/21), [หลักฐาน](evidence/issue-20-ci-triggers.md#owner-review-pr-and-actual-pr-event)
-  - [ ] เจ้าของตรวจรับและ Merge; ตรวจ actual main push หลัง Merge
-- [ ] PA.7 Finding 5: README status — ยังไม่เริ่ม
+  - [x] เจ้าของตรวจรับและ Merge; ตรวจ actual main push หลัง Merge — [PR #21](https://github.com/porntaned/ERP-for-Factory/pull/21), [main CI 281 passed](https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324)
+- [ ] PA.7 Finding 5: README status — [Issue #22](https://github.com/porntaned/ERP-for-Factory/issues/22), [Assignment](assignments/issue-22-readme-status.md); รอตรวจและเปิด PR
 
 ## M4 — Inventory MVP
 
