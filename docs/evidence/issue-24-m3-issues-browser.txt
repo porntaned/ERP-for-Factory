@@ -1,0 +1,1159 @@
+SOURCE https://github.com/porntaned/ERP-for-Factory/issues/5
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have no unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - region "Header":
+    - 'heading "Issue 2 — Item and unit of measure foundation #5 Edit issue title" [level=1]':
+      - text: Issue 2 — Item and unit of measure foundation
+      - generic: "#5"
+      - button "Edit issue title":
+    - button "New issue":
+      - generic: New issue
+    - button "Copy link":
+  - img "Issue"
+  - text: Closed
+  - 'link "Merged #6"':
+    - /url: https://github.com/porntaned/ERP-for-Factory/pull/6
+    - img "Merged"
+    - generic: "#6"
+  - heading "Description" [level=2]
+  - link "@porntaned's profile":
+    - /url: https://github.com/porntaned
+    - img "@porntaned"
+  - link "porntaned":
+    - /url: https://github.com/porntaned
+  - text: opened
+  - link "on Oct 20, 2026on Oct 20, 2026":
+    - /url: https://github.com/porntaned/ERP-for-Factory/issues/5#issue-5937939931
+  - button "Issue body actions":
+  - heading "Goal" [level=2]
+  - paragraph: "Create the smallest catalog foundation needed before lot identity and inventory: organization-scoped Item master data and a reusable Unit of Measure reference."
+  - heading "Scope" [level=2]
+  - list:
+    - text: Add a Django
+    - code: catalog
+    - text: app.
+    - text: Add
+    - code: UnitOfMeasure
+    - text: with a unique uppercase code and Unicode display name.
+    - text: Add
+    - code: Item
+    - text: owned by an existing
+    - code: facilities.Organization
+    - text: .
+    - listitem: Item code is unique within an Organization and follows the repository code format.
+    - listitem: "Each Item has one protected base unit and one of these minimal types: raw material, work in progress, finished good."
+    - listitem: Add migrations and PostgreSQL tests for valid creation, Unicode names, constraints, protected references, and concurrent duplicate writes.
+    - listitem: Record TDD RED, GREEN, handoff, self-review, and independent Scrutinize evidence.
+  - heading "Exclusions" [level=2]
+  - list:
+    - listitem: Lot or serial identity.
+    - listitem: Stock quantities, movements, adjustments, reservations, costing, or valuation.
+    - listitem: Unit conversions or alternate units.
+    - listitem: Supplier/customer catalog data.
+    - listitem: Roles, warehouse permissions, audit trail, Hold/Released status.
+    - listitem: API, forms, admin customization, or end-user UI.
+    - listitem: Deployment and real factory data.
+  - heading "Dependencies" [level=2]
+  - list:
+    - text: Issue
+    - 'link "Foundation: Organization, Plant and Warehouse constraints #1"':
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/1
+    - text: Organization → Plant → Warehouse foundation merged on
+    - code: main
+    - text: .
+    - text: "Base commit:"
+    - code: 050f6c645dfa065071ca055c46e4d9bdefbf574e
+    - text: .
+    - listitem: PostgreSQL test environment and CI from the foundation work.
+  - heading "Acceptance criteria" [level=2]
+  - list:
+    - checkbox "Incomplete task" [disabled]
+    - code: catalog
+    - text: app, models, and migration exist without unrelated dependencies.
+    - checkbox "Incomplete task" [disabled]
+    - text: UOM code is non-null, uppercase-format constrained, and globally unique.
+    - checkbox "Incomplete task" [disabled]
+    - text: Item organization, code, name, type, and base UOM are non-null.
+    - checkbox "Incomplete task" [disabled]
+    - text: Item code is unique per Organization and the same code may exist in another Organization.
+    - checkbox "Incomplete task" [disabled]
+    - text: Deleting an Organization or referenced base UOM is protected while an Item exists.
+    - checkbox "Incomplete task" [disabled]
+    - text: PostgreSQL tests cover database constraints directly, including concurrent duplicate Item creation.
+    - checkbox "Incomplete task" [disabled]
+    - text: Targeted tests, full regression tests, Django checks, migration checks, and Ruff pass.
+    - checkbox "Incomplete task" [disabled]
+    - text: Actual commands, environment, results, and tested commit SHA are recorded.
+    - checkbox "Incomplete task" [disabled]
+    - text: Independent Scrutinize reviews the exact implementation commit before a PR is opened.
+    - checkbox "Incomplete task" [disabled]
+    - text: Checklist links only to published evidence.
+  - heading "Delivery rule" [level=2]
+  - paragraph: Use a feature branch. The owner reviews and decides whether to merge. Do not merge or deploy automatically.
+  - button "Reactions are currently unavailable":
+  - heading "Activity" [level=2]
+  - list "Activity":
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - generic: self-assigned this
+    - link "on Oct 20, 2026on Oct 20, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/5#event-33720313958
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - text: mentioned this
+    - link "on Oct 20, 2026on Oct 20, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/5#event-16737370725
+    - region "Issues mentioned":
+      - list:
+        - img "Merged"
+        - 'link "Add Item and unit of measure foundation #6"':
+          - /url: /porntaned/ERP-for-Factory/pull/6
+          - text: Add Item and unit of measure foundation
+          - generic: "#6"
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - text: closed this as
+    - link "completed":
+      - /url: /porntaned/ERP-for-Factory/issues?q=is%3Aissue%20state%3Aclosed%20archived%3Afalse%20reason%3Acompleted
+    - text: in
+    - link "#6":
+      - /url: https://github.com/porntaned/ERP-for-Factory/pull/6
+    - link "on Oct 20, 2026on Oct 20, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/5#event-33723145697
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - text: mentioned this
+    - link "on Oct 20, 2026on Oct 20, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/5#event-16739040105
+    - region "Issues mentioned":
+      - list:
+        - img "Completed"
+        - 'link "Issue 3 — Lot identity foundation #7"':
+          - /url: /porntaned/ERP-for-Factory/issues/7
+          - text: Issue 3 — Lot identity foundation
+          - generic: "#7"
+  - heading "Add a comment" [level=2]
+  - heading "Metadata" [level=2]
+  - heading "Assignees" [level=3]
+  - button "Edit Assignees":
+    - generic: Edit Assignees
+  - list:
+    - link "porntaned":
+      - /url: /porntaned
+      - img "@porntaned"
+      - generic: porntaned
+  - heading "Labels" [level=3]
+  - button "Edit Labels":
+    - generic: Edit Labels
+  - generic: No labels
+  - heading "Projects" [level=3]
+  - generic: No projects
+  - heading "Milestone" [level=3]
+  - button "Edit Milestone":
+    - generic: Edit Milestone
+  - generic: No milestone
+  - heading "Relationships" [level=3]
+  - generic: None yet
+  - heading "Development" [level=3]
+  - generic: No branches or pull requests
+  - heading "Notifications" [level=3]
+  - button "Subscribe":
+    - generic: Subscribe
+  - paragraph: You're not receiving notifications from this thread.
+  - heading "Issue actions" [level=2]
+  - list:
+    - button "Open in GitHub Copilot app":
+      - generic: Open in GitHub Copilot app
+    - button "Transfer issue":
+      - generic: Transfer issue
+    - button "Clone issue":
+      - generic: Clone issue
+    - button "Lock conversation":
+      - generic: Lock conversation
+    - button "Pin issue":
+      - generic: Pin issue
+    - button "Delete issue":
+      - generic: Delete issue
+    - button "Give feedback":
+      - generic: Give feedback
+- contentinfo:
+  - heading "Footer" [level=2]
+  - link "GitHub Homepage":
+    - /url: https://github.com
+  - generic: © 2026 GitHub, Inc.
+  - navigation "Footer":
+    - heading "Footer navigation" [level=3]
+    - list "Footer navigation":
+      - link "Terms":
+        - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+      - link "Privacy":
+        - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+      - link "Security":
+        - /url: https://github.com/security
+      - link "Status":
+        - /url: https://www.githubstatus.com/
+      - link "Community":
+        - /url: https://github.community/
+      - link "Docs":
+        - /url: https://docs.github.com/
+      - link "Contact":
+        - /url: https://support.github.com?tags=dotcom-footer
+      - button "Manage cookies"
+      - button "Do not share my personal information"
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/issues/7
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have no unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - region "Header":
+    - 'heading "Issue 3 — Lot identity foundation #7 Edit issue title" [level=1]':
+      - text: Issue 3 — Lot identity foundation
+      - generic: "#7"
+      - button "Edit issue title":
+    - button "New issue":
+      - generic: New issue
+    - button "Copy link":
+  - img "Issue"
+  - text: Closed
+  - 'link "Merged #8"':
+    - /url: https://github.com/porntaned/ERP-for-Factory/pull/8
+    - img "Merged"
+    - generic: "#8"
+  - heading "Description" [level=2]
+  - link "@porntaned's profile":
+    - /url: https://github.com/porntaned
+    - img "@porntaned"
+  - link "porntaned":
+    - /url: https://github.com/porntaned
+  - text: opened
+  - link "on Oct 20, 2026on Oct 20, 2026":
+    - /url: https://github.com/porntaned/ERP-for-Factory/issues/7#issue-5938518555
+  - button "Issue body actions":
+  - heading "Goal" [level=2]
+  - paragraph: Create the smallest persistent Lot identity that future Inventory, Manufacturing, and Quality work can reference without adding stock or workflow behavior.
+  - heading "Scope" [level=2]
+  - list:
+    - text: Add an
+    - code: inventory
+    - text: Django app.
+    - text: Add
+    - code: inventory.Lot
+    - text: "with:"
+    - list:
+      - code: item
+      - text: — protected reference to
+      - code: catalog.Item
+      - text: .
+      - code: code
+      - text: "— internal ERP lot identifier, 1–32 ASCII characters using the repository code rule: starts with"
+      - code: A-Z
+      - text: ", followed by"
+      - code: A-Z
+      - text: ","
+      - code: 0-9
+      - text: ","
+      - code: _
+      - text: ", or"
+      - code: "-"
+      - text: .
+    - text: Make
+    - code: (item, code)
+    - text: unique at the database boundary.
+    - listitem: Allow the same Lot code for different Items.
+    - text: Derive Organization through
+    - code: lot.item.organization
+    - text: ; do not duplicate Organization on Lot.
+    - listitem: Add a migration and PostgreSQL tests for creation, constraints, deletion protection, and concurrent duplicate writes.
+    - listitem: Record TDD RED, GREEN, handoff, self-verification, and independent Scrutinize evidence.
+  - heading "Exclusions" [level=2]
+  - list:
+    - listitem: Stock quantities, balances, reservations, adjustments, or movements.
+    - listitem: Warehouse or location ownership.
+    - listitem: Receipt, transfer, issue, return, consumption, or production behavior.
+    - listitem: Serial numbers.
+    - listitem: Supplier Lot references or arbitrary external Lot formats.
+    - listitem: Manufacturing, receipt, or expiry dates.
+    - listitem: Hold/Released state, inspections, or Quality decisions.
+    - listitem: Permissions, audit/history, soft deletion, UI, API, demo data, costing, valuation, merge, or deployment.
+  - heading "Dependencies" [level=2]
+  - list:
+    - 'link "Issue #5"':
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/5
+    - text: and
+    - 'link "PR #6"':
+      - /url: https://github.com/porntaned/ERP-for-Factory/pull/6
+    - text: are merged.
+    - text: "Base commit:"
+    - code: d31ac7a9f5286353ed05a46ccc6ce3be3c1678e1
+    - text: .
+    - listitem: Existing PostgreSQL CI and the Organization → Item relationship remain authoritative.
+  - heading "Acceptance criteria" [level=2]
+  - list:
+    - checkbox "Incomplete task" [disabled]
+    - code: inventory
+    - text: app,
+    - code: Lot
+    - text: model, and migration exist without unrelated dependencies.
+    - checkbox "Incomplete task" [disabled]
+    - text: Lot requires a valid Item and an internal code.
+    - checkbox "Incomplete task" [disabled]
+    - text: Lot code format and 1–32 character boundary are enforced by PostgreSQL.
+    - checkbox "Incomplete task" [disabled]
+    - code: (item, code)
+    - text: is unique; the same code may exist for a different Item.
+    - checkbox "Incomplete task" [disabled]
+    - text: Deleting an Item referenced by a Lot is protected.
+    - checkbox "Incomplete task" [disabled]
+    - text: PostgreSQL tests cover required fields, invalid references, code boundaries, scoped uniqueness, deletion protection, and concurrent duplicate creation.
+    - checkbox "Incomplete task" [disabled]
+    - text: Existing tests remain GREEN.
+    - checkbox "Incomplete task" [disabled]
+    - text: Django checks, migration drift checks, Ruff, and the full PostgreSQL suite pass.
+    - checkbox "Incomplete task" [disabled]
+    - text: Actual commands, environment, results, CI links, and tested commit SHA are recorded.
+    - checkbox "Incomplete task" [disabled]
+    - text: An independent Agent reviews the exact implementation commit using
+    - code: docs/SCRUTINIZE.md
+    - text: .
+    - checkbox "Incomplete task" [disabled]
+    - text: The project checklist links only to published evidence.
+  - heading "Locked decisions and rationale" [level=2]
+  - paragraph:
+    - text: Lot identity is the pair
+    - code: Item + code
+    - text: . The code is an internal ERP identifier, not an unrestricted supplier-provided Lot string. Item already determines Organization, so storing Organization again would allow inconsistent cross-organization data. Inventory quantity, location, Quality status, and transaction history belong to later issues.
+  - heading "Delivery rule" [level=2]
+  - paragraph:
+    - text: Use
+    - code: feat/lot-identity
+    - text: . The owner reviews and decides whether to merge. Do not merge or deploy automatically.
+  - button "Reactions are currently unavailable":
+  - heading "Activity" [level=2]
+  - list "Activity":
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - generic: self-assigned this
+    - link "on Oct 20, 2026on Oct 20, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/7#event-33723686816
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - text: mentioned this
+    - link "on Oct 20, 2026on Oct 20, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/7#event-16741855518
+    - region "Issues mentioned":
+      - list:
+        - img "Merged"
+        - 'link "Add Lot identity foundation #8"':
+          - /url: /porntaned/ERP-for-Factory/pull/8
+          - text: Add Lot identity foundation
+          - generic: "#8"
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - text: closed this as
+    - link "completed":
+      - /url: /porntaned/ERP-for-Factory/issues?q=is%3Aissue%20state%3Aclosed%20archived%3Afalse%20reason%3Acompleted
+    - text: in
+    - link "#8":
+      - /url: https://github.com/porntaned/ERP-for-Factory/pull/8
+    - link "on Oct 20, 2026on Oct 20, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/7#event-33745785231
+  - heading "Add a comment" [level=2]
+  - heading "Metadata" [level=2]
+  - heading "Assignees" [level=3]
+  - button "Edit Assignees":
+    - generic: Edit Assignees
+  - list:
+    - link "porntaned":
+      - /url: /porntaned
+      - img "@porntaned"
+      - generic: porntaned
+  - heading "Labels" [level=3]
+  - button "Edit Labels":
+    - generic: Edit Labels
+  - generic: No labels
+  - heading "Projects" [level=3]
+  - generic: No projects
+  - heading "Milestone" [level=3]
+  - button "Edit Milestone":
+    - generic: Edit Milestone
+  - generic: No milestone
+  - heading "Relationships" [level=3]
+  - generic: None yet
+  - heading "Development" [level=3]
+  - generic: No branches or pull requests
+  - heading "Notifications" [level=3]
+  - button "Subscribe":
+    - generic: Subscribe
+  - paragraph: You're not receiving notifications from this thread.
+  - heading "Issue actions" [level=2]
+  - list:
+    - button "Open in GitHub Copilot app":
+      - generic: Open in GitHub Copilot app
+    - button "Transfer issue":
+      - generic: Transfer issue
+    - button "Clone issue":
+      - generic: Clone issue
+    - button "Lock conversation":
+      - generic: Lock conversation
+    - button "Pin issue":
+      - generic: Pin issue
+    - button "Delete issue":
+      - generic: Delete issue
+    - button "Give feedback":
+      - generic: Give feedback
+- contentinfo:
+  - heading "Footer" [level=2]
+  - link "GitHub Homepage":
+    - /url: https://github.com
+  - generic: © 2026 GitHub, Inc.
+  - navigation "Footer":
+    - heading "Footer navigation" [level=3]
+    - list "Footer navigation":
+      - link "Terms":
+        - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+      - link "Privacy":
+        - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+      - link "Security":
+        - /url: https://github.com/security
+      - link "Status":
+        - /url: https://www.githubstatus.com/
+      - link "Community":
+        - /url: https://github.community/
+      - link "Docs":
+        - /url: https://docs.github.com/
+      - link "Contact":
+        - /url: https://support.github.com?tags=dotcom-footer
+      - button "Manage cookies"
+      - button "Do not share my personal information"
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/issues/9
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have no unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - region "Header":
+    - 'heading "M3.2 — Warehouse-scoped role grants foundation #9 Edit issue title" [level=1]':
+      - text: M3.2 — Warehouse-scoped role grants foundation
+      - generic: "#9"
+      - button "Edit issue title":
+    - button "New issue":
+      - generic: New issue
+    - button "Copy link":
+  - img "Issue"
+  - text: Closed
+  - 'link "Merged #10"':
+    - /url: https://github.com/porntaned/ERP-for-Factory/pull/10
+    - img "Merged"
+    - generic: "#10"
+  - heading "Description" [level=2]
+  - link "@porntaned's profile":
+    - /url: https://github.com/porntaned
+    - img "@porntaned"
+  - link "porntaned":
+    - /url: https://github.com/porntaned
+  - text: opened
+  - link "on Oct 20, 2026on Oct 20, 2026":
+    - /url: https://github.com/porntaned/ERP-for-Factory/issues/9#issue-5942720891
+  - button "Issue body actions":
+  - heading "Goal" [level=2]
+  - paragraph: Create the smallest explicit Warehouse-scoped role assignment and evaluation boundary for synthetic ERP users before stock operations exist.
+  - heading "Scope" [level=2]
+  - list:
+    - listitem: Enable Django's built-in authentication models; do not create a custom password or session system.
+    - text: Add an
+    - code: access_control
+    - text: app with a Warehouse role assignment linking one Django user to one
+    - code: facilities.Warehouse
+    - text: .
+    - text: "Persist only the four roles already planned by the project:"
+    - code: WAREHOUSE
+    - text: ","
+    - code: PRODUCTION
+    - text: ","
+    - code: QUALITY
+    - text: ", and"
+    - code: APPROVER
+    - text: .
+    - listitem: Allow multiple roles for the same user and Warehouse, and assignments to multiple Warehouses.
+    - listitem: Provide one narrow authorization interface that checks whether an active authenticated user has any requested role for the exact Warehouse.
+    - listitem: Deny anonymous, inactive, unsaved, unassigned, wrong-role, and wrong-Warehouse access; empty or unsupported requested roles fail closed.
+    - listitem: Do not grant an implicit superuser bypass.
+    - text: Enforce required references, valid roles, and uniqueness of
+    - code: (user, warehouse, role)
+    - text: at the PostgreSQL boundary.
+    - listitem: Protect assigned Users and Warehouses from deletion; access is revoked by removing a grant or deactivating the User.
+    - listitem: Use only synthetic test users with unusable passwords; publish no credentials or personal data.
+    - listitem: Add migrations and PostgreSQL tests for the persistence and authorization contracts.
+    - listitem: Record TDD RED, GREEN, handoff, self-verification, and independent Scrutinize evidence.
+  - heading "Exclusions" [level=2]
+  - list:
+    - listitem: Claims that a stock, Manufacturing, or Quality transaction is protected end-to-end; those entry points do not exist yet and must enforce this interface in M4-M6.
+    - listitem: Login screens, sessions, middleware, API authentication, tokens, password policy, SSO, LDAP, Active Directory, MFA, invitations, email, or user administration UI.
+    - listitem: Django Groups as the Warehouse scope, global model permissions for operational roles, third-party object-permission packages, or a custom User model.
+    - listitem: Organization-wide or Plant-wide grants, inherited scope, role hierarchy, and privileged administrator bypass.
+    - listitem: Seeded demo accounts or reusable passwords; demo data belongs to M7.1.
+    - listitem: Stock quantities, movements, receiving, transfers, adjustments, valuation, Quality decisions, Released/Hold state, audit history, deployment, or automatic merge.
+  - heading "Dependencies" [level=2]
+  - list:
+    - 'link "PR #8"':
+      - /url: https://github.com/porntaned/ERP-for-Factory/pull/8
+    - text: is merged at
+    - code: b7a9bddd87d258c343d17abbc76e53de9a436dcd
+    - text: .
+    - text: Organization → Plant → Warehouse remains authoritative in
+    - code: facilities
+    - text: .
+    - listitem: Django 5.2 built-in auth is the authoritative user identity implementation.
+    - text: "Branch:"
+    - code: codex/role-warehouse-permissions
+    - text: .
+  - heading "Acceptance criteria" [level=2]
+  - list:
+    - checkbox "Incomplete task" [disabled]
+    - text: Django auth and contenttypes are enabled without a custom User model or third-party dependency.
+    - checkbox "Incomplete task" [disabled]
+    - text: The assignment contains only
+    - code: id
+    - text: ","
+    - code: user
+    - text: ","
+    - code: warehouse
+    - text: ", and"
+    - code: role
+    - text: .
+    - checkbox "Incomplete task" [disabled]
+    - code: WAREHOUSE
+    - text: ","
+    - code: PRODUCTION
+    - text: ","
+    - code: QUALITY
+    - text: ", and"
+    - code: APPROVER
+    - text: are the only persisted roles.
+    - checkbox "Incomplete task" [disabled]
+    - text: Multiple roles and Warehouse assignments coexist; an exact duplicate is rejected by PostgreSQL.
+    - checkbox "Incomplete task" [disabled]
+    - text: Assigned Users and Warehouses are protected from deletion.
+    - checkbox "Incomplete task" [disabled]
+    - text: Exact-Warehouse role checks allow matching roles and deny anonymous, inactive, unsaved, unassigned, wrong-role, and wrong-Warehouse inputs.
+    - checkbox "Incomplete task" [disabled]
+    - text: There is no implicit superuser bypass.
+    - checkbox "Incomplete task" [disabled]
+    - text: Empty or unsupported requested roles fail closed.
+    - checkbox "Incomplete task" [disabled]
+    - text: The authorized-Warehouse query does not leak to a sibling Warehouse, another Plant, another Organization, or an identically coded Warehouse elsewhere.
+    - checkbox "Incomplete task" [disabled]
+    - text: PostgreSQL tests cover constraints and concurrent duplicate assignment.
+    - checkbox "Incomplete task" [disabled]
+    - text: Test users use unusable passwords and no fixture/migration contains credentials.
+    - checkbox "Incomplete task" [disabled]
+    - text: Existing tests remain GREEN; Django checks, migration drift checks, Ruff, and the full PostgreSQL suite pass.
+    - checkbox "Incomplete task" [disabled]
+    - text: Actual commands, environment, results, CI links, and tested commit SHA are recorded.
+    - checkbox "Incomplete task" [disabled]
+    - text: Independent Agents review the exact RED and implementation commits using
+    - code: docs/SCRUTINIZE.md
+    - text: .
+    - checkbox "Incomplete task" [disabled]
+    - text: The checklist links only to published evidence.
+  - heading "Locked decisions and rationale" [level=2]
+  - paragraph: Django already owns user identity and password behavior, so duplicating it adds risk without portfolio value. Django Groups and model permissions are global and cannot provide Warehouse instance scope. One exact-Warehouse assignment model is sufficient because a Warehouse already determines its Plant and Organization. Downstream M4-M6 services will choose which roles may perform each real operation and must separately verify Item/Lot organization invariants.
+  - heading "Delivery rule" [level=2]
+  - paragraph:
+    - text: Use
+    - code: codex/role-warehouse-permissions
+    - text: . The owner reviews and decides whether to merge. Do not merge or deploy automatically.
+  - button "Reactions are currently unavailable":
+  - heading "Activity" [level=2]
+  - list "Activity":
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - text: mentioned this
+    - link "on Oct 20, 2026on Oct 20, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/9#event-16801564394
+    - region "Issues mentioned":
+      - list:
+        - img "Merged"
+        - 'link "Add Warehouse-scoped role grants #10"':
+          - /url: /porntaned/ERP-for-Factory/pull/10
+          - text: Add Warehouse-scoped role grants
+          - generic: "#10"
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - text: closed this as
+    - link "completed":
+      - /url: /porntaned/ERP-for-Factory/issues?q=is%3Aissue%20state%3Aclosed%20archived%3Afalse%20reason%3Acompleted
+    - text: in
+    - link "#10":
+      - /url: https://github.com/porntaned/ERP-for-Factory/pull/10
+    - link "on Oct 20, 2026on Oct 20, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/9#event-33757314279
+  - heading "Add a comment" [level=2]
+  - heading "Metadata" [level=2]
+  - heading "Assignees" [level=3]
+  - button "Edit Assignees":
+    - generic: Edit Assignees
+  - text: No one -
+  - button "Assign yourself":
+    - generic: Assign yourself
+  - heading "Labels" [level=3]
+  - button "Edit Labels":
+    - generic: Edit Labels
+  - generic: No labels
+  - heading "Projects" [level=3]
+  - generic: No projects
+  - heading "Milestone" [level=3]
+  - button "Edit Milestone":
+    - generic: Edit Milestone
+  - generic: No milestone
+  - heading "Relationships" [level=3]
+  - generic: None yet
+  - heading "Development" [level=3]
+  - generic: No branches or pull requests
+  - heading "Notifications" [level=3]
+  - button "Subscribe":
+    - generic: Subscribe
+  - paragraph: You're not receiving notifications from this thread.
+  - heading "Issue actions" [level=2]
+  - list:
+    - button "Open in GitHub Copilot app":
+      - generic: Open in GitHub Copilot app
+    - button "Transfer issue":
+      - generic: Transfer issue
+    - button "Clone issue":
+      - generic: Clone issue
+    - button "Lock conversation":
+      - generic: Lock conversation
+    - button "Pin issue":
+      - generic: Pin issue
+    - button "Delete issue":
+      - generic: Delete issue
+    - button "Give feedback":
+      - generic: Give feedback
+- contentinfo:
+  - heading "Footer" [level=2]
+  - link "GitHub Homepage":
+    - /url: https://github.com
+  - generic: © 2026 GitHub, Inc.
+  - navigation "Footer":
+    - heading "Footer navigation" [level=3]
+    - list "Footer navigation":
+      - link "Terms":
+        - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+      - link "Privacy":
+        - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+      - link "Security":
+        - /url: https://github.com/security
+      - link "Status":
+        - /url: https://www.githubstatus.com/
+      - link "Community":
+        - /url: https://github.community/
+      - link "Docs":
+        - /url: https://docs.github.com/
+      - link "Contact":
+        - /url: https://support.github.com?tags=dotcom-footer
+      - button "Manage cookies"
+      - button "Do not share my personal information"
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/issues/11
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have no unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - region "Header":
+    - 'heading "M3.3 — Warehouse-scoped Lot disposition audit foundation #11 Edit issue title" [level=1]':
+      - text: M3.3 — Warehouse-scoped Lot disposition audit foundation
+      - generic: "#11"
+      - button "Edit issue title":
+    - button "New issue":
+      - generic: New issue
+    - button "Copy link":
+  - img "Issue"
+  - text: Closed
+  - 'link "Merged #12"':
+    - /url: https://github.com/porntaned/ERP-for-Factory/pull/12
+    - img "Merged"
+    - generic: "#12"
+  - heading "Description" [level=2]
+  - link "@porntaned's profile":
+    - /url: https://github.com/porntaned
+    - img "@porntaned"
+  - link "porntaned":
+    - /url: https://github.com/porntaned
+  - text: opened
+  - link "on Oct 20, 2026on Oct 20, 2026":
+    - /url: https://github.com/porntaned/ERP-for-Factory/issues/11#issue-5944688848
+  - button "Issue body actions":
+  - heading "Goal" [level=2]
+  - paragraph:
+    - text: "Create the smallest auditable, Warehouse-scoped Lot disposition foundation: a Lot is fail-safe"
+    - code: HOLD
+    - text: for a Warehouse until an authorized Quality decision records
+    - code: RELEASED
+    - text: . Preserve every transition as typed append-only history for later Inventory enforcement and Quality inspection integration.
+  - heading "Why this shape" [level=2]
+  - paragraph:
+    - code: inventory.Lot
+    - text: has no Warehouse, while every operational grant is Warehouse-scoped. A global Lot status would let a decision in one Warehouse affect another Warehouse without a defensible authorization path. A generic audit table would add broad surface without protecting this domain behavior. This issue therefore scopes disposition to the exact
+    - code: (lot, warehouse)
+    - text: pair and keeps its own typed history.
+  - heading "Scope" [level=2]
+  - list:
+    - text: Add a minimal
+    - code: quality
+    - text: domain app for Warehouse-scoped Lot disposition decisions.
+    - text: "Persist append-only typed events for one exact Lot and Warehouse with:"
+    - list:
+      - code: from_disposition
+      - text: and
+      - code: to_disposition
+      - text: limited to
+      - code: HOLD
+      - text: and
+      - code: RELEASED
+      - listitem: protected Lot, Warehouse, and actor references
+      - listitem: required nonblank reason
+      - listitem: server-generated timestamp
+      - listitem: unique UUID request key for idempotent retries
+    - text: Treat no event for a Lot/Warehouse pair as
+    - code: HOLD
+    - text: .
+    - text: Allow only
+    - code: HOLD → RELEASED
+    - text: and
+    - code: RELEASED → HOLD
+    - text: ; reject no-op transitions.
+    - text: Require an active saved user with the exact
+    - code: QUALITY
+    - text: role for the exact Warehouse. Anonymous, inactive, unsaved, wrong-role, sibling-Warehouse, cross-Plant, cross-Organization, and implicit-superuser paths fail closed.
+    - listitem: Require the Lot's Item organization to match the Warehouse's Plant organization.
+    - listitem: Perform authorization, state recheck, transition, and event creation atomically.
+    - listitem: Serialize concurrent decisions and give one defined conflict when callers race from the same expected state.
+    - listitem: Return the original event for an exact retry with the same request key and identical payload; reject reuse with different payload.
+    - text: Enforce append-only history and chain integrity on PostgreSQL, including direct UPDATE, DELETE, and forged
+    - code: from_disposition
+    - text: attempts.
+    - listitem: Add PostgreSQL-first tests, migration, TDD RED/GREEN evidence, Multi-Agent handoff, and independent Scrutinize.
+  - heading "Domain ownership" [level=2]
+  - list:
+    - listitem: Quality owns the disposition decision and this typed decision history.
+    - listitem: Inventory will later consume the disposition query as movement eligibility input.
+    - listitem: This issue creates the decision foundation only; it does not claim that stock movement is already blocked.
+  - heading "Exclusions" [level=2]
+  - list:
+    - listitem: Quality inspection records, sampling, measurements, defect codes, approval workflow, attachments, or QC result calculation.
+    - listitem: Stock quantities, ledger, receipt, transfer, issue, return, manufacturing, valuation, or movement enforcement.
+    - listitem: Global Lot status or Organization-wide/Plant-wide permission inheritance.
+    - listitem: Generic audit framework, model-wide signals, JSON audit payloads, or third-party audit/permission packages.
+    - listitem: UI, API, login flow, notifications, seeded accounts, reusable passwords, real factory data, merge, or deployment.
+  - heading "Dependencies" [level=2]
+  - list:
+    - text: PR
+    - 'link "Add Warehouse-scoped role grants #10"':
+      - /url: https://github.com/porntaned/ERP-for-Factory/pull/10
+    - text: is merged into
+    - code: main
+    - text: at
+    - code: 6f6e06b
+    - text: .
+    - code: inventory.Lot
+    - text: ", Organization → Plant → Warehouse, Django User, and exact-Warehouse role policy are authoritative."
+    - text: "Branch:"
+    - code: codex/audit-release-hold
+    - text: .
+  - heading "Acceptance criteria" [level=2]
+  - list:
+    - checkbox "Incomplete task" [disabled]
+    - text: Missing history resolves to
+    - code: HOLD
+    - text: without writing a row.
+    - checkbox "Incomplete task" [disabled]
+    - text: A valid exact-Warehouse Quality user can record
+    - code: HOLD → RELEASED
+    - text: and
+    - code: RELEASED → HOLD
+    - text: .
+    - checkbox "Incomplete task" [disabled]
+    - text: Every event records exact Lot, Warehouse, actor, from/to state, nonblank reason, request UUID, and server time.
+    - checkbox "Incomplete task" [disabled]
+    - text: Unsupported, empty, lowercase, Unicode, or no-op states fail without an event.
+    - checkbox "Incomplete task" [disabled]
+    - text: Anonymous, inactive, unsaved, unassigned, wrong-role, wrong-Warehouse, cross-Plant, cross-Organization, and implicit-superuser paths fail closed.
+    - checkbox "Incomplete task" [disabled]
+    - text: A Lot and Warehouse from different Organizations cannot share disposition history.
+    - checkbox "Incomplete task" [disabled]
+    - text: Exact retries return one event; request-key reuse with a different payload conflicts.
+    - checkbox "Incomplete task" [disabled]
+    - text: Concurrent transitions are serialized; stale expected state produces a defined conflict and no extra event.
+    - checkbox "Incomplete task" [disabled]
+    - text: State transition and event persistence roll back together on failure.
+    - checkbox "Incomplete task" [disabled]
+    - text: PostgreSQL rejects invalid states, equal from/to state, invalid references, forged history chains, duplicate request keys, and UPDATE/DELETE of history.
+    - checkbox "Incomplete task" [disabled]
+    - text: Lot, Warehouse, and actor deletion are protected after history exists.
+    - checkbox "Incomplete task" [disabled]
+    - text: Tests make no claim that stock movements or inspections already exist.
+    - checkbox "Incomplete task" [disabled]
+    - text: Existing tests remain GREEN; Django checks, migration drift checks, Ruff, and the complete PostgreSQL suite pass.
+    - checkbox "Incomplete task" [disabled]
+    - text: Actual commands, environment, results, CI links, and tested commit SHA are recorded.
+    - checkbox "Incomplete task" [disabled]
+    - text: Independent Agents review the exact RED and implementation commits using
+    - code: docs/SCRUTINIZE.md
+    - text: .
+    - checkbox "Incomplete task" [disabled]
+    - text: Checklist progress is checked only when linked evidence exists.
+  - heading "Delivery rule" [level=2]
+  - paragraph:
+    - text: Use
+    - code: codex/audit-release-hold
+    - text: . The owner reviews and decides whether to merge. Do not deploy.
+  - button "Reactions are currently unavailable":
+  - heading "Activity" [level=2]
+  - list "Activity":
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - text: mentioned this
+    - link "on Oct 21, 2026on Oct 21, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/11#event-16897299437
+    - region "Issues mentioned":
+      - list:
+        - img "Merged"
+        - 'link "Add warehouse-scoped Lot disposition and immutable Quality history #12"':
+          - /url: /porntaned/ERP-for-Factory/pull/12
+          - text: Add warehouse-scoped Lot disposition and immutable Quality history
+          - generic: "#12"
+    - link "porntaned":
+      - /url: /porntaned
+      - generic: porntaned
+    - text: closed this as
+    - link "completed":
+      - /url: /porntaned/ERP-for-Factory/issues?q=is%3Aissue%20state%3Aclosed%20archived%3Afalse%20reason%3Acompleted
+    - text: in
+    - link "#12":
+      - /url: https://github.com/porntaned/ERP-for-Factory/pull/12
+    - link "on Oct 21, 2026on Oct 21, 2026":
+      - /url: https://github.com/porntaned/ERP-for-Factory/issues/11#event-33808661745
+  - heading "Add a comment" [level=2]
+  - heading "Metadata" [level=2]
+  - heading "Assignees" [level=3]
+  - button "Edit Assignees":
+    - generic: Edit Assignees
+  - text: No one -
+  - button "Assign yourself":
+    - generic: Assign yourself
+  - heading "Labels" [level=3]
+  - button "Edit Labels":
+    - generic: Edit Labels
+  - generic: No labels
+  - heading "Projects" [level=3]
+  - generic: No projects
+  - heading "Milestone" [level=3]
+  - button "Edit Milestone":
+    - generic: Edit Milestone
+  - generic: No milestone
+  - heading "Relationships" [level=3]
+  - generic: None yet
+  - heading "Development" [level=3]
+  - generic: No branches or pull requests
+  - heading "Notifications" [level=3]
+  - button "Subscribe":
+    - generic: Subscribe
+  - paragraph: You're not receiving notifications from this thread.
+  - heading "Issue actions" [level=2]
+  - list:
+    - button "Open in GitHub Copilot app":
+      - generic: Open in GitHub Copilot app
+    - button "Transfer issue":
+      - generic: Transfer issue
+    - button "Clone issue":
+      - generic: Clone issue
+    - button "Lock conversation":
+      - generic: Lock conversation
+    - button "Pin issue":
+      - generic: Pin issue
+    - button "Delete issue":
+      - generic: Delete issue
+    - button "Give feedback":
+      - generic: Give feedback
+- contentinfo:
+  - heading "Footer" [level=2]
+  - link "GitHub Homepage":
+    - /url: https://github.com
+  - generic: © 2026 GitHub, Inc.
+  - navigation "Footer":
+    - heading "Footer navigation" [level=3]
+    - list "Footer navigation":
+      - link "Terms":
+        - /url: https://docs.github.com/site-policy/github-terms/github-terms-of-service
+      - link "Privacy":
+        - /url: https://docs.github.com/site-policy/privacy-policies/github-privacy-statement
+      - link "Security":
+        - /url: https://github.com/security
+      - link "Status":
+        - /url: https://www.githubstatus.com/
+      - link "Community":
+        - /url: https://github.community/
+      - link "Docs":
+        - /url: https://docs.github.com/
+      - link "Contact":
+        - /url: https://support.github.com?tags=dotcom-footer
+      - button "Manage cookies"
+      - button "Do not share my personal information"

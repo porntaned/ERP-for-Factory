@@ -1,0 +1,81 @@
+SOURCE https://github.com/porntaned/ERP-for-Factory/issues/13
+Selected visible DOM issue state lines.
+    - 'heading "Fix audit Finding 1: revoke cached-user warehouse access after deactivation #13 Edit issue title" [level=1]':
+  - text: Closed
+  - 'link "Merged #14"':
+    - 'generic "fix: deny persisted inactive users in warehouse policies (#13)"':
+      - 'link "fix: deny persisted inactive users in warehouse policies (#13)"':
+      - 'link "fix: deny persisted inactive users in warehouse policies (#13)"':
+        - 'link "fix: deny persisted inactive users in warehouse policies (#13)"':
+        - link "#13":
+        - 'link "Fix persisted deactivation in Warehouse policies (audit Finding 1) #14"':
+    - text: closed this as
+    - link "completed":
+    - link "#14":
+        - 'link "Fix audit Finding 2: deny unsaved supplied-PK users in Warehouse policies #15"':
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/issues/15
+Selected visible DOM issue state lines.
+    - 'heading "Fix audit Finding 2: deny unsaved supplied-PK users in Warehouse policies #15 Edit issue title" [level=1]':
+  - text: Closed
+  - 'link "Merged #16"':
+    - link "#14":
+    - link "#14":
+    - link "#13":
+    - 'generic "fix: reject unsaved users in shared Warehouse policies (#15)"':
+      - 'link "fix: reject unsaved users in shared Warehouse policies (#15)"':
+      - 'link "fix: reject unsaved users in shared Warehouse policies (#15)"':
+        - 'link "fix: reject unsaved users in shared Warehouse policies (#15)"':
+        - link "#15":
+        - 'link "Fix unsaved User rejection in Warehouse policies (audit Finding 2) #16"':
+    - text: closed this as
+    - link "completed":
+    - link "#16":
+        - 'link "docs: reconcile Finding 2 completion after owner-authorized merge #17"':
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/issues/18
+Selected visible DOM issue state lines.
+    - 'heading "Fix audit Finding 3: prevent explicit event IDs from blocking Quality HOLD #18 Edit issue title" [level=1]':
+  - text: Closed
+  - 'link "Merged #19"':
+    - link "#16":
+    - link "#17":
+      - 'link "fix: enforce authoritative Quality event identity and preserve upgrades (#18)"':
+        - 'link "Prevent explicit Quality event IDs from blocking HOLD (audit Finding 3) #19"':
+    - text: closed this as
+    - link "completed":
+    - link "#19":
+        - 'link "Fix audit Finding 4: run CI on main and feature branch prefixes #20"':
+        - 'link "ci: run Foundation on main and feature branch prefixes #21"':
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/issues/20
+Selected visible DOM issue state lines.
+    - 'heading "Fix audit Finding 4: run CI on main and feature branch prefixes #20 Edit issue title" [level=1]':
+  - text: Closed
+  - 'link "Merged #21"':
+    - link "#19":
+    - link "#18":
+    - 'link "Prevent explicit Quality event IDs from blocking HOLD (audit Finding 3) #19"':
+        - 'link "ci: run Foundation on main and feature branch prefixes #21"':
+    - text: closed this as
+    - link "completed":
+    - link "#21":
+        - 'link "docs: refresh README status and record Finding 4 completion (audit Finding 5) #22"':
+        - 'link "docs: refresh README status and reconcile Finding 4 completion #23"':
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/issues/22
+Selected visible DOM issue state lines.
+    - 'heading "docs: refresh README status and record Finding 4 completion (audit Finding 5) #22 Edit issue title" [level=1]':
+  - text: Closed
+  - 'link "Merged #23"':
+    - link "#3":
+    - link "#21":
+    - link "#21":
+    - link "#20":
+    - 'link "ci: run Foundation on main and feature branch prefixes #21"':
+    - 'link "Fix audit Finding 4: run CI on main and feature branch prefixes #20"':
+        - 'link "docs: refresh README status and reconcile Finding 4 completion #23"':
+    - text: closed this as
+    - link "completed":
+    - link "#23":
+        - 'link "Review M3 readiness before Inventory and reconcile completed audit findings #24"':

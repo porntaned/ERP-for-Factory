@@ -45,3 +45,11 @@ with [proof](../evidence/issue-22-pr.jpg). Earlier next-action wording is histor
 The final bookkeeping preserves the reviewed README and all runtime files; manager
 checks diff/links and latest-head CI before handoff. Work stops at this PR. The next
 responsible role is the owner; Issue #22/PA.7 remain pending acceptance and merge.
+
+## Post-delivery owner action
+
+Owner explicitly approved PR #23 merge. It merged at
+`e6cd22c9bddd533b40d293dbad509076ae41172c` on 2026-10-22, closing Issue #22 as completed.
+Actual main CI passed 281 tests. [Merge evidence](../evidence/issue-22-readme-status.md#owner-authorized-merge).
+Earlier pending text is historical. PA.7 reconciliation and M3 readiness are separately
+authorized under Issue #24; no Finding 5 implementation is repeated or deployed.

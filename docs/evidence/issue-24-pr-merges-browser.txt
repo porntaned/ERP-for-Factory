@@ -1,0 +1,126 @@
+SOURCE https://github.com/porntaned/ERP-for-Factory/pull/6
+Selected visible DOM identity/merge/commit lines; not a full page capture.
+  - heading "Repository navigation" [level=2]
+  - 'heading "Add Item and unit of measure foundation - #6" [level=1]':
+  - text: Merged
+  - text: merged 6 commits into
+  - heading "Conversation" [level=2]
+  - heading "Scope" [level=2]
+  - heading "Exclusions" [level=2]
+  - heading "Verification" [level=2]
+  - text: merged commit
+    - /url: /porntaned/ERP-for-Factory/commit/d31ac7a9f5286353ed05a46ccc6ce3be3c1678e1
+  - generic: main
+  - heading "Footer" [level=2]
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/pull/8
+Selected visible DOM identity/merge/commit lines; not a full page capture.
+  - heading "Repository navigation" [level=2]
+  - 'heading "Add Lot identity foundation - #8" [level=1]':
+  - text: Merged
+  - text: merged 6 commits into
+  - heading "Conversation" [level=2]
+  - heading "Scope" [level=2]
+  - heading "Exclusions" [level=2]
+  - heading "Verification" [level=2]
+  - text: merged commit
+    - /url: /porntaned/ERP-for-Factory/commit/b7a9bddd87d258c343d17abbc76e53de9a436dcd
+  - generic: main
+  - heading "Footer" [level=2]
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/pull/10
+Selected visible DOM identity/merge/commit lines; not a full page capture.
+  - heading "Repository navigation" [level=2]
+  - 'heading "Add Warehouse-scoped role grants - #10" [level=1]':
+  - text: Merged
+  - text: merged 7 commits into
+  - heading "Conversation" [level=2]
+  - heading "Scope" [level=2]
+  - heading "Exclusions" [level=2]
+  - heading "Verification" [level=2]
+  - text: merged commit
+    - /url: /porntaned/ERP-for-Factory/commit/6f6e06b2b99c7963593746ba6242e0737af252fe
+  - generic: main
+  - heading "Footer" [level=2]
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/pull/12
+Selected visible DOM identity/merge/commit lines; not a full page capture.
+  - heading "Repository navigation" [level=2]
+  - 'heading "Add warehouse-scoped Lot disposition and immutable Quality history - #12" [level=1]':
+  - text: Merged
+  - text: merged 12 commits into
+  - heading "Conversation" [level=2]
+      - /url: https://github.com/porntaned/ERP-for-Factory/commit/44b466fdd4e9d0134564c77aef7a316c1a2b8b7e
+  - text: merged commit
+    - /url: /porntaned/ERP-for-Factory/commit/9b1d182eb6867b70f076e95a63dc03f1814f00ec
+  - generic: main
+  - heading "Footer" [level=2]
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/pull/14
+Selected visible DOM identity/merge/commit lines; not a full page capture.
+  - heading "Repository navigation" [level=2]
+  - 'heading "Fix persisted deactivation in Warehouse policies (audit Finding 1) - #14" [level=1]':
+  - text: Merged
+  - text: merged 5 commits into
+  - heading "Conversation" [level=2]
+      - /url: https://github.com/porntaned/ERP-for-Factory/commit/abe63e154de62e7d37f3ff4c47252f6a88c07587
+      - /url: https://github.com/porntaned/ERP-for-Factory/commit/b332c10560af86e46f6e11347e4456735c4aee11
+  - text: merged commit
+    - /url: /porntaned/ERP-for-Factory/commit/eba63622495c6b065ad0abcd8e652676f9189d20
+  - generic: main
+  - heading "Footer" [level=2]
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/pull/16
+Selected visible DOM identity/merge/commit lines; not a full page capture.
+  - heading "Repository navigation" [level=2]
+  - 'heading "Fix unsaved User rejection in Warehouse policies (audit Finding 2) - #16" [level=1]':
+  - text: Merged
+  - text: merged 4 commits into
+  - heading "Conversation" [level=2]
+  - text: merged commit
+    - /url: /porntaned/ERP-for-Factory/commit/c62687b7ed60515de9424e69fe22ef43bbdfe81e
+  - generic: main
+    - text: Merged
+  - heading "Footer" [level=2]
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/pull/19
+Selected visible DOM identity/merge/commit lines; not a full page capture.
+  - heading "Repository navigation" [level=2]
+  - 'heading "Prevent explicit Quality event IDs from blocking HOLD (audit Finding 3) - #19" [level=1]':
+  - text: Merged
+  - text: merged 4 commits into
+  - heading "Conversation" [level=2]
+  - text: merged commit
+    - /url: /porntaned/ERP-for-Factory/commit/95d612bc41b4bda184598ba30f7072c4896f976d
+  - generic: main
+    - text: Merged
+  - heading "Footer" [level=2]
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/pull/21
+Selected visible DOM identity/merge/commit lines; not a full page capture.
+  - heading "Repository navigation" [level=2]
+  - 'heading "ci: run Foundation on main and feature branch prefixes - #21" [level=1]':
+  - text: Merged
+  - text: merged 3 commits into
+  - heading "Conversation" [level=2]
+  - heading "Problem and change" [level=2]
+  - heading "Verification" [level=2]
+  - text: merged commit
+    - /url: /porntaned/ERP-for-Factory/commit/a294080133cc31ee6ce0b0e1fc808280d669f203
+  - generic: main
+    - text: Merged
+  - heading "Footer" [level=2]
+
+SOURCE https://github.com/porntaned/ERP-for-Factory/pull/23
+Selected visible DOM identity/merge/commit lines; not a full page capture.
+  - heading "Repository navigation" [level=2]
+  - 'heading "docs: refresh README status and reconcile Finding 4 completion - #23" [level=1]':
+  - text: Merged
+  - text: merged 3 commits into
+  - heading "Conversation" [level=2]
+  - heading "Verification" [level=2]
+      - /url: https://github.com/porntaned/ERP-for-Factory/commit/a294080133cc31ee6ce0b0e1fc808280d669f203
+  - text: merged commit
+    - /url: /porntaned/ERP-for-Factory/commit/e6cd22c9bddd533b40d293dbad509076ae41172c
+  - generic: main
+  - heading "Footer" [level=2]

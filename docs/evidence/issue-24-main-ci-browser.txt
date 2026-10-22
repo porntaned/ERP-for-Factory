@@ -1,0 +1,29 @@
+SOURCE https://github.com/porntaned/ERP-for-Factory/actions/runs/39754340827
+    - generic: Triggered via push October 22, 2026 16:1816 minutes ago
+    - link "e6cd22c":
+      - /url: /porntaned/ERP-for-Factory/commit/e6cd22c9bddd533b40d293dbad509076ae41172c
+      - text: e6cd22c
+    - link "main":
+      - /url: /porntaned/ERP-for-Factory/tree/refs/heads/main
+    - text: Success
+      - /url: /porntaned/ERP-for-Factory/actions/runs/39754340827/job/119742446278
+
+SELECTED VISIBLE JOB RUNTIME
+    - generic: succeeded Oct 22, 202616 minutes ago in 36s
+    - generic: Python 3.14.8
+    - generic: Django 5.2.18
+    - generic: psycopg 3.3.6
+    - generic: vendor=postgresql
+    - generic: server_version=18.6 (Debian 18.6-1.pgdg12+2)
+
+SELECTED VISIBLE JOB STEPS AND FULL SUITE
+    - generic: succeeded Oct 22, 202616 minutes ago in 36s
+    - generic "Verify Django configuration 1s":
+    - generic "Verify model and migration state 0s":
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+    - generic "Run Ruff 0s":
+    - generic "Run persisted-deactivation regressions 2s":
+    - generic "Run unsaved-user policy regressions 0s":
+    - generic "Run authoritative event-identity regressions 2s":
+    - generic "Run uv run pytest -q --tb=short":
+    - generic: 281 passed in 5.52s
