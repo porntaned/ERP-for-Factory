@@ -37,3 +37,16 @@ No authentication or privileged-operator protection is claimed.
 
 Local database runtime is not configured. Existing GitHub CI supplies PostgreSQL evidence;
 local lint/diff checks are supplementary. GitHub work uses the owner's prepared browser.
+
+## Handoff evidence
+
+- RED `c3316f35123075f32bc92a841b6fd1dc7b1ce642`: **4 failed, 270 passed**.
+- GREEN/reviewed implementation `1c19981778b2f1cd45279de1b30945523d5827e0`:
+  targeted **11 passed**, full **281 passed** on PostgreSQL 18.6.
+- [Commands, runtimes, actual results and CI](../evidence/issue-18-event-identity.md).
+- New 0003 migration only; prior migrations/model/service untouched. Existing migration
+  restoration and descending-trigger test seams updated to retain meaningful coverage.
+- `/root/issue18_scope_review` independently traced design, source and captured CI evidence;
+  [final Scrutinize](../reviews/issue-18-event-identity-independent-review.md): **ship**.
+  This is independent evidence inspection, not separate runtime execution.
+- No repair cycle needed. No merge/deployment or Finding 4/5 work. Next gate: owner-review PR.

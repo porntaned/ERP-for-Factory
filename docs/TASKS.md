@@ -10,7 +10,9 @@
 
 Finding 1 เสร็จแล้ว: เจ้าของ Merge [PR #14](https://github.com/porntaned/ERP-for-Factory/pull/14) เข้า `main` ที่ `eba63622495c6b065ad0abcd8e652676f9189d20` และ [Issue #13](https://github.com/porntaned/ERP-for-Factory/issues/13) ปิดแล้ว
 
-Finding 2 เสร็จแล้ว: เจ้าของอนุญาตให้ Merge [PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16) เข้า `main` ที่ `c62687b7ed60515de9424e69fe22ef43bbdfe81e`; [Issue #15](https://github.com/porntaned/ERP-for-Factory/issues/15) ปิดเป็น completed — [หลักฐาน Merge](evidence/issue-15-unsaved-user-policy.md#owner-authorized-merge), [Independent review](reviews/issue-15-unsaved-user-policy-independent-review.md) Findings 3–5 ยังไม่ได้เริ่มแก้ และไม่มีการ Deploy
+Finding 2 เสร็จแล้ว: เจ้าของอนุญาตให้ Merge [PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16) เข้า `main` ที่ `c62687b7ed60515de9424e69fe22ef43bbdfe81e`; [Issue #15](https://github.com/porntaned/ERP-for-Factory/issues/15) ปิดเป็น completed — [หลักฐาน Merge](evidence/issue-15-unsaved-user-policy.md#owner-authorized-merge), [Independent review](reviews/issue-15-unsaved-user-policy-independent-review.md) และ [PR #17](https://github.com/porntaned/ERP-for-Factory/pull/17) บันทึกสถานะ Merge แล้ว ไม่มีการ Deploy
+
+รอบนี้ส่งมอบเฉพาะ Finding 3 ใน [Issue #18](https://github.com/porntaned/ERP-for-Factory/issues/18): PostgreSQL RED 4 failed/270 passed → GREEN targeted 11 passed/full 281 passed ที่ `1c19981778b2f1cd45279de1b30945523d5827e0`; Independent Scrutinize `ship` — [หลักฐาน](evidence/issue-18-event-identity.md), [Review](reviews/issue-18-event-identity-independent-review.md) รอเปิด PR ให้เจ้าของตรวจ; Findings 4–5 ยังไม่ได้แก้ ไม่มีการ Merge หรือ Deploy ในงานนี้
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -102,7 +104,12 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] Independent Scrutinize — [Review](reviews/issue-15-unsaved-user-policy-independent-review.md), verdict `ship` ที่ `d132237211c5abdc509679da91b7b12566dff38c`
     - [x] เปิด PR ให้เจ้าของตรวจ — [PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16), [ภาพหลักฐาน](evidence/issue-15-pr.jpg)
     - [x] เจ้าของอนุญาตให้ Merge Finding 2 — [Commit `c62687b`](https://github.com/porntaned/ERP-for-Factory/commit/c62687b7ed60515de9424e69fe22ef43bbdfe81e), [Issue #15 ปิด](https://github.com/porntaned/ERP-for-Factory/issues/15)
-- [ ] PA.5 Finding 3: explicit high event ID — ยังไม่เริ่ม
+- [ ] PA.5 Finding 3: explicit high event ID — แก้และตรวจแล้ว รอ PR และเจ้าของตรวจรับ
+  - [x] เปิด Issue และล็อก Scope — [Issue #18](https://github.com/porntaned/ERP-for-Factory/issues/18), [Assignment](assignments/issue-18-event-identity.md)
+  - [x] พิสูจน์ PostgreSQL RED/GREEN รวม migration upgrade/reverse/reapply และ regression — [หลักฐาน](evidence/issue-18-event-identity.md)
+  - [x] Independent Scrutinize — [Review](reviews/issue-18-event-identity-independent-review.md), verdict `ship` ที่ `1c19981778b2f1cd45279de1b30945523d5827e0`
+  - [ ] เปิด PR ให้เจ้าของตรวจ
+  - [ ] เจ้าของตรวจรับและ Merge Finding 3
 - [ ] PA.6 Finding 4: CI trigger ทั่วไป — ยังไม่เริ่ม; Issue #13 เพิ่มเฉพาะ branch ที่ใช้พิสูจน์งานนี้
 - [ ] PA.7 Finding 5: README status — ยังไม่เริ่ม
 
