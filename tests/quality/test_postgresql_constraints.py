@@ -53,7 +53,7 @@ def test_quality_suite_uses_postgresql(disposition_contract: dict[str, Any]) -> 
 
 @pytest.mark.django_db(transaction=True)
 def test_history_identity_migration_reverses_and_reapplies() -> None:
-    latest = [("quality", "0002_preserve_history_identity")]
+    latest = MigrationExecutor(connection).loader.graph.leaf_nodes()
     try:
         MigrationExecutor(connection).migrate([("quality", "0001_initial")])
         with connection.cursor() as cursor:
@@ -229,7 +229,21 @@ def test_descending_event_id_is_rejected_without_hiding_the_next_decision(
         to_disposition="HOLD",
     )
     with pytest.raises(IntegrityError, match="event id must increase"), transaction.atomic():
-        event_model.objects.create(id=released.pk - 1, **hold_values)
+        # Reach the existing ordering trigger independently of ALWAYS identity.
+        # Explicit SQL override is intentionally outside the ordinary-insert contract.
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "INSERT INTO quality_lotdispositionevent "
+                "(id, lot_id, warehouse_id, actor_id, request_id, "
+                "from_disposition, to_disposition, reason) "
+                "OVERRIDING SYSTEM VALUE "
+                "VALUES (%s, %s, %s, %s, %s, 'RELEASED', 'HOLD', %s)",
+                [
+                    released.pk - 1, quality_scope["lot"].pk,
+                    quality_scope["warehouse"].pk, quality_user.pk,
+                    hold_values["request_id"], hold_values["reason"],
+                ],
+            )
     assert (
         disposition_contract["get_disposition"](
             lot=quality_scope["lot"],

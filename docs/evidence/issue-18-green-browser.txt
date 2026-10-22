@@ -1,0 +1,1244 @@
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "fix: enforce authoritative Quality event identity and preserve upgrad… #65" [level=1]':
+    - generic: "fix: enforce authoritative Quality event identity and preserve upgrad… #65"
+  - button "Re-run all jobs":
+    - generic: Re-run all jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: succeeded Oct 22, 2026now in 46s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 2s":
+      - generic: Set up job
+      - generic: 2s
+    - generic "Initialize containers 21s":
+      - generic: Initialize containers
+      - generic: 21s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 1s":
+      - generic: Install uv
+      - generic: 1s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 0s":
+      - generic: Record runtime versions
+      - generic: 0s
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 1s":
+      - generic: Verify PostgreSQL connection
+      - generic: 1s
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s" [active]:
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:15:1
+    - generic "Run uv run pytest -q tests/quality/test_event_identity.py tests/quality/test_event_identity_migration.py --tb=short":
+      - generic: Run uv run pytest -q tests/quality/test_event_identity.py tests/quality/test_event_identity_migration.py --tb=short
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:15:15
+    - generic: ........... [100%]
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:15:16
+    - generic: 11 passed in 1.36s
+    - generic "Run ERP tests 6s":
+      - generic: Run ERP tests
+      - generic: 6s
+    - generic "Post Install uv 3s":
+      - generic: Post Install uv
+      - generic: 3s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 1s":
+      - generic: Stop containers
+      - generic: 1s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
+
+Full-suite capture:
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "fix: enforce authoritative Quality event identity and preserve upgrad… #65" [level=1]':
+    - generic: "fix: enforce authoritative Quality event identity and preserve upgrad… #65"
+  - button "Re-run all jobs":
+    - generic: Re-run all jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: succeeded Oct 22, 2026now in 46s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 2s":
+      - generic: Set up job
+      - generic: 2s
+    - generic "Initialize containers 21s":
+      - generic: Initialize containers
+      - generic: 21s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 1s":
+      - generic: Install uv
+      - generic: 1s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 0s":
+      - generic: Record runtime versions
+      - generic: 0s
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 1s":
+      - generic: Verify PostgreSQL connection
+      - generic: 1s
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:15:1
+    - generic "Run uv run pytest -q tests/quality/test_event_identity.py tests/quality/test_event_identity_migration.py --tb=short":
+      - generic: Run uv run pytest -q tests/quality/test_event_identity.py tests/quality/test_event_identity_migration.py --tb=short
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:15:15
+    - generic: ........... [100%]
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:15:16
+    - generic: 11 passed in 1.36s
+    - generic "Run ERP tests 6s" [active]:
+      - generic: Run ERP tests
+      - generic: 6s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:16:1
+    - generic "Run uv run pytest -q --tb=short":
+      - generic: Run uv run pytest -q --tb=short
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:16:15
+    - generic: ........................................................................ [ 25%]
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:16:16
+    - generic: ........................................................................ [ 51%]
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:16:17
+    - generic: ........................................................................ [ 76%]
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:16:18
+    - generic: ................................................................. [100%]
+    - link "18":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:16:19
+    - generic: 281 passed in 5.83s
+    - generic "Post Install uv 3s":
+      - generic: Post Install uv
+      - generic: 3s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 1s":
+      - generic: Stop containers
+      - generic: 1s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
+
+Runtime versions:
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "fix: enforce authoritative Quality event identity and preserve upgrad… #65" [level=1]':
+    - generic: "fix: enforce authoritative Quality event identity and preserve upgrad… #65"
+  - button "Re-run all jobs":
+    - generic: Re-run all jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: succeeded Oct 22, 2026now in 46s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 2s":
+      - generic: Set up job
+      - generic: 2s
+    - generic "Initialize containers 21s":
+      - generic: Initialize containers
+      - generic: 21s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 1s":
+      - generic: Install uv
+      - generic: 1s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 0s" [active]:
+      - generic: Record runtime versions
+      - generic: 0s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:7:1
+    - generic "Run uv run python --version":
+      - generic: Run uv run python --version
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:7:16
+    - generic: Python 3.14.8
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:7:17
+    - generic: Django 5.2.18
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:7:18
+    - generic: psycopg 3.3.6
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 1s":
+      - generic: Verify PostgreSQL connection
+      - generic: 1s
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run ERP tests 6s":
+      - generic: Run ERP tests
+      - generic: 6s
+    - generic "Post Install uv 3s":
+      - generic: Post Install uv
+      - generic: 3s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 1s":
+      - generic: Stop containers
+      - generic: 1s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
+
+PostgreSQL verification:
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "fix: enforce authoritative Quality event identity and preserve upgrad… #65" [level=1]':
+    - generic: "fix: enforce authoritative Quality event identity and preserve upgrad… #65"
+  - button "Re-run all jobs":
+    - generic: Re-run all jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: succeeded Oct 22, 2026now in 46s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 2s":
+      - generic: Set up job
+      - generic: 2s
+    - generic "Initialize containers 21s":
+      - generic: Initialize containers
+      - generic: 21s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 1s":
+      - generic: Install uv
+      - generic: 1s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 0s":
+      - generic: Record runtime versions
+      - generic: 0s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:7:1
+    - generic "Run uv run python --version":
+      - generic: Run uv run python --version
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:7:16
+    - generic: Python 3.14.8
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:7:17
+    - generic: Django 5.2.18
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:7:18
+    - generic: psycopg 3.3.6
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 1s" [active]:
+      - generic: Verify PostgreSQL connection
+      - generic: 1s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:9:1
+    - generic "Run uv run python -c \"import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings'); import django; django.setup(); from django.db import connection; connection.ensure_connection(); print('vendor=' + connection.vendor); assert connection.vendor == 'postgresql'; cursor = connection.cursor(); cursor.execute('SHOW server_version'); print('server_version=' + cursor.fetchone()[0])\"":
+      - generic: Run uv run python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings'); import django; django.setup(); from django.db import connection; connection.ensure_connection(); print('vendor=' + connection.vendor); assert connection.vendor == 'postgresql'; cursor = connection.cursor(); cursor.execute('SHOW server_version'); print('server_version=' + cursor.fetchone()[0])"
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:9:15
+    - generic: vendor=postgresql
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:9:16
+    - generic: server_version=18.6 (Debian 18.6-1.pgdg12+2)
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run ERP tests 6s":
+      - generic: Run ERP tests
+      - generic: 6s
+    - generic "Post Install uv 3s":
+      - generic: Post Install uv
+      - generic: 3s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 1s":
+      - generic: Stop containers
+      - generic: 1s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
+
+Checkout SHA:
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "fix: enforce authoritative Quality event identity and preserve upgrad… #65" [level=1]':
+    - generic: "fix: enforce authoritative Quality event identity and preserve upgrad… #65"
+  - button "Re-run all jobs":
+    - generic: Re-run all jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: succeeded Oct 22, 2026now in 46s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 2s":
+      - generic: Set up job
+      - generic: 2s
+    - generic "Initialize containers 21s":
+      - generic: Initialize containers
+      - generic: 21s
+    - generic "Check out repository 1s" [active]:
+      - generic: Check out repository
+      - generic: 1s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:1
+    - generic "Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1":
+      - generic: Run actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+    - link "25":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:26
+    - generic: "Syncing repository: porntaned/ERP-for-Factory"
+    - link "26":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:27
+    - generic "Getting Git version info":
+      - generic: Getting Git version info
+    - link "30":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:32
+    - generic: Temporarily overriding HOME='/home/runner/work/_temp/03b2405d-0a72-450a-9dce-950a2dab89af' before making global git config changes
+    - link "31":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:33
+    - generic: Adding repository directory to the temporary git global config as a safe directory
+    - link "32":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:34
+    - generic: /usr/bin/git config --global --add safe.directory /home/runner/work/ERP-for-Factory/ERP-for-Factory
+    - link "33":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:35
+    - generic: Deleting the contents of '/home/runner/work/ERP-for-Factory/ERP-for-Factory'
+    - link "34":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:36
+    - generic "Determining repository object format":
+      - generic: Determining repository object format
+    - link "35":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:38
+    - generic "Initializing the repository":
+      - generic: Initializing the repository
+    - link "52":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:56
+    - generic "Disabling automatic garbage collection":
+      - generic: Disabling automatic garbage collection
+    - link "54":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:59
+    - generic "Setting up auth":
+      - generic: Setting up auth
+    - link "69":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:75
+    - generic "Fetching the repository":
+      - generic: Fetching the repository
+    - link "77":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:84
+    - generic "Determining the checkout info":
+      - generic: Determining the checkout info
+    - link "78":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:86
+    - generic: /usr/bin/git sparse-checkout disable
+    - link "79":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:87
+    - generic: /usr/bin/git config --local --unset-all extensions.worktreeConfig
+    - link "80":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:88
+    - generic "Checking out the ref":
+      - generic: Checking out the ref
+    - link "84":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:93
+    - generic: /usr/bin/git log -1 --format=%H
+    - link "85":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:3:94
+    - generic: 1c19981778b2f1cd45279de1b30945523d5827e0
+    - generic "Install uv 1s":
+      - generic: Install uv
+      - generic: 1s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 0s":
+      - generic: Record runtime versions
+      - generic: 0s
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 1s":
+      - generic: Verify PostgreSQL connection
+      - generic: 1s
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run ERP tests 6s":
+      - generic: Run ERP tests
+      - generic: 6s
+    - generic "Post Install uv 3s":
+      - generic: Post Install uv
+      - generic: 3s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 1s":
+      - generic: Stop containers
+      - generic: 1s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
+
+Django, fresh migrations and lint:
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "completed successfully:"
+  - 'heading "fix: enforce authoritative Quality event identity and preserve upgrad… #65" [level=1]':
+    - generic: "fix: enforce authoritative Quality event identity and preserve upgrad… #65"
+  - button "Re-run all jobs":
+    - generic: Re-run all jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39719363464/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: succeeded Oct 22, 20261 minute ago in 46s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 2s":
+      - generic: Set up job
+      - generic: 2s
+    - generic "Initialize containers 21s":
+      - generic: Initialize containers
+      - generic: 21s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 1s":
+      - generic: Install uv
+      - generic: 1s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 0s":
+      - generic: Record runtime versions
+      - generic: 0s
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:8:1
+    - generic "Run uv run python manage.py check":
+      - generic: Run uv run python manage.py check
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:8:15
+    - generic: System check identified no issues (0 silenced).
+    - generic "Verify PostgreSQL connection 1s":
+      - generic: Verify PostgreSQL connection
+      - generic: 1s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:9:1
+    - generic "Run uv run python -c \"import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings'); import django; django.setup(); from django.db import connection; connection.ensure_connection(); print('vendor=' + connection.vendor); assert connection.vendor == 'postgresql'; cursor = connection.cursor(); cursor.execute('SHOW server_version'); print('server_version=' + cursor.fetchone()[0])\"":
+      - generic: Run uv run python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings'); import django; django.setup(); from django.db import connection; connection.ensure_connection(); print('vendor=' + connection.vendor); assert connection.vendor == 'postgresql'; cursor = connection.cursor(); cursor.execute('SHOW server_version'); print('server_version=' + cursor.fetchone()[0])"
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:9:15
+    - generic: vendor=postgresql
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:9:16
+    - generic: server_version=18.6 (Debian 18.6-1.pgdg12+2)
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:10:1
+    - generic "Run uv run python manage.py makemigrations --check --dry-run":
+      - generic: Run uv run python manage.py makemigrations --check --dry-run
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:10:15
+    - generic: No changes detected
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:1
+    - generic "Run uv run python manage.py migrate --noinput":
+      - generic: Run uv run python manage.py migrate --noinput
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:15
+    - generic: "Operations to perform:"
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:16
+    - generic: "Apply all migrations: access_control, auth, catalog, contenttypes, facilities, inventory, quality"
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:17
+    - generic: "Running migrations:"
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:18
+    - generic: Applying facilities.0001_initial... OK
+    - link "18":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:19
+    - generic: Applying contenttypes.0001_initial... OK
+    - link "19":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:20
+    - generic: Applying auth.0001_initial... OK
+    - link "20":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:21
+    - generic: Applying access_control.0001_initial... OK
+    - link "21":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:22
+    - generic: Applying contenttypes.0002_remove_content_type_name... OK
+    - link "22":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:23
+    - generic: Applying auth.0002_alter_permission_name_max_length... OK
+    - link "23":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:24
+    - generic: Applying auth.0003_alter_user_email_max_length... OK
+    - link "24":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:25
+    - generic: Applying auth.0004_alter_user_username_opts... OK
+    - link "25":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:26
+    - generic: Applying auth.0005_alter_user_last_login_null... OK
+    - link "26":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:27
+    - generic: Applying auth.0006_require_contenttypes_0002... OK
+    - link "27":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:28
+    - generic: Applying auth.0007_alter_validators_add_error_messages... OK
+    - link "28":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:29
+    - generic: Applying auth.0008_alter_user_username_max_length... OK
+    - link "29":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:30
+    - generic: Applying auth.0009_alter_user_last_name_max_length... OK
+    - link "30":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:31
+    - generic: Applying auth.0010_alter_group_name_max_length... OK
+    - link "31":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:32
+    - generic: Applying auth.0011_update_proxy_permissions... OK
+    - link "32":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:33
+    - generic: Applying auth.0012_alter_user_first_name_max_length... OK
+    - link "33":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:34
+    - generic: Applying catalog.0001_initial... OK
+    - link "34":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:35
+    - generic: Applying inventory.0001_initial... OK
+    - link "35":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:36
+    - generic: Applying quality.0001_initial... OK
+    - link "36":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:37
+    - generic: Applying quality.0002_preserve_history_identity... OK
+    - link "37":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39719363464/job/119628998006#step:11:38
+    - generic: Applying quality.0003_authoritative_event_identity... OK
+    - generic "Run Ruff 0s" [active]:
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run ERP tests 6s":
+      - generic: Run ERP tests
+      - generic: 6s
+    - generic "Post Install uv 3s":
+      - generic: Post Install uv
+      - generic: 3s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 1s":
+      - generic: Stop containers
+      - generic: 1s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
