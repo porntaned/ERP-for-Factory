@@ -1,0 +1,739 @@
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "failed:"
+  - 'heading "test: define M4.1 stock ledger integrity contract #89" [level=1]':
+    - generic: "test: define M4.1 stock ledger integrity contract #89"
+  - button "Re-run jobs":
+    - generic: Re-run jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - region "Annotations":
+      - button "Open job annotations":
+      - heading "Annotations" [level=2]
+      - generic: 1 error
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: failed Oct 22, 202618 minutes ago in 44s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 1s":
+      - generic: Set up job
+      - generic: 1s
+    - generic "Initialize containers 21s":
+      - generic: Initialize containers
+      - generic: 21s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 2s":
+      - generic: Install uv
+      - generic: 2s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 0s":
+      - generic: Synchronize locked dependencies
+      - generic: 0s
+    - generic "Record runtime versions 1s":
+      - generic: Record runtime versions
+      - generic: 1s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:7:1
+    - generic "Run uv run python --version":
+      - generic: Run uv run python --version
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:7:16
+    - generic: Python 3.14.8
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:7:17
+    - generic: Django 5.2.18
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:7:18
+    - generic: psycopg 3.3.6
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 0s" [active]:
+      - generic: Verify PostgreSQL connection
+      - generic: 0s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:9:1
+    - generic "Run uv run python -c \"import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings'); import django; django.setup(); from django.db import connection; connection.ensure_connection(); print('vendor=' + connection.vendor); assert connection.vendor == 'postgresql'; cursor = connection.cursor(); cursor.execute('SHOW server_version'); print('server_version=' + cursor.fetchone()[0])\"":
+      - generic: Run uv run python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings'); import django; django.setup(); from django.db import connection; connection.ensure_connection(); print('vendor=' + connection.vendor); assert connection.vendor == 'postgresql'; cursor = connection.cursor(); cursor.execute('SHOW server_version'); print('server_version=' + cursor.fetchone()[0])"
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:9:15
+    - generic: vendor=postgresql
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:9:16
+    - generic: server_version=18.6 (Debian 18.6-1.pgdg12+2)
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run ERP tests 6s":
+      - generic: Run ERP tests
+      - generic: 6s
+    - generic "Post Install uv 0s":
+      - generic: Post Install uv
+      - generic: 0s
+    - generic "Post Check out repository 1s":
+      - generic: Post Check out repository
+      - generic: 1s
+    - generic "Stop containers 0s":
+      - generic: Stop containers
+      - generic: 0s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
+
+FULL SUITE
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "failed:"
+  - 'heading "test: define M4.1 stock ledger integrity contract #89" [level=1]':
+    - generic: "test: define M4.1 stock ledger integrity contract #89"
+  - button "Re-run jobs":
+    - generic: Re-run jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - region "Annotations":
+      - button "Open job annotations":
+      - heading "Annotations" [level=2]
+      - generic: 1 error
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: failed Oct 22, 202618 minutes ago in 44s
+    - textbox "Search":
+      - /placeholder: Search logs
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 1s":
+      - generic: Set up job
+      - generic: 1s
+    - generic "Initialize containers 21s":
+      - generic: Initialize containers
+      - generic: 21s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 2s":
+      - generic: Install uv
+      - generic: 2s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 0s":
+      - generic: Synchronize locked dependencies
+      - generic: 0s
+    - generic "Record runtime versions 1s":
+      - generic: Record runtime versions
+      - generic: 1s
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 0s":
+      - generic: Verify PostgreSQL connection
+      - generic: 0s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:9:1
+    - generic "Run uv run python -c \"import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings'); import django; django.setup(); from django.db import connection; connection.ensure_connection(); print('vendor=' + connection.vendor); assert connection.vendor == 'postgresql'; cursor = connection.cursor(); cursor.execute('SHOW server_version'); print('server_version=' + cursor.fetchone()[0])\"":
+      - generic: Run uv run python -c "import os; os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'config.settings'); import django; django.setup(); from django.db import connection; connection.ensure_connection(); print('vendor=' + connection.vendor); assert connection.vendor == 'postgresql'; cursor = connection.cursor(); cursor.execute('SHOW server_version'); print('server_version=' + cursor.fetchone()[0])"
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:9:15
+    - generic: vendor=postgresql
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:9:16
+    - generic: server_version=18.6 (Debian 18.6-1.pgdg12+2)
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run ERP tests 6s" [active]:
+      - generic: Run ERP tests
+      - generic: 6s
+    - link "1":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:1
+    - generic "Run uv run pytest -q --tb=short":
+      - generic: Run uv run pytest -q --tb=short
+    - link "14":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:15
+    - generic: ........................................................................ [ 21%]
+    - link "15":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:16
+    - generic: ........................................................................ [ 42%]
+    - link "16":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:17
+    - generic: ..........................EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE [ 64%]
+    - link "17":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:18
+    - generic: ........................................................................ [ 85%]
+    - link "18":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:19
+    - generic: ..................EEEEEEEEEE..................... [100%]
+    - link "19":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:20
+    - generic: ==================================== ERRORS ====================================
+    - link "20":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:21
+    - generic: ___ ERROR at setup of test_exact_balance_empty_exhaustion_and_pair_isolation ___
+    - link "21":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:22
+    - generic: "'stockledgerentry'"
+    - link "22":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:23
+    - link "23":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:24
+    - generic: "During handling of the above exception, another exception occurred:"
+    - link "24":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:25
+    - generic: App 'inventory' doesn't have a 'StockLedgerEntry' model.
+    - link "25":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:26
+    - link "26":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:27
+    - generic: "During handling of the above exception, another exception occurred:"
+    - link "27":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:28
+    - generic: "M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "28":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:29
+    - generic: __________ ERROR at setup of test_total_can_exceed_single_entry_range __________
+    - link "29":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:30
+    - generic: "'stockledgerentry'"
+    - link "30":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:31
+    - link "31":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:32
+    - generic: "During handling of the above exception, another exception occurred:"
+    - link "32":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:33
+    - generic: App 'inventory' doesn't have a 'StockLedgerEntry' model.
+    - link "33":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:34
+    - link "34":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:35
+    - generic: "During handling of the above exception, another exception occurred:"
+    - link "35":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:36
+    - generic: "M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "36":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:37
+    - generic: ____ ERROR at setup of test_raw_invalid_quantity_rejected_without_entry[0] _____
+    - link "37":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:38
+    - generic: "'stockledgerentry'"
+    - link "38":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:39
+    - link "39":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:40
+    - generic: "During handling of the above exception, another exception occurred:"
+    - link "40":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:41
+    - generic: App 'inventory' doesn't have a 'StockLedgerEntry' model.
+    - link "41":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:42
+    - link "42":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:43
+    - generic: "During handling of the above exception, another exception occurred:"
+    - link "43":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:44
+    - generic: "M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "44":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:45
+    - generic: _ ERROR at setup of test_raw_invalid_quantity_rejected_without_entry[-0.000001] _
+    - link "45":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:46
+    - generic: "'stockledgerentry'"
+    - link "46":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:47
+    - link "47":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:48
+    - generic: "During handling of the above exception, another exception occurred:"
+    - link "48":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:49
+    - generic: App 'inventory' doesn't have a 'StockLedgerEntry' model.
+    - link "49":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:50
+    - generic "Post Install uv 0s":
+      - generic: Post Install uv
+      - generic: 0s
+    - generic "Post Check out repository 1s":
+      - generic: Post Check out repository
+      - generic: 1s
+    - generic "Stop containers 0s":
+      - generic: Stop containers
+      - generic: 0s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s
+
+FINAL SUMMARY
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+    - text: Type
+    - generic: /
+    - text: to search
+  - link "Chat with Copilot":
+    - /url: /copilot
+  - button "Open Copilot…":
+  - button "Create new...":
+  - link "All issues":
+    - /url: /issues
+  - link "All pull requests":
+    - /url: /pulls
+  - link "All repositories":
+    - /url: /repos
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+      - link "Security and quality":
+        - /url: /porntaned/ERP-for-Factory/security
+        - generic: Security and quality
+      - link "Insights":
+        - /url: /porntaned/ERP-for-Factory/pulse
+        - generic: Insights
+      - link "Settings":
+        - /url: /porntaned/ERP-for-Factory/settings
+        - generic: Settings
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "failed:"
+  - 'heading "test: define M4.1 stock ledger integrity contract #89" [level=1]':
+    - generic: "test: define M4.1 stock ledger integrity contract #89"
+  - button "Re-run jobs":
+    - generic: Re-run jobs
+  - button "Workflow run options":
+  - navigation "Workflow run":
+    - list:
+      - link "Summary":
+        - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919
+        - generic: Summary
+      - heading "All jobs" [level=4]
+      - button "Filter by job status":
+      - list:
+        - link "postgresql-tdd":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506
+          - generic: postgresql-tdd
+      - heading "Run details" [level=3]
+      - list "Run details":
+        - link "Usage":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/usage
+          - generic: Usage
+        - link "Workflow file":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/workflow
+          - generic: Workflow file
+        - link "Lockfile":
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39793972919/lockfile
+          - generic: Lockfile
+  - region "Check run summary":
+    - region "Annotations":
+      - button "Open job annotations":
+      - heading "Annotations" [level=2]
+      - generic: 1 error
+    - link "postgresql-tdd":
+      - /url: "#logs"
+      - generic: postgresql-tdd
+    - generic: failed Oct 22, 202619 minutes ago in 44s
+    - textbox "Search" [active]:
+      - /placeholder: Search logs
+      - text: passed
+    - generic: 1/1
+    - button "Go to previous result":
+    - button "Go to next result":
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 1s":
+      - generic: Set up job
+      - generic: 1s
+    - generic "Initialize containers 21s":
+      - generic: Initialize containers
+      - generic: 21s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 2s":
+      - generic: Install uv
+      - generic: 2s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 0s":
+      - generic: Synchronize locked dependencies
+      - generic: 0s
+    - generic "Record runtime versions 1s":
+      - generic: Record runtime versions
+      - generic: 1s
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 0s":
+      - generic: Verify PostgreSQL connection
+      - generic: 0s
+    - generic "Verify model and migration state 0s":
+      - generic: Verify model and migration state
+      - generic: 0s
+    - generic "Apply migrations to fresh PostgreSQL 1s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 1s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run ERP tests 6s":
+      - generic: Run ERP tests
+      - generic: 6s
+    - link "500":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:501
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_parent_deletion_protected[warehouse] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "501":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:502
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_parent_deletion_protected[actor] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "502":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:503
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_history_freezes_identity_even_at_zero[lot-item_id-second_item] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "503":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:504
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_history_freezes_identity_even_at_zero[item-base_uom_id-second_uom] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "504":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:505
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_history_freezes_identity_even_at_zero[item-organization_id-second_org] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "505":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:506
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_history_freezes_identity_even_at_zero[warehouse-plant_id-second_plant] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "506":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:507
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_history_freezes_identity_even_at_zero[plant-organization_id-second_org] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "507":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:508
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_metadata_edits_and_identity_before_history_allowed - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "508":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:509
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_balance_rejects_invalid_inputs[none-lot] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "509":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:510
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_balance_rejects_invalid_inputs[none-warehouse] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "510":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:511
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_balance_rejects_invalid_inputs[unsaved_collision-lot] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "511":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:512
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_balance_rejects_invalid_inputs[unsaved_collision-warehouse] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "512":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:513
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_balance_rejects_invalid_inputs[missing-lot] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "513":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:514
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_balance_rejects_invalid_inputs[missing-warehouse] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "514":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:515
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_server_timestamp_and_identity - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "515":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:516
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_missing_references_rejected[lot_id] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "516":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:517
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_missing_references_rejected[warehouse_id] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "517":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:518
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_missing_references_rejected[actor_id] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "518":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:519
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_unsupported_isolation_fails_closed[REPEATABLE READ] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "519":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:520
+    - generic: "ERROR tests/inventory/test_stock_ledger.py::test_unsupported_isolation_fails_closed[SERIALIZABLE] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "520":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:521
+    - generic: "ERROR tests/inventory/test_stock_ledger_concurrency.py::test_competing_debits_observe_committed_balance - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "521":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:522
+    - generic: "ERROR tests/inventory/test_stock_ledger_concurrency.py::test_waiting_debit_observes_credit_rollback - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "522":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:523
+    - generic: "ERROR tests/inventory/test_stock_ledger_concurrency.py::test_base_uom_mutation_and_first_entry_serialize[False] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "523":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:524
+    - generic: "ERROR tests/inventory/test_stock_ledger_concurrency.py::test_base_uom_mutation_and_first_entry_serialize[True] - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "524":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:525
+    - generic: "ERROR tests/inventory/test_stock_ledger_concurrency.py::test_quality_and_ledger_share_lot_lock - Failed: M4.1 ledger contract absent: controlled Issue #26 RED"
+    - link "525":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:526
+    - text: "281"
+    - generic: passed
+    - text: ", 56 errors in 6.12s"
+    - link "526":
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39793972919/job/119876609506#step:16:527
+    - text: "Error:"
+    - generic: Process completed with exit code 1.
+    - generic "Post Install uv 0s":
+      - generic: Post Install uv
+      - generic: 0s
+    - generic "Post Check out repository 1s":
+      - generic: Post Check out repository
+      - generic: 1s
+    - generic "Stop containers 0s":
+      - generic: Stop containers
+      - generic: 0s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s

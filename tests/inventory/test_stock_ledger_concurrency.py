@@ -30,9 +30,9 @@ def wait_for_lock(pid):
     deadline = monotonic() + 5
     while monotonic() < deadline:
         with connection.cursor() as cursor:
-            cursor.execute("SELECT wait_event_type FROM pg_stat_activity WHERE pid=%s", [pid])
+            cursor.execute("SELECT pg_backend_pid() = ANY(pg_blocking_pids(%s))", [pid])
             row = cursor.fetchone()
-        if row and row[0] == "Lock":
+        if row and row[0]:
             return
         sleep(0.01)
     pytest.fail("concurrent writer did not reach an observed PostgreSQL lock wait")
@@ -78,10 +78,39 @@ def test_waiting_debit_observes_credit_rollback(ledger_contract, ledger_scope):
 
 @pytest.mark.django_db(transaction=True)
 @pytest.mark.parametrize("mutation_first", [False, True])
-def test_base_uom_mutation_and_first_entry_serialize(ledger_contract, ledger_scope, mutation_first):
-    item = ledger_scope["item"]
-    alternate = type(ledger_scope["uom"]).objects.create(code="EA", display_name="Each")
-    mutate = lambda: type(item).objects.filter(pk=item.pk).update(base_uom=alternate)  # noqa: E731
+@pytest.mark.parametrize(
+    "parent,field",
+    [
+        ("item", "base_uom"),
+        ("lot", "item"),
+        ("item", "organization"),
+        ("warehouse", "plant"),
+        ("plant", "organization"),
+    ],
+)
+def test_parent_mutation_and_first_entry_serialize(
+    ledger_contract, ledger_scope, mutation_first, parent, field
+):
+    scope = ledger_scope
+    record = scope[parent]
+    if field == "base_uom":
+        alternate = type(scope["uom"]).objects.create(code="EA", display_name="Each")
+    elif field == "item":
+        alternate = type(scope["item"]).objects.create(
+            organization=scope["organization"],
+            base_uom=scope["uom"],
+            code="OTHER",
+            display_name="",
+            item_type="RAW",
+        )
+    elif field == "plant":
+        alternate = type(scope["plant"]).objects.create(
+            organization=scope["organization"], code="OTHER", display_name=""
+        )
+    else:
+        alternate = type(scope["organization"]).objects.create(code="OTHER", display_name="")
+    original_id = getattr(record, field + "_id")
+    mutate = lambda: type(record).objects.filter(pk=record.pk).update(**{field: alternate})  # noqa: E731
     append = lambda: raw_append(ledger_scope, "1")  # noqa: E731
     first, second = (mutate, append) if mutation_first else (append, mutate)
     outcomes, pids = Queue(), Queue()
@@ -95,10 +124,15 @@ def test_base_uom_mutation_and_first_entry_serialize(ledger_contract, ledger_sco
         if thread.ident:
             thread.join(timeout=12)
     assert not thread.is_alive()
-    assert outcomes.get(timeout=1) == ("committed" if mutation_first else "rejected")
-    assert ledger_contract[0].objects.count() == 1
-    item.refresh_from_db()
-    assert item.base_uom_id == (alternate.pk if mutation_first else ledger_scope["uom"].pk)
+    valid_append_after_mutation = field != "organization"
+    assert outcomes.get(timeout=1) == (
+        "committed" if mutation_first and valid_append_after_mutation else "rejected"
+    )
+    assert ledger_contract[0].objects.count() == (
+        0 if mutation_first and not valid_append_after_mutation else 1
+    )
+    record.refresh_from_db()
+    assert getattr(record, field + "_id") == (alternate.pk if mutation_first else original_id)
 
 
 @pytest.mark.django_db(transaction=True)

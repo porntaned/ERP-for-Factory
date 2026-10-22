@@ -51,6 +51,10 @@ def test_total_can_exceed_single_entry_range(ledger_contract, ledger_scope, appe
     assert ledger_contract[1](lot=ledger_scope["lot"], warehouse=ledger_scope["warehouse"]) == (
         Decimal("199999999999999.999998")
     )
+    # Isolate the entry lower bound from the nonnegative-balance rule.
+    with pytest.raises(IntegrityError), transaction.atomic():
+        raw_append(ledger_scope, "-100000000000000")
+    assert ledger_contract[0].objects.count() == 2
 
 
 @pytest.mark.django_db
@@ -239,9 +243,16 @@ def test_server_timestamp_and_identity(ledger_contract, ledger_scope, append_ent
     from datetime import datetime, timezone
 
     old = datetime(2000, 1, 1, tzinfo=timezone.utc)
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT clock_timestamp()")
+        before = cursor.fetchone()[0]
     entry = append_entry(created_at=old)
     entry.refresh_from_db()
-    assert entry.created_at > old
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT clock_timestamp()")
+        after = cursor.fetchone()[0]
+    assert before <= entry.created_at <= after
+    assert entry.created_at.tzinfo is not None
     with pytest.raises(IntegrityError), transaction.atomic():
         append_entry(id=entry.pk + 1000000)
 
@@ -253,3 +264,49 @@ def test_unsupported_isolation_fails_closed(ledger_contract, ledger_scope, isola
         cursor.execute("SET TRANSACTION ISOLATION LEVEL " + isolation)
         raw_append(ledger_scope, "1")
     assert ledger_contract[0].objects.count() == 0
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize("isolation", ["REPEATABLE READ", "SERIALIZABLE"])
+@pytest.mark.parametrize(
+    "parent,field",
+    [
+        ("lot", "item_id"),
+        ("item", "base_uom_id"),
+        ("item", "organization_id"),
+        ("warehouse", "plant_id"),
+        ("plant", "organization_id"),
+    ],
+)
+def test_parent_changes_require_read_committed_even_without_history(
+    ledger_contract, ledger_scope, isolation, parent, field
+):
+    record = ledger_scope[parent]
+    # Invalid reference deliberately catches the trigger before deferred FK checking.
+    # A named 23514 check failure establishes that isolation, not the FK, rejected it.
+    with pytest.raises(IntegrityError, match="identity changes require READ COMMITTED"):
+        with transaction.atomic(), connection.cursor() as cursor:
+            cursor.execute("SET TRANSACTION ISOLATION LEVEL " + isolation)
+            type(record).objects.filter(pk=record.pk).update(**{field: 2147483647})
+    with transaction.atomic(), connection.cursor() as cursor:
+        cursor.execute("SET TRANSACTION ISOLATION LEVEL " + isolation)
+        type(record).objects.filter(pk=record.pk).update(**{field: getattr(record, field)})
+        if parent != "lot":
+            type(record).objects.filter(pk=record.pk).update(display_name="Metadata only")
+
+
+@pytest.mark.django_db(transaction=True)
+def test_ledger_migration_reverse_and_reapply_restores_guards(ledger_contract, ledger_scope):
+    from django.db.migrations.executor import MigrationExecutor
+
+    executor = MigrationExecutor(connection)
+    latest = executor.loader.graph.leaf_nodes()
+    try:
+        executor.migrate([("inventory", "0001_initial")])
+        assert "inventory_stockledgerentry" not in connection.introspection.table_names()
+    finally:
+        MigrationExecutor(connection).migrate(latest)
+    raw_append(ledger_scope, "1")
+    with pytest.raises(IntegrityError), transaction.atomic():
+        raw_append(ledger_scope, "-2")
+    assert ledger_contract[0].objects.count() == 1

@@ -38,6 +38,9 @@ failed multirow statements and rollback retain all-or-nothing behavior.
 
 Ordinary UPDATE/DELETE cannot rewrite history. Once history exists (even zero balance),
 freeze Lot.item, Item.organization/base_uom, Warehouse.plant and Plant.organization.
+Actual changes to those shared parent edges also require READ COMMITTED, even without
+history, because a higher-isolation snapshot could miss a first committed append.
+Metadata and unchanged identity assignments remain allowed at other isolation levels.
 Unrelated metadata and unreferenced identities remain editable. Ordinary explicit IDs
 are rejected with GENERATED ALWAYS identity. Privileged override, TRUNCATE, disabling
 triggers or database administration is outside the ordinary application-write boundary.
@@ -50,8 +53,10 @@ reservation or authorization for a later write.
 ## Files, acceptance and evidence
 
 In scope: inventory model/field/query/migration, inventory tests, issue-specific
-assignment/review/evidence and prerequisite TASKS reconciliation. No dependencies,
-existing Quality behavior, workflow or settings changes are planned.
+assignment/review/evidence and prerequisite TASKS reconciliation. Add one targeted ledger
+test step before the full suite in the existing workflow; triggers and environment stay
+as-is. No dependencies, Quality transition behavior or settings changes are planned. Shared-parent
+identity-update isolation is intentionally narrowed as described above.
 
 Acceptance: controlled PostgreSQL RED after successful environment checks; real database
 quantity/FK/identity/immutability/rollback and concurrency tests; lock-wait observations;
