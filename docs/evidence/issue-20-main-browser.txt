@@ -1,0 +1,34 @@
+Selected visible DOM excerpts from manager browser captures on 2026-10-22.
+These are selected event/ref/SHA/job/result/PostgreSQL lines, not complete logs.
+
+pr-21-main-push-summary.txt
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081
+    - generic: Triggered via push October 22, 2026 11:544 hours ago
+    - link "a294080":
+      - /url: /porntaned/ERP-for-Factory/commit/a294080133cc31ee6ce0b0e1fc808280d669f203
+      - text: a294080
+    - link "main":
+      - /url: /porntaned/ERP-for-Factory/tree/refs/heads/main
+    - text: Success
+    - generic: "on: push"
+      - /url: /porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081
+
+pr-21-main-push-suite.txt
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081
+    - generic: succeeded Oct 22, 20264 hours ago in 34s
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081#step:16:1
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081#step:16:15
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081#step:16:16
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081#step:16:17
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081#step:16:18
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081#step:16:19
+    - generic: 281 passed in 5.44s
+
+pr-21-main-postgresql.txt
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081
+    - generic: succeeded Oct 22, 20264 hours ago in 34s
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081#step:9:1
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081#step:9:15
+    - generic: vendor=postgresql
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324/job/119646635081#step:9:16
+    - generic: server_version=18.6 (Debian 18.6-1.pgdg12+2)

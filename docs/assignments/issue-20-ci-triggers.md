@@ -61,3 +61,12 @@ The final bookkeeping commit does not change the tested workflow or application.
 Manager checks its latest PR checks before handoff. Issue #20 and overall PA.6 remain
 pending owner acceptance/main-push observation. Work stops here; no merge, deployment
 or Finding 5.
+
+## Post-delivery owner action
+
+The owner later explicitly authorized PR #21 merge. It merged at
+`a294080133cc31ee6ce0b0e1fc808280d669f203` on 2026-10-22, closing Issue #20 as completed.
+The actual main-push run succeeded with 281 tests on PostgreSQL 18.6.
+[Merge and main evidence](../evidence/issue-20-ci-triggers.md#owner-authorized-merge-and-main-push).
+Earlier pending statements describe the pre-merge handoff. PA.6 reconciliation and
+Finding 5 documentation are separately owner-authorized in Issue #22. No deployment.

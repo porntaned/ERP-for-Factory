@@ -1,0 +1,18 @@
+Selected visible DOM lines; not full logs.
+          - /url: /porntaned/ERP-for-Factory/actions/runs/39752889301/job/119737549611
+    - generic: Triggered via push October 22, 2026 16:061 minute ago
+    - link "cf9f010":
+      - /url: /porntaned/ERP-for-Factory/commit/cf9f010d212261ddc2e2c8a23bc60dfdc18ebf7b
+      - text: cf9f010
+    - link "codex/docs/readme-status":
+      - /url: /porntaned/ERP-for-Factory/tree/refs/heads/codex/docs/readme-status
+    - text: Success
+      - /url: /porntaned/ERP-for-Factory/actions/runs/39752889301/job/119737549611
+    - generic: succeeded Oct 22, 20261 minute ago in 45s
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39752889301/job/119737549611#step:16:1
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39752889301/job/119737549611#step:16:15
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39752889301/job/119737549611#step:16:16
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39752889301/job/119737549611#step:16:17
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39752889301/job/119737549611#step:16:18
+      - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39752889301/job/119737549611#step:16:19
+    - generic: 281 passed in 8.35s

@@ -60,6 +60,9 @@ Exact command bodies remain in [.github/workflows/foundation.yml](../../.github/
 
 ## Limits and next gate
 
+This and the next section describe the historical pre-merge handoff. The owner action
+and actual main-push observation below supersede their pending status.
+
 Main's literal matching is statically reviewed; an actual main push can be observed only after owner-authorized
 merge. No main push or merge is manufactured for verification. Push and PR runs on
 the same feature commit can both execute; reducing duplicate runs is outside this issue.
@@ -88,3 +91,26 @@ No merge or deployment.
   the PR before handoff; the historical run above is not relabelled as testing that head.
 - Next responsible role: owner review, acceptance/merge decision and actual main-push
   observation after any authorized merge. Issue #20 and PA.6 stay pending that gate.
+
+## Owner-authorized merge and main push
+
+The owner explicitly authorized merging PR #21. It merged through the prepared browser
+on 2026-10-22 at [`a294080133cc31ee6ce0b0e1fc808280d669f203`](https://github.com/porntaned/ERP-for-Factory/commit/a294080133cc31ee6ce0b0e1fc808280d669f203).
+[PR #21](https://github.com/porntaned/ERP-for-Factory/pull/21) is Merged;
+[Issue #20](https://github.com/porntaned/ERP-for-Factory/issues/20) is Closed/completed.
+[Visible merge proof](issue-20-merged.jpg).
+
+The actual main push triggered [Foundation run 39724957324](https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324),
+job 119646635081: **Success, 281 passed in 5.44s**. The summary links main and the exact
+merge SHA above; the expanded connection step reports `vendor=postgresql` and
+`server_version=18.6 (Debian 18.6-1.pgdg12+2)`.
+[Selected visible browser evidence](issue-20-main-browser.txt).
+All existing configuration/migration/Ruff/targeted steps completed; this report does
+not invent individual targeted-result counts from their collapsed output.
+
+Recovery for Issue #22 rechecked PR, Issue and main run through the browser and fetched
+origin/main. `git diff --stat e82a0fe73bf1c0cd243840b79b6fed8bbb012656 origin/main`
+was empty: the merged tree matches the checked PR head. The main result tests the actual
+merge commit, not the subsequent documentation branch. This is manager self-verification,
+not a new independent database execution. PA.6 is reconciled under Issue #22; no workflow
+or application change is repeated, and no deployment occurred.

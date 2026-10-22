@@ -1,0 +1,34 @@
+Rendered README visible DOM excerpt at cf9f010d212261ddc2e2c8a23bc60dfdc18ebf7b; URL https://github.com/porntaned/ERP-for-Factory/blob/codex/docs/readme-status/README.md
+      - blockquote:
+        - paragraph:
+          - text: สถานะอ้างอิง
+          - code: main
+          - text: "วันที่ 2026-10-22: Foundation"
+          - code: Organization → Plant → Warehouse
+          - text: ","
+          - link "Item/UOM":
+            - /url: https://github.com/porntaned/ERP-for-Factory/pull/6
+          - text: ","
+          - link "Lot identity":
+            - /url: https://github.com/porntaned/ERP-for-Factory/pull/8
+          - text: ","
+          - link "สิทธิ์ตามบทบาท/คลัง":
+            - /url: https://github.com/porntaned/ERP-for-Factory/pull/10
+          - text: และ
+          - link "ประวัติ Quality Hold/Release":
+            - /url: https://github.com/porntaned/ERP-for-Factory/pull/12
+          - text: Merge แล้ว รวมถึง Audit Findings 1–4;
+          - 'link "main CI หลัง PR #21"':
+            - /url: https://github.com/porntaned/ERP-for-Factory/actions/runs/39724957324
+          - text: ที่ commit
+          - code: a294080
+          - text: ผ่าน PostgreSQL 18.6 และ 281 tests พร้อม Django checks, migrations และ Ruff ดู
+          - link "หลักฐาน Finding 4":
+            - /url: /porntaned/ERP-for-Factory/blob/codex/docs/readme-status/docs/evidence/issue-20-ci-triggers.md#owner-authorized-merge-and-main-push
+          - text: และ
+          - link "Checklist/งานที่ยังไม่ตรวจรับ":
+            - /url: /porntaned/ERP-for-Factory/blob/codex/docs/readme-status/docs/TASKS.md
+          - text: สำหรับสถานะล่าสุด ส่วนงานเอกสาร Finding 5 ติดตามใน
+          - 'link "Issue #22"':
+            - /url: https://github.com/porntaned/ERP-for-Factory/issues/22
+          - text: ; Stock ledger/movement, หน้าจอ Inventory และการตรวจคุณภาพเต็มรูปแบบยังไม่ส่งมอบ และยังไม่มีการ Deploy
