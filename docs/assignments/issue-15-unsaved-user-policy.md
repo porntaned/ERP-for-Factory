@@ -46,3 +46,15 @@ No local PostgreSQL runtime is currently configured; local lint is supplementary
   reviewer inspected source and captured browser evidence; no separate database execution.
 - No repair cycle required. Remaining work is owner review/merge after the separate PR.
   Finding 3 and other audit work are excluded. No merge or deployment performed.
+
+## Delivery and stop
+
+[PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16) opened through the prepared
+browser on 2026-10-22, base `main`, head `codex/fix-unsaved-user-policy` —
+[visible proof](../evidence/issue-15-pr.jpg). Documentation head
+`06749d0ec9ab7898133733f3066f45dbf2af8a9b` passed
+[Foundation #59](https://github.com/porntaned/ERP-for-Factory/actions/runs/39715723123).
+Later delivery bookkeeping changes only documentation and the PR screenshot.
+Implementation/tests/workflow remain identical to reviewed GREEN commit `d132237`.
+PA.4 and Finding 2 owner acceptance remain unchecked until the owner merges.
+Work stops here with the next responsibility assigned to the owner; Issue #15 stays open.

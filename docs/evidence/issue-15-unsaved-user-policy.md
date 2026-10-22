@@ -80,3 +80,16 @@ No HTTP exploit, deployment or production security validation is claimed. Findin
 remain outstanding; the separate RED audit branch remains intact.
 
 Delivery ends at an owner-review PR. Only the owner can merge or deploy.
+
+## Owner-review delivery
+
+- [PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16), opened through the
+  prepared browser on 2026-10-22 — [visible proof](issue-15-pr.jpg).
+- Documentation head `06749d0ec9ab7898133733f3066f45dbf2af8a9b`:
+  [Foundation #59](https://github.com/porntaned/ERP-for-Factory/actions/runs/39715723123)
+  succeeded; manager inspected the browser run summary. The detailed test results above
+  belong to implementation commit `d132237`, not a claim of another independently executed run.
+- Final documentation links and diff were checked. Subsequent changes only link this
+  delivery and record the screenshot; code/tests/workflow are unchanged from `d132237`.
+- Issue remains open for owner review/merge. PA.4 and owner acceptance stay unchecked.
+  No merge, deployment or Finding 3 work performed.
