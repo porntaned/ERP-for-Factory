@@ -37,3 +37,11 @@ reviewer `/root/m3_readiness_review` checked source/contracts/captured evidence 
 returned [ship](../reviews/issue-24-m3-readiness-independent-review.md) at final SHA.
 One self-render presentation correction; no application repair. Next: owner-review PR,
 final bookkeeping/link/latest-head checks, then stop. Overall M3 remains pending owner.
+
+## Final delivery
+
+[PR #25](https://github.com/porntaned/ERP-for-Factory/pull/25) is open for owner review;
+[proof](../evidence/issue-24-pr.jpg). Earlier next-action wording is historical.
+Final review-record/PR-link changes only documentation; runtime stays identical to
+main. Manager checks final diff/links/latest-head CI before handoff. Overall M3 and
+Issue #24 remain pending owner acceptance. No M4 implementation, merge or deployment.

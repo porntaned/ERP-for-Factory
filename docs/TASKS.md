@@ -18,7 +18,7 @@ Finding 4 เสร็จแล้ว: เจ้าของอนุญาต�
 
 Finding 5 เสร็จแล้ว: เจ้าของอนุญาตให้ Merge [PR #23](https://github.com/porntaned/ERP-for-Factory/pull/23) เข้า `main` ที่ `e6cd22c9bddd533b40d293dbad509076ae41172c`; [Issue #22](https://github.com/porntaned/ERP-for-Factory/issues/22) ปิดเป็น completed — [หลักฐาน Merge](evidence/issue-22-readme-status.md#owner-authorized-merge), [main CI 281 passed](https://github.com/porntaned/ERP-for-Factory/actions/runs/39754340827) ไม่มีการ Deploy
 
-รอบนี้ทำเฉพาะรายการหลักข้อ 2 ใน [Issue #24](https://github.com/porntaned/ERP-for-Factory/issues/24): ตรวจหลักฐาน M3 ก่อน Inventory — [Matrix/ข้อจำกัด](evidence/issue-24-m3-readiness.md), [Independent review](reviews/issue-24-m3-readiness-independent-review.md) `ship` ที่ `f7ef284`; รอ owner-review PR และเจ้าของตรวจรับ M3 ไม่เริ่ม M4 และไม่มีการ Merge/Deploy ในงานนี้
+รอบนี้ส่งมอบเฉพาะรายการหลักข้อ 2 ใน [Issue #24](https://github.com/porntaned/ERP-for-Factory/issues/24): ตรวจหลักฐาน M3 ก่อน Inventory — [Matrix/ข้อจำกัด](evidence/issue-24-m3-readiness.md), [Independent review](reviews/issue-24-m3-readiness-independent-review.md) `ship` ที่ `f7ef284`, [PR #25 รอเจ้าของตรวจ](https://github.com/porntaned/ERP-for-Factory/pull/25) ไม่เริ่ม M4 และไม่มีการ Merge/Deploy ในงานนี้
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -71,7 +71,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## M3 — Item, Lot, สิทธิ์ และ Audit
 
-- [ ] **M3 — ข้อมูลหลักพร้อมสำหรับ Inventory** — รอเจ้าของตรวจรับผล readiness ใน [Issue #24](https://github.com/porntaned/ERP-for-Factory/issues/24), [หลักฐาน/ขอบเขต](evidence/issue-24-m3-readiness.md)
+- [ ] **M3 — ข้อมูลหลักพร้อมสำหรับ Inventory** — รอเจ้าของตรวจรับผล readiness ใน [PR #25](https://github.com/porntaned/ERP-for-Factory/pull/25), [หลักฐาน/ขอบเขต](evidence/issue-24-m3-readiness.md)
   - [x] M3.1 กำหนด Item, หน่วยนับ และ Lot identity — [Item/UOM PR #6](https://github.com/porntaned/ERP-for-Factory/pull/6), [Lot PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8), [merge commit](https://github.com/porntaned/ERP-for-Factory/commit/b7a9bddd87d258c343d17abbc76e53de9a436dcd)
     - [x] M3.1.1 สร้าง Issue แยกสำหรับ Item และหน่วยนับ — [Issue #5](https://github.com/porntaned/ERP-for-Factory/issues/5)
     - [x] M3.1.2 บันทึก Assignment และ TDD RED บน PostgreSQL — [Assignment](assignments/issue-5-item-uom.md), [RED evidence](evidence/issue-5-tdd-red.md), [Independent review](reviews/issue-5-tdd-red-independent-review.md), [Foundation #9](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390285346)

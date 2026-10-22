@@ -199,3 +199,20 @@ proof and returned [ship](../reviews/issue-24-m3-readiness-independent-review.md
 `ee4b4c891ee6bb9d05d9bbd9beccdb14c60977c5`. The reviewer checked 165 local file targets
 and diff/runtime scope; anchors are manager checks. No separate reviewer live retrieval
 or PostgreSQL execution is claimed. Owner-review PR is the next gate.
+
+## Owner-review delivery
+
+[PR #25](https://github.com/porntaned/ERP-for-Factory/pull/25) is Open, targeting main
+from `codex/review/m3-readiness`; [visible proof](issue-24-pr.jpg). It was opened after
+independent `ship`. Review-record commit `50e332e1af7f0a48ba35c9de1fb379b02dc6ed87`
+and final PR-link bookkeeping change only documentation, preserving runtime files and
+the reviewed readiness assessment. After the review record, manager diff/link checks
+passed **6 Markdown documents, 169 targets/ASCII anchors** before PR delivery links.
+Final delivery-link check passed **6 documents, 171 local targets/ASCII anchors**;
+diff checking passed and runtime diff against main remained empty.
+
+Existing push/PR workflows run naturally on this documentation branch. Their latest-head
+status is checked in the PR before handoff; the dated main run above is not relabelled
+as that later head. No new RED or additional test implementation was required.
+Issue #24 and overall M3 stay pending owner acceptance. Work stops at this readiness PR;
+next responsible role is the owner. No M4, merge or deployment.
