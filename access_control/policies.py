@@ -32,6 +32,7 @@ def _is_operational_user(user: Any) -> bool:
     return (
         isinstance(user, get_user_model())
         and user.pk is not None
+        and not user._state.adding
         and user.is_authenticated
         and user.is_active
     )

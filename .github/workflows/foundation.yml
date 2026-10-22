@@ -9,6 +9,7 @@ on:
       - codex/role-warehouse-permissions
       - codex/audit-release-hold
       - codex/fix-policy-deactivation
+      - codex/fix-unsaved-user-policy
   pull_request:
     branches:
       - main
@@ -90,6 +91,9 @@ jobs:
 
       - name: Run persisted-deactivation regressions
         run: uv run pytest -q tests/access_control/test_persisted_deactivation.py --tb=short
+
+      - name: Run unsaved-user policy regressions
+        run: uv run pytest -q tests/access_control/test_unsaved_user_policy.py --tb=short
 
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
