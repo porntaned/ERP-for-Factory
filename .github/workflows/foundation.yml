@@ -10,6 +10,7 @@ on:
       - codex/audit-release-hold
       - codex/fix-policy-deactivation
       - codex/fix-unsaved-user-policy
+      - codex/fix-quality-event-identity
   pull_request:
     branches:
       - main
