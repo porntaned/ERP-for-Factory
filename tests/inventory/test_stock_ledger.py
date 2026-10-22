@@ -4,7 +4,7 @@ from decimal import Decimal
 
 import pytest
 from django.apps import apps
-from django.db import IntegrityError, connection, transaction
+from django.db import DatabaseError, IntegrityError, connection, transaction
 from django.db.models.deletion import ProtectedError
 
 
@@ -253,8 +253,26 @@ def test_server_timestamp_and_identity(ledger_contract, ledger_scope, append_ent
         after = cursor.fetchone()[0]
     assert before <= entry.created_at <= after
     assert entry.created_at.tzinfo is not None
-    with pytest.raises(IntegrityError), transaction.atomic():
+    with pytest.raises(DatabaseError) as rejected, transaction.atomic():
         append_entry(id=entry.pk + 1000000)
+    assert rejected.value.__cause__.sqlstate == "428C9"
+    with (
+        pytest.raises(DatabaseError) as rejected,
+        transaction.atomic(),
+        connection.cursor() as cursor,
+    ):
+        cursor.execute(
+            "INSERT INTO inventory_stockledgerentry "
+            "(id,lot_id,warehouse_id,actor_id,quantity_delta,reason) VALUES (%s,%s,%s,%s,1,'test')",
+            [
+                entry.pk + 1000000,
+                ledger_scope["lot"].pk,
+                ledger_scope["warehouse"].pk,
+                ledger_scope["actor"].pk,
+            ],
+        )
+    assert rejected.value.__cause__.sqlstate == "428C9"
+    assert ledger_contract[0].objects.count() == 1
 
 
 @pytest.mark.django_db(transaction=True)
@@ -310,3 +328,17 @@ def test_ledger_migration_reverse_and_reapply_restores_guards(ledger_contract, l
     with pytest.raises(IntegrityError), transaction.atomic():
         raw_append(ledger_scope, "-2")
     assert ledger_contract[0].objects.count() == 1
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize("parent", ["lot", "warehouse"])
+def test_deferred_forward_parent_cannot_bypass_locked_identity(
+    ledger_contract, ledger_scope, parent
+):
+    # The failure must happen at INSERT, not when the outer FK constraint is checked.
+    # Otherwise a later cross-organization parent creation could legitimize an
+    # entry whose organization was never validated and whose parent was never locked.
+    with transaction.atomic():
+        with pytest.raises(IntegrityError, match="require one organization"), transaction.atomic():
+            raw_append(ledger_scope, "1", **{parent + "_id": 2147483647})
+        assert ledger_contract[0].objects.count() == 0

@@ -118,7 +118,9 @@ class Migration(migrations.Migration):
                     SELECT plant.organization_id INTO warehouse_org
                     FROM facilities_plant plant WHERE plant.id = stock_plant_id FOR SHARE;
 
-                    IF lot_org <> warehouse_org THEN
+                    -- Django foreign keys are deferred. Require existing locked
+                    -- parents now, not a forward reference created later at commit.
+                    IF lot_org IS NULL OR warehouse_org IS NULL OR lot_org <> warehouse_org THEN
                         RAISE EXCEPTION 'stock lot and warehouse require one organization'
                             USING ERRCODE = '23514';
                     END IF;
