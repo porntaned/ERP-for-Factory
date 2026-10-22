@@ -60,12 +60,31 @@ Exact command bodies remain in [.github/workflows/foundation.yml](../../.github/
 
 ## Limits and next gate
 
-Actual PR-to-main event proof is pending PR creation. Main's literal matching is
-statically reviewed; an actual main push can be observed only after owner-authorized
+Main's literal matching is statically reviewed; an actual main push can be observed only after owner-authorized
 merge. No main push or merge is manufactured for verification. Push and PR runs on
 the same feature commit can both execute; reducing duplicate runs is outside this issue.
 Other branch prefixes and tags are intentionally outside the stated trigger contract.
 
 Self-review finds no blocking defect in the minimal event change; independent
-Scrutinize is recorded separately before the owner-review PR. PA.6 remains incomplete
-until owner acceptance; Finding 5/README is unstarted. No merge or deployment.
+Scrutinize is [recorded separately](../reviews/issue-20-ci-triggers-independent-review.md).
+PA.6 remains incomplete until owner acceptance; Finding 5/README is unstarted.
+No merge or deployment.
+
+## Owner-review PR and actual PR event
+
+- [PR #21](https://github.com/porntaned/ERP-for-Factory/pull/21) is Open, targeting main
+  from `codex/ci/general-triggers`; [visible proof](issue-20-pr.jpg).
+- Actual `pull_request` opened event: [run 39722800434](https://github.com/porntaned/ERP-for-Factory/actions/runs/39722800434),
+  job 119639878305, **Success, 281 passed in 5.52s**.
+- Source head `08e45b416ecb65f6ab7d09adcfba6c0a0a091b4a`; checkout tested the synthetic
+  merge ref `2dfc5aeb0ec5b64c99e5641aea0578e41a5c1426`, not a later documentation commit.
+- [PR browser capture](issue-20-pr-browser.txt) records checkout SHA, actual event and
+  successful completed full suite. Earlier intermediate snapshots are followed by the
+  completed output. PR base main is visible in the screenshot and unchanged configuration.
+- Independent reviewer inspected the captured PR evidence and documentation through
+  `08e45b4`, returning `ship` for handoff. No reviewer live retrieval or separate DB run.
+- Final bookkeeping changes only evidence, review, assignment and checklist. Workflow
+  remains identical to reviewed implementation `56a0d80`. Latest-head CI is checked in
+  the PR before handoff; the historical run above is not relabelled as testing that head.
+- Next responsible role: owner review, acceptance/merge decision and actual main-push
+  observation after any authorized merge. Issue #20 and PA.6 stay pending that gate.

@@ -45,3 +45,20 @@ check following merge; no pre-merge observation is claimed.
 **ship for opening the owner-review PR** — both newly named nested feature refs trigger
 the unchanged PostgreSQL job at the reviewed implementation SHA. Stop after PR handoff;
 no merge, deployment or Finding 5. Subsequent documentation needs final diff/link checks.
+
+## Independent handoff addendum
+
+The same reviewer inspected documentation-only changes through
+`08e45b416ecb65f6ab7d09adcfba6c0a0a091b4a`; workflow/application code remain unchanged.
+Diff checking passed and the earlier report was accurately transcribed.
+The PR screenshot shows Open PR #21 targeting main from the expected branch.
+The supplied `issue-20-pr-browser.txt` records actual pull-request run 39722800434,
+job 119639878305, Success, checkout merge SHA
+`2dfc5aeb0ec5b64c99e5641aea0578e41a5c1426` and **281 passed in 5.52s**.
+
+No actionable defect found. **ship for owner handoff** — nested codex/feat pushes and
+retained PR triggering have execution evidence. Inspection remains of source and
+manager-captured evidence, without separate live retrieval or PostgreSQL execution.
+Final bookkeeping should link PR #21 and record PR-event verification. PA.6 acceptance,
+merge and actual main-push execution remain pending owner action. Later documentation
+requires latest-head checks; these recorded runs do not test a later commit.

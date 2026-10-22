@@ -50,3 +50,14 @@ Independent read-only reviewer `/root/issue20_independent_review` returned
 [ship for opening the owner-review PR](../reviews/issue-20-ci-triggers-independent-review.md).
 No repair cycle was needed. PR event verification is the next verifier action;
 main post-merge observation and acceptance remain with the owner.
+
+## Final delivery
+
+[PR #21](https://github.com/porntaned/ERP-for-Factory/pull/21) is open for owner review.
+Actual PR opened event succeeded with 281 tests; exact head/checkout SHA and run are
+linked in the evidence report. Independent reviewer inspected this additional capture
+and returned `ship` for handoff. Earlier next-action wording is historical.
+The final bookkeeping commit does not change the tested workflow or application.
+Manager checks its latest PR checks before handoff. Issue #20 and overall PA.6 remain
+pending owner acceptance/main-push observation. Work stops here; no merge, deployment
+or Finding 5.
