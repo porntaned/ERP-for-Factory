@@ -19,8 +19,9 @@
   dependencies, Inventory, merge and deployment.
 - Dependencies: PR #14 persisted-active filters; existing PostgreSQL CI environment.
 - Manager/implementer/verifier: `/root`; own checks are self-verification.
-- Reviewer: a separate read-only agent, to be assigned after implementation per
-  `docs/MULTI_AGENT.md`. No independent role is claimed until that work occurs.
+- Preliminary reviewer: `/root/issue15_independent_review` (code trace before interruption).
+- Final independent reviewer: `/root/issue15_final_review`, separate read-only agent;
+  [Scrutinize report](../reviews/issue-15-unsaved-user-policy-independent-review.md), `ship`.
 - Repair limit: two cycles for the same finding; third recurrence escalates to owner.
 - Stop: deliver a separate owner-review PR, then stop before Finding 3. Owner alone merges.
 
@@ -31,3 +32,17 @@ Use existing CI with only this exact branch enabled; keep the audit reproduction
 intact. Then add the smallest shared-helper guard, run targeted tests and the full suite,
 inspect exact checkout SHA/runtime/logs and record independent Scrutinize before opening PR.
 No local PostgreSQL runtime is currently configured; local lint is supplementary only.
+
+## Handoff evidence
+
+- Test commit: `7c9c1ac81beaa71776516e5aea29c9d7bc3e7288`; PostgreSQL RED **2 failed,
+  268 passed**. Implementation/reviewed commit: `d132237211c5abdc509679da91b7b12566dff38c`;
+  targeted **6 passed**, persisted-deactivation **3 passed**, full suite **270 passed**.
+- [Actual commands, runtime, results and CI links](../evidence/issue-15-unsaved-user-policy.md).
+- Production diff: one shared-helper guard. New tests exercise both public interfaces
+  with three PK states and saved/ORM-loaded authorized controls. CI enablement is exact
+  branch only; no general trigger fix is claimed.
+- Manager implemented and self-verified using prepared-browser CI inspection. Independent
+  reviewer inspected source and captured browser evidence; no separate database execution.
+- No repair cycle required. Remaining work is owner review/merge after the separate PR.
+  Finding 3 and other audit work are excluded. No merge or deployment performed.
