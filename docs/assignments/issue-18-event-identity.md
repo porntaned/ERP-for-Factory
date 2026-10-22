@@ -63,3 +63,11 @@ remain identical to reviewed GREEN `1c199817`.
 PA.5 and owner acceptance remain unchecked. Issue #18 stays open until owner acceptance
 and merge. Work stops at this PR; the next responsible role is the owner. No deployment
 or subsequent audit finding work performed.
+
+## Post-delivery owner action
+
+Owner reviewed PR #19 and subsequently explicitly authorized merge. It merged on
+2026-10-22 at `95d612bc41b4bda184598ba30f7072c4896f976d`; Issue #18 is Closed/completed.
+[Merge evidence](../evidence/issue-18-event-identity.md#owner-authorized-merge).
+PA.5 reconciliation is recorded in the separately authorized Finding 4 change (#20),
+without repeating Finding 3 or deploying it.

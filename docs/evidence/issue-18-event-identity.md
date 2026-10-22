@@ -117,3 +117,19 @@ exact branch and the targeted step. Stop at owner-review PR; no merge or deploym
   and screenshot; production/tests/workflow are unchanged from reviewed GREEN.
 - Issue #18, PA.5 and owner acceptance remain pending owner merge. No merge, deployment
   or Finding 4/5 work performed.
+
+## Owner-authorized merge
+
+After reviewing PR #19, the owner explicitly authorized its merge on 2026-10-22.
+Manager rechecked head `59aca552f0ac5a60d3386804b3fe68b9c17f4d21`, two successful
+checks and no base conflicts, then merged through the prepared browser.
+
+- [PR #19](https://github.com/porntaned/ERP-for-Factory/pull/19) merge commit:
+  [`95d612bc41b4bda184598ba30f7072c4896f976d`](https://github.com/porntaned/ERP-for-Factory/commit/95d612bc41b4bda184598ba30f7072c4896f976d).
+- [Issue #18](https://github.com/porntaned/ERP-for-Factory/issues/18) confirmed Closed/completed.
+- [Visible merge proof](issue-18-merged.jpg).
+- `git fetch origin` retrieved that merge; `git diff --stat 59aca552f0ac5a60d3386804b3fe68b9c17f4d21 origin/main`
+  was empty. Main matched the checked PR tree; no separate merge-commit database run is claimed.
+- PA.5 completion is reconciled during Issue #20. Earlier delivery text is historical.
+  No deployment occurred. Finding 4 starts only under the owner's later authorization;
+  Finding 5 remains unstarted.
