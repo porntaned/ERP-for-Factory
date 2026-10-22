@@ -41,6 +41,12 @@ freeze Lot.item, Item.organization/base_uom, Warehouse.plant and Plant.organizat
 Actual changes to those shared parent edges also require READ COMMITTED, even without
 history, because a higher-isolation snapshot could miss a first committed append.
 Metadata and unchanged identity assignments remain allowed at other isolation levels.
+Ledger's three direct foreign keys use immediate RESTRICT for deletion/PK changes,
+including same-statement replacement attempts. Item/Plant ancestor deletion and PK
+changes are guarded against ledger history; these operations require READ COMMITTED
+even without history. Existing append SHARE locks coordinate those ancestor guards.
+Unreferenced ancestors can still be replaced at READ COMMITTED. UOM/Organization
+metadata semantics and their existing foreign keys are not broadened by this repair.
 Unrelated metadata and unreferenced identities remain editable. Ordinary explicit IDs
 are rejected with GENERATED ALWAYS identity. Privileged override, TRUNCATE, disabling
 triggers or database administration is outside the ordinary application-write boundary.
@@ -75,3 +81,21 @@ rounding. Both changes are incorporated above and in Issue #26 before implementa
 The reviewer recommended the small custom numeric field, explicit precision/range checks,
 parent identity guards and ordinary-write vs authorization boundary. This is a design
 review, not an implementation approval or PostgreSQL test execution.
+
+## Resume and repair assignment
+
+Owner explicitly requested completing Issue #26 through an owner-review PR, with no
+merge, deploy or M4.2. Resume verified `3b0cc24d972df5dbe53576c99f68760c943a9041`,
+same repository/main, and two pending browser-evidence files. Existing CI at this SHA
+passed 77 ledger tests and 358 full-suite tests; it does not cover the later lifetime fix.
+
+Root identified delete/recreate and PK-move/recreate bypasses. Previous scope reviewer
+confirmed the paths and recommended immediate direct FKs plus Item/Plant lifetime
+guards, then reached a usage limit before final review. `/root/m41_final_review` is a
+new read-only independent reviewer for the final implementation. Neither reviewer is
+attributed root's implementation or PostgreSQL execution.
+
+The lifetime repair adds migration 0003, focused tests and exact CI evidence. It is
+the first implementation repair for this separate finding, not a third recurrence of
+the earlier NULL-parent or precision findings. Parent replacement regression RED is
+commit `cd801fc4f25cac83be2dddd3b88b253fa56faf7e`.
