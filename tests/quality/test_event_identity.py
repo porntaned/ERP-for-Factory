@@ -44,8 +44,12 @@ def test_explicit_event_id_is_rejected_without_blocking_service_hold(
                     "from_disposition, to_disposition, reason) "
                     "VALUES (%s, %s, %s, %s, %s, 'HOLD', 'RELEASED', %s)",
                     [
-                        explicit_id, lot.pk, warehouse.pk, quality_user.pk,
-                        rejected_request, "Synthetic explicit-ID SQL regression",
+                        explicit_id,
+                        lot.pk,
+                        warehouse.pk,
+                        quality_user.pk,
+                        rejected_request,
+                        "Synthetic explicit-ID SQL regression",
                     ],
                 )
 

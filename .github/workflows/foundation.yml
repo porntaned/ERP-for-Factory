@@ -96,5 +96,8 @@ jobs:
       - name: Run unsaved-user policy regressions
         run: uv run pytest -q tests/access_control/test_unsaved_user_policy.py --tb=short
 
+      - name: Run authoritative event-identity regressions
+        run: uv run pytest -q tests/quality/test_event_identity.py tests/quality/test_event_identity_migration.py --tb=short
+
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
