@@ -93,3 +93,25 @@ Delivery ends at an owner-review PR. Only the owner can merge or deploy.
   delivery and record the screenshot; code/tests/workflow are unchanged from `d132237`.
 - Issue remains open for owner review/merge. PA.4 and owner acceptance stay unchecked.
   No merge, deployment or Finding 3 work performed.
+
+## Owner-authorized merge
+
+On 2026-10-22, after owner instruction to proceed and merge first when needed, the
+manager rechecked PR #16 through the prepared browser. Head remained
+`6d8479350ec4324a5f8c7fcd9c4637a50492e5b7`, both checks passed and GitHub reported
+no base-branch conflicts. Independent implementation verdict remained `ship`; all
+changes after reviewed implementation `d132237` were documentation only.
+
+- [PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16) merged with an ordinary
+  merge commit: [`c62687b7ed60515de9424e69fe22ef43bbdfe81e`](https://github.com/porntaned/ERP-for-Factory/commit/c62687b7ed60515de9424e69fe22ef43bbdfe81e).
+- [Issue #15](https://github.com/porntaned/ERP-for-Factory/issues/15) refreshed in the
+  browser and confirmed Closed/completed; closing linkage points to PR #16.
+- [Visible merge proof](issue-15-merged.jpg).
+- `git fetch origin` retrieved the merge; `git rev-parse origin/main` returned the exact
+  merge SHA. `git diff --stat 6d8479350ec4324a5f8c7fcd9c4637a50492e5b7 origin/main`
+  was empty: merged main has the identical tree to the checked PR head.
+- No separate PostgreSQL execution at the merge commit is claimed. The identical tree
+  preserves the previously inspected PostgreSQL/CI evidence.
+- PA.4 and PA.4.5 are now complete. Finding 3 remains unstarted pending scope confirmation;
+  there was no deployment. The preceding owner-review delivery section records the
+  historical pre-merge handoff, not the current issue state.

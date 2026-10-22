@@ -58,3 +58,12 @@ Later delivery bookkeeping changes only documentation and the PR screenshot.
 Implementation/tests/workflow remain identical to reviewed GREEN commit `d132237`.
 PA.4 and Finding 2 owner acceptance remain unchecked until the owner merges.
 Work stops here with the next responsibility assigned to the owner; Issue #15 stays open.
+
+## Post-delivery owner action
+
+Owner subsequently instructed the manager to proceed and merge first when needed.
+PR #16 was rechecked and merged through the prepared browser on 2026-10-22 at
+`c62687b7ed60515de9424e69fe22ef43bbdfe81e`; Issue #15 is now Closed/completed.
+[Merge evidence](../evidence/issue-15-unsaved-user-policy.md#owner-authorized-merge).
+PA.4/PA.4.5 completion is reconciled on documentation-only feature branch
+`codex/record-finding2-merge`. This adds no Finding 3 work, runtime change or deployment.

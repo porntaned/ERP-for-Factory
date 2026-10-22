@@ -10,7 +10,7 @@
 
 Finding 1 เสร็จแล้ว: เจ้าของ Merge [PR #14](https://github.com/porntaned/ERP-for-Factory/pull/14) เข้า `main` ที่ `eba63622495c6b065ad0abcd8e652676f9189d20` และ [Issue #13](https://github.com/porntaned/ERP-for-Factory/issues/13) ปิดแล้ว
 
-รอบนี้ส่งมอบเฉพาะ Finding 2 ใน [Issue #15](https://github.com/porntaned/ERP-for-Factory/issues/15): PostgreSQL RED 2 failed/268 passed → GREEN 270 passed ที่ `d132237211c5abdc509679da91b7b12566dff38c`; Independent Scrutinize `ship` — [หลักฐาน](evidence/issue-15-unsaved-user-policy.md), [Review](reviews/issue-15-unsaved-user-policy-independent-review.md), [PR #16 รอเจ้าของตรวจ](https://github.com/porntaned/ERP-for-Factory/pull/16) Findings 3–5 ยังไม่ได้แก้ ไม่มีการ Merge หรือ Deploy ในงานนี้
+Finding 2 เสร็จแล้ว: เจ้าของอนุญาตให้ Merge [PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16) เข้า `main` ที่ `c62687b7ed60515de9424e69fe22ef43bbdfe81e`; [Issue #15](https://github.com/porntaned/ERP-for-Factory/issues/15) ปิดเป็น completed — [หลักฐาน Merge](evidence/issue-15-unsaved-user-policy.md#owner-authorized-merge), [Independent review](reviews/issue-15-unsaved-user-policy-independent-review.md) Findings 3–5 ยังไม่ได้เริ่มแก้ และไม่มีการ Deploy
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -91,17 +91,17 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## PA — งานแก้จาก Audit หลัง PR #12
 
-- [ ] PA.4 แก้ shared policies ครบ Findings 1–2
+- [x] PA.4 แก้ shared policies ครบ Findings 1–2 — [PR #14](https://github.com/porntaned/ERP-for-Factory/pull/14), [PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16)
   - [x] PA.4.1 เปิด Issue และกำหนดขอบเขตเฉพาะ Finding 1 — [Issue #13](https://github.com/porntaned/ERP-for-Factory/issues/13), [Assignment](assignments/issue-13-policy-deactivation.md)
   - [x] PA.4.2 พิสูจน์ RED และแก้ persisted-active filtering ผ่าน PostgreSQL GREEN — [หลักฐาน](evidence/issue-13-policy-deactivation.md)
   - [x] PA.4.3 Independent Scrutinize และเปิด PR สำหรับ Finding 1 — [Review](reviews/issue-13-policy-deactivation-independent-review.md), [PR #14](https://github.com/porntaned/ERP-for-Factory/pull/14)
   - [x] PA.4.4 เจ้าของตรวจรับและ Merge Finding 1 — [PR #14](https://github.com/porntaned/ERP-for-Factory/pull/14), [Merge commit](https://github.com/porntaned/ERP-for-Factory/commit/eba63622495c6b065ad0abcd8e652676f9189d20), [Issue #13 ปิด](https://github.com/porntaned/ERP-for-Factory/issues/13)
-  - [ ] PA.4.5 Finding 2: unsaved User ที่ใส่ PK มาเอง — แก้และตรวจแล้ว [PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16) รอเจ้าของตรวจรับ
+  - [x] PA.4.5 Finding 2: unsaved User ที่ใส่ PK มาเอง — [PR #16 Merge แล้ว](https://github.com/porntaned/ERP-for-Factory/pull/16), [หลักฐาน](evidence/issue-15-unsaved-user-policy.md#owner-authorized-merge)
     - [x] เปิด Issue และกำหนด Scope — [Issue #15](https://github.com/porntaned/ERP-for-Factory/issues/15), [Assignment](assignments/issue-15-unsaved-user-policy.md)
     - [x] พิสูจน์ PostgreSQL RED/GREEN และ Regression — [หลักฐาน](evidence/issue-15-unsaved-user-policy.md)
     - [x] Independent Scrutinize — [Review](reviews/issue-15-unsaved-user-policy-independent-review.md), verdict `ship` ที่ `d132237211c5abdc509679da91b7b12566dff38c`
     - [x] เปิด PR ให้เจ้าของตรวจ — [PR #16](https://github.com/porntaned/ERP-for-Factory/pull/16), [ภาพหลักฐาน](evidence/issue-15-pr.jpg)
-    - [ ] เจ้าของตรวจรับและ Merge Finding 2
+    - [x] เจ้าของอนุญาตให้ Merge Finding 2 — [Commit `c62687b`](https://github.com/porntaned/ERP-for-Factory/commit/c62687b7ed60515de9424e69fe22ef43bbdfe81e), [Issue #15 ปิด](https://github.com/porntaned/ERP-for-Factory/issues/15)
 - [ ] PA.5 Finding 3: explicit high event ID — ยังไม่เริ่ม
 - [ ] PA.6 Finding 4: CI trigger ทั่วไป — ยังไม่เริ่ม; Issue #13 เพิ่มเฉพาะ branch ที่ใช้พิสูจน์งานนี้
 - [ ] PA.7 Finding 5: README status — ยังไม่เริ่ม
