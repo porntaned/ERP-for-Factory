@@ -14,7 +14,7 @@ Finding 2 เสร็จแล้ว: เจ้าของอนุญาต�
 
 Finding 3 เสร็จแล้ว: เจ้าของตรวจและอนุญาตให้ Merge [PR #19](https://github.com/porntaned/ERP-for-Factory/pull/19) เข้า `main` ที่ `95d612bc41b4bda184598ba30f7072c4896f976d`; [Issue #18](https://github.com/porntaned/ERP-for-Factory/issues/18) ปิดเป็น completed — [หลักฐาน Merge](evidence/issue-18-event-identity.md#owner-authorized-merge), [Independent review](reviews/issue-18-event-identity-independent-review.md) ไม่มีการ Deploy
 
-เริ่มเฉพาะ Finding 4 ใน [Issue #20](https://github.com/porntaned/ERP-for-Factory/issues/20) — [Assignment](assignments/issue-20-ci-triggers.md) รอหลักฐาน event/CI และ Independent review; Finding 5/README ยังไม่เริ่ม ไม่มีการ Merge หรือ Deploy ในงานนี้
+Finding 4 ใน [Issue #20](https://github.com/porntaned/ERP-for-Factory/issues/20): push ของ nested codex/feat ผ่าน PostgreSQL 281 tests ทั้งคู่ — [หลักฐาน](evidence/issue-20-ci-triggers.md), [Independent review](reviews/issue-20-ci-triggers-independent-review.md) `ship` สำหรับเปิด PR; รอ PR event และเจ้าของตรวจรับ Finding 5/README ยังไม่เริ่ม ไม่มีการ Merge หรือ Deploy ในงานนี้
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -112,7 +112,11 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
   - [x] Independent Scrutinize — [Review](reviews/issue-18-event-identity-independent-review.md), verdict `ship` ที่ `1c19981778b2f1cd45279de1b30945523d5827e0`
   - [x] เปิด PR ให้เจ้าของตรวจ — [PR #19](https://github.com/porntaned/ERP-for-Factory/pull/19), [ภาพหลักฐาน](evidence/issue-18-pr.jpg)
   - [x] เจ้าของตรวจรับและ Merge Finding 3 — [Commit `95d612b`](https://github.com/porntaned/ERP-for-Factory/commit/95d612bc41b4bda184598ba30f7072c4896f976d), [Issue #18 ปิด](https://github.com/porntaned/ERP-for-Factory/issues/18)
-- [ ] PA.6 Finding 4: CI trigger ทั่วไป — [Issue #20](https://github.com/porntaned/ERP-for-Factory/issues/20), [Assignment](assignments/issue-20-ci-triggers.md); รอ event/CI evidence และ Review
+- [ ] PA.6 Finding 4: CI trigger ทั่วไป — [Issue #20](https://github.com/porntaned/ERP-for-Factory/issues/20), [Assignment](assignments/issue-20-ci-triggers.md)
+  - [x] เปลี่ยน push filter และพิสูจน์ nested codex/feat events — [หลักฐาน](evidence/issue-20-ci-triggers.md)
+  - [x] Independent Scrutinize ก่อน PR — [Review](reviews/issue-20-ci-triggers-independent-review.md), `ship` ที่ `56a0d80f05250751b3e5025b1c28ec5f6137d60c`
+  - [ ] เปิด PR และตรวจ actual pull_request event
+  - [ ] เจ้าของตรวจรับและ Merge; ตรวจ actual main push หลัง Merge
 - [ ] PA.7 Finding 5: README status — ยังไม่เริ่ม
 
 ## M4 — Inventory MVP

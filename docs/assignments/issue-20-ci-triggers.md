@@ -40,3 +40,13 @@ Only check progress after linked evidence exists.
 Official reference: [GitHub workflow syntax](https://docs.github.com/en/actions/reference/workflows-and-actions/workflow-syntax).
 Its branch filters match ref names, `**` supports nested branch paths, and PR filters
 select target branches. Confirmed through the prepared browser on 2026-10-22.
+
+## Implementation handoff
+
+Implementation `56a0d80f05250751b3e5025b1c28ec5f6137d60c` changes only the push filter
+and the allowed documentation. Actual new nested codex/feat push runs both succeeded,
+with 281 PostgreSQL tests each. [Commands and captured evidence](../evidence/issue-20-ci-triggers.md).
+Independent read-only reviewer `/root/issue20_independent_review` returned
+[ship for opening the owner-review PR](../reviews/issue-20-ci-triggers-independent-review.md).
+No repair cycle was needed. PR event verification is the next verifier action;
+main post-merge observation and acceptance remain with the owner.
