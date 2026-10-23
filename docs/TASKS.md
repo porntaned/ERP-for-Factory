@@ -20,7 +20,7 @@ Finding 5 เสร็จแล้ว: เจ้าของอนุญาต�
 
 เจ้าของตรวจรับ M3 และอนุมัติ Merge [PR #25](https://github.com/porntaned/ERP-for-Factory/pull/25) ที่ `e806b6491d962f8124cc17d902eca2a692485ad1`; [Issue #24](https://github.com/porntaned/ERP-for-Factory/issues/24) ปิด completed แล้ว — [Matrix/ข้อจำกัด](evidence/issue-24-m3-readiness.md), [Independent review](reviews/issue-24-m3-readiness-independent-review.md), [Merge addendum](evidence/issue-24-m3-readiness.md#owner-authorized-merge).
 
-M4.1 เสร็จและเจ้าของ Merge [PR #27](https://github.com/porntaned/ERP-for-Factory/pull/27) เข้า `main` ที่ `a8c93fc461ab4115b69b4c5082f7f31e657ca865`; [Issue #26](https://github.com/porntaned/ERP-for-Factory/issues/26) ปิด completed — [หลักฐานหลัง Merge](evidence/issue-26-stock-ledger.md#owner-merge-and-main-push-ci), [Independent source review](reviews/issue-26-stock-ledger-independent-review.md), [main CI: 121 targeted / 402 full passed](https://github.com/porntaned/ERP-for-Factory/actions/runs/39892983263) ข้อเสนอ [M4.2](proposals/m4.2-synthetic-receipt.md) รอเจ้าของพิจารณา ยังไม่เริ่ม M4.2–M4.7 และไม่มีการ Deploy
+M4.1 เสร็จและเจ้าของ Merge [PR #27](https://github.com/porntaned/ERP-for-Factory/pull/27) เข้า `main` ที่ `a8c93fc461ab4115b69b4c5082f7f31e657ca865`; [Issue #26](https://github.com/porntaned/ERP-for-Factory/issues/26) ปิด completed — [หลักฐานหลัง Merge](evidence/issue-26-stock-ledger.md#owner-merge-and-main-push-ci), [Independent source review](reviews/issue-26-stock-ledger-independent-review.md), [main CI: 121 targeted / 402 full passed](https://github.com/porntaned/ERP-for-Factory/actions/runs/39892983263) เจ้าของอนุมัติ M4.2 และกฎ 3 ข้อแล้ว เริ่มใน [Issue #29](https://github.com/porntaned/ERP-for-Factory/issues/29) — [Assignment](assignments/issue-29-stock-receipt.md); ยังไม่เริ่ม M4.3–M4.7 และไม่มีการ Deploy
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -133,7 +133,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 - [ ] **M4 — รับเข้า โอน และดูประวัติผ่านหน้าจอได้**
   - [x] M4.1 สร้าง Stock ledger และกฎป้องกันยอดติดลบ — [PR #27 Merge แล้ว](https://github.com/porntaned/ERP-for-Factory/pull/27), [Issue #26 completed](https://github.com/porntaned/ERP-for-Factory/issues/26), [หลักฐานหลัง Merge](evidence/issue-26-stock-ledger.md#owner-merge-and-main-push-ci)
-  - [ ] M4.2 รับวัตถุดิบจำลองพร้อม Lot, สิทธิ์และ Audit — [ข้อเสนอรอเจ้าของพิจารณา](proposals/m4.2-synthetic-receipt.md); ยังไม่เริ่ม
+  - [ ] M4.2 รับวัตถุดิบจำลองพร้อม Lot, สิทธิ์และ Audit — [Issue #29](https://github.com/porntaned/ERP-for-Factory/issues/29), [หลักฐาน PostgreSQL: 87 targeted / 489 full passed](evidence/issue-29-stock-receipt.md#postgresql-green-and-independent-review), [Independent source review: ship](reviews/issue-29-stock-receipt-independent-review.md); รอเจ้าของตรวจรับและ Merge
   - [ ] M4.3 โอนระหว่างคลังใน Plant เดียวกัน
   - [ ] M4.4 ป้องกันคำขอซ้ำและทดสอบ Concurrent transactions
   - [ ] M4.5 เพิ่ม Reversal ที่อ้างรายการต้นฉบับ
@@ -176,6 +176,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## Progress log
 
+- 2026-10-23: เจ้าของอนุมัติ M4.2 และกฎ 3 ข้อ เปิด [Issue #29](https://github.com/porntaned/ERP-for-Factory/issues/29); ใช้ Agent ตรวจสัญญา/เขียน tests/ตรวจ source อิสระ [CI implementation](https://github.com/porntaned/ERP-for-Factory/actions/runs/39909020029) ที่ `0a96eda` ผ่าน PostgreSQL 18.6: 87 receipt / 489 full tests และ Independent source review ให้ ship — [หลักฐาน](evidence/issue-29-stock-receipt.md) M4.2 ยังไม่เช็กเสร็จจนกว่าเจ้าของ Merge ไม่มี UI/การโอน/Deploy
 - 2026-10-23: ตรวจ Git/GitHub/CI จริงหลังเจ้าของ Merge PR #27 ที่ `a8c93fc461ab4115b69b4c5082f7f31e657ca865`; Issue #26 ปิด completed และปรับ checklist 5 ข้อตามหลักฐานแล้ว [main push CI](https://github.com/porntaned/ERP-for-Factory/actions/runs/39892983263/job/120216811092) ผ่าน PostgreSQL 18.6: 121 targeted / 402 full tests ปรับเฉพาะเอกสารสถานะและหลักฐาน พร้อมข้อเสนอ M4.2 ที่ยังไม่อนุมัติ ไม่ทำ implementation ซ้ำ ไม่มีการ Merge หรือ Deploy ในรอบนี้
 - 2026-10-19: สร้าง Issue #1, Branch และเอกสารเริ่มต้นบน GitHub โดยยังไม่เริ่ม Application code
 - 2026-10-19: เพิ่ม Multi-Agent execution contract, เปิด Email privacy สำหรับ Commit ใหม่ และเปิด Ruleset `Protect main`; เก็บประวัติ Commit เดิมไว้ตามการตัดสินใจของเจ้าของ
