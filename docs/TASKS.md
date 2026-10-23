@@ -137,7 +137,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
   - [ ] M4.3 โอนระหว่างคลังใน Plant เดียวกัน
     - [x] M4.3.1 กำหนด Lot, คลังต้นทาง–ปลายทาง, จำนวนและเหตุผล ห้ามคลังเดิม/ข้าม Plant — [Issue #32](https://github.com/porntaned/ERP-for-Factory/issues/32), [สัญญาและตัวอย่าง](assignments/issue-32-transfer-definition.md); ส่งมอบเอกสารใน [PR #33](https://github.com/porntaned/ERP-for-Factory/pull/33) เจ้าของอนุมัติ Merge แล้ว (ไม่ใช่ระบบโอนที่ทำงานได้)
     - [ ] M4.3.2 กำหนดและตรวจสิทธิ์สำหรับคลังทั้งสอง — รอเจ้าของเลือกกติกา
-    - [ ] M4.3.3 กำหนดและบังคับ Quality eligibility ต้นทาง/ปลายทาง — เจ้าของเลือกต้นทาง RELEASED และคงสถานะปลายทาง; [Issue #34](https://github.com/porntaned/ERP-for-Factory/issues/34), [ขอบเขต/หลักฐาน](assignments/m433-transfer-quality-policy.md); รอผล PostgreSQL และตรวจรับ
+    - [ ] M4.3.3 กำหนดและบังคับ Quality eligibility ต้นทาง/ปลายทาง — เจ้าของเลือกต้นทาง RELEASED และคงสถานะปลายทาง; [Issue #34](https://github.com/porntaned/ERP-for-Factory/issues/34), [ขอบเขต/หลักฐาน](assignments/m433-transfer-quality-policy.md); [PostgreSQL: 36 targeted / 525 full ผ่าน](https://github.com/porntaned/ERP-for-Factory/actions/runs/39975578596); รอเจ้าของตรวจรับและ Merge
     - [ ] M4.3.4 หักต้นทางและเพิ่มปลายทางแบบ atomic พร้อมป้องกันยอดติดลบ
     - [ ] M4.3.5 เก็บประวัติและเชื่อม ledger ทั้งสองฝั่งกับรายการโอน
     - [ ] M4.3.6 ป้องกันคำขอโอนซ้ำและรายการโอนชนกัน — ไม่ถือว่า M4.4 เสร็จ
@@ -182,6 +182,9 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-10-23: ทำเฉพาะ Quality gate M4.3.3 ตามนโยบายที่เจ้าของเลือกใน [Issue #34](https://github.com/porntaned/ERP-for-Factory/issues/34): ต้นทาง RELEASED, ปลายทางคงสถานะเดิม; [CI](https://github.com/porntaned/ERP-for-Factory/actions/runs/39975578596) ผ่าน 36 targeted / 525 full บน PostgreSQL 18.6 — [ขอบเขต/หลักฐาน/self-review](assignments/m433-transfer-quality-policy.md) รอตรวจรับ ไม่มีคำสั่งโอนจริง, Merge หรือ Deploy
+
 
 - 2026-10-23: เจ้าของสั่งเฉพาะ M4.3.1 เปิด [Issue #32](https://github.com/porntaned/ERP-for-Factory/issues/32) เพื่อกำหนดข้อมูลการโอนและตัวอย่างตรวจรับ — [สัญญา/ขอบเขต](assignments/issue-32-transfer-definition.md) เอกสารเท่านั้น [commit หลักฐาน](https://github.com/porntaned/ERP-for-Factory/commit/99486ddd7dbb94ff31735a223db1f6a02c520e82) / [PR #33](https://github.com/porntaned/ERP-for-Factory/pull/33); เจ้าของอนุมัติส่งมอบและ Merge โดยรอ CI ผ่าน ไม่เริ่มกฎสิทธิ์/Quality, implementation, UI หรือ Deploy
 - 2026-10-23: เจ้าของอนุมัติ Merge [PR #30](https://github.com/porntaned/ERP-for-Factory/pull/30) ที่ `5701d51dfe48558c6dab21e1e3525de3291b452e`; Issue #29 ปิด completed ตรวจ [main CI หลัง Merge](https://github.com/porntaned/ERP-for-Factory/actions/runs/39910705968) ผ่าน PostgreSQL 18.6: 87 receipt / 489 full tests และปรับ M4.2 เป็นเสร็จตาม [หลักฐานจริง](evidence/issue-29-stock-receipt.md#owner-authorized-merge-and-main-push) งานรอบนี้ปรับเอกสารเท่านั้น ไม่เริ่ม M4.3 และไม่มี Deploy

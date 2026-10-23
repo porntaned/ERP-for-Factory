@@ -4,7 +4,7 @@ Repository: `porntaned/ERP-for-Factory`
 Branch: `codex/inventory/transfer-quality-eligibility`  
 Base: `6c6c4fb7aec5705f626a3975a53dd5eb9f8578ed`  
 [Issue #34](https://github.com/porntaned/ERP-for-Factory/issues/34).
-Status: selected policy implemented; PostgreSQL verification pending; not merged.
+Status: selected policy implemented; PostgreSQL verification passed; ready for owner review; not merged.
 
 ## Verified baseline
 
@@ -56,7 +56,7 @@ Planned checks:
 - Transaction/locking contract and a concurrent Quality transition on PostgreSQL.
 - Existing Quality and Inventory regressions after targeted tests pass.
 
-No PostgreSQL result is recorded yet. Source and tests changed; no schema, role grant,
+PostgreSQL results are recorded below. Source and tests changed; no schema, role grant,
 UI or stock write was added. No merge/deployment is authorized by this request.
 
 ## Review ownership
@@ -82,11 +82,35 @@ no independent agent review has been performed or claimed for this slice.
 - CI gains one targeted step, followed by the existing full ERP suite.
 - Smaller alternative considered: a Boolean snapshot check would allow Quality state
   to change between checking and posting. Caller-owned locks are needed instead.
-- Self-review only. No independent agent review is claimed. Pending PostgreSQL results
-  prevent a ship verdict until verified; full posting integration remains in M4.3.4.
+- Self-review only. No independent agent review is claimed. Verdict: **ship** for this bounded gate: the selected matrix and real serialization
+  passed on PostgreSQL. Full posting integration remains in M4.3.4.
 
 ## Local verification
 
 Windows PowerShell / `.venv/Scripts/python.exe -m ruff check .`: PASS.
 Ruff format applied to the two Python files. No local PostgreSQL test claim: `.env`
 is absent. CI must verify the exact pushed SHA on PostgreSQL before owner review.
+
+## PostgreSQL evidence — 2026-10-23
+
+Tested application SHA: `c1f50d2a05f5d6b76a22e74845bbc7ed3796c6c0`.
+[Foundation #113 / job](https://github.com/porntaned/ERP-for-Factory/actions/runs/39975578596/job/120489149797)
+completed successfully on ubuntu-24.04, PostgreSQL **18.6 (Debian 18.6-1.pgdg12+2)**,
+Python/Django/psycopg pinned by the existing workflow. Database connection log confirmed
+`vendor=postgresql`. Fresh migration and migration-state checks, Django check and Ruff passed.
+
+| Actual command | Observed result |
+| --- | --- |
+| `uv run pytest -q tests/inventory/test_transfer_quality.py --tb=short` | **36 passed in 1.54s** |
+| `uv run pytest -q --tb=short` | **525 passed in 17.62s** |
+
+The targeted matrix includes 9 default/HOLD/RELEASED combinations, pair-specific history,
+15 invalid input variants, stale cached identities, autocommit/isolation rejection and
+4 observed PostgreSQL lock-wait cases. Source Quality HOLD committed before the gate
+causes rejection; a later HOLD waits for the caller transaction. Destination HOLD is
+observed and preserved. No ledger row is written by these checks.
+
+Local Markdown validation: 2 files / 112 local targets PASS; `git diff --check` PASS.
+This evidence is self-verification, not independent review. The final documentation-only
+commit must also pass CI before the PR is ready to merge. Owner approval to merge has
+not been requested or inferred for this work.
