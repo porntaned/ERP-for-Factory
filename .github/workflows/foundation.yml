@@ -100,5 +100,8 @@ jobs:
       - name: Run synthetic receipt tests
         run: uv run pytest -q tests/inventory/test_stock_receipt*.py --tb=short
 
+      - name: Run transfer Quality eligibility tests
+        run: uv run pytest -q tests/inventory/test_transfer_quality.py --tb=short
+
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
