@@ -131,7 +131,9 @@ def test_receipt_and_transfer_cannot_claim_the_same_credit(transfer_scope, recei
 def test_history_update_is_rejected_even_if_noop(transfer_scope, field):
     debit, _ = post(transfer_scope)
     history = debit.transfer_out
-    with pytest.raises(IntegrityError), transaction.atomic():
+    error = DatabaseError if field == "id" else IntegrityError
+    message = "can only be updated to DEFAULT" if field == "id" else "history is immutable"
+    with pytest.raises(error, match=message), transaction.atomic():
         StockTransfer.objects.filter(pk=history.pk).update(**{field: getattr(history, field)})
 
 
