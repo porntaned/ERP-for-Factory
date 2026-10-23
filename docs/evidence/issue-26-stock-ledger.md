@@ -3,6 +3,10 @@
 Repository `porntaned/ERP-for-Factory`; [Issue #26](https://github.com/porntaned/ERP-for-Factory/issues/26).
 [Contract/assignment](../assignments/issue-26-stock-ledger.md).
 
+Current status, verified 2026-10-23: **M4.1 merged and Issue #26 completed**.
+See the [post-merge addendum](#owner-merge-and-main-push-ci). Earlier handoff and
+review statements describe their pre-merge state; they are retained as history.
+
 ## Recovery
 
 2026-10-22: verified remote, branch `codex/review/m3-readiness`, clean HEAD
@@ -132,3 +136,85 @@ is separate from root's CI inspection and self-verification.
   this issue.
 - **Verdict:** `ship` for an owner-review PR after the separate source review and
   exact-commit CI above. Owner acceptance and merge remain pending.
+
+## Owner merge and main push CI
+
+On 2026-10-23, root checked the live repository rather than relying on the chat
+summary. [PR #27](https://github.com/porntaned/ERP-for-Factory/pull/27) was merged by
+owner `porntaned` at **10:03 Asia/Bangkok**, merge commit
+`a8c93fc461ab4115b69b4c5082f7f31e657ca865`. [Issue #26](https://github.com/porntaned/ERP-for-Factory/issues/26)
+was closed as **completed** through that PR. Its five acceptance checkboxes and
+stale pending-acceptance sentence were reconciled with linked evidence through the
+GitHub browser UI; [saved issue screenshot](issue-26-completed.jpg).
+The PR description's pending-acceptance sentence was also updated
+([saved PR screenshot](issue-26-merged-pr.jpg)).
+
+Local recovery commands (PowerShell, Windows):
+
+```powershell
+git remote -v
+git branch --show-current
+git rev-parse HEAD
+git status --short
+git fetch origin
+git rev-parse origin/main
+git switch -c codex/docs/m41-post-merge origin/main
+git diff --exit-code 763ebcc1ee320a5623325a35e8630c34d99a523d HEAD
+```
+
+Initial branch was `codex/inventory/stock-ledger`, clean at
+`763ebcc1ee320a5623325a35e8630c34d99a523d`; remote URL was
+`https://github.com/porntaned/ERP-for-Factory.git`. The first sandboxed fetch could
+not write `.git/FETCH_HEAD`; the approved retry succeeded, advancing `origin/main`
+from `e806b64` to the merge SHA above. The documentation branch starts at that
+merge. The final diff command exited 0 with no output: the merged tree matches the
+PR head, so no M4.1 implementation was repeated.
+
+The live Actions list showed [Foundation #96](https://github.com/porntaned/ERP-for-Factory/actions/runs/39892983263)
+as the latest run at the start of reconciliation: **push / main / Success**.
+[Job 120216811092](https://github.com/porntaned/ERP-for-Factory/actions/runs/39892983263/job/120216811092)
+succeeded in 44s. Checkout log `git log -1 --format=%H` recorded the exact tested
+merge SHA `a8c93fc461ab4115b69b4c5082f7f31e657ca865`.
+Expanded runtime/connection logs recorded Python **3.14.8**, Django **5.2.18**,
+psycopg **3.3.6**, `vendor=postgresql`, server
+**18.6 (Debian 18.6-1.pgdg12+2)**. The workflow uses Ubuntu 24.04 and disposable
+`postgres:18.6-bookworm`, not a local database.
+
+| Observed CI command | Result on merge SHA |
+| --- | --- |
+| `uv run pytest -q tests/inventory/test_stock_ledger.py tests/inventory/test_stock_ledger_concurrency.py tests/inventory/test_stock_parent_lifetime.py --tb=short` | **121 passed in 5.99s** |
+| `uv run pytest -q --tb=short` | **402 passed in 8.80s** |
+
+The same successful job includes Django configuration, PostgreSQL connectivity,
+model/migration drift, fresh migrations, Ruff and the retained deactivation,
+unsaved-user and event-identity regressions. These are **observed CI results**;
+no new local PostgreSQL execution or independent database verification is claimed.
+The existing independent review remains a source review of `040b883`, not a review
+of this documentation update or an independently executed database suite.
+
+Status reconciliation changes README, TASKS and this evidence only, plus saved
+issue/PR screenshots and an explicitly unapproved M4.2 proposal. M4 overall and
+M4.2–M4.7 remain unchecked. No application code, tests, migrations, dependencies,
+workflow, merge or deployment changed in this reconciliation.
+
+### Documentation self-Scrutinize
+
+- **Intent/smaller solution:** reconcile completed M4.1 with actual merge/CI evidence;
+  update existing status surfaces and append this addendum, preserving the original
+  independent review and historical handoff rather than rewriting their verdicts.
+- **Trace:** PR #27's merge event → exact merge SHA → main-push run → job checkout,
+  runtime/connection and targeted/full results → Issue closure and five acceptance
+  checkboxes → README/TASKS links. Reviewed the M4.2 proposal against existing role
+  enums, balance-query boundary and Quality's default HOLD/transition locks. Proposal
+  decisions are explicitly unapproved; no new delivery is claimed.
+- **Verification:** `git diff --check` passed. `.venv/Scripts/python.exe -` with an
+  inline `pathlib`/`re` Markdown check passed: 4 edited/new Markdown files, 118 local
+  link targets exist, fenced blocks balanced; M4.1 alone checked, M4 overall and
+  M4.2–M4.7 unchecked. `git diff --name-only` and `git status --short` confirmed the
+  documentation/image-only boundary. These checks ran on the uncommitted
+  documentation tree based on `a8c93fc`; this is self-verification, not a fresh
+  PostgreSQL run. The tested application SHA remains the merge SHA above.
+- **Report/verdict:** `ship` for a documentation PR; no actionable mismatch remains
+  in the changed status text. This is root's **self-review**, not independent review.
+  Owner review and merge of the reconciliation remain pending. M4.2 needs a separate
+  approved Issue, especially its HOLD receipt and receipt-only retry decisions.
