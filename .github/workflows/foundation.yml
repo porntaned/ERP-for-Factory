@@ -103,5 +103,8 @@ jobs:
       - name: Run transfer Quality eligibility tests
         run: uv run pytest -q tests/inventory/test_transfer_quality.py --tb=short
 
+      - name: Run atomic transfer tests
+        run: uv run pytest -q tests/inventory/test_atomic_transfer.py --tb=short
+
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
