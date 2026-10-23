@@ -3,6 +3,10 @@
 [Issue](https://github.com/porntaned/ERP-for-Factory/issues/29) ·
 [assignment and role boundaries](../assignments/issue-29-stock-receipt.md).
 
+Current status: **M4.2 accepted and merged; Issue #29 completed** on 2026-10-23.
+See [owner-authorized merge and main push](#owner-authorized-merge-and-main-push).
+Earlier handoff/review statements retain their historical pre-merge scope.
+
 ## Recovery and approved scope
 
 2026-10-23: verified origin `https://github.com/porntaned/ERP-for-Factory.git`,
@@ -136,3 +140,66 @@ Later handoff documentation commits are outside that reviewed application/test S
 Handoff files: inventory model/service/migration 0004; two receipt test modules;
 one targeted workflow step; assignment, this evidence, independent review and
 README/TASKS/approved-proposal status. Next responsible role: owner PR review.
+
+## Owner-authorized merge and main push
+
+The owner explicitly authorized merging [PR #30](https://github.com/porntaned/ERP-for-Factory/pull/30).
+GitHub records merge commit **`5701d51dfe48558c6dab21e1e3525de3291b452e`** into
+`main` on 2026-10-23 at **13:18 Asia/Bangkok**, after both PR-head checks passed.
+Live [Issue #29](https://github.com/porntaned/ERP-for-Factory/issues/29) is closed as
+**completed** through PR #30; all five delivery checks already have linked evidence.
+This supersedes the pending-owner statements in the historical handoff above.
+
+Post-merge recovery used Windows PowerShell:
+
+```powershell
+git remote -v
+git branch --show-current
+git rev-parse HEAD
+git status --short
+git fetch origin
+git switch -c codex/docs/m42-post-merge origin/main
+git rev-parse HEAD
+git diff --exit-code e5e5f67c662b289911788c03aefcbadf033bbbda HEAD
+```
+
+Verified repository URL `https://github.com/porntaned/ERP-for-Factory.git`, clean
+local branch `codex/inventory/synthetic-receipt` at `e5e5f67`, and fetched main
+advancing from `21ab140` to the merge SHA. The documentation branch starts at that
+merge. Tree comparison against the merged PR head exited 0 with no output: no
+application implementation was repeated or changed.
+
+The latest live Actions run at recovery was
+[Foundation #104](https://github.com/porntaned/ERP-for-Factory/actions/runs/39910705968),
+**push / main / Success**. [Job 120272796488](https://github.com/porntaned/ERP-for-Factory/actions/runs/39910705968/job/120272796488)
+checked out the exact merge SHA above (`git log -1 --format=%H`), recorded
+`vendor=postgresql`, server **18.6 (Debian 18.6-1.pgdg12+2)** and succeeded.
+The existing workflow uses Ubuntu 24.04 and disposable `postgres:18.6-bookworm`.
+
+| Actual main-push command | Observed result on merge SHA |
+| --- | --- |
+| `uv run pytest -q tests/inventory/test_stock_receipt*.py --tb=short` | **87 passed in 4.15s** |
+| `uv run pytest -q --tb=short` | **489 passed in 18.55s** |
+
+Django checks, PostgreSQL connection, model/migration drift, fresh migrations,
+Ruff and retained auth/Quality/ledger regressions also passed in the same job.
+These are manager-observed CI results; no new local PostgreSQL execution or new
+independent review of application code is claimed. The existing independent source
+review remains scoped to implementation/test SHA `0a96eda`.
+
+### Documentation self-Scrutinize
+
+Intent: reconcile owner-accepted M4.2 on existing status surfaces, preserving
+historical test/review evidence. Traced PR merge → Issue completed → main checkout
+SHA/runtime/test logs → README/TASKS/assignment/proposal links. The smallest change
+updates status and appends this addendum; no runtime/test/workflow changes are needed.
+
+Verification on the uncommitted documentation tree based on `5701d51`:
+`git diff --check` passed; `.venv/Scripts/python.exe -` with an inline
+`pathlib`/`re` check passed for 5 Markdown files, 121 existing local link targets,
+balanced fences and milestone gates (M4.1/M4.2 checked, M4/M4.3–M4.7 unchecked).
+`git diff --stat` confirmed only the five documentation files changed.
+
+Self-review verdict: **ship** for a documentation PR. M4.1 and M4.2 are complete;
+M4 overall stays unchecked, M4.3–M4.7 remain unstarted. No UI, merge of this
+documentation PR, deployment or new feature is included in this reconciliation.
