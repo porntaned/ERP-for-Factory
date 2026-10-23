@@ -66,5 +66,8 @@ Root application implementation and test-agent delivery are committed at
 [Evidence](../evidence/issue-29-stock-receipt.md) records real CI commands/results:
 87 receipt / 489 full tests passed. Independent source review is
 [recorded separately](../reviews/issue-29-stock-receipt-independent-review.md).
-Later changes are batched documentation only. Owner review/merge remains pending;
-no deployment or other milestone implementation is included.
+Later changes are batched documentation only. This pre-merge handoff originally
+awaited owner acceptance. The owner subsequently authorized merging [PR #30](https://github.com/porntaned/ERP-for-Factory/pull/30)
+at `5701d51dfe48558c6dab21e1e3525de3291b452e` on 2026-10-23; Issue #29 is completed.
+See [post-merge evidence](../evidence/issue-29-stock-receipt.md#owner-authorized-merge-and-main-push).
+No deployment or other milestone implementation is included.
