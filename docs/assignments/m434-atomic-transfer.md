@@ -4,7 +4,7 @@ Repository: `porntaned/ERP-for-Factory`
 Branch: `codex/inventory/atomic-transfer`  
 Base: `b4b44579352a490e1432783e1a34d571b6bf37ac`  
 [Issue #36](https://github.com/porntaned/ERP-for-Factory/issues/36).
-Status: implementation prepared; PostgreSQL verification pending. No merge authorized.
+Status: implementation verified on PostgreSQL; ready for owner review. No merge authorized.
 
 ## Verified baseline and boundaries
 
@@ -59,7 +59,7 @@ these grants. Current persisted deactivation/revocation must win if committed fi
 - Missing/wrong/revoked grants and persisted deactivation reject without writes.
 - Targeted PostgreSQL tests first, then existing Inventory/Quality and full regressions.
 
-No PostgreSQL test result or completion is claimed yet. Root implemented and self-reviewed
+PostgreSQL results are recorded below; completion awaits owner acceptance. Root implemented and self-reviewed
 this slice; no independent agent review is claimed. Owner approval for PR #35 does not
 authorize merging this work.
 
@@ -85,10 +85,35 @@ Exclusions: typed transfer record/persistent pairing, request retry/deduplicatio
 UI, schema changes, dependencies, real data, reversal, valuation and deployment. Actor,
 reason and database time exist on each ledger row, but M4.3.5 is not complete.
 Each repeated invocation is a new transfer; no auto-retry or retry-safe claim is made.
-Full M4.3.7 independent review remains pending. Self-review verdict awaits PostgreSQL.
+Full M4.3.7 independent review remains pending. Self-review verdict: **ship** for
+this bounded command, because exact atomicity, rollback and serialized eligibility passed
+on PostgreSQL. A repeated invocation still posts again by design; no endpoint is exposed.
 
 ## Local checks
 
-Windows PowerShell with `.venv/Scripts/python.exe`: Ruff check and Markdown/diff checks
-will be recorded after they run. `.env` absent; use disposable CI PostgreSQL 18.6,
+Windows PowerShell with `.venv/Scripts/python.exe`: `-m ruff check .` PASS; Ruff format check of both new Python files PASS;
+Markdown links/fences: 2 files / 112 local targets PASS; `git diff --check` PASS. `.env` absent; use disposable CI PostgreSQL 18.6,
 not SQLite/mocks, to verify business/locking behavior. No local database result claimed.
+
+## PostgreSQL verification — 2026-10-23
+
+Application SHA: `99f96d7c7a0b266400e53a3bc12847ffa8774312`.
+[Foundation #117 / job](https://github.com/porntaned/ERP-for-Factory/actions/runs/39979297426/job/120502035171)
+completed successfully. Environment: ubuntu-24.04, `vendor=postgresql`, server
+**18.6 (Debian 18.6-1.pgdg12+2)**. Python/Django/psycopg use the existing exact workflow
+pins. Fresh migrations, model/migration-state check, Django check and Ruff passed.
+
+| Actual command | Observed result |
+| --- | --- |
+| `uv run pytest -q tests/inventory/test_atomic_transfer.py --tb=short` | **66 passed in 2.72s** |
+| `uv run pytest -q --tb=short` | **591 passed in 19.22s** |
+
+The real PostgreSQL destination-rejection trigger raised IntegrityError after the
+source insert. The command savepoint rolled the debit back; the caller transaction
+could still write an unrelated Organization. The trigger was test-only and removed.
+Source depletion and 9 actual lock-wait cases passed, including 8 Quality/authorization
+mutation orderings and 1 competing transfer. Existing Quality gate and receipt/ledger
+regressions also passed in the full suite.
+
+Evidence is self-verification, not independent review. Final documentation-only commit
+must pass CI too before merging. M4.3.5/M4.3.6 and full M4.3.7 remain incomplete.
