@@ -4,7 +4,7 @@
 Repository: `porntaned/ERP-for-Factory`  
 Branch: `codex/inventory/transfer-history`  
 Base: `0df0923b293a889dc2ca5316062d5350f7e60a9a`  
-Status: implemented; PostgreSQL verification pending; not merged.
+Status: implemented and PostgreSQL verified; ready for owner review; not merged.
 
 ## Scope and baseline
 
@@ -58,11 +58,41 @@ create new transfers. No auto-retry or endpoint is added. Source Quality and bot
 WAREHOUSE authority remain as approved in M4.3.3/M4.3.4.
 
 Root implemented, traced and self-reviewed this slice. No independent agent review is
-claimed. Verdict pending PostgreSQL verification. The Postgres best-practices skill
+claimed. Verdict: **ship** for this bounded history slice, because pair integrity,
+immutability, atomic rollback, ownership races and upgrade preservation passed on PostgreSQL. The Postgres best-practices skill
 informed indexed foreign keys and consistent lock ordering; no Supabase service is used.
 
 ## Local checks
 
 Windows PowerShell / `.venv/Scripts/python.exe`: Ruff check and format of changed Python
 files PASS. No local PostgreSQL claim: `.env` is absent; use disposable CI PostgreSQL.
-Exact CI SHA, actual commands, test results and limitations will be recorded after running.
+Local Markdown: 2 files / 114 local targets, fences and pending acceptance gates PASS;
+`git diff --check` PASS.
+
+## PostgreSQL evidence — 2026-10-23
+
+Tested application/test SHA: `fb3de5ea7a60b41a38036b92d2e0c4c3980090c5`.
+[Foundation #123 / job](https://github.com/porntaned/ERP-for-Factory/actions/runs/39981798189/job/120510693093)
+completed successfully on ubuntu-24.04 with `vendor=postgresql` and server
+**18.6 (Debian 18.6-1.pgdg12+2)**. Python/Django/psycopg use the existing exact workflow
+pins. Fresh migration, model/migration-state check, Django check and Ruff passed.
+
+| Actual command | Observed result |
+| --- | --- |
+| `uv run pytest -q tests/inventory/test_transfer_history.py --tb=short` | **29 passed in 1.67s** |
+| `uv run pytest -q --tb=short` | **620 passed in 22.54s** |
+
+The targeted suite includes a real PostgreSQL history rejection after ledger inserts,
+3 observed lock-wait races (two receipt/transfer orders and duplicate pair), immutable
+history/identity guards, and a 0004-to-0005 upgrade that retains old ledger and receipt
+rows without creating inferred transfers. Existing 66 atomic transfer tests and Quality,
+receipt, ledger regressions remain green in the full suite.
+
+Repair evidence: [Foundation #122](https://github.com/porntaned/ERP-for-Factory/actions/runs/39981565900)
+had 1 failed / 28 passed: the identity UPDATE guard correctly raised ProgrammingError
+(`column id can only be updated to DEFAULT`) while the test expected IntegrityError.
+The final test checks the actual database exception/message; history constraints were
+not weakened. The explicit identity INSERT assertion also checks GENERATED ALWAYS.
+
+No independent review is claimed; full M4.3.7 remains pending. A final documentation-only
+commit must pass CI before merge. Owner acceptance/merge and deployment are not inferred.
