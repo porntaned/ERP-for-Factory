@@ -16,8 +16,9 @@ Branch: `codex/inventory/synthetic-receipt`.
   no database execution or code edits claimed.
 - `/root/m42_tests`: test implementer for `tests/inventory/test_stock_receipt.py`
   and `test_stock_receipt_concurrency.py`; shares working tree, no Git writes.
-- A separate final read-only reviewer will inspect the completed implementation;
-  its actual identity, reviewed SHA and verdict will be recorded at handoff.
+- `/root/m42_final_review`: separate final read-only source reviewer, inspected
+  `0a96eda80107f088d043c0ed47683ae6e6ddbd69` against the base after GREEN; verdict
+  `ship`. No independent PostgreSQL execution or CI retrieval claimed.
 
 ## Fixed contract
 
@@ -57,3 +58,13 @@ adjustments, valuation, real data, full QC, Manufacturing, privileged operations
 dependencies, merge or deployment. Two repair cycles per same finding; third
 recurrence escalates. Read independent context in parallel and batch evidence;
 retain test → repair → independent review dependencies.
+
+## Handoff
+
+Root application implementation and test-agent delivery are committed at
+`0a96eda80107f088d043c0ed47683ae6e6ddbd69`; test-only RED was `1571c6e`.
+[Evidence](../evidence/issue-29-stock-receipt.md) records real CI commands/results:
+87 receipt / 489 full tests passed. Independent source review is
+[recorded separately](../reviews/issue-29-stock-receipt-independent-review.md).
+Later changes are batched documentation only. Owner review/merge remains pending;
+no deployment or other milestone implementation is included.
