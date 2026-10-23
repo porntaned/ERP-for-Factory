@@ -118,3 +118,11 @@ Windows PowerShell / Python จาก `.venv`: ตรวจ Markdown ทั้�
 `pathlib`/`re` (local link targets, balanced fences และสถานะ checklist);
 `git diff --check` ผ่าน ไม่มีการเปลี่ยน application หรือ tests
 SHA ที่ทดสอบโดย CI จะอยู่ใน PR ที่เชื่อมกับ Issue #32; CI เดิมไม่ใช่หลักฐาน transfer implementation
+
+## Delivery evidence
+
+[PR #33](https://github.com/porntaned/ERP-for-Factory/pull/33) ส่งมอบเอกสารนี้
+[contract commit](https://github.com/porntaned/ERP-for-Factory/commit/99486ddd7dbb94ff31735a223db1f6a02c520e82)
+ผ่าน local Markdown checks: 2 files / 109 local targets / balanced fences และ
+`git diff --check`; การติ๊ก M4.3.1 หมายถึงส่งมอบนิยามและเจ้าของอนุมัติแล้ว
+สถานะ Merge และ CI final head ตรวจจาก PR นี้โดยตรง ไม่ใช่การรับรองระบบโอนจริง
