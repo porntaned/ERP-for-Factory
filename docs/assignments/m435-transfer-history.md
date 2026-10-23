@@ -4,7 +4,8 @@
 Repository: `porntaned/ERP-for-Factory`  
 Branch: `codex/inventory/transfer-history`  
 Base: `0df0923b293a889dc2ca5316062d5350f7e60a9a`  
-Status: implemented and PostgreSQL verified; ready for owner review; not merged.
+Status: owner-authorized PR #39 merged; Issue #38 completed; main CI passed.
+See the dated post-merge addendum below; earlier scope/verification text records pre-merge work.
 
 ## Scope and baseline
 
@@ -96,3 +97,14 @@ not weakened. The explicit identity INSERT assertion also checks GENERATED ALWAY
 
 No independent review is claimed; full M4.3.7 remains pending. A final documentation-only
 commit must pass CI before merge. Owner acceptance/merge and deployment are not inferred.
+
+## Owner-authorized merge and handoff — 2026-10-23
+
+Owner explicitly approved [PR #39](https://github.com/porntaned/ERP-for-Factory/pull/39).
+Merge commit: `3d876cc129f9f889b636926b40798423a53d31f1`; [Issue #38](https://github.com/porntaned/ERP-for-Factory/issues/38)
+closed completed. [Main CI #126](https://github.com/porntaned/ERP-for-Factory/actions/runs/39983366988)
+passed after merge (1m 21s). Git fetch and GitHub browser independently confirmed main.
+No deployment or M4.3.6 start occurred. This does not turn self-review into independent review.
+
+[Project handoff](../handoff/PROJECT-STATUS-2026-10-23.md) and
+[AI chat starter](../handoff/AI-CHAT-STARTER.md) preserve approved policies and remaining work.
