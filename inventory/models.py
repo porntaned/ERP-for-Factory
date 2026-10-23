@@ -61,3 +61,15 @@ class StockReceipt(models.Model):
 
     request_id = models.UUIDField(unique=True)
     ledger_entry = models.OneToOneField(StockLedgerEntry, on_delete=models.PROTECT)
+
+
+class StockTransfer(models.Model):
+    """Immutable transfer identity; ledger rows own the authoritative payload."""
+
+    source_entry = models.OneToOneField(
+        StockLedgerEntry, on_delete=models.PROTECT, related_name="transfer_out"
+    )
+    destination_entry = models.OneToOneField(
+        StockLedgerEntry, on_delete=models.PROTECT, related_name="transfer_in"
+    )
+    created_at = models.DateTimeField(db_default=Now(), editable=False)

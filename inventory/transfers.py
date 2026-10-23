@@ -7,7 +7,7 @@ from django.db import transaction
 
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 
-from .models import StockLedgerEntry
+from .models import StockLedgerEntry, StockTransfer
 from .services import get_stock_balance
 from .transfer_policy import require_transfer_quality
 
@@ -45,7 +45,7 @@ def transfer_stock(
     """Post a debit/credit pair, requiring current WAREHOUSE authority at both ends.
 
     Source must be RELEASED; destination Quality is unchanged. Return (debit, credit).
-    Each invocation is a NEW transfer: not retry-safe, no persistent transfer identity.
+    Each invocation creates NEW history: not retry-safe, no request deduplication.
     There is no endpoint or automatic retry. Those require the later request contract.
     The atomic block is also a savepoint when the caller owns an outer transaction.
     """
@@ -81,4 +81,5 @@ def transfer_stock(
         credit = StockLedgerEntry.objects.create(
             **payload, warehouse=destination_warehouse, quantity_delta=quantity
         )
+        StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
         return debit, credit
