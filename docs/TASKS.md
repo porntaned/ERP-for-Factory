@@ -18,7 +18,9 @@ Finding 4 เสร็จแล้ว: เจ้าของอนุญาต�
 
 Finding 5 เสร็จแล้ว: เจ้าของอนุญาตให้ Merge [PR #23](https://github.com/porntaned/ERP-for-Factory/pull/23) เข้า `main` ที่ `e6cd22c9bddd533b40d293dbad509076ae41172c`; [Issue #22](https://github.com/porntaned/ERP-for-Factory/issues/22) ปิดเป็น completed — [หลักฐาน Merge](evidence/issue-22-readme-status.md#owner-authorized-merge), [main CI 281 passed](https://github.com/porntaned/ERP-for-Factory/actions/runs/39754340827) ไม่มีการ Deploy
 
-รอบนี้ส่งมอบเฉพาะรายการหลักข้อ 2 ใน [Issue #24](https://github.com/porntaned/ERP-for-Factory/issues/24): ตรวจหลักฐาน M3 ก่อน Inventory — [Matrix/ข้อจำกัด](evidence/issue-24-m3-readiness.md), [Independent review](reviews/issue-24-m3-readiness-independent-review.md) `ship` ที่ `f7ef284`, [PR #25 รอเจ้าของตรวจ](https://github.com/porntaned/ERP-for-Factory/pull/25) ไม่เริ่ม M4 และไม่มีการ Merge/Deploy ในงานนี้
+เจ้าของตรวจรับ M3 และอนุมัติ Merge [PR #25](https://github.com/porntaned/ERP-for-Factory/pull/25) ที่ `e806b6491d962f8124cc17d902eca2a692485ad1`; [Issue #24](https://github.com/porntaned/ERP-for-Factory/issues/24) ปิด completed แล้ว — [Matrix/ข้อจำกัด](evidence/issue-24-m3-readiness.md), [Independent review](reviews/issue-24-m3-readiness-independent-review.md), [Merge addendum](evidence/issue-24-m3-readiness.md#owner-authorized-merge).
+
+เจ้าของอนุญาตเริ่ม M4.1 ใน [Issue #26](https://github.com/porntaned/ERP-for-Factory/issues/26) — [Assignment/contract](assignments/issue-26-stock-ledger.md); อยู่ระหว่างพัฒนา ไม่เริ่ม M4.2–M4.7 และไม่มีการ Deploy
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -71,7 +73,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## M3 — Item, Lot, สิทธิ์ และ Audit
 
-- [ ] **M3 — ข้อมูลหลักพร้อมสำหรับ Inventory** — รอเจ้าของตรวจรับผล readiness ใน [PR #25](https://github.com/porntaned/ERP-for-Factory/pull/25), [หลักฐาน/ขอบเขต](evidence/issue-24-m3-readiness.md)
+- [x] **M3 — ข้อมูลหลักพร้อมสำหรับ Inventory** — เจ้าของตรวจรับและ Merge [PR #25](https://github.com/porntaned/ERP-for-Factory/pull/25), [หลักฐาน/ขอบเขต](evidence/issue-24-m3-readiness.md#owner-authorized-merge)
   - [x] M3.1 กำหนด Item, หน่วยนับ และ Lot identity — [Item/UOM PR #6](https://github.com/porntaned/ERP-for-Factory/pull/6), [Lot PR #8](https://github.com/porntaned/ERP-for-Factory/pull/8), [merge commit](https://github.com/porntaned/ERP-for-Factory/commit/b7a9bddd87d258c343d17abbc76e53de9a436dcd)
     - [x] M3.1.1 สร้าง Issue แยกสำหรับ Item และหน่วยนับ — [Issue #5](https://github.com/porntaned/ERP-for-Factory/issues/5)
     - [x] M3.1.2 บันทึก Assignment และ TDD RED บน PostgreSQL — [Assignment](assignments/issue-5-item-uom.md), [RED evidence](evidence/issue-5-tdd-red.md), [Independent review](reviews/issue-5-tdd-red-independent-review.md), [Foundation #9](https://github.com/porntaned/ERP-for-Factory/actions/runs/39390285346)
@@ -130,7 +132,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 ## M4 — Inventory MVP
 
 - [ ] **M4 — รับเข้า โอน และดูประวัติผ่านหน้าจอได้**
-  - [ ] M4.1 สร้าง Stock ledger และกฎป้องกันยอดติดลบ
+  - [ ] M4.1 สร้าง Stock ledger และกฎป้องกันยอดติดลบ — [Issue #26](https://github.com/porntaned/ERP-for-Factory/issues/26), [Assignment](assignments/issue-26-stock-ledger.md)
   - [ ] M4.2 รับวัตถุดิบจำลองพร้อม Lot, สิทธิ์และ Audit
   - [ ] M4.3 โอนระหว่างคลังใน Plant เดียวกัน
   - [ ] M4.4 ป้องกันคำขอซ้ำและทดสอบ Concurrent transactions

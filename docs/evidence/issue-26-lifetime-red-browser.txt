@@ -1,0 +1,133 @@
+- link "Skip to content":
+  - /url: "#start-of-content"
+- banner "Global navigation menu":
+  - button "Open menu":
+  - link "Homepage (g then d)":
+    - /url: /
+  - navigation "Breadcrumbs":
+    - list:
+      - link "porntaned":
+        - /url: /porntaned
+        - generic: porntaned
+      - link "ERP-for-Factory":
+        - /url: /porntaned/ERP-for-Factory
+      - button "Switch repository (alt shift r)":
+  - button "Open quick search dialog, type / to search":
+  - button "Create new...":
+  - link "You have unread notifications (g then n)":
+    - /url: /notifications
+  - button "Open user navigation menu":
+    - img "User avatar"
+  - heading "Repository navigation" [level=2]
+  - navigation "Repository":
+    - list:
+      - link "Code":
+        - /url: /porntaned/ERP-for-Factory
+        - generic: Code
+      - link "Issues (1)":
+        - /url: /porntaned/ERP-for-Factory/issues
+        - generic: Issues
+        - generic: "1"
+        - generic: (1)
+      - link "Pull requests":
+        - /url: /porntaned/ERP-for-Factory/pulls
+        - generic: Pull requests
+      - link "Actions":
+        - /url: /porntaned/ERP-for-Factory/actions
+        - generic: Actions
+      - link "Projects":
+        - /url: /porntaned/ERP-for-Factory/projects
+        - generic: Projects
+      - link "Wiki":
+        - /url: /porntaned/ERP-for-Factory/wiki
+        - generic: Wiki
+    - button "More items":
+      - text: More
+      - generic: items
+- main:
+  - link "Foundation":
+    - /url: /porntaned/ERP-for-Factory/actions/workflows/foundation.yml
+    - generic: Foundation
+  - img "failed:"
+  - 'heading "test: reproduce ledger parent lifetime replacement gaps #92" [level=1]':
+    - generic: "test: reproduce ledger parent lifetime replacement gaps #92"
+  - generic "Show options":
+    - img "Show options"
+  - 'button "failed: postgresql-tdd"':
+    - img "failed:"
+    - heading "postgresql-tdd" [level=2]:
+      - generic: postgresql-tdd
+  - region "Check run summary":
+    - region "Annotations":
+      - button "Open job annotations":
+      - heading "Annotations" [level=2]
+      - generic: 1 error
+    - heading "postgresql-tdd" [level=4]:
+      - generic: postgresql-tdd
+    - generic: failed Oct 22, 20264 minutes ago in 42s
+    - button "Re-run this job":
+    - button "Show options":
+      - img "Show options"
+    - generic "Set up job 1s":
+      - generic: Set up job
+      - generic: 1s
+    - generic "Initialize containers 20s":
+      - generic: Initialize containers
+      - generic: 20s
+    - generic "Check out repository 1s":
+      - generic: Check out repository
+      - generic: 1s
+    - generic "Install uv 2s":
+      - generic: Install uv
+      - generic: 2s
+    - generic "Install Python 1s":
+      - generic: Install Python
+      - generic: 1s
+    - generic "Synchronize locked dependencies 1s":
+      - generic: Synchronize locked dependencies
+      - generic: 1s
+    - generic "Record runtime versions 0s":
+      - generic: Record runtime versions
+      - generic: 0s
+    - generic "Verify Django configuration 1s":
+      - generic: Verify Django configuration
+      - generic: 1s
+    - generic "Verify PostgreSQL connection 0s":
+      - generic: Verify PostgreSQL connection
+      - generic: 0s
+    - generic "Verify model and migration state 1s":
+      - generic: Verify model and migration state
+      - generic: 1s
+    - generic "Apply migrations to fresh PostgreSQL 0s":
+      - generic: Apply migrations to fresh PostgreSQL
+      - generic: 0s
+    - generic "Run Ruff 0s":
+      - generic: Run Ruff
+      - generic: 0s
+    - generic "Run persisted-deactivation regressions 1s":
+      - generic: Run persisted-deactivation regressions
+      - generic: 1s
+    - generic "Run unsaved-user policy regressions 1s":
+      - generic: Run unsaved-user policy regressions
+      - generic: 1s
+    - generic "Run authoritative event-identity regressions 2s":
+      - generic: Run authoritative event-identity regressions
+      - generic: 2s
+    - generic "Run stock ledger integrity tests 6s" [active]:
+      - generic: Run stock ledger integrity tests
+      - generic: 6s
+    - generic "Run ERP tests 0s":
+      - generic: Run ERP tests
+      - generic: 0s
+    - generic "Post Install uv 0s":
+      - generic: Post Install uv
+      - generic: 0s
+    - generic "Post Check out repository 0s":
+      - generic: Post Check out repository
+      - generic: 0s
+    - generic "Stop containers 0s":
+      - generic: Stop containers
+      - generic: 0s
+    - generic "Complete job 0s":
+      - generic: Complete job
+      - generic: 0s

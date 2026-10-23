@@ -216,3 +216,15 @@ status is checked in the PR before handoff; the dated main run above is not rela
 as that later head. No new RED or additional test implementation was required.
 Issue #24 and overall M3 stay pending owner acceptance. Work stops at this readiness PR;
 next responsible role is the owner. No M4, merge or deployment.
+
+## Owner-authorized merge
+
+After the historical handoff above, the owner explicitly authorized merging PR #25.
+It merged to main at `e806b6491d962f8124cc17d902eca2a692485ad1`; Issue #24 is Closed/completed.
+On 2026-10-22, the M4.1 recovery pass re-read the live PR and Issue in the prepared
+GitHub browser, and `git fetch origin` confirmed that exact main SHA. The merged tree
+matches reviewed delivery head `6861058eb5663af2e0c59cd56224abcccfa5f935`.
+[Main push run](https://github.com/porntaned/ERP-for-Factory/actions/runs/39758907188)
+is successful; this addendum does not claim a new test execution. Owner then separately
+authorized starting M4.1. M3 acceptance is recorded without repeating its implementation.
+No deployment occurred.
