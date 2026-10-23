@@ -54,3 +54,10 @@ class StockLedgerEntry(models.Model):
                 condition=models.Q(reason__regex=r"\S"), name="stock_reason_nonblank"
             ),
         ]
+
+
+class StockReceipt(models.Model):
+    """Typed receipt intent; immutable ledger entry retains payload and DB time."""
+
+    request_id = models.UUIDField(unique=True)
+    ledger_entry = models.OneToOneField(StockLedgerEntry, on_delete=models.PROTECT)

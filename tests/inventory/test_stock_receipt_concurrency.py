@@ -165,3 +165,62 @@ def test_receipt_and_quality_share_lot_serialization(
     assert receipt_contract["model"].objects.count() == 1
     assert apps.get_model("quality", "LotDispositionEvent").objects.count() == 1
     assert quality.get_lot_disposition(lot=scope["lot"], warehouse=scope["warehouse"]) == "RELEASED"
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize("mutation_first", [False, True])
+@pytest.mark.parametrize(
+    "parent,field",
+    [
+        ("item", "base_uom"),
+        ("lot", "item"),
+        ("item", "organization"),
+        ("warehouse", "plant"),
+        ("plant", "organization"),
+    ],
+)
+def test_receipt_and_parent_identity_mutation_serialize(
+    receipt_contract, receipt_scope, ledger_contract, mutation_first, parent, field
+):
+    scope = receipt_scope
+    record = scope[parent]
+    if field == "base_uom":
+        alternate = type(scope["uom"]).objects.create(code="ALT", display_name="Synthetic")
+    elif field == "item":
+        alternate = type(scope["item"]).objects.create(
+            organization=scope["organization"],
+            base_uom=scope["uom"],
+            code="ALT",
+            display_name="Synthetic",
+            item_type="RAW",
+        )
+    elif field == "plant":
+        alternate = type(scope["plant"]).objects.create(
+            organization=scope["organization"], code="ALT", display_name="Synthetic"
+        )
+    else:
+        alternate = type(scope["organization"]).objects.create(code="ALT", display_name="Synthetic")
+
+    def mutate():
+        type(record).objects.filter(pk=record.pk).update(**{field: alternate})
+        return record
+
+    def receive():
+        return receipt_contract["receive"](**receipt_values(scope))
+
+    _, outcome = blocked_action(
+        mutate if mutation_first else receive, receive if mutation_first else mutate
+    )
+    if mutation_first:
+        if field == "organization":
+            assert outcome[0] == "ReceiptValidationError", outcome
+            assert receipt_contract["model"].objects.count() == 0
+            assert ledger_contract[0].objects.count() == 0
+        else:
+            assert outcome[0] == "committed", outcome
+            assert receipt_contract["model"].objects.count() == 1
+    else:
+        assert outcome[0] == "IntegrityError", outcome
+        assert receipt_contract["model"].objects.count() == 1
+        record.refresh_from_db()
+        assert getattr(record, field + "_id") != alternate.pk

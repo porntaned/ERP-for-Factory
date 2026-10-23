@@ -7,6 +7,7 @@ from uuid import uuid4
 import pytest
 from django.apps import apps
 from django.db import DatabaseError, connection, transaction
+from django.db.models.deletion import ProtectedError
 
 
 @pytest.fixture
@@ -307,3 +308,183 @@ def test_retry_rechecks_current_persisted_authorization(
     with pytest.raises(receipt_contract["authorization"]):
         receipt_contract["receive"](**values)
     assert ledger_contract[0].objects.count() == 1
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("field", ["lot", "warehouse"])
+@pytest.mark.parametrize("kind", ["unsaved", "manual_pk", "missing", "wrong_type"])
+def test_reject_invalid_parent_records(
+    receipt_contract, receipt_scope, ledger_contract, field, kind
+):
+    original = receipt_scope[field]
+    if kind == "wrong_type":
+        invalid = receipt_scope["actor"]
+    elif kind == "missing":
+        invalid = type(original).objects.get(pk=original.pk)
+        invalid.pk = 999999999
+    else:
+        invalid = type(original)()
+        if kind == "manual_pk":
+            invalid.pk = original.pk
+    with pytest.raises(receipt_contract["validation"]):
+        receipt_contract["receive"](**receipt_values(receipt_scope, **{field: invalid}))
+    assert ledger_contract[0].objects.count() == 0
+    assert receipt_contract["model"].objects.count() == 0
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("kind", ["unsaved", "manual_pk", "missing", "wrong_type", "inactive"])
+def test_reject_invalid_actor_records(receipt_contract, receipt_scope, ledger_contract, kind):
+    actor = receipt_scope["actor"]
+    if kind == "wrong_type":
+        actor = receipt_scope["lot"]
+    elif kind in ("unsaved", "manual_pk"):
+        actor = type(actor)(username="unpersisted")
+        if kind == "manual_pk":
+            actor.pk = receipt_scope["actor"].pk
+    elif kind == "missing":
+        actor.pk = 999999999
+    else:
+        type(actor).objects.filter(pk=actor.pk).update(is_active=False)
+    with pytest.raises(receipt_contract["authorization"]):
+        receipt_contract["receive"](**receipt_values(receipt_scope, actor=actor))
+    assert ledger_contract[0].objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_maximum_quantity_and_distinct_receipts_add_exactly(
+    receipt_contract, receipt_scope, ledger_contract
+):
+    values = receipt_values(receipt_scope, quantity=Decimal("99999999999999.999999"))
+    first = receipt_contract["receive"](**values)
+    second = receipt_contract["receive"](
+        **(values | {"request_id": uuid4(), "quantity": Decimal("0.000001")})
+    )
+    assert first.pk != second.pk
+    assert ledger_contract[1](lot=values["lot"], warehouse=values["warehouse"]) == Decimal(
+        "100000000000000.000000"
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("parent", ["lot", "warehouse"])
+def test_stale_cached_parent_uses_current_organization(
+    receipt_contract, receipt_scope, ledger_contract, parent
+):
+    scope = receipt_scope
+    # Populate caller-side relation caches before changing the persisted identity.
+    assert scope["lot"].item.organization_id == scope["warehouse"].plant.organization_id
+    organization = type(scope["organization"]).objects.create(
+        code="FOREIGN", display_name="Synthetic"
+    )
+    if parent == "warehouse":
+        plant = type(scope["plant"]).objects.create(
+            organization=organization, code="F", display_name="Synthetic"
+        )
+        type(scope["warehouse"]).objects.filter(pk=scope["warehouse"].pk).update(plant=plant)
+    else:
+        item = type(scope["item"]).objects.create(
+            organization=organization,
+            base_uom=scope["uom"],
+            code="F",
+            display_name="Synthetic",
+            item_type="RAW",
+        )
+        type(scope["lot"]).objects.filter(pk=scope["lot"].pk).update(item=item)
+    with pytest.raises(receipt_contract["validation"]):
+        receipt_contract["receive"](**receipt_values(scope))
+    assert ledger_contract[0].objects.count() == 0
+
+
+@pytest.mark.django_db
+def test_stale_inactive_cache_does_not_deny_current_active_actor(receipt_contract, receipt_scope):
+    actor = receipt_scope["actor"]
+    actor.is_active = False
+    receipt = receipt_contract["receive"](**receipt_values(receipt_scope))
+    assert receipt.ledger_entry.actor_id == actor.pk
+
+
+@pytest.mark.django_db
+def test_failure_after_ledger_insert_rolls_back_both_writes(
+    receipt_contract, receipt_scope, ledger_contract, monkeypatch
+):
+    values = receipt_values(receipt_scope)
+
+    def fail_receipt_insert(**kwargs):
+        assert ledger_contract[0].objects.count() == 1
+        raise RuntimeError("Injected receipt insert failure after real ledger insert")
+
+    with monkeypatch.context() as patch:
+        patch.setattr(receipt_contract["model"].objects, "create", fail_receipt_insert)
+        with pytest.raises(RuntimeError, match="Injected receipt insert failure"):
+            receipt_contract["receive"](**values)
+    assert receipt_contract["model"].objects.count() == 0
+    assert ledger_contract[0].objects.count() == 0
+    receipt_contract["receive"](**values)
+    assert ledger_contract[0].objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_receipt_link_cannot_be_changed_and_ledger_is_protected(
+    receipt_contract, receipt_scope, append_entry
+):
+    receipt = receipt_contract["receive"](**receipt_values(receipt_scope))
+    alternative = append_entry("1")
+    with pytest.raises(DatabaseError), transaction.atomic():
+        receipt_contract["model"].objects.filter(pk=receipt.pk).update(ledger_entry=alternative)
+    with pytest.raises(ProtectedError):
+        receipt.ledger_entry.delete()
+    receipt.refresh_from_db()
+    assert receipt.ledger_entry_id != alternative.pk
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize("isolation", ["REPEATABLE READ", "SERIALIZABLE"])
+def test_receipt_requires_supported_read_committed_isolation(
+    receipt_contract, receipt_scope, ledger_contract, isolation
+):
+    with transaction.atomic():
+        with connection.cursor() as cursor:
+            cursor.execute(f"SET TRANSACTION ISOLATION LEVEL {isolation}")
+        with pytest.raises(receipt_contract["validation"]):
+            receipt_contract["receive"](**receipt_values(receipt_scope))
+    assert receipt_contract["model"].objects.count() == 0
+    assert ledger_contract[0].objects.count() == 0
+
+
+@pytest.mark.django_db(transaction=True)
+def test_receipt_migration_reverse_reapply_preserves_ledger_and_restores_guards(
+    receipt_contract, receipt_scope, ledger_contract, append_entry
+):
+    from django.db.migrations.executor import MigrationExecutor
+
+    entry = append_entry("3")
+    executor = MigrationExecutor(connection)
+    latest = executor.loader.graph.leaf_nodes()
+    try:
+        executor.migrate([("inventory", "0003_preserve_stock_parent_lifetime")])
+        assert "inventory_stockreceipt" not in connection.introspection.table_names()
+        assert ledger_contract[0].objects.get(pk=entry.pk).quantity_delta == 3
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT to_regprocedure('inventory_validate_receipt_link()')")
+            assert cursor.fetchone()[0] is None
+    finally:
+        MigrationExecutor(connection).migrate(latest)
+    assert ledger_contract[0].objects.get(pk=entry.pk).quantity_delta == 3
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT to_regprocedure('inventory_validate_receipt_link()')")
+        assert cursor.fetchone()[0] is not None
+    receipt = receipt_contract["model"].objects.create(request_id=uuid4(), ledger_entry=entry)
+    with pytest.raises(DatabaseError), transaction.atomic(), connection.cursor() as cursor:
+        cursor.execute(
+            "UPDATE inventory_stockreceipt SET request_id = %s WHERE id = %s", [uuid4(), receipt.pk]
+        )
+    negative = append_entry("-1")
+    with pytest.raises(DatabaseError), transaction.atomic():
+        receipt_contract["model"].objects.create(request_id=uuid4(), ledger_entry=negative)
+    another_positive = append_entry("1")
+    with pytest.raises(DatabaseError), transaction.atomic():
+        receipt_contract["model"].objects.create(
+            id=receipt.pk + 100, request_id=uuid4(), ledger_entry=another_positive
+        )
+    assert receipt_contract["model"].objects.count() == 1
