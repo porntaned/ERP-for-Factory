@@ -6,7 +6,7 @@ from uuid import uuid4
 
 import pytest
 from django.contrib.auth import get_user_model
-from django.db import IntegrityError, connection, transaction
+from django.db import DatabaseError, IntegrityError, connection, transaction
 from django.db.migrations.executor import MigrationExecutor
 from django.db.models.deletion import ProtectedError
 
@@ -149,7 +149,7 @@ def test_history_delete_and_linked_ledger_delete_are_protected(transfer_scope):
 @pytest.mark.django_db
 def test_database_authors_identity_and_time(transfer_scope):
     debit, credit = entries(transfer_scope)
-    with pytest.raises(IntegrityError), transaction.atomic():
+    with pytest.raises(DatabaseError, match="GENERATED ALWAYS"), transaction.atomic():
         StockTransfer.objects.create(pk=999, source_entry=debit, destination_entry=credit)
     supplied = datetime(2000, 1, 1, tzinfo=timezone.utc)
     history = StockTransfer.objects.create(
