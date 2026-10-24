@@ -2,8 +2,9 @@
 
 Repository: `porntaned/ERP-for-Factory`; branch: `codex/inventory/transfer-readiness`.
 Owner authorized M4.3.7 on 2026-10-24. Base: `e8ad707b86f7c613c3db291fd6dcabd3f491a569`.
-Issue creation is pending explicit approval after automatic approval review rejected
-creating a new GitHub issue. No issue number is invented.
+[Issue #44](https://github.com/porntaned/ERP-for-Factory/issues/44). Automatic approval
+review initially rejected issue creation; owner subsequently explicitly approved issue
+and PR creation. No merge or deployment was authorized.
 
 ## Scope and acceptance
 
@@ -82,4 +83,4 @@ Separate `/root/m437_independent_review` agent reviewed the tested SHA after gre
 [independent source review](../reviews/m437-transfer-independent-review.md) for traced
 paths and limits. The reviewer did not independently run CI, and later documentation
 edits are outside that reviewed SHA. M4.3.7 and overall M4.3 remain pending owner
-acceptance/merge. Issue creation still needs the approval described above; no PR opened.
+acceptance/merge. Issue and PR creation are owner-approved; final PR checks remain required.
