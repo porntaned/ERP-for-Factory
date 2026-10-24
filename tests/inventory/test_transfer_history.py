@@ -233,6 +233,7 @@ def test_ownership_links_reject_stale_snapshot_isolation(transfer_scope, receipt
 @pytest.mark.django_db(transaction=True)
 def test_upgrade_preserves_unlinked_history_without_inventing_pairs(transfer_scope):
     executor = MigrationExecutor(connection)
+    latest = executor.loader.graph.leaf_nodes()
     try:
         executor.migrate([("inventory", "0004_stock_receipt")])
         debit, credit = entries(transfer_scope)
@@ -240,10 +241,15 @@ def test_upgrade_preserves_unlinked_history_without_inventing_pairs(transfer_sco
         receipt = StockReceipt.objects.create(ledger_entry=credit, request_id=uuid4())
         executor = MigrationExecutor(connection)
         executor.migrate([("inventory", "0005_stock_transfer")])
+        historical_transfer = executor.loader.project_state(
+            [("inventory", "0005_stock_transfer")]
+        ).apps.get_model("inventory", "StockTransfer")
         assert list(StockLedgerEntry.objects.order_by("id").values()) == expected
         assert StockTransfer.objects.count() == 0
         assert StockReceipt.objects.get(pk=receipt.pk).ledger_entry_id == credit.pk
         with pytest.raises(IntegrityError), transaction.atomic():
-            StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
+            historical_transfer.objects.create(
+                source_entry_id=debit.pk, destination_entry_id=credit.pk
+            )
     finally:
-        MigrationExecutor(connection).migrate([("inventory", "0005_stock_transfer")])
+        MigrationExecutor(connection).migrate(latest)

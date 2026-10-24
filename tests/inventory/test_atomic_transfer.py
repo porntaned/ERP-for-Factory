@@ -65,6 +65,7 @@ def post(scope, **overrides):
                 actor=scope["actor"],
                 quantity=Decimal("30.000001"),
                 reason="  โอน LED — synthetic  ",
+                request_id=uuid4(),
             )
             | overrides
         )
