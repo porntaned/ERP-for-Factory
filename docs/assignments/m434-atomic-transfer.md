@@ -1,5 +1,7 @@
 # M4.3.4 — Atomic same-Plant transfer
 
+> Current status (2026-10-24): owner-merged [PR #37](https://github.com/porntaned/ERP-for-Factory/pull/37); M4.3 accepted through PR #45. See [closeout evidence](../evidence/m43-closeout.md). Pre-merge scope, exclusions and pending statements below are historical.
+
 Repository: `porntaned/ERP-for-Factory`  
 Branch: `codex/inventory/atomic-transfer`  
 Base: `b4b44579352a490e1432783e1a34d571b6bf37ac`  

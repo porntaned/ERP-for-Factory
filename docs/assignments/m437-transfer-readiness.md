@@ -4,7 +4,7 @@ Repository: `porntaned/ERP-for-Factory`; branch: `codex/inventory/transfer-readi
 Owner authorized M4.3.7 on 2026-10-24. Base: `e8ad707b86f7c613c3db291fd6dcabd3f491a569`.
 [Issue #44](https://github.com/porntaned/ERP-for-Factory/issues/44). Automatic approval
 review initially rejected issue creation; owner subsequently explicitly approved issue
-and PR creation. No merge or deployment was authorized.
+and PR creation. Owner later authorized [PR #45](https://github.com/porntaned/ERP-for-Factory/pull/45) merge; see [closeout evidence](../evidence/m43-closeout.md). No deployment was authorized.
 
 ## Scope and acceptance
 
@@ -67,7 +67,7 @@ this is self-verification using CI, not independent execution by the reviewer.
 
 Local: `.venv/Scripts/ruff.exe check .`, format check of the new workflow test,
 and `git diff --check` passed. No production Python/model/migration changed.
-Later evidence/checklist edits are documentation only; final pushed SHA still needs CI.
+Later evidence/checklist edits were documentation only. Final PR head `aa048ec0397cf7ab56b78999613facb23ce75388` passed both checks before owner-authorized merge; [post-merge main CI #137](https://github.com/porntaned/ERP-for-Factory/actions/runs/40068412839) also passed.
 
 ## Self-review and independent review
 
@@ -82,5 +82,4 @@ Separate `/root/m437_independent_review` agent reviewed the tested SHA after gre
 **ship**, no actionable defect and no repair cycle. See the
 [independent source review](../reviews/m437-transfer-independent-review.md) for traced
 paths and limits. The reviewer did not independently run CI, and later documentation
-edits are outside that reviewed SHA. M4.3.7 and overall M4.3 remain pending owner
-acceptance/merge. Issue and PR creation are owner-approved; final PR checks remain required.
+edits are outside that reviewed SHA. M4.3.7 and overall M4.3 are now owner-accepted and merged at `1e8df0bbf9fb4b19be02fb9145f8ec5e8dff3ecc`; Issue #44 closed completed. The [closeout](../evidence/m43-closeout.md) records current merge/main CI evidence and the separate open PR #41.
