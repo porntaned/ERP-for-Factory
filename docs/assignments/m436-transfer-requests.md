@@ -3,7 +3,7 @@
 [Issue #42](https://github.com/porntaned/ERP-for-Factory/issues/42) ·
 Repository `porntaned/ERP-for-Factory`, branch `codex/inventory/transfer-idempotency`.
 Base: `3d876cc129f9f889b636926b40798423a53d31f1`.
-Status: implemented and PostgreSQL verified; ready for owner review; no merge/deployment authorized.
+Status: owner-authorized [PR #43](https://github.com/porntaned/ERP-for-Factory/pull/43) merged at `e8ad707b86f7c613c3db291fd6dcabd3f491a569`; [Issue #42](https://github.com/porntaned/ERP-for-Factory/issues/42) closed completed; [main CI #132](https://github.com/porntaned/ERP-for-Factory/actions/runs/40067226064) passed. No deployment.
 
 ## Verified scope — 2026-10-24
 
@@ -55,7 +55,7 @@ M4.4 completion or M4.3.7 independent review. Do not redo already-green atomic t
 and Quality work; run their regressions after targeted request tests. No automatic retry
 loop is introduced. Self-review verdict: **ship** for this bounded request contract; exact replay,
 conflicts, current authorization, losing-write rollback and legacy migration passed.
-Owner acceptance remains pending.
+The original pre-merge self-review above is historical; owner acceptance and merge are now recorded in the status above.
 
 Local environment: Windows PowerShell; `.env` absent during preceding work, so PostgreSQL
 claims require disposable CI PostgreSQL 18.6. Ruff/format and Markdown/diff checks are
@@ -81,6 +81,6 @@ Original atomic transfer, history/receipt ownership and Quality regressions also
 Local Ruff check/format, Markdown links/fences (2 files / 117 local targets), and
 `git diff --check` passed; no local PostgreSQL result is claimed.
 
-Final documentation-only commit must also pass CI. M4.3.7 independent review and owner
-merge are still pending. Reversing migration 0006 drops request IDs and deduplication;
+Final pre-merge documentation CI passed: [push #130](https://github.com/porntaned/ERP-for-Factory/actions/runs/40066962008) and [PR #131](https://github.com/porntaned/ERP-for-Factory/actions/runs/40066999089), head `95cf55a831613db5fd6252b73fef9ccf4e9cb315`.
+Owner merge and main CI are linked above. M4.3.7 independent review is tracked separately in [readiness](m437-transfer-readiness.md). Reversing migration 0006 drops request IDs and deduplication;
 no schema rollback/deployment is authorized by this work. PR #41 remains separate/open.
