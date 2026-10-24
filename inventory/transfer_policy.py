@@ -25,8 +25,8 @@ class TransferQualityState:
     destination_disposition: str
 
 
-def require_transfer_quality(*, lot, source_warehouse, destination_warehouse):
-    """Check persisted pairs and hold their identity/Quality locks until outer commit.
+def lock_transfer_scope(*, lot, source_warehouse, destination_warehouse):
+    """Validate persisted pairs and hold their identity locks until outer commit.
 
     Requires a caller-owned atomic READ COMMITTED transaction. The eventual transfer
     must check permissions and post both ledger entries in that SAME transaction.
@@ -81,6 +81,14 @@ def require_transfer_quality(*, lot, source_warehouse, destination_warehouse):
     # Refetch under the held locks: caller relation caches are not authoritative.
     source = Warehouse.objects.select_related("plant").get(pk=source_warehouse.pk)
     destination = Warehouse.objects.select_related("plant").get(pk=destination_warehouse.pk)
+    return locked_lot, source, destination
+
+
+def require_transfer_quality(*, lot, source_warehouse, destination_warehouse):
+    """Require RELEASED source inside the caller transaction, retaining identity locks."""
+    locked_lot, source, destination = lock_transfer_scope(
+        lot=lot, source_warehouse=source_warehouse, destination_warehouse=destination_warehouse
+    )
     state = TransferQualityState(
         source_disposition=get_lot_disposition(lot=locked_lot, warehouse=source),
         destination_disposition=get_lot_disposition(lot=locked_lot, warehouse=destination),

@@ -73,3 +73,4 @@ class StockTransfer(models.Model):
         StockLedgerEntry, on_delete=models.PROTECT, related_name="transfer_in"
     )
     created_at = models.DateTimeField(db_default=Now(), editable=False)
+    request_id = models.UUIDField(null=True, unique=True)
