@@ -3,7 +3,7 @@
 [Issue #42](https://github.com/porntaned/ERP-for-Factory/issues/42) ·
 Repository `porntaned/ERP-for-Factory`, branch `codex/inventory/transfer-idempotency`.
 Base: `3d876cc129f9f889b636926b40798423a53d31f1`.
-Status: implemented, PostgreSQL verification pending; no merge/deployment authorized.
+Status: implemented and PostgreSQL verified; ready for owner review; no merge/deployment authorized.
 
 ## Verified scope — 2026-10-24
 
@@ -53,8 +53,34 @@ savepoint boundary, without mixing receipt and transfer UUID namespaces.
 No new dependency, real data, permissions/Quality policy change, reversal, HTTP/UI,
 M4.4 completion or M4.3.7 independent review. Do not redo already-green atomic transfer
 and Quality work; run their regressions after targeted request tests. No automatic retry
-loop is introduced. Verdict awaits PostgreSQL results and owner acceptance.
+loop is introduced. Self-review verdict: **ship** for this bounded request contract; exact replay,
+conflicts, current authorization, losing-write rollback and legacy migration passed.
+Owner acceptance remains pending.
 
 Local environment: Windows PowerShell; `.env` absent during preceding work, so PostgreSQL
 claims require disposable CI PostgreSQL 18.6. Ruff/format and Markdown/diff checks are
 recorded with the actual tested SHA in the PR; no SQLite/mocks/local DB result claimed.
+
+## PostgreSQL evidence — 2026-10-24
+
+Tested application/test SHA: `1cddc7a461bb7a51cf84e1841db225f12b77e6c6`.
+[Foundation #129 / job](https://github.com/porntaned/ERP-for-Factory/actions/runs/40066789351/job/120791629207)
+completed successfully on ubuntu-24.04, vendor=postgresql,
+server **18.6 (Debian 18.6-1.pgdg12+2)**. Fresh migrations, model/migration-state
+check, Django check and Ruff passed, using the existing pinned Python/Django/psycopg.
+
+| Actual command | Observed result |
+| --- | --- |
+| `uv run pytest -q tests/inventory/test_transfer_requests.py --tb=short` | **22 passed in 1.67s** |
+| `uv run pytest -q --tb=short` | **642 passed in 24.01s** |
+
+Three observed PostgreSQL lock-wait cases covered same-key exact/conflicting requests
+and different-Lot global UUID contention. The cross-Lot loser retained its original
+balance and created no orphan ledger/history. Upgrade kept two legacy NULL IDs intact.
+Original atomic transfer, history/receipt ownership and Quality regressions also passed.
+Local Ruff check/format, Markdown links/fences (2 files / 117 local targets), and
+`git diff --check` passed; no local PostgreSQL result is claimed.
+
+Final documentation-only commit must also pass CI. M4.3.7 independent review and owner
+merge are still pending. Reversing migration 0006 drops request IDs and deduplication;
+no schema rollback/deployment is authorized by this work. PR #41 remains separate/open.
