@@ -6,8 +6,10 @@ from threading import Thread
 from uuid import uuid4
 
 import pytest
+from django.contrib.auth import get_user_model
 from django.db import transaction
 
+from access_control.models import WarehouseRoleAssignment
 from inventory.models import StockLedgerEntry, StockReceipt, StockTransfer
 from inventory.services import receive_stock
 from quality.models import LotDispositionEvent
@@ -36,6 +38,13 @@ def contend(first, second, *, rollback_first):
     return result, outcomes.get(timeout=1)
 
 
+def another_actor(scope):
+    actor = get_user_model().objects.create(username="parallel-stock-command")
+    for warehouse in (scope["warehouse"], scope["other"]):
+        WarehouseRoleAssignment.objects.create(user=actor, warehouse=warehouse, role="WAREHOUSE")
+    return actor
+
+
 def receive(scope, key, *, warehouse=None, reason="Synthetic concurrent receipt"):
     return receive_stock(
         lot=scope["lot"],
@@ -54,13 +63,19 @@ def test_receipt_and_transfer_share_committed_stock_not_request_namespace(
     transfer_scope, receipt_first, rollback_first
 ):
     scope, key = transfer_scope, uuid4()
+    parallel_actor = another_actor(scope)
     quality_before = list(LotDispositionEvent.objects.order_by("id").values())
 
     def receipt():
         return receive(scope, key)
 
     def transfer():
-        return post(scope, request_id=key, quantity=Decimal("110" if receipt_first else "70"))[0]
+        return post(
+            scope,
+            actor=parallel_actor,
+            request_id=key,
+            quantity=Decimal("110" if receipt_first else "70"),
+        )[0]
 
     _, outcome = contend(
         receipt if receipt_first else transfer,
@@ -90,6 +105,7 @@ def test_receipt_and_transfer_share_committed_stock_not_request_namespace(
 @pytest.mark.parametrize("reverse_first", [False, True])
 def test_opposing_transfers_serialize_without_losing_stock(transfer_scope, reverse_first):
     scope = transfer_scope
+    parallel_actor = another_actor(scope)
     receive(scope, uuid4(), warehouse=scope["other"])
     change_quality(scope, scope["other"], "RELEASED")
     quality_before = list(LotDispositionEvent.objects.order_by("id").values())
@@ -101,6 +117,7 @@ def test_opposing_transfers_serialize_without_losing_stock(transfer_scope, rever
     def backward():
         return post(
             scope,
+            actor=parallel_actor,
             source_warehouse=scope["other"],
             destination_warehouse=scope["warehouse"],
             quantity=Decimal("15"),
