@@ -1,5 +1,7 @@
 # M4.3.5 — Immutable transfer history
 
+> Current status (2026-10-24): owner-merged [PR #39](https://github.com/porntaned/ERP-for-Factory/pull/39); M4.3 accepted through PR #45. See [closeout evidence](../evidence/m43-closeout.md). Pre-merge scope, exclusions and pending statements below are historical.
+
 [Issue #38](https://github.com/porntaned/ERP-for-Factory/issues/38)  
 Repository: `porntaned/ERP-for-Factory`  
 Branch: `codex/inventory/transfer-history`  
