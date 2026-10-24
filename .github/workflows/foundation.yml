@@ -115,5 +115,8 @@ jobs:
       - name: Run complete transfer workflow tests
         run: uv run pytest -q tests/inventory/test_transfer_workflow.py --tb=short
 
+      - name: Run cross-command concurrency tests
+        run: uv run pytest -q tests/inventory/test_command_concurrency.py --tb=short
+
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
