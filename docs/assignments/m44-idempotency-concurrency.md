@@ -70,7 +70,13 @@ cannot be triggered deterministically without fault-injection hooks; not attempt
   session), PostgreSQL **16.15**, not the project's 18.6. Not used as evidence of record.
 - Local results at the tested working tree: new file 3 passed, repeated 3 times; Ruff and
   `makemigrations --check` clean; full suite 647 passed in 43.29s.
-- PostgreSQL 18.6 CI result and tested SHA: recorded below once the run completes.
+- CI: [Foundation #145](https://github.com/porntaned/ERP-for-Factory/actions/runs/41035056998)
+  on tested SHA `06b88aa8e888dc9cd66303aba6c04c91e3dfb737` completed **success**; job steps
+  `Run receipt and transfer serialization tests` and `Run ERP tests` each concluded success.
+  The workflow's disposable service is PostgreSQL 18.6. Limit: the session could read step
+  conclusions through the GitHub API but could not download log text, so test counts and the
+  server version line were **not** read from this run and are not claimed here.
+- Commits after the tested SHA change documentation only.
 
 ## Review status
 

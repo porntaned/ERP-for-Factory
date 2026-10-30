@@ -183,6 +183,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## Progress log
 
+- 2026-10-30: M4.4 ใน [Issue #48](https://github.com/porntaned/ERP-for-Factory/issues/48) ตรวจช่องว่าง 3 ข้อ: เพิ่มเทสต์ receipt/transfer บน Lot–Warehouse เดียวกัน 3 กรณี (ไม่พบข้อบกพร่อง เป็น regression coverage), UUID เดียวกันข้ามคำสั่งถูกรับได้ทุกคำสั่ง รอเจ้าของตัดสินใจเชิงนโยบาย ไม่แก้โค้ด, retry หลังล้มเหลวมีเทสต์ครอบคลุมแล้ว; [CI #145](https://github.com/porntaned/ERP-for-Factory/actions/runs/41035056998) ที่ `06b88aa` ผ่านทุก step — [หลักฐาน/ข้อจำกัด](assignments/m44-idempotency-concurrency.md) ยังไม่ติ๊ก M4.4 เป็น self-review เท่านั้น ไม่มี Merge, UI หรือ Deploy
+
 - 2026-10-24: ปรับเอกสารสถานะตาม Merge [PR #45](https://github.com/porntaned/ERP-for-Factory/pull/45) ที่ `1e8df0bbf9fb4b19be02fb9145f8ec5e8dff3ecc` (parent `e8ad707` และ head `aa048ec` ตรวจจาก git history) ปิด M4.3.7 และ M4.3; หลักฐานทดสอบยังเป็น [PostgreSQL CI #133](https://github.com/porntaned/ERP-for-Factory/actions/runs/40067756440) ที่ `c62dc81` และ [Independent source review: ship](reviews/m437-transfer-independent-review.md) ยังไม่ได้ตรวจ main CI หลัง Merge PR #45 ของรอบนี้ จึงไม่อ้างผลนั้น งานรอบนี้ปรับเอกสารเท่านั้น ไม่เริ่ม M4.4–M4.7, UI และไม่มี Deploy
 
 - 2026-10-24: M4.3.7 เพิ่มเฉพาะ integration test รับเข้า → Quality release → โอน → ประวัติ/UUID replay/current authorization; [commit ที่ทดสอบ](https://github.com/porntaned/ERP-for-Factory/commit/c62dc81a9cf4a2a19b2975582dcbd49a3565eec6) ผ่าน [PostgreSQL CI #133](https://github.com/porntaned/ERP-for-Factory/actions/runs/40067756440) 2 workflow / 644 full — [หลักฐานและสถานะตรวจอิสระ](assignments/m437-transfer-readiness.md); แก้สถานะ M4.3.5/M4.3.6 ตาม Merge PR #39/#43 แล้ว ไม่มี Merge PR #41, M4.4, UI หรือ Deploy
