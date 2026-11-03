@@ -7,6 +7,7 @@ from django.db import IntegrityError, transaction
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from facilities.models import Warehouse
 from inventory.models import Lot
+from inventory.request_keys import owned_by_other_command
 
 from .models import LotDisposition, LotDispositionEvent
 
@@ -148,6 +149,9 @@ def transition_lot_disposition(
         if not isinstance(reason, str) or not reason.strip():
             raise DispositionValidationError("reason must be nonblank")
 
+        if owned_by_other_command(request_id, "DISPOSITION"):
+            raise DispositionConflictError("request_id was already used by another command")
+
         current_disposition = get_lot_disposition(lot=locked_lot, warehouse=warehouse)
         if current_disposition != expected_disposition:
             raise DispositionConflictError(
@@ -177,4 +181,6 @@ def transition_lot_disposition(
             )
             if existing is not None:
                 return existing
+            if owned_by_other_command(request_id, "DISPOSITION"):
+                raise DispositionConflictError("request_id was already used by another command")
             raise

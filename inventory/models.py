@@ -74,3 +74,26 @@ class StockTransfer(models.Model):
     )
     created_at = models.DateTimeField(db_default=Now(), editable=False)
     request_id = models.UUIDField(null=True, unique=True)
+
+
+REQUEST_KEY_COMMANDS = (
+    ("RECEIPT", "Receipt"),
+    ("TRANSFER", "Transfer"),
+    ("DISPOSITION", "Disposition"),
+)
+
+
+class RequestKey(models.Model):
+    """Shared registry: one request UUID belongs to exactly one command type (M4.4.1)."""
+
+    request_id = models.UUIDField(unique=True)
+    command = models.CharField(max_length=12, choices=REQUEST_KEY_COMMANDS)
+    created_at = models.DateTimeField(db_default=Now(), editable=False)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(command__in=[c for c, _ in REQUEST_KEY_COMMANDS]),
+                name="request_key_command_valid",
+            ),
+        ]

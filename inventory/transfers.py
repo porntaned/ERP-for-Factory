@@ -11,6 +11,7 @@ from quality.models import LotDisposition
 from quality.services import get_lot_disposition
 
 from .models import StockLedgerEntry, StockTransfer
+from .request_keys import owned_by_other_command
 from .services import get_stock_balance
 from .transfer_policy import TransferQualityError, lock_transfer_scope
 
@@ -123,6 +124,8 @@ def transfer_stock(
         existing = _existing_transfer(request_id, **command)
         if existing is not None:
             return existing
+        if owned_by_other_command(request_id, "TRANSFER"):
+            raise TransferConflictError("request_id was already used by another command")
         if get_lot_disposition(lot=lot, warehouse=source_warehouse) != LotDisposition.RELEASED:
             raise TransferQualityError("source Lot-Warehouse must be RELEASED")
         if get_stock_balance(lot=lot, warehouse=source_warehouse) < quantity:
@@ -146,4 +149,6 @@ def transfer_stock(
             existing = _existing_transfer(request_id, **command)
             if existing is not None:
                 return existing
+            if owned_by_other_command(request_id, "TRANSFER"):
+                raise TransferConflictError("request_id was already used by another command")
             raise
