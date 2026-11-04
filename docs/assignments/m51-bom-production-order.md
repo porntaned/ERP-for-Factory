@@ -32,7 +32,8 @@ consumption and output are M5.2; lot genealogy is M5.3.
 | `status` | DRAFT / ACTIVE / RETIRED |
 | `created_by` | user, required |
 | `approved_by`, `approved_at` | null while DRAFT; required for ACTIVE and RETIRED; `approved_by <> created_by` |
-| `request_id` | UUID, unique |
+| `request_id` | UUID, unique (draft command key) |
+| `approval_request_id` | UUID, unique, null while DRAFT (approval command key; added while planning) |
 
 Partial unique index: at most one ACTIVE row per item.
 
