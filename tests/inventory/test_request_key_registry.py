@@ -115,3 +115,53 @@ def test_cross_command_race_on_registry_leaves_only_the_winner(transfer_scope):
     assert StockTransfer.objects.filter(request_id=key).count() == 0
     assert receipt.pk is not None
     assert StockLedgerEntry.objects.filter(warehouse=scope["other"]).count() == 0
+
+
+@pytest.mark.django_db
+def test_quality_key_cannot_be_reused_by_receipt(transfer_scope):
+    scope, key = transfer_scope, uuid4()
+    release(scope, key)
+    with pytest.raises(ReceiptConflictError):
+        receive(scope, key)
+
+
+@pytest.mark.django_db
+def test_database_rejects_raw_disposition_insert_with_foreign_key(transfer_scope):
+    from quality.models import LotDispositionEvent
+
+    scope, key = transfer_scope, uuid4()
+    receive(scope, key)
+    with pytest.raises(IntegrityError, match="request"), transaction.atomic():
+        LotDispositionEvent.objects.create(
+            lot=scope["lot"],
+            warehouse=scope["other"],
+            actor=scope["actor"],
+            request_id=key,
+            from_disposition="HOLD",
+            to_disposition="RELEASED",
+            reason="Synthetic raw insert",
+        )
+
+
+@pytest.mark.django_db
+def test_new_transfer_without_request_id_is_rejected_by_postgresql(transfer_scope):
+    """Legacy NULL keys stay as history; a NEW transfer row must carry a key (M4.4.2)."""
+    from .test_transfer_history import entries
+
+    debit, credit = entries(transfer_scope)
+    with pytest.raises(IntegrityError, match="request_id"), transaction.atomic():
+        StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize("order", ["transfer_then_receipt", "disposition_then_transfer"])
+def test_cross_command_race_other_orderings(transfer_scope, order):
+    scope, key = transfer_scope, uuid4()
+    if order == "transfer_then_receipt":
+        first, second = (lambda: post(scope, request_id=key)[0]), (lambda: receive(scope, key))
+        expected = "ReceiptConflictError"
+    else:
+        first, second = (lambda: release(scope, key)), (lambda: post(scope, request_id=key)[0])
+        expected = "TransferConflictError"
+    _, outcome = blocked_action(first, second)
+    assert outcome[0] == expected, outcome

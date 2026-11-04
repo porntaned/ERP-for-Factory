@@ -118,5 +118,11 @@ jobs:
       - name: Run receipt and transfer serialization tests
         run: uv run pytest -q tests/inventory/test_receipt_transfer_serialization.py --tb=short
 
+      - name: Run request key registry and migration tests
+        run: uv run pytest -q tests/inventory/test_request_key_registry.py tests/inventory/test_request_key_migration.py --tb=short
+
+      - name: Run cross-command concurrency tests
+        run: uv run pytest -q tests/inventory/test_command_concurrency.py --tb=short
+
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
