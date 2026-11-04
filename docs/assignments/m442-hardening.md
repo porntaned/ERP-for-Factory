@@ -38,3 +38,7 @@ PR #51 had no assignment record. Summary: owner chose a shared registry on 2026-
 first (6 registry tests failed with `DID NOT RAISE`), then GREEN; local full suite 653 passed;
 owner confirmed the three assumptions and merged at `7d2ed62` on 2026-11-04; main CI #151
 succeeded (step conclusions only). Retroactive independent review: see the review file above.
+
+## Closeout (2026-11-04)
+
+Owner approved merge; [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56) merged at `5a91d0026f7787f78df45cc079d23f20b428874c`, main CI #164 success; Issue #53 closed. Later merges #55 (`a21208d`, CI #165) and #57 (`45df3cc`, [CI #166](https://github.com/porntaned/ERP-for-Factory/actions/runs/41791823342)) also passed. CI step conclusions only; no test counts read from logs.

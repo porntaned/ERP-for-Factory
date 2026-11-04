@@ -8,8 +8,8 @@
 
 สถานะ ณ 2026-11-04 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
-- **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA และ M4.1–M4.4
-- **กำลังรอเจ้าของตรวจ:** M4.4.2 ย้ายเทสต์จาก branch ค้าง + บังคับ request key ของรายการโอน + แก้ตามรีวิวอิสระ ([Issue #53](https://github.com/porntaned/ERP-for-Factory/issues/53), [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)); โครงเว็บและข้อมูลเดโม ([Issue #54](https://github.com/porntaned/ERP-for-Factory/issues/54), [PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)); และ PR เอกสารนี้ — หลัง Merge แต่ละตัวต้องอัปเดตส่วนนี้
+- **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.4 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) — `main` ที่ `45df3cc` [CI #166](https://github.com/porntaned/ERP-for-Factory/actions/runs/41791823342) ผ่าน
+- **กำลังรอเจ้าของตรวจ:** PR อัปเดตเอกสารหลัง Merge นี้เท่านั้น
 - **ยังไม่เริ่ม:** M4.5 Reversal, M4.6 หน้าจอ, M4.7 เดโม, M5, M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
@@ -180,7 +180,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 ## M7 — Portfolio delivery
 
 - [ ] **M7 — Portfolio ทดลองและประเมินซ้ำได้**
-  - [ ] M7.1 ข้อมูลจำลองและวิธี Reset demo
+  - [x] M7.1 ข้อมูลจำลองและวิธี Reset demo — `python manage.py seed_demo [--reset]` สร้างโรงงานจำลองผ่านคำสั่งจริง รันซ้ำได้ ([Issue #54](https://github.com/porntaned/ERP-for-Factory/issues/54), [PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55), [หลักฐาน](assignments/web-scaffold-demo.md)); `--reset` ล้างทั้งฐานข้อมูล ใช้กับฐานทดลองเท่านั้น
   - [ ] M7.2 คู่มือติดตั้งที่ตรวจจากสภาพใหม่
   - [ ] M7.3 Architecture และ Domain diagrams ที่ตรงกับโค้ด
   - [ ] M7.4 ภาพหรือวิดีโอ Demo พร้อม Issue/PR/CI evidence
@@ -196,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-04: เจ้าของอนุมัติ Merge [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56) ที่ `5a91d00` ([CI #164](https://github.com/porntaned/ERP-for-Factory/actions/runs/41791762129)), [PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55) ที่ `a21208d` ([CI #165](https://github.com/porntaned/ERP-for-Factory/actions/runs/41791793446)) และ [PR #57](https://github.com/porntaned/ERP-for-Factory/pull/57) ที่ `45df3cc` ([CI #166](https://github.com/porntaned/ERP-for-Factory/actions/runs/41791823342)) ทั้งหมดผ่าน; Issue #53 และ #54 ปิด; ติ๊ก M7.1; PR #56 มี independent review (แก้ตาม finding แล้ว ไม่ได้รีวิวซ้ำ), PR #55/#57 self-review; branch `codex/inventory/concurrent-commands` ยังไม่ลบ; เอกสารนี้อัปเดตทันทีหลัง Merge ตามกติกาใหม่ ไม่มี Deploy
 
 - 2026-11-04: แก้เอกสารให้ตรงสถานะจริงและเพิ่ม [กติกาอัปเดตเอกสาร](../AGENTS.md#documentation-updates) พร้อม PR template; README ไม่ระบุ SHA แล้ว ชี้มาที่ส่วนสถานะปัจจุบันแทน; บันทึกว่า PR #41 ปิดโดยไม่ Merge เมื่อ 2026-10-26 และ Issue #40 ปิดเมื่อ 2026-11-04; Merge PR #52 ที่ `32ca3d2` ปิด Issue #48 แล้ว เอกสารเท่านั้น
 
