@@ -67,3 +67,7 @@ quantities are covered by the parametrized test. The E2E test uses only the logi
 transfer form and `seed_demo`; no helper writes stock. Smaller alternative considered: a test
 with force_login and a hard-coded UUID; rejected because it would not prove the login page or the
 form's own request UUID. Verdict: `ship`.
+
+## Closeout (2026-11-04)
+
+PR CI run [#194](https://github.com/porntaned/ERP-for-Factory/actions/runs/41840824678) on head `9be3a32` (tested as merge `d980f1b`): PostgreSQL 18.6, Python 3.14.8, **759 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/67#issuecomment-6632274173)). Merged on the owner's instruction in chat: PR #67 at `c5413285de5faf7678be72418b23897834761dc7`; [main CI #195](https://github.com/porntaned/ERP-for-Factory/actions/runs/41842981403): **759 passed**. Issue #66 closed. Review remained self-review only (the owner chose not to add a sub-agent review).
