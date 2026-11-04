@@ -45,3 +45,7 @@ Repository `porntaned/ERP-for-Factory`; branch `codex/web/m46-inventory-screens`
 
 Self-review only. No schema, trigger or migration change, so no independent review (agreed
 2026-11-04 to save quota).
+
+## Closeout (2026-11-04)
+
+PR CI run #189 on head `7744c33`: PostgreSQL 18.6, Python 3.14.8, **751 passed** (CI comment). Merged per the owner's end-to-end instruction: PR #64 at `2304efe3b18cbb3a63ece9d3b0c34d50b80419b3`; [main CI #190](https://github.com/porntaned/ERP-for-Factory/actions/runs/41815019376): **751 passed**. Issue #63 closed.

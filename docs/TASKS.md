@@ -8,9 +8,9 @@
 
 สถานะ ณ 2026-11-04 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
-- **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.5 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) และ M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) — `main` ที่ `d694462` [CI #184](https://github.com/porntaned/ERP-for-Factory/actions/runs/41808897325): PostgreSQL 18.6, 732 passed
+- **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.6 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) และ M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) — `main` ที่ `2304efe` [CI #190](https://github.com/porntaned/ERP-for-Factory/actions/runs/41815019376): PostgreSQL 18.6, 751 passed
 - **กำลังรอเจ้าของตรวจ:** ไม่มี (หลัง Merge PR อัปเดตเอกสารนี้)
-- **ยังไม่เริ่ม:** M4.6 หน้าจอ, M4.7 เดโม, M5, M6 (มีบางส่วนแล้วใน M6.2), M7
+- **ยังไม่เริ่ม:** M4.7 เดโม, M5, M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
 ส่วนนี้ต้องอัปเดตทันทีหลัง Merge ทุกครั้ง ก่อนเริ่มงานอื่น ตาม [กติกาอัปเดตเอกสาร](../AGENTS.md#documentation-updates)
@@ -158,7 +158,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
     - [x] M4.3.7 ทดสอบเส้นทางโอนจริงบน PostgreSQL และ independent review ก่อน PR — [Issue #44](https://github.com/porntaned/ERP-for-Factory/issues/44); [ขอบเขต/หลักฐาน](assignments/m437-transfer-readiness.md); [PostgreSQL CI #133](https://github.com/porntaned/ERP-for-Factory/actions/runs/40067756440) ผ่าน 2 workflow / 644 full; [Independent source review: ship](reviews/m437-transfer-independent-review.md); เจ้าของ Merge [PR #45](https://github.com/porntaned/ERP-for-Factory/pull/45) ที่ `1e8df0bbf9fb4b19be02fb9145f8ec5e8dff3ecc` (2026-10-24)
   - [x] M4.4 ป้องกันคำขอซ้ำและทดสอบ Concurrent transactions — [Issue #48](https://github.com/porntaned/ERP-for-Factory/issues/48), [ผลตรวจ/หลักฐาน](assignments/m44-idempotency-concurrency.md); เทสต์ receipt/transfer พร้อมกันใน [PR #49](https://github.com/porntaned/ERP-for-Factory/pull/49) (`f69df51`); ทะเบียน request key กลางข้ามคำสั่งใน [Issue #50](https://github.com/porntaned/ERP-for-Factory/issues/50) / [PR #51](https://github.com/porntaned/ERP-for-Factory/pull/51) (`7d2ed62`) เจ้าของยืนยันข้อสมมติแล้ว; [main CI #151 ผ่าน](https://github.com/porntaned/ERP-for-Factory/actions/runs/41782637554); self-review เท่านั้น ไม่มี independent review
   - [x] M4.5 เพิ่ม Reversal ที่อ้างรายการต้นฉบับ — [Issue #59](https://github.com/porntaned/ERP-for-Factory/issues/59), [ขอบเขต/หลักฐาน](assignments/m45-reversal.md), [Independent review: fix-then-ship แก้แล้ว](reviews/m45-reversal-independent-review.md); เจ้าของอนุมัติ Merge [PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60) ที่ `d694462`; [main CI #184](https://github.com/porntaned/ERP-for-Factory/actions/runs/41808897325) PostgreSQL 18.6: 732 passed
-  - [ ] M4.6 เพิ่มหน้ารับเข้า โอน ยอดคงเหลือและประวัติ
+  - [x] M4.6 เพิ่มหน้ารับเข้า โอน ยอดคงเหลือและประวัติ — รวมหน้ากลับรายการ แสดงตามสิทธิ์ และ login ผู้ใช้เดโม ([Issue #63](https://github.com/porntaned/ERP-for-Factory/issues/63), [หลักฐาน](assignments/m46-inventory-screens.md)); เจ้าของอนุมัติ Merge [PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64) ที่ `2304efe`; [main CI #190](https://github.com/porntaned/ERP-for-Factory/actions/runs/41815019376) PostgreSQL 18.6: 751 passed; self-review
   - [ ] M4.7 สาธิต 100 → โอน 30 → คงเหลือ 70/30 พร้อมหลักฐาน
 
 ## M5 — Manufacturing ขั้นต้น
@@ -196,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-04: Merge [PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64) (M4.6) ที่ `2304efe` ตามที่เจ้าของสั่งให้ทำ M4.6 จนจบ; Issue #63 ปิด; [main CI #190](https://github.com/porntaned/ERP-for-Factory/actions/runs/41815019376) PostgreSQL 18.6, Python 3.14.8, **751 passed** ตาม comment ของ CI จึงติ๊ก M4.6; ถัดไป M4.7 เดโม ไม่มี Deploy
 
 - 2026-11-04: M4.6 ใน [Issue #63](https://github.com/porntaned/ERP-for-Factory/issues/63) — หน้า login, รับเข้า, โอน, ประวัติและกลับรายการ แสดงตามสิทธิ์; `set_demo_passwords` และ `demo-approver`; RED ก่อน (18 เทสต์) แล้ว GREEN; smoke บน runserver พบ label 'Lot object (1)' จึงแก้และเพิ่มเทสต์; self-review — [หลักฐาน](assignments/m46-inventory-screens.md) รอ Merge ไม่มี Deploy
 
