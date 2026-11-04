@@ -1,45 +1,28 @@
 from django.db import migrations
 
-# Legacy StockTransfer rows with NULL request_id stay as history (they predate 0006 and
-# are not adopted). A NEW row with no key would bypass the shared registry, so reject it.
-
-REGISTER = """
-CREATE OR REPLACE FUNCTION inventory_register_request_key()
-RETURNS trigger LANGUAGE plpgsql AS $$
-DECLARE
-    owner_command text;
-BEGIN
-    IF NEW.request_id IS NULL THEN
-        {null_branch}
-    END IF;
-    INSERT INTO inventory_requestkey (request_id, command)
-    VALUES (NEW.request_id, TG_ARGV[0])
-    ON CONFLICT (request_id) DO NOTHING;
-    SELECT command INTO owner_command
-    FROM inventory_requestkey WHERE request_id = NEW.request_id;
-    IF owner_command IS DISTINCT FROM TG_ARGV[0] THEN
-        RAISE EXCEPTION 'request_id already used by another command'
-            USING ERRCODE = '23505';
-    END IF;
-    RETURN NEW;
-END;
-$$;
-"""
-
-REJECT_NULL = (
-    "RAISE EXCEPTION 'request_id is required for new % rows', TG_ARGV[0] USING ERRCODE = '23502';"
-)
+# New StockTransfer rows must carry request_id; otherwise they would bypass the shared
+# request-key registry. NOT VALID enforces this for new and updated rows only, so legacy
+# NULL rows from before 0006 remain as unadopted history. The Django field stays
+# null=True for those legacy rows; the database rule is the authority for new writes.
 
 
 class Migration(migrations.Migration):
-    dependencies = [
-        ("inventory", "0007_request_key_registry"),
-        ("quality", "0004_request_key_registration"),
-    ]
+    dependencies = [("inventory", "0007_request_key_registry")]
 
     operations = [
         migrations.RunSQL(
-            sql=REGISTER.format(null_branch=REJECT_NULL),
-            reverse_sql=REGISTER.format(null_branch="RETURN NEW;"),
+            sql="""
+                -- Flush deferred FK checks so ALTER TABLE works even when this migration
+                -- runs inside a transaction that already wrote transfer rows.
+                SET CONSTRAINTS ALL IMMEDIATE;
+                ALTER TABLE inventory_stocktransfer
+                    ADD CONSTRAINT transfer_request_id_required
+                    CHECK (request_id IS NOT NULL) NOT VALID;
+            """,
+            reverse_sql="""
+                SET CONSTRAINTS ALL IMMEDIATE;
+                ALTER TABLE inventory_stocktransfer
+                    DROP CONSTRAINT transfer_request_id_required;
+            """,
         ),
     ]

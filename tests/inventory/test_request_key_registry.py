@@ -8,14 +8,16 @@ from decimal import Decimal
 from uuid import uuid4
 
 import pytest
+from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 
+from access_control.models import WarehouseRoleAssignment
 from inventory.models import StockLedgerEntry, StockReceipt, StockTransfer
 from inventory.services import ReceiptConflictError, receive_stock
 from inventory.transfers import TransferConflictError
 from quality.services import DispositionConflictError, transition_lot_disposition
 
-from .test_atomic_transfer import post
+from .test_atomic_transfer import change_quality, post
 from .test_atomic_transfer import transfer_scope as transfer_scope  # noqa: F401
 from .test_stock_receipt_concurrency import blocked_action
 
@@ -88,7 +90,7 @@ def test_database_rejects_cross_command_insert_bypassing_services(transfer_scope
     """The registry is enforced by PostgreSQL triggers, not only by service code."""
     scope, key = transfer_scope, uuid4()
     post(scope, request_id=key)
-    entry = scope["lot"].stockledgerentry_set.first()
+    entry = scope["lot"].stockledgerentry_set.order_by("id").first()
     with pytest.raises(IntegrityError, match="request"), transaction.atomic():
         StockReceipt.objects.create(request_id=key, ledger_entry=entry)
 
@@ -103,20 +105,6 @@ def test_failed_cross_command_attempt_leaves_no_ledger_rows(transfer_scope):
     assert scope["lot"].stockledgerentry_set.count() == ledger_before
 
 
-@pytest.mark.django_db(transaction=True)
-def test_cross_command_race_on_registry_leaves_only_the_winner(transfer_scope):
-    scope, key = transfer_scope, uuid4()
-    receipt, outcome = blocked_action(
-        lambda: receive(scope, key),
-        lambda: post(scope, request_id=key)[0],
-    )
-    assert outcome[0] == "TransferConflictError", outcome
-    assert StockReceipt.objects.filter(request_id=key).count() == 1
-    assert StockTransfer.objects.filter(request_id=key).count() == 0
-    assert receipt.pk is not None
-    assert StockLedgerEntry.objects.filter(warehouse=scope["other"]).count() == 0
-
-
 @pytest.mark.django_db
 def test_quality_key_cannot_be_reused_by_receipt(transfer_scope):
     scope, key = transfer_scope, uuid4()
@@ -126,7 +114,7 @@ def test_quality_key_cannot_be_reused_by_receipt(transfer_scope):
 
 
 @pytest.mark.django_db
-def test_database_rejects_raw_disposition_insert_with_foreign_key(transfer_scope):
+def test_database_rejects_raw_disposition_insert_with_key_owned_by_receipt(transfer_scope):
     from quality.models import LotDispositionEvent
 
     scope, key = transfer_scope, uuid4()
@@ -153,15 +141,56 @@ def test_new_transfer_without_request_id_is_rejected_by_postgresql(transfer_scop
         StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
 
 
+def other_lot_scope(scope):
+    """Second command on a DIFFERENT Lot by a DIFFERENT actor.
+
+    Same Lot or same actor would make the second command wait on the Lot or User/grant
+    lock and then fail at the service pre-check, never reaching the registry trigger.
+    Here the only shared row is the registry key, so the race is decided by the trigger's
+    unique-index wait and the services' IntegrityError branch.
+    """
+    actor = get_user_model().objects.create(username="registry-race-actor")
+    for warehouse in (scope["warehouse"], scope["other"]):
+        for role in ("WAREHOUSE", "QUALITY"):
+            WarehouseRoleAssignment.objects.create(user=actor, warehouse=warehouse, role=role)
+    second = scope | {"lot": scope["second"], "actor": actor}
+    StockLedgerEntry.objects.create(
+        lot=second["lot"],
+        warehouse=second["warehouse"],
+        actor=actor,
+        quantity_delta=Decimal("100"),
+        reason="Synthetic second-lot stock",
+    )
+    change_quality(second, second["warehouse"], "RELEASED")
+    return second
+
+
+COMMANDS = {
+    "receipt": (lambda s, k: receive(s, k), "ReceiptConflictError"),
+    "transfer": (lambda s, k: post(s, request_id=k)[0], "TransferConflictError"),
+    "disposition": (lambda s, k: release(s, k), "DispositionConflictError"),
+}
+
+
 @pytest.mark.django_db(transaction=True)
-@pytest.mark.parametrize("order", ["transfer_then_receipt", "disposition_then_transfer"])
-def test_cross_command_race_other_orderings(transfer_scope, order):
+@pytest.mark.parametrize(
+    "first,second",
+    [
+        ("receipt", "transfer"),
+        ("transfer", "receipt"),
+        ("disposition", "transfer"),
+        ("receipt", "disposition"),
+    ],
+)
+def test_cross_command_race_is_decided_at_the_registry(transfer_scope, first, second):
     scope, key = transfer_scope, uuid4()
-    if order == "transfer_then_receipt":
-        first, second = (lambda: post(scope, request_id=key)[0]), (lambda: receive(scope, key))
-        expected = "ReceiptConflictError"
-    else:
-        first, second = (lambda: release(scope, key)), (lambda: post(scope, request_id=key)[0])
-        expected = "TransferConflictError"
-    _, outcome = blocked_action(first, second)
+    other = other_lot_scope(scope)
+    ledger_other_before = StockLedgerEntry.objects.filter(lot=other["lot"]).count()
+    run_first, _ = COMMANDS[first]
+    run_second, expected = COMMANDS[second]
+    _, outcome = blocked_action(lambda: run_first(scope, key), lambda: run_second(other, key))
     assert outcome[0] == expected, outcome
+    # the losing command rolled back every row it wrote on its own Lot
+    assert StockLedgerEntry.objects.filter(lot=other["lot"]).count() == ledger_other_before
+    assert StockReceipt.objects.filter(request_id=key).count() == (first == "receipt")
+    assert StockTransfer.objects.filter(request_id=key).count() == (first == "transfer")
