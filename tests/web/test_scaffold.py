@@ -32,12 +32,17 @@ def test_overview_requires_login(client):
 @pytest.mark.django_db
 def test_seed_creates_pilot_factory_through_real_commands(viewer):
     call_command("seed_demo", verbosity=0)
-    assert set(Warehouse.objects.values_list("code", flat=True)) == {"RM-A", "RM-B", "FG"}
+    assert set(Warehouse.objects.values_list("code", flat=True)) == {"RM-A", "RM-B", "LINE-1", "FG"}
     lot = StockReceipt.objects.get().ledger_entry.lot
     rm_a = Warehouse.objects.get(code="RM-A")
     assert get_stock_balance(lot=lot, warehouse=rm_a) == Decimal("100")
     assert get_lot_disposition(lot=lot, warehouse=rm_a) == "RELEASED"
-    assert set(RequestKey.objects.values_list("command", flat=True)) == {"RECEIPT", "DISPOSITION"}
+    assert set(RequestKey.objects.values_list("command", flat=True)) == {
+        "RECEIPT",
+        "DISPOSITION",
+        "BOM_DRAFT",
+        "BOM_APPROVE",
+    }
 
 
 @pytest.mark.django_db
@@ -47,7 +52,7 @@ def test_seed_is_idempotent(viewer):
     assert StockReceipt.objects.count() == 1
     assert StockLedgerEntry.objects.count() == 1
     assert LotDispositionEvent.objects.count() == 1
-    assert Warehouse.objects.count() == 3
+    assert Warehouse.objects.count() == 4
 
 
 @pytest.mark.django_db
@@ -87,5 +92,5 @@ def test_admin_is_read_only(client, superuser, model):
 def test_seed_reset_flushes_then_recreates(viewer):
     call_command("seed_demo", verbosity=0)
     call_command("seed_demo", reset=True, verbosity=0)
-    assert StockReceipt.objects.count() == 1 and Warehouse.objects.count() == 3
+    assert StockReceipt.objects.count() == 1 and Warehouse.objects.count() == 4
     assert not get_user_model().objects.filter(username="viewer").exists()

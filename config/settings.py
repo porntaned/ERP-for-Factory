@@ -30,6 +30,7 @@ INSTALLED_APPS: list[str] = [
     "inventory.apps.InventoryConfig",
     "access_control.apps.AccessControlConfig",
     "quality.apps.QualityConfig",
+    "manufacturing.apps.ManufacturingConfig",
     "demo.apps.DemoConfig",
 ]
 MIDDLEWARE: list[str] = [

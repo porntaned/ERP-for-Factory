@@ -27,7 +27,7 @@ uv sync --locked --all-groups
 uv run --env-file .env python manage.py migrate
 uv run --env-file .env pytest
 uv run --env-file .env python manage.py seed_demo      # ข้อมูลจำลอง
-uv run --env-file .env python manage.py set_demo_passwords  # รหัสผ่านของ demo-warehouse / demo-quality / demo-approver
+uv run --env-file .env python manage.py set_demo_passwords  # รหัสผ่านของ demo-warehouse / demo-quality / demo-approver / demo-production
 DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver  # http://127.0.0.1:8000/
 ```
 

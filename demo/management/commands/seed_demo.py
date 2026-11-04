@@ -17,6 +17,7 @@ from catalog.models import Item, UnitOfMeasure
 from facilities.models import Organization, Plant, Warehouse
 from inventory.models import Lot
 from inventory.services import receive_stock
+from manufacturing.services import approve_bom, create_bom_draft
 from quality.services import transition_lot_disposition
 
 
@@ -26,7 +27,7 @@ def demo_key(name):
 
 class Command(BaseCommand):
     help = (
-        "Seed synthetic demo data (LEDCO, plant P1, warehouses RM-A/RM-B/FG). "
+        "Seed synthetic demo data (LEDCO, plant P1, warehouses RM-A/RM-B/LINE-1/FG, BOM). "
         "--reset first FLUSHES the whole database; use only on a disposable database."
     )
 
@@ -54,6 +55,7 @@ class Command(BaseCommand):
             for code, name in (
                 ("RM-A", "Raw material A"),
                 ("RM-B", "Raw material B"),
+                ("LINE-1", "Production line 1"),
                 ("FG", "Finished goods"),
             )
         }
@@ -73,16 +75,17 @@ class Command(BaseCommand):
         lot, _ = Lot.objects.get_or_create(item=items["LED-CHIP"], code="L-0001")
 
         users = {}
-        for username, role in (
-            ("demo-warehouse", "WAREHOUSE"),
-            ("demo-quality", "QUALITY"),
-            ("demo-approver", "APPROVER"),
+        for username, role, codes in (
+            ("demo-warehouse", "WAREHOUSE", ("RM-A", "RM-B")),
+            ("demo-quality", "QUALITY", ("RM-A", "RM-B")),
+            ("demo-approver", "APPROVER", ("RM-A", "RM-B")),
+            ("demo-production", "PRODUCTION", ("RM-A", "RM-B", "LINE-1", "FG")),
         ):
             user, created = get_user_model().objects.get_or_create(username=username)
             if created:
                 user.set_unusable_password()
                 user.save()
-            for code in ("RM-A", "RM-B"):
+            for code in codes:
                 WarehouseRoleAssignment.objects.get_or_create(
                     user=user, warehouse=warehouses[code], role=role
                 )
@@ -105,4 +108,17 @@ class Command(BaseCommand):
             reason="Synthetic demo incoming release",
             request_id=demo_key("release-1"),
         )
-        return "Seeded LEDCO/P1: RM-A, RM-B, FG; lot L-0001 received 100 at RM-A and RELEASED."
+        # M5.1: LAMP-A19 v1 = 4 LED-CHIP + 1 DRIVER, drafted by production, approved by approver.
+        bom = create_bom_draft(
+            item=items["LAMP-A19"],
+            lines=[(items["LED-CHIP"], Decimal("4")), (items["DRIVER"], Decimal("1"))],
+            actor=users["PRODUCTION"],
+            request_id=demo_key("bom-lamp-a19-v1"),
+        )
+        approve_bom(
+            bom=bom, actor=users["APPROVER"], request_id=demo_key("bom-lamp-a19-v1-approve")
+        )
+        return (
+            "Seeded LEDCO/P1: RM-A, RM-B, LINE-1, FG; lot L-0001 received 100 at RM-A and RELEASED; "
+            "BOM LAMP-A19 v1 ACTIVE."
+        )
