@@ -16,16 +16,33 @@ from uuid import UUID
 
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
-from django.db.models import Max
+from django.db.models import Case, DecimalField, F, Max, Sum, When
 from django.db.models.functions import Now
 
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from catalog.models import Item, ItemType
 from facilities.models import Warehouse
+from inventory.models import Lot, StockTransfer
 from inventory.quantities import is_valid_quantity
 from inventory.request_keys import owned_by_other_command
+from inventory.transfer_policy import TransferQualityError, TransferQualityValidationError
+from inventory.transfers import (
+    InsufficientStockError,
+    TransferAuthorizationError,
+    TransferConflictError,
+    TransferValidationError,
+    post_production_transfer,
+)
 
-from .models import BillOfMaterials, BomLine, BomStatus, OrderStatus, ProductionOrder
+from .models import (
+    BillOfMaterials,
+    BomLine,
+    BomStatus,
+    MovementKind,
+    OrderStatus,
+    ProductionMaterialMovement,
+    ProductionOrder,
+)
 
 __all__ = [
     "BomAuthorizationError",
@@ -34,7 +51,14 @@ __all__ = [
     "OrderAuthorizationError",
     "OrderConflictError",
     "OrderValidationError",
+    "MaterialAuthorizationError",
+    "MaterialConflictError",
+    "MaterialLimitError",
+    "MaterialQualityError",
+    "MaterialValidationError",
     "approve_bom",
+    "issue_material",
+    "return_material",
     "cancel_production_order",
     "create_bom_draft",
     "create_production_order",
@@ -378,6 +402,8 @@ def cancel_production_order(
             return replay
         if locked.status != OrderStatus.OPEN:
             raise OrderValidationError("only an OPEN order can be cancelled")
+        if any(_order_holdings(locked).values()):
+            raise OrderValidationError("return the material on the line before cancelling")
         try:
             with transaction.atomic():
                 ProductionOrder.objects.filter(pk=locked.pk).update(
@@ -394,3 +420,186 @@ def cancel_production_order(
             raise OrderConflictError("request_id was already used") from None
         locked.refresh_from_db()
         return locked
+
+
+# ---------------------------------------------------------------- material issue and return
+# M5.2a (Issue #72). Owner rules: net issue (issued - returned) per component never exceeds
+# order quantity x quantity_per; the issue source must be RELEASED. Inventory posts the
+# transfer (post_production_transfer); this module links it to the order. Lock order: the
+# order row, then Inventory's Lot -> Item -> Warehouses -> Plant -> actor -> grants.
+
+
+class MaterialValidationError(ValueError):
+    pass
+
+
+class MaterialAuthorizationError(Exception):
+    pass
+
+
+class MaterialConflictError(Exception):
+    pass
+
+
+class MaterialLimitError(Exception):
+    pass
+
+
+class MaterialQualityError(Exception):
+    pass
+
+
+_SIGNED = Case(
+    When(kind=MovementKind.ISSUE, then=F("transfer__destination_entry__quantity_delta")),
+    default=-F("transfer__destination_entry__quantity_delta"),
+    output_field=DecimalField(),
+)
+
+
+def _order_holdings(order: ProductionOrder) -> dict[int, Decimal]:
+    """Net quantity per Lot the order holds on its line."""
+    rows = (
+        ProductionMaterialMovement.objects.filter(order=order)
+        .values("transfer__destination_entry__lot_id")
+        .annotate(net=Sum(_SIGNED))
+    )
+    return {row["transfer__destination_entry__lot_id"]: row["net"] for row in rows}
+
+
+def _net_issued(order: ProductionOrder, item_id: int) -> Decimal:
+    total = ProductionMaterialMovement.objects.filter(
+        order=order, transfer__destination_entry__lot__item_id=item_id
+    ).aggregate(net=Sum(_SIGNED))["net"]
+    return total or Decimal("0")
+
+
+def _material_replay(request_id: UUID, order: ProductionOrder, kind: str) -> Any:
+    transfer = StockTransfer.objects.filter(request_id=request_id).first()
+    if transfer is None:
+        return None
+    movement = ProductionMaterialMovement.objects.filter(transfer=transfer).first()
+    if movement is None or movement.order_id != order.pk or movement.kind != kind:
+        raise MaterialConflictError("request_id was already used for another movement")
+    return movement
+
+
+def _move_material(*, kind, order, lot, other_warehouse, quantity, actor, reason, request_id):
+    if not _saved(order, ProductionOrder) or not _saved(lot, Lot):
+        raise MaterialValidationError("order and lot must be saved records")
+    if not _saved(other_warehouse, Warehouse):
+        raise MaterialValidationError("warehouse must be a saved Warehouse")
+    if not is_valid_quantity(quantity):
+        raise MaterialValidationError(
+            "quantity must be a positive Decimal below 10^14 with at most six places"
+        )
+    if not isinstance(request_id, UUID):
+        raise MaterialValidationError("request_id must be a UUID")
+    with transaction.atomic():
+        locked = ProductionOrder.objects.select_for_update().filter(pk=order.pk).first()
+        if locked is None:
+            raise MaterialValidationError("order must exist")
+        line = locked.line_warehouse
+        if other_warehouse.pk == line.pk:
+            raise MaterialValidationError("the other warehouse must not be the order line")
+        source, destination = (
+            (other_warehouse, line) if kind == MovementKind.ISSUE else (line, other_warehouse)
+        )
+        prior = _material_replay(request_id, locked, kind)
+        if prior is None:
+            # Unlocked read for an early, informative refusal; Inventory locks and re-checks.
+            if (
+                not WarehouseRoleAssignment.objects.filter(
+                    user_id=getattr(actor, "pk", None),
+                    warehouse_id__in=(source.pk, destination.pk),
+                    role=WarehouseRole.PRODUCTION,
+                    user__is_active=True,
+                ).count()
+                == 2
+            ):
+                raise MaterialAuthorizationError("PRODUCTION at both warehouses is required")
+            if locked.status != OrderStatus.OPEN:
+                raise MaterialValidationError("material moves only for an OPEN order")
+            per = (
+                BomLine.objects.filter(bom_id=locked.bom_id, component_id=lot.item_id)
+                .values_list("quantity_per", flat=True)
+                .first()
+            )
+            if per is None:
+                raise MaterialValidationError("the Lot item is not a component of the order BOM")
+            if kind == MovementKind.ISSUE:
+                if _net_issued(locked, lot.item_id) + quantity > locked.quantity * per:
+                    raise MaterialLimitError("net issue would exceed the BOM requirement")
+            elif _order_holdings(locked).get(lot.pk, Decimal("0")) < quantity:
+                raise MaterialLimitError("the order holds less of this Lot on its line")
+        try:
+            debit, _ = post_production_transfer(
+                lot=lot,
+                source_warehouse=source,
+                destination_warehouse=destination,
+                actor=actor,
+                quantity=quantity,
+                reason=reason,
+                request_id=request_id,
+                quality_at_source=kind == MovementKind.ISSUE,
+            )
+        except TransferAuthorizationError as exc:
+            raise MaterialAuthorizationError(str(exc)) from exc
+        except TransferQualityError as exc:
+            raise MaterialQualityError(str(exc)) from exc
+        except TransferConflictError as exc:
+            raise MaterialConflictError(str(exc)) from exc
+        except InsufficientStockError as exc:
+            raise MaterialLimitError(str(exc)) from exc
+        except (TransferValidationError, TransferQualityValidationError) as exc:
+            raise MaterialValidationError(str(exc)) from exc
+        if prior is not None:
+            return prior
+        return ProductionMaterialMovement.objects.create(
+            order=locked, kind=kind, transfer=debit.transfer_out
+        )
+
+
+def issue_material(
+    *,
+    order: ProductionOrder,
+    lot: Lot,
+    source_warehouse: Warehouse,
+    quantity: Decimal,
+    actor: Any,
+    reason: str,
+    request_id: UUID,
+) -> ProductionMaterialMovement:
+    """Move a component Lot from a stock warehouse onto the order's line."""
+    return _move_material(
+        kind=MovementKind.ISSUE,
+        order=order,
+        lot=lot,
+        other_warehouse=source_warehouse,
+        quantity=quantity,
+        actor=actor,
+        reason=reason,
+        request_id=request_id,
+    )
+
+
+def return_material(
+    *,
+    order: ProductionOrder,
+    lot: Lot,
+    destination_warehouse: Warehouse,
+    quantity: Decimal,
+    actor: Any,
+    reason: str,
+    request_id: UUID,
+) -> ProductionMaterialMovement:
+    """Move material the order holds on its line back to a warehouse where the Lot is RELEASED."""
+    return _move_material(
+        kind=MovementKind.RETURN,
+        order=order,
+        lot=lot,
+        other_warehouse=destination_warehouse,
+        quantity=quantity,
+        actor=actor,
+        reason=reason,
+        request_id=request_id,
+    )

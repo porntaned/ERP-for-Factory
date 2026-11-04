@@ -83,6 +83,63 @@ def transfer_stock(
     Legacy NULL request IDs are not adopted. There is no endpoint or automatic retry.
     The atomic block is also a savepoint when the caller owns an outer transaction.
     """
+    return _post_transfer(
+        lot=lot,
+        source_warehouse=source_warehouse,
+        destination_warehouse=destination_warehouse,
+        actor=actor,
+        quantity=quantity,
+        reason=reason,
+        request_id=request_id,
+        role=WarehouseRole.WAREHOUSE,
+        quality_at_source=True,
+    )
+
+
+def post_production_transfer(
+    *,
+    lot,
+    source_warehouse,
+    destination_warehouse,
+    actor,
+    quantity: Decimal,
+    reason: str,
+    request_id: UUID,
+    quality_at_source: bool,
+) -> tuple[StockLedgerEntry, StockLedgerEntry]:
+    """Inventory's interface for manufacturing issue and return (M5.2a, Issue #72).
+
+    Same ledger posting, locks, replay and stock checks as transfer_stock, but authority is
+    PRODUCTION at both ends. The Quality gate is the source for an issue and the destination
+    for a return (quality_at_source=False): material comes back only where its Lot is
+    RELEASED. Only manufacturing.services calls it, inside its own transaction, and records
+    the order link in the same transaction.
+    """
+    return _post_transfer(
+        lot=lot,
+        source_warehouse=source_warehouse,
+        destination_warehouse=destination_warehouse,
+        actor=actor,
+        quantity=quantity,
+        reason=reason,
+        request_id=request_id,
+        role=WarehouseRole.PRODUCTION,
+        quality_at_source=quality_at_source,
+    )
+
+
+def _post_transfer(
+    *,
+    lot,
+    source_warehouse,
+    destination_warehouse,
+    actor,
+    quantity: Decimal,
+    reason: str,
+    request_id: UUID,
+    role: str,
+    quality_at_source: bool,
+) -> tuple[StockLedgerEntry, StockLedgerEntry]:
     _validate_payload(quantity, reason)
     if not isinstance(request_id, UUID):
         raise TransferValidationError("request_id must be a UUID")
@@ -102,12 +159,12 @@ def transfer_stock(
             .filter(
                 user_id=actor.pk,
                 warehouse_id__in=(source_warehouse.pk, destination_warehouse.pk),
-                role=WarehouseRole.WAREHOUSE,
+                role=role,
             )
             .order_by("warehouse_id")
         )
         if saved_actor is None or not saved_actor.is_active or len(grants) != 2:
-            raise TransferAuthorizationError("active WAREHOUSE authority at both ends is required")
+            raise TransferAuthorizationError(f"active {role} authority at both ends is required")
         command = dict(
             lot=lot,
             source_warehouse=source_warehouse,
@@ -121,8 +178,10 @@ def transfer_stock(
             return existing
         if owned_by_other_command(request_id, "TRANSFER"):
             raise TransferConflictError("request_id was already used by another command")
-        if get_lot_disposition(lot=lot, warehouse=source_warehouse) != LotDisposition.RELEASED:
-            raise TransferQualityError("source Lot-Warehouse must be RELEASED")
+        gate = source_warehouse if quality_at_source else destination_warehouse
+        if get_lot_disposition(lot=lot, warehouse=gate) != LotDisposition.RELEASED:
+            side = "source" if quality_at_source else "destination"
+            raise TransferQualityError(f"{side} Lot-Warehouse must be RELEASED")
         if get_stock_balance(lot=lot, warehouse=source_warehouse) < quantity:
             raise InsufficientStockError("source balance is insufficient")
         payload = dict(lot=lot, actor=saved_actor, reason=reason)
