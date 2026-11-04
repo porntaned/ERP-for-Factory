@@ -11,6 +11,7 @@ from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from facilities.models import Warehouse
 
 from .models import Lot, StockLedgerEntry, StockReceipt
+from .request_keys import owned_by_other_command
 
 
 def get_stock_balance(*, lot: Lot, warehouse: Warehouse) -> Decimal:
@@ -148,6 +149,8 @@ def receive_stock(*, lot, warehouse, actor, quantity: Decimal, reason: str, requ
         existing = _existing_receipt(request_id, **payload)
         if existing is not None:
             return existing
+        if owned_by_other_command(request_id, "RECEIPT"):
+            raise ReceiptConflictError("request_id was already used by another command")
         try:
             # Global UUID uniqueness can race across different Lots. Roll back BOTH
             # writes before reading the winning receipt, never leave an extra delta.
@@ -164,4 +167,6 @@ def receive_stock(*, lot, warehouse, actor, quantity: Decimal, reason: str, requ
             existing = _existing_receipt(request_id, **payload)
             if existing is not None:
                 return existing
+            if owned_by_other_command(request_id, "RECEIPT"):
+                raise ReceiptConflictError("request_id was already used by another command")
             raise
