@@ -40,8 +40,11 @@ Build a public portfolio ERP for a fictional LED assembly factory with synthetic
 ## Documentation updates
 
 Documentation must describe `main` as it is. The agent that prepares a change also prepares
-its documentation, in the same PR when possible; status that can only be known after the
-owner merges goes into a small follow-up docs PR that references the merge.
+its documentation in the same PR. Status that can only be known after the owner merges
+(merge SHA, post-merge `main` CI, checklist ticks) is updated **immediately after the merge,
+before any other work starts**: the agent that performed or observed the merge opens a small
+follow-up docs PR that references it, in the same session. A merge is not finished until
+that docs PR is open.
 
 1. `docs/TASKS.md`: check an item only when linked evidence exists; update **สถานะปัจจุบัน**
    and add a dated Progress log line (what merged, merge SHA, CI run, review type, what remains).

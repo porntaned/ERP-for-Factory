@@ -13,7 +13,7 @@ What changed and why (scope, exclusions):
 ## Documentation (see AGENTS.md → Documentation updates)
 
 - [ ] `docs/assignments/<slice>.md` records scope, tested SHA, results and review
-- [ ] `docs/TASKS.md` checklist, สถานะปัจจุบัน and Progress log updated — or a follow-up docs PR is planned after merge
+- [ ] `docs/TASKS.md` checklist, สถานะปัจจุบัน and Progress log updated — for post-merge facts, a follow-up docs PR is opened immediately after the merge
 - [ ] `README.md` summary updated if delivered / not-delivered status changed (no commit SHA)
 - [ ] Other affected docs updated (`DEVELOPMENT.md`, `PROJECT.md`, `AGENTS.md`)
 - [ ] Stale statements marked historical rather than deleted
