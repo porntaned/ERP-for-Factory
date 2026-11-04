@@ -21,17 +21,23 @@ from django.db.models.functions import Now
 
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from catalog.models import Item, ItemType
+from facilities.models import Warehouse
 from inventory.quantities import is_valid_quantity
 from inventory.request_keys import owned_by_other_command
 
-from .models import BillOfMaterials, BomLine, BomStatus
+from .models import BillOfMaterials, BomLine, BomStatus, OrderStatus, ProductionOrder
 
 __all__ = [
     "BomAuthorizationError",
     "BomConflictError",
     "BomValidationError",
+    "OrderAuthorizationError",
+    "OrderConflictError",
+    "OrderValidationError",
     "approve_bom",
+    "cancel_production_order",
     "create_bom_draft",
+    "create_production_order",
 ]
 
 
@@ -217,3 +223,171 @@ def approve_bom(*, bom: BillOfMaterials, actor: Any, request_id: UUID) -> BillOf
             raise BomConflictError("request_id was already used") from None
         target.refresh_from_db()
         return target
+
+
+# ---------------------------------------------------------------- production orders
+
+
+class OrderValidationError(ValueError):
+    pass
+
+
+class OrderAuthorizationError(Exception):
+    pass
+
+
+class OrderConflictError(Exception):
+    pass
+
+
+def _require_production_at(actor: Any, warehouse_ids: set[int]) -> None:
+    granted = {
+        grant.warehouse_id
+        for grant in WarehouseRoleAssignment.objects.select_for_update()
+        .filter(user_id=actor.pk, warehouse_id__in=warehouse_ids, role=WarehouseRole.PRODUCTION)
+        .order_by("warehouse_id")
+    }
+    if granted != warehouse_ids:
+        raise OrderAuthorizationError("PRODUCTION at the line and output warehouses is required")
+
+
+def _order_replay(request_id: UUID, *, bom, quantity, line, output, actor) -> Any:
+    prior = ProductionOrder.objects.filter(request_id=request_id).first()
+    if prior is None:
+        if owned_by_other_command(request_id, "ORDER_CREATE"):
+            raise OrderConflictError("request_id was already used by another command")
+        return None
+    if (
+        prior.bom_id == bom.pk
+        and prior.quantity == quantity
+        and prior.line_warehouse_id == line.pk
+        and prior.output_warehouse_id == output.pk
+        and prior.created_by_id == actor.pk
+    ):
+        return prior
+    raise OrderConflictError("request_id was already used for another production order")
+
+
+def create_production_order(
+    *,
+    bom: BillOfMaterials,
+    quantity: Decimal,
+    line_warehouse: Warehouse,
+    output_warehouse: Warehouse,
+    actor: Any,
+    request_id: UUID,
+) -> ProductionOrder:
+    """Open an order for `quantity` units of the BOM item on its ACTIVE version."""
+    if not _saved(bom, BillOfMaterials):
+        raise OrderValidationError("bom must be a saved BillOfMaterials")
+    if not is_valid_quantity(quantity):
+        raise OrderValidationError(
+            "quantity must be a positive Decimal below 10^14 with at most six places"
+        )
+    if not _saved(line_warehouse, Warehouse) or not _saved(output_warehouse, Warehouse):
+        raise OrderValidationError("line and output warehouses must be saved Warehouses")
+    if line_warehouse.pk == output_warehouse.pk:
+        raise OrderValidationError("line and output warehouses must differ")
+    if not isinstance(request_id, UUID):
+        raise OrderValidationError("request_id must be a UUID")
+    with transaction.atomic():
+        # FOR UPDATE on the BOM row queues this order behind (or ahead of) an approval.
+        locked = (
+            BillOfMaterials.objects.select_for_update(of=("self",))
+            .select_related("item")
+            .filter(pk=bom.pk)
+            .first()
+        )
+        if locked is None:
+            raise OrderValidationError("bom must exist")
+        plants = Warehouse.objects.filter(
+            pk__in=(line_warehouse.pk, output_warehouse.pk)
+        ).values_list("plant_id", "plant__organization_id")
+        if len(set(plants)) != 1 or next(iter(plants))[1] != locked.item.organization_id:
+            raise OrderValidationError("warehouses must share one plant of the item organization")
+        saved_actor = _lock_actor(actor, OrderAuthorizationError)
+        _require_production_at(saved_actor, {line_warehouse.pk, output_warehouse.pk})
+        replay = _order_replay(
+            request_id,
+            bom=locked,
+            quantity=quantity,
+            line=line_warehouse,
+            output=output_warehouse,
+            actor=saved_actor,
+        )
+        if replay is not None:
+            return replay
+        if locked.status != BomStatus.ACTIVE:
+            raise OrderValidationError("a production order needs an ACTIVE BOM")
+        try:
+            with transaction.atomic():
+                return ProductionOrder.objects.create(
+                    bom=locked,
+                    quantity=quantity,
+                    line_warehouse=line_warehouse,
+                    output_warehouse=output_warehouse,
+                    created_by=saved_actor,
+                    request_id=request_id,
+                )
+        except IntegrityError:
+            replay = _order_replay(
+                request_id,
+                bom=locked,
+                quantity=quantity,
+                line=line_warehouse,
+                output=output_warehouse,
+                actor=saved_actor,
+            )
+            if replay is not None:
+                return replay
+            raise OrderConflictError("request_id was already used") from None
+
+
+def _cancel_replay(request_id: UUID, order: ProductionOrder, actor: Any, reason: str) -> Any:
+    prior = ProductionOrder.objects.filter(cancel_request_id=request_id).first()
+    if prior is None:
+        if owned_by_other_command(request_id, "ORDER_CANCEL"):
+            raise OrderConflictError("request_id was already used by another command")
+        return None
+    if prior.pk == order.pk and prior.cancelled_by_id == actor.pk and prior.cancel_reason == reason:
+        return prior
+    raise OrderConflictError("request_id was already used for another cancellation")
+
+
+def cancel_production_order(
+    *, order: ProductionOrder, actor: Any, reason: str, request_id: UUID
+) -> ProductionOrder:
+    """Cancel an OPEN order; the record and its BOM link stay."""
+    if not _saved(order, ProductionOrder):
+        raise OrderValidationError("order must be a saved ProductionOrder")
+    if not isinstance(reason, str) or not reason.strip():
+        raise OrderValidationError("reason must be nonblank")
+    if not isinstance(request_id, UUID):
+        raise OrderValidationError("request_id must be a UUID")
+    with transaction.atomic():
+        locked = ProductionOrder.objects.select_for_update().filter(pk=order.pk).first()
+        if locked is None:
+            raise OrderValidationError("order must exist")
+        saved_actor = _lock_actor(actor, OrderAuthorizationError)
+        _require_production_at(saved_actor, {locked.line_warehouse_id, locked.output_warehouse_id})
+        replay = _cancel_replay(request_id, locked, saved_actor, reason)
+        if replay is not None:
+            return replay
+        if locked.status != OrderStatus.OPEN:
+            raise OrderValidationError("only an OPEN order can be cancelled")
+        try:
+            with transaction.atomic():
+                ProductionOrder.objects.filter(pk=locked.pk).update(
+                    status=OrderStatus.CANCELLED,
+                    cancelled_by=saved_actor,
+                    cancelled_at=Now(),
+                    cancel_reason=reason,
+                    cancel_request_id=request_id,
+                )
+        except IntegrityError:
+            replay = _cancel_replay(request_id, locked, saved_actor, reason)
+            if replay is not None:
+                return replay
+            raise OrderConflictError("request_id was already used") from None
+        locked.refresh_from_db()
+        return locked
