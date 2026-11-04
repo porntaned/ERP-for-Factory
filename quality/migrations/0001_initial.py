@@ -76,15 +76,11 @@ class Migration(migrations.Migration):
             options={
                 "constraints": [
                     models.CheckConstraint(
-                        condition=models.Q(
-                            ("from_disposition__in", ["HOLD", "RELEASED"])
-                        ),
+                        condition=models.Q(("from_disposition__in", ["HOLD", "RELEASED"])),
                         name="lot_disposition_from_valid",
                     ),
                     models.CheckConstraint(
-                        condition=models.Q(
-                            ("to_disposition__in", ["HOLD", "RELEASED"])
-                        ),
+                        condition=models.Q(("to_disposition__in", ["HOLD", "RELEASED"])),
                         name="lot_disposition_to_valid",
                     ),
                     models.CheckConstraint(

@@ -62,6 +62,13 @@ concurrency behavior required by Issue #1.
 
 ## Evidence rule
 
+CI (PostgreSQL 18.6, Python 3.14.8) is the evidence of record. Each run posts a summary with
+the commit SHA, server version and test counts as a commit comment, and keeps one updated
+comment on the PR, written by `scripts/ci_summary.py`. A local run on a different PostgreSQL
+or Python version is a development check, not evidence.
+
+`ruff format --check .` runs in CI; run `uv run ruff format .` before committing.
+
 A TDD RED result is valid only after dependency installation, Django settings, PostgreSQL
 connectivity and test database creation succeed. Import errors, missing environment variables,
 database connection failures, migration errors and SQLite runs are environment failures rather

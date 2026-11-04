@@ -44,9 +44,7 @@ def test_deleting_assignment_revokes_warehouse_access(
     assignment = grant(assignment_model, synthetic_user, warehouse, "WAREHOUSE")
 
     assert has_warehouse_role(synthetic_user, warehouse, {"WAREHOUSE"}) is True
-    assert warehouse_ids(warehouses_for_user(synthetic_user, {"WAREHOUSE"})) == {
-        warehouse.pk
-    }
+    assert warehouse_ids(warehouses_for_user(synthetic_user, {"WAREHOUSE"})) == {warehouse.pk}
 
     assignment.delete()
 
@@ -226,9 +224,7 @@ def test_matching_grant_does_not_authorize_another_active_saved_user(
     assert not synthetic_user.has_usable_password()
     assert not other_user.has_usable_password()
     assert has_warehouse_role(synthetic_user, warehouse, {"WAREHOUSE"}) is True
-    assert warehouse_ids(warehouses_for_user(synthetic_user, {"WAREHOUSE"})) == {
-        warehouse.pk
-    }
+    assert warehouse_ids(warehouses_for_user(synthetic_user, {"WAREHOUSE"})) == {warehouse.pk}
     assert has_warehouse_role(other_user, warehouse, {"WAREHOUSE"}) is False
     assert warehouse_ids(warehouses_for_user(other_user, {"WAREHOUSE"})) == set()
 
@@ -323,9 +319,7 @@ def test_authorized_warehouse_query_rejects_mixed_supported_and_unsupported_role
 ) -> None:
     grant(assignment_model, synthetic_user, warehouse_scope["target"], "WAREHOUSE")
 
-    assert warehouse_ids(
-        warehouses_for_user(synthetic_user, {"WAREHOUSE", "UNKNOWN"})
-    ) == set()
+    assert warehouse_ids(warehouses_for_user(synthetic_user, {"WAREHOUSE", "UNKNOWN"})) == set()
 
 
 def test_superuser_has_no_implicit_bypass(

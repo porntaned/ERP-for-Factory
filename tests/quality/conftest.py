@@ -7,8 +7,7 @@ from django.apps import apps
 from django.contrib.auth import get_user_model
 
 EXPECTED_RED = (
-    "quality Lot disposition contract is absent; "
-    "expected RED until Issue #11 is implemented"
+    "quality Lot disposition contract is absent; expected RED until Issue #11 is implemented"
 )
 
 
@@ -21,13 +20,11 @@ def disposition_contract() -> dict[str, Any]:
             "event_model": event_model,
             "get_disposition": getattr(services, "get_lot_disposition"),
             "transition": getattr(services, "transition_lot_disposition"),
-            "authorization_error": getattr(
-                services, "DispositionAuthorizationError"
-            ),
+            "authorization_error": getattr(services, "DispositionAuthorizationError"),
             "conflict_error": getattr(services, "DispositionConflictError"),
             "validation_error": getattr(services, "DispositionValidationError"),
         }
-    except (AttributeError, LookupError, ModuleNotFoundError):
+    except AttributeError, LookupError, ModuleNotFoundError:
         pytest.fail(EXPECTED_RED, pytrace=False)
 
 
@@ -121,4 +118,3 @@ def grant_role() -> Callable[[Any, Any, str], Any]:
         )
 
     return grant
-

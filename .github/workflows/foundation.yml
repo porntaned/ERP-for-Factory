@@ -39,6 +39,8 @@ jobs:
       POSTGRES_PASSWORD: synthetic-ci-only
       POSTGRES_HOST: 127.0.0.1
       POSTGRES_PORT: "5432"
+      # Every pytest step writes JUnit here; the last one (the full suite) feeds the summary.
+      PYTEST_ADDOPTS: "--junitxml=reports/junit.xml"
 
     steps:
       - name: Check out repository
@@ -85,6 +87,9 @@ jobs:
       - name: Run Ruff
         run: uv run ruff check .
 
+      - name: Check formatting
+        run: uv run ruff format --check .
+
       - name: Run persisted-deactivation regressions
         run: uv run pytest -q tests/access_control/test_persisted_deactivation.py --tb=short
 
@@ -126,3 +131,54 @@ jobs:
 
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
+
+      - name: Write CI evidence summary
+        if: always()
+        env:
+          JOB_STATUS: ${{ job.status }}
+        run: uv run python scripts/ci_summary.py reports/junit.xml > ci-summary.md
+
+      - name: Upload CI evidence summary
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: ci-summary
+          path: ci-summary.md
+          retention-days: 7
+
+  # Separate job so only this job's token can write comments. Skipped for fork PRs,
+  # whose token is read-only.
+  report:
+    needs: postgresql-tdd
+    if: >-
+      always() && (github.event_name == 'push' ||
+      github.event.pull_request.head.repo.full_name == github.repository)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Download CI evidence summary
+        uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: ci-summary
+
+      - name: Post CI evidence summary
+        continue-on-error: true
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          PR: ${{ github.event.pull_request.number }}
+          SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          gh api "repos/$REPO/commits/$SHA/comments" -F body=@ci-summary.md > /dev/null
+          if [ -n "$PR" ]; then
+            id=$(gh api "repos/$REPO/issues/$PR/comments" --paginate --jq \
+              '.[] | select(.user.login == "github-actions[bot]" and (.body | contains("<!-- erp-ci-summary -->"))) | .id' | tail -1)
+            if [ -n "$id" ]; then
+              gh api -X PATCH "repos/$REPO/issues/comments/$id" -F body=@ci-summary.md > /dev/null
+            else
+              gh api "repos/$REPO/issues/$PR/comments" -F body=@ci-summary.md > /dev/null
+            fi
+          fi

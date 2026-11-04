@@ -5,56 +5,109 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='Organization',
+            name="Organization",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=32, unique=True)),
-                ('display_name', models.TextField()),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("code", models.CharField(max_length=32, unique=True)),
+                ("display_name", models.TextField()),
             ],
             options={
-                'constraints': [models.CheckConstraint(condition=models.Q(('code__regex', '\\A[ABCDEFGHIJKLMNOPQRSTUVWXYZ][ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]{0,31}\\Z')), name='organization_code_format')],
+                "constraints": [
+                    models.CheckConstraint(
+                        condition=models.Q(
+                            (
+                                "code__regex",
+                                "\\A[ABCDEFGHIJKLMNOPQRSTUVWXYZ][ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]{0,31}\\Z",
+                            )
+                        ),
+                        name="organization_code_format",
+                    )
+                ],
             },
         ),
         migrations.CreateModel(
-            name='Plant',
+            name="Plant",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=32)),
-                ('display_name', models.TextField()),
-                ('organization', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='facilities.organization')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("code", models.CharField(max_length=32)),
+                ("display_name", models.TextField()),
+                (
+                    "organization",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="facilities.organization"
+                    ),
+                ),
             ],
         ),
         migrations.CreateModel(
-            name='Warehouse',
+            name="Warehouse",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=32)),
-                ('display_name', models.TextField()),
-                ('plant', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='facilities.plant')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("code", models.CharField(max_length=32)),
+                ("display_name", models.TextField()),
+                (
+                    "plant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="facilities.plant"
+                    ),
+                ),
             ],
         ),
         migrations.AddConstraint(
-            model_name='plant',
-            constraint=models.CheckConstraint(condition=models.Q(('code__regex', '\\A[ABCDEFGHIJKLMNOPQRSTUVWXYZ][ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]{0,31}\\Z')), name='plant_code_format'),
+            model_name="plant",
+            constraint=models.CheckConstraint(
+                condition=models.Q(
+                    (
+                        "code__regex",
+                        "\\A[ABCDEFGHIJKLMNOPQRSTUVWXYZ][ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]{0,31}\\Z",
+                    )
+                ),
+                name="plant_code_format",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='plant',
-            constraint=models.UniqueConstraint(fields=('organization', 'code'), name='plant_organization_code_unique'),
+            model_name="plant",
+            constraint=models.UniqueConstraint(
+                fields=("organization", "code"), name="plant_organization_code_unique"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='warehouse',
-            constraint=models.CheckConstraint(condition=models.Q(('code__regex', '\\A[ABCDEFGHIJKLMNOPQRSTUVWXYZ][ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]{0,31}\\Z')), name='warehouse_code_format'),
+            model_name="warehouse",
+            constraint=models.CheckConstraint(
+                condition=models.Q(
+                    (
+                        "code__regex",
+                        "\\A[ABCDEFGHIJKLMNOPQRSTUVWXYZ][ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]{0,31}\\Z",
+                    )
+                ),
+                name="warehouse_code_format",
+            ),
         ),
         migrations.AddConstraint(
-            model_name='warehouse',
-            constraint=models.UniqueConstraint(fields=('plant', 'code'), name='warehouse_plant_code_unique'),
+            model_name="warehouse",
+            constraint=models.UniqueConstraint(
+                fields=("plant", "code"), name="warehouse_plant_code_unique"
+            ),
         ),
     ]

@@ -6,7 +6,9 @@ Build a public portfolio ERP for a fictional LED assembly factory with synthetic
 
 ## Issue workflow
 
-1. Confirm repository, branch, HEAD and working state.
+1. Confirm repository, branch, HEAD and working state. Fetch every branch ref first
+   (`git fetch --depth=50 origin '+refs/heads/*:refs/remotes/origin/*'`) and list remote
+   branches not merged into `main`, so stale or parallel work is not missed.
 2. Read the current GitHub issue and relevant checklist tasks.
 3. State scope, exclusions, dependencies and acceptance criteria.
 4. Make the smallest change that satisfies the issue.
@@ -27,6 +29,9 @@ Build a public portfolio ERP for a fictional LED assembly factory with synthetic
 - Run targeted tests, diagnose root causes, then run relevant regression checks.
 - Follow `docs/SCRUTINIZE.md` before opening a pull request.
 - Record actual commands, environment, results and tested commit SHA.
+- CI on PostgreSQL 18.6 is the evidence of record. CI posts its results (commit SHA, server
+  version, test counts) as a commit comment and one updated PR comment; cite that comment.
+  Local runs on other versions are development checks only and must be labelled as such.
 - Label self-review and independent review accurately.
 
 ## Domain ownership
