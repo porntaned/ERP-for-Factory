@@ -8,9 +8,9 @@
 
 สถานะ ณ 2026-11-04 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
-- **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.4 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) — `main` ที่ `45df3cc` [CI #166](https://github.com/porntaned/ERP-for-Factory/actions/runs/41791823342) ผ่าน
-- **กำลังรอเจ้าของตรวจ:** PR อัปเดตเอกสารหลัง Merge นี้เท่านั้น
-- **ยังไม่เริ่ม:** M4.5 Reversal, M4.6 หน้าจอ, M4.7 เดโม, M5, M6 (มีบางส่วนแล้วใน M6.2), M7
+- **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.4 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) — `main` ที่ `cfbd1d5` [CI #179](https://github.com/porntaned/ERP-for-Factory/actions/runs/41803033139): PostgreSQL 18.6, 688 passed
+- **กำลังรอเจ้าของตรวจ:** M4.5 Reversal ([Issue #59](https://github.com/porntaned/ERP-for-Factory/issues/59), [PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) และ PR อัปเดตเอกสารนี้
+- **ยังไม่เริ่ม:** M4.6 หน้าจอ, M4.7 เดโม, M5, M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
 ส่วนนี้ต้องอัปเดตทันทีหลัง Merge ทุกครั้ง ก่อนเริ่มงานอื่น ตาม [กติกาอัปเดตเอกสาร](../AGENTS.md#documentation-updates)
@@ -196,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-04: เจ้าของอนุมัติ Merge [PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61) ที่ `cfbd1d5`; [main CI #179](https://github.com/porntaned/ERP-for-Factory/actions/runs/41803033139) ผ่าน และโพสต์หลักฐานเป็น commit comment เป็นครั้งแรก: PostgreSQL 18.6, Python 3.14.8, **688 passed**; ตั้งแต่นี้หลักฐาน CI มีจำนวนเทสต์จาก comment ของ CI; เพิ่ม ruff format --check และกติกา fetch ทุก branch; self-review ไม่มี Deploy
 
 - 2026-11-04: เจ้าของอนุมัติ Merge [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56) ที่ `5a91d00` ([CI #164](https://github.com/porntaned/ERP-for-Factory/actions/runs/41791762129)), [PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55) ที่ `a21208d` ([CI #165](https://github.com/porntaned/ERP-for-Factory/actions/runs/41791793446)) และ [PR #57](https://github.com/porntaned/ERP-for-Factory/pull/57) ที่ `45df3cc` ([CI #166](https://github.com/porntaned/ERP-for-Factory/actions/runs/41791823342)) ทั้งหมดผ่าน; Issue #53 และ #54 ปิด; ติ๊ก M7.1; PR #56 มี independent review (แก้ตาม finding แล้ว ไม่ได้รีวิวซ้ำ), PR #55/#57 self-review; branch `codex/inventory/concurrent-commands` ยังไม่ลบ; เอกสารนี้อัปเดตทันทีหลัง Merge ตามกติกาใหม่ ไม่มี Deploy
 
