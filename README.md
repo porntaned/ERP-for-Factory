@@ -6,9 +6,9 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 
 > **สถานะ:** ดูที่ [Checklist — สถานะปัจจุบัน](docs/TASKS.md#สถานะปัจจุบัน) ซึ่งเป็นแหล่งเดียวของสถานะงาน (README ไม่ระบุ commit SHA เพื่อไม่ให้ล้าสมัย)
 >
-> **ส่งมอบแล้ว:** Foundation, Item/UOM, Lot, สิทธิ์ตามบทบาท/คลัง, Quality Hold/Release และ Inventory M4.1–M4.5 (ledger, รับเข้า, โอนใน Plant เดียวกัน, กันคำขอซ้ำ/concurrency, ทะเบียน request key ข้ามคำสั่ง และ Reversal ที่อ้างรายการต้นฉบับ) ทั้งหมดเป็นคำสั่งภายใน พร้อมหน้ายอดคงเหลือแบบอ่านอย่างเดียว admin อ่านอย่างเดียว และข้อมูลจำลอง `seed_demo` (M7.1)
+> **ส่งมอบแล้ว:** Foundation, Item/UOM, Lot, สิทธิ์ตามบทบาท/คลัง, Quality Hold/Release และ Inventory M4.1–M4.5 (ledger, รับเข้า, โอนใน Plant เดียวกัน, กันคำขอซ้ำ/concurrency, ทะเบียน request key ข้ามคำสั่ง และ Reversal ที่อ้างรายการต้นฉบับ) และหน้าจอ M4.6 สำหรับรับเข้า โอน ประวัติ และกลับรายการ ตามสิทธิ์ผู้ใช้ พร้อม admin อ่านอย่างเดียวและข้อมูลจำลอง `seed_demo` (M7.1)
 >
-> **ยังไม่ส่งมอบ:** หน้าจอ Inventory (M4.6), เดโม (M4.7), Manufacturing (M5), Inspection/Traceability (M6), Portfolio delivery (M7) และไม่มีการ Deploy
+> **ยังไม่ส่งมอบ:** เดโม (M4.7), Manufacturing (M5), Inspection/Traceability (M6), Portfolio delivery (M7) และไม่มีการ Deploy
 
 ## Stack
 
