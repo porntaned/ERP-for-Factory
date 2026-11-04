@@ -58,9 +58,7 @@ def test_disposition_is_independent_for_each_lot_warehouse_pair(
     grant_role: Any,
 ) -> None:
     authorize_quality(grant_role, quality_user, quality_scope)
-    event = disposition_contract["transition"](
-        **transition_values(quality_scope, quality_user)
-    )
+    event = disposition_contract["transition"](**transition_values(quality_scope, quality_user))
 
     assert event.pk is not None
     assert (
@@ -170,9 +168,7 @@ def test_non_quality_roles_cannot_record_a_decision(
     grant_role(quality_user, quality_scope["warehouse"], role)
 
     with pytest.raises(disposition_contract["authorization_error"]):
-        disposition_contract["transition"](
-            **transition_values(quality_scope, quality_user)
-        )
+        disposition_contract["transition"](**transition_values(quality_scope, quality_user))
 
     assert disposition_contract["event_model"].objects.count() == 0
 
@@ -186,9 +182,7 @@ def test_quality_grant_for_another_warehouse_does_not_authorize_target(
     grant_role(quality_user, quality_scope["sibling_warehouse"], "QUALITY")
 
     with pytest.raises(disposition_contract["authorization_error"]):
-        disposition_contract["transition"](
-            **transition_values(quality_scope, quality_user)
-        )
+        disposition_contract["transition"](**transition_values(quality_scope, quality_user))
 
     assert disposition_contract["event_model"].objects.count() == 0
 
@@ -229,9 +223,7 @@ def test_superuser_has_no_implicit_quality_bypass(
     quality_user.save(update_fields=["is_superuser"])
 
     with pytest.raises(disposition_contract["authorization_error"]):
-        disposition_contract["transition"](
-            **transition_values(quality_scope, quality_user)
-        )
+        disposition_contract["transition"](**transition_values(quality_scope, quality_user))
 
     assert disposition_contract["event_model"].objects.count() == 0
 
@@ -246,9 +238,7 @@ def test_revoked_quality_grant_cannot_record_a_decision(
     assignment.delete()
 
     with pytest.raises(disposition_contract["authorization_error"]):
-        disposition_contract["transition"](
-            **transition_values(quality_scope, quality_user)
-        )
+        disposition_contract["transition"](**transition_values(quality_scope, quality_user))
 
     assert disposition_contract["event_model"].objects.count() == 0
 
@@ -467,10 +457,7 @@ def test_request_id_is_stored_as_uuid(
 ) -> None:
     authorize_quality(grant_role, quality_user, quality_scope)
 
-    event = disposition_contract["transition"](
-        **transition_values(quality_scope, quality_user)
-    )
+    event = disposition_contract["transition"](**transition_values(quality_scope, quality_user))
 
     event.refresh_from_db()
     assert isinstance(event.request_id, UUID)
-

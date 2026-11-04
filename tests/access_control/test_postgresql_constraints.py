@@ -66,8 +66,11 @@ def test_concurrent_exact_duplicate_assignment_allows_only_one(
     assert not any(worker.is_alive() for worker in workers)
     outcomes = sorted(results.get(timeout=1) for _ in range(2))
     assert outcomes == ["created", "integrity_error"]
-    assert assignment_model.objects.filter(
-        user=user,
-        warehouse=warehouse,
-        role="WAREHOUSE",
-    ).count() == 1
+    assert (
+        assignment_model.objects.filter(
+            user=user,
+            warehouse=warehouse,
+            role="WAREHOUSE",
+        ).count()
+        == 1
+    )
