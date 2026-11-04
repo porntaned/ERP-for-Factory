@@ -38,6 +38,17 @@ These are demo assumptions, not claims about rules shared by every factory or in
 4. Quality and traceability: inspection, hold/release and lot tracing.
 5. Portfolio delivery: ERP demo plus reproducible Multi-Agent evidence.
 
+These five outcomes are tracked in [TASKS.md](TASKS.md) with finer numbering:
+
+| Milestone above | TASKS.md sections |
+| --- | --- |
+| Governance and process | M0, MA, M1, PA (audit fixes) |
+| 1. Foundation | M2 |
+| 2. Inventory | M3 (master data, roles, audit), M4 (ledger, receipt, transfer, idempotency, reversal, screens, demo) |
+| 3. Manufacturing | M5 |
+| 4. Quality and traceability | M6 (Hold/Release basics already in M3.3 and M4.3.3) |
+| 5. Portfolio delivery | M7 |
+
 ## Evidence boundary
 
 Passing a milestone proves only its documented behavior. It does not establish production readiness. HR/payroll, full accounting, advanced planning, external hardware integration and deployment remain deferred.

@@ -80,7 +80,7 @@ cannot be triggered deterministically without fault-injection hooks; not attempt
 
 ## Review status
 
-Self-review only so far. No independent review is claimed. M4.4 stays **unchecked** in
+_Historical (2026-10-30), superseded by the closeout below:_ Self-review only so far. No independent review is claimed. M4.4 stays **unchecked** in
 `docs/TASKS.md`: only one of three candidate items produced new tests, and the cross-command
 key question awaits the owner.
 

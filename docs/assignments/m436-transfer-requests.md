@@ -84,3 +84,5 @@ Local Ruff check/format, Markdown links/fences (2 files / 117 local targets), an
 Final pre-merge documentation CI passed: [push #130](https://github.com/porntaned/ERP-for-Factory/actions/runs/40066962008) and [PR #131](https://github.com/porntaned/ERP-for-Factory/actions/runs/40066999089), head `95cf55a831613db5fd6252b73fef9ccf4e9cb315`.
 Owner merge and main CI are linked above. M4.3.7 independent review is tracked separately in [readiness](m437-transfer-readiness.md). Reversing migration 0006 drops request IDs and deduplication;
 no schema rollback/deployment is authorized by this work. PR #41 remains separate/open.
+
+_Update 2026-11-04:_ PR #41 was closed without merge on 2026-10-26 (its handoff files were outdated and conflicted with main); Issue #40 was closed on 2026-11-04.

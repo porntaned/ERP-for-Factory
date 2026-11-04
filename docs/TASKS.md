@@ -6,6 +6,18 @@
 
 ## สถานะปัจจุบัน
 
+สถานะ ณ 2026-11-04 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
+
+- **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA และ M4.1–M4.4
+- **กำลังรอเจ้าของตรวจ:** M4.4.2 ย้ายเทสต์จาก branch ค้าง + บังคับ request key ของรายการโอน + แก้ตามรีวิวอิสระ ([Issue #53](https://github.com/porntaned/ERP-for-Factory/issues/53), [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)); โครงเว็บและข้อมูลเดโม ([Issue #54](https://github.com/porntaned/ERP-for-Factory/issues/54), [PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)); และ PR เอกสารนี้ — หลัง Merge แต่ละตัวต้องอัปเดตส่วนนี้
+- **ยังไม่เริ่ม:** M4.5 Reversal, M4.6 หน้าจอ, M4.7 เดโม, M5, M6 (มีบางส่วนแล้วใน M6.2), M7
+- **ไม่มีการ Deploy**
+
+ส่วนนี้ต้องอัปเดตทุกครั้งหลัง Merge ตาม [กติกาอัปเดตเอกสาร](../AGENTS.md#documentation-updates)
+
+<details>
+<summary>ประวัติสถานะเดิม (ก่อน 2026-11-04 เก็บไว้ตามที่บันทึกในแต่ละช่วง)</summary>
+
 [PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12) Merge เข้า main ที่ `9b1d182eb6867b70f076e95a63dc03f1814f00ec` แล้ว; Issue #11 ปิด ผล [Audit หลัง Merge](https://github.com/porntaned/ERP-for-Factory/blob/codex/project-audit-after-pr12/docs/reviews/project-audit-after-pr12.md) ทั้ง 5 Finding แก้และ Merge แล้วตามหลักฐานด้านล่าง การตรวจรับ M3 ก่อน Inventory ยังเป็นขั้นตอนแยก
 
 Finding 1 เสร็จแล้ว: เจ้าของ Merge [PR #14](https://github.com/porntaned/ERP-for-Factory/pull/14) เข้า `main` ที่ `eba63622495c6b065ad0abcd8e652676f9189d20` และ [Issue #13](https://github.com/porntaned/ERP-for-Factory/issues/13) ปิดแล้ว
@@ -21,6 +33,8 @@ Finding 5 เสร็จแล้ว: เจ้าของอนุญาต�
 เจ้าของตรวจรับ M3 และอนุมัติ Merge [PR #25](https://github.com/porntaned/ERP-for-Factory/pull/25) ที่ `e806b6491d962f8124cc17d902eca2a692485ad1`; [Issue #24](https://github.com/porntaned/ERP-for-Factory/issues/24) ปิด completed แล้ว — [Matrix/ข้อจำกัด](evidence/issue-24-m3-readiness.md), [Independent review](reviews/issue-24-m3-readiness-independent-review.md), [Merge addendum](evidence/issue-24-m3-readiness.md#owner-authorized-merge).
 
 M4.1 เสร็จและเจ้าของ Merge [PR #27](https://github.com/porntaned/ERP-for-Factory/pull/27) เข้า `main` ที่ `a8c93fc461ab4115b69b4c5082f7f31e657ca865`; [Issue #26](https://github.com/porntaned/ERP-for-Factory/issues/26) ปิด completed — [หลักฐานหลัง Merge](evidence/issue-26-stock-ledger.md#owner-merge-and-main-push-ci), [Independent source review](reviews/issue-26-stock-ledger-independent-review.md), [main CI: 121 targeted / 402 full passed](https://github.com/porntaned/ERP-for-Factory/actions/runs/39892983263) M4.2 เสร็จและเจ้าของอนุมัติ Merge [PR #30](https://github.com/porntaned/ERP-for-Factory/pull/30) ที่ `5701d51dfe48558c6dab21e1e3525de3291b452e`; [Issue #29](https://github.com/porntaned/ERP-for-Factory/issues/29) ปิด completed — [หลักฐานหลัง Merge](evidence/issue-29-stock-receipt.md#owner-authorized-merge-and-main-push), [main CI: 87 receipt / 489 full passed](https://github.com/porntaned/ERP-for-Factory/actions/runs/39910705968); ส่งมอบนิยามข้อมูล M4.3.1 ใน [Issue #32](https://github.com/porntaned/ERP-for-Factory/issues/32) — [สัญญา](assignments/issue-32-transfer-definition.md); main มีคำสั่งโอนภายในแล้วหลัง PR #37; ส่งมอบ Quality gate M4.3.3 ใน [Issue #34](https://github.com/porntaned/ERP-for-Factory/issues/34); ส่งมอบ M4.3.4 และสิทธิ์ขั้นต่ำ M4.3.2 ใน [Issue #36](https://github.com/porntaned/ERP-for-Factory/issues/36); M4.3.5 และ M4.3.6 Merge แล้วใน [PR #39](https://github.com/porntaned/ERP-for-Factory/pull/39) และ [PR #43](https://github.com/porntaned/ERP-for-Factory/pull/43); M4.3.7 Merge แล้วใน [PR #45](https://github.com/porntaned/ERP-for-Factory/pull/45) ที่ `1e8df0bbf9fb4b19be02fb9145f8ec5e8dff3ecc` จึงปิด M4.3 ทั้งชุด; M4.4 เสร็จหลังเจ้าของ Merge [PR #49](https://github.com/porntaned/ERP-for-Factory/pull/49) และ [PR #51](https://github.com/porntaned/ERP-for-Factory/pull/51) ที่ `7d2ed620ecc8db88f648133514a356f91964c5f7`; M4.5–M4.7 ยังไม่เสร็จ และไม่มีการ Deploy
+
+</details>
 
 ## M0 — กำหนดโครงการและวิธีทำงาน
 
@@ -159,7 +173,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 - [ ] **M6 — ตรวจคุณภาพและค้นย้อน Lot ได้**
   - [ ] M6.1 Incoming/Final inspection และสิทธิ์ผู้ตัดสินใจ
-  - [ ] M6.2 บังคับ Hold/Release ร่วมกับ Inventory
+  - [ ] M6.2 บังคับ Hold/Release ร่วมกับ Inventory — **บางส่วนแล้ว:** การโอนบังคับต้นทาง RELEASED ตั้งแต่ M4.3.3 ([Issue #34](https://github.com/porntaned/ERP-for-Factory/issues/34)); ยังไม่มีการบังคับกับการเบิก/ใช้ในการผลิต (M5) และการตัดสินใจตามผล inspection (M6.1)
   - [ ] M6.3 ค้นย้อนวัตถุดิบ ↔ ผลผลิต
   - [ ] M6.4 ทดสอบจำนวน, concurrency และ Audit ของ QC
 
@@ -182,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-04: แก้เอกสารให้ตรงสถานะจริงและเพิ่ม [กติกาอัปเดตเอกสาร](../AGENTS.md#documentation-updates) พร้อม PR template; README ไม่ระบุ SHA แล้ว ชี้มาที่ส่วนสถานะปัจจุบันแทน; บันทึกว่า PR #41 ปิดโดยไม่ Merge เมื่อ 2026-10-26 และ Issue #40 ปิดเมื่อ 2026-11-04; Merge PR #52 ที่ `32ca3d2` ปิด Issue #48 แล้ว เอกสารเท่านั้น
 
 - 2026-11-04: เจ้าของยืนยันข้อสมมติ Issue #50 และอนุมัติ Merge [PR #49](https://github.com/porntaned/ERP-for-Factory/pull/49) ที่ `f69df51` แล้ว [PR #51](https://github.com/porntaned/ERP-for-Factory/pull/51) ที่ `7d2ed62`; [main CI #151](https://github.com/porntaned/ERP-for-Factory/actions/runs/41782637554) ผ่านบนผลรวมทั้งสอง จึงติ๊ก M4.4; ปิด Issue #40 ตามเจ้าของสั่ง; PR #51 ไม่มี independent review; ข้อความ log CI ดึงจาก session ไม่ได้ จึงไม่อ้างจำนวนเทสต์ ไม่มี Deploy
 
