@@ -26,6 +26,7 @@ A handoff records:
 3. Commands, environment and exact results.
 4. Commit SHA or a clear statement that work is not committed.
 5. Findings, remaining risks and the next responsible role.
+6. Documentation updated per [AGENTS.md](../AGENTS.md#documentation-updates), or the follow-up docs PR that will do it.
 
 ## Evidence
 
