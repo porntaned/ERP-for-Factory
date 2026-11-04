@@ -1,0 +1,65 @@
+{% extends "demo/base.html" %}
+{% block title %}ประวัติ{% endblock %}
+{% block content %}
+<h1 class="h4">ประวัติการเคลื่อนไหว</h1>
+<p class="text-secondary">ปุ่มกลับรายการแสดงเฉพาะผู้มีสิทธิ์ APPROVER ทุกคลังที่เกี่ยวข้อง · กลับรายการได้ครั้งเดียวและต้องกลับทั้งรายการ</p>
+
+<h2 class="h5 mt-4">รับเข้า</h2>
+<table class="table table-sm align-middle">
+  <thead><tr><th>#</th><th>Lot</th><th>คลัง</th><th class="text-end">จำนวน</th><th>ผู้บันทึก</th><th>เหตุผล</th><th></th></tr></thead>
+  <tbody>
+  {% for row in receipts %}{% with e=row.entry %}
+  <tr>
+    <td>R{{ row.obj.pk }}</td><td>{{ e.lot.code }}</td><td>{{ e.warehouse.code }}</td>
+    <td class="text-end">{{ e.quantity_delta.normalize }}</td><td>{{ e.actor.username }}</td><td>{{ e.reason }}</td>
+    <td>
+      {% if row.reversed %}<span class="badge text-bg-secondary">กลับรายการแล้ว</span>
+      {% elif row.can_reverse %}
+      <form method="post" action="{% url 'reverse-receipt' row.obj.pk %}" class="d-flex gap-1" data-action="reverse-receipt">{% csrf_token %}
+        <input class="form-control form-control-sm" name="reason" placeholder="เหตุผล" required>
+        <input type="hidden" name="request_id" value="{{ row.key }}">
+        <button class="btn btn-sm btn-outline-danger" type="submit">กลับรายการ</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endwith %}{% empty %}<tr><td colspan="7" class="text-secondary">ยังไม่มีรายการ</td></tr>{% endfor %}
+  </tbody>
+</table>
+
+<h2 class="h5 mt-4">โอน</h2>
+<table class="table table-sm align-middle">
+  <thead><tr><th>#</th><th>Lot</th><th>จาก → ไป</th><th class="text-end">จำนวน</th><th>ผู้บันทึก</th><th>เหตุผล</th><th></th></tr></thead>
+  <tbody>
+  {% for row in transfers %}{% with t=row.obj %}
+  <tr>
+    <td>T{{ t.pk }}</td><td>{{ t.source_entry.lot.code }}</td>
+    <td>{{ t.source_entry.warehouse.code }} → {{ t.destination_entry.warehouse.code }}</td>
+    <td class="text-end">{{ t.destination_entry.quantity_delta.normalize }}</td>
+    <td>{{ t.source_entry.actor.username }}</td><td>{{ t.source_entry.reason }}</td>
+    <td>
+      {% if row.reversed %}<span class="badge text-bg-secondary">กลับรายการแล้ว</span>
+      {% elif row.can_reverse %}
+      <form method="post" action="{% url 'reverse-transfer' t.pk %}" class="d-flex gap-1" data-action="reverse-transfer">{% csrf_token %}
+        <input class="form-control form-control-sm" name="reason" placeholder="เหตุผล" required>
+        <input type="hidden" name="request_id" value="{{ row.key }}">
+        <button class="btn btn-sm btn-outline-danger" type="submit">กลับรายการ</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% endwith %}{% empty %}<tr><td colspan="7" class="text-secondary">ยังไม่มีรายการ</td></tr>{% endfor %}
+  </tbody>
+</table>
+
+<h2 class="h5 mt-4">กลับรายการ</h2>
+<table class="table table-sm">
+  <thead><tr><th>#</th><th>อ้างอิง</th><th>ผู้กลับรายการ</th><th>เหตุผล</th></tr></thead>
+  <tbody>
+  {% for v in reversals %}
+  <tr><td>V{{ v.pk }}</td><td>{% if v.receipt_id %}R{{ v.receipt_id }}{% else %}T{{ v.transfer_id }}{% endif %}</td>
+    <td>{{ v.debit_entry.actor.username }}</td><td>{{ v.debit_entry.reason }}</td></tr>
+  {% empty %}<tr><td colspan="4" class="text-secondary">ยังไม่มีรายการ</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

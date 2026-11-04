@@ -1,0 +1,7 @@
+{% extends "demo/base.html" %}
+{% block title %}รับเข้า{% endblock %}
+{% block content %}
+<h1 class="h4">รับวัตถุดิบเข้า</h1>
+<p class="text-secondary">เลือกได้เฉพาะคลังที่คุณมีสิทธิ์ WAREHOUSE · สถานะ Quality เดิมไม่เปลี่ยน</p>
+{% include "demo/_form.html" with submit="บันทึกรับเข้า" %}
+{% endblock %}

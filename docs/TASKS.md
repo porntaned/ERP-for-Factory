@@ -197,6 +197,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## Progress log
 
+- 2026-11-04: M4.6 ใน [Issue #63](https://github.com/porntaned/ERP-for-Factory/issues/63) — หน้า login, รับเข้า, โอน, ประวัติและกลับรายการ แสดงตามสิทธิ์; `set_demo_passwords` และ `demo-approver`; RED ก่อน (18 เทสต์) แล้ว GREEN; smoke บน runserver พบ label 'Lot object (1)' จึงแก้และเพิ่มเทสต์; self-review — [หลักฐาน](assignments/m46-inventory-screens.md) รอ Merge ไม่มี Deploy
+
 - 2026-11-04: เจ้าของอนุมัติ Merge [PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60) (M4.5 Reversal) ที่ `d694462`; Issue #59 ปิด; [main CI #184](https://github.com/porntaned/ERP-for-Factory/actions/runs/41808897325) ผ่าน PostgreSQL 18.6, Python 3.14.8, **732 passed** ตาม comment ของ CI จึงติ๊ก M4.5; ครั้งแรกที่สั่ง Merge API ไม่ตอบกลับที่อ่านได้ ลองซ้ำครั้งเดียวแล้วสำเร็จ; เอกสารหลัง Merge #60 และ #61 รวมใน [PR #62](https://github.com/porntaned/ERP-for-Factory/pull/62) ไม่มี Deploy
 
 - 2026-11-04: เจ้าของอนุมัติ Merge [PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61) ที่ `cfbd1d5`; [main CI #179](https://github.com/porntaned/ERP-for-Factory/actions/runs/41803033139) ผ่าน และโพสต์หลักฐานเป็น commit comment เป็นครั้งแรก: PostgreSQL 18.6, Python 3.14.8, **688 passed**; ตั้งแต่นี้หลักฐาน CI มีจำนวนเทสต์จาก comment ของ CI; เพิ่ม ruff format --check และกติกา fetch ทุก branch; self-review ไม่มี Deploy

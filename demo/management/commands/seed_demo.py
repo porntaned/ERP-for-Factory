@@ -73,7 +73,11 @@ class Command(BaseCommand):
         lot, _ = Lot.objects.get_or_create(item=items["LED-CHIP"], code="L-0001")
 
         users = {}
-        for username, role in (("demo-warehouse", "WAREHOUSE"), ("demo-quality", "QUALITY")):
+        for username, role in (
+            ("demo-warehouse", "WAREHOUSE"),
+            ("demo-quality", "QUALITY"),
+            ("demo-approver", "APPROVER"),
+        ):
             user, created = get_user_model().objects.get_or_create(username=username)
             if created:
                 user.set_unusable_password()

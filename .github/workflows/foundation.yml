@@ -132,6 +132,9 @@ jobs:
       - name: Run stock reversal tests
         run: uv run pytest -q tests/inventory/test_stock_reversal.py --tb=short
 
+      - name: Run web screen tests
+        run: uv run pytest -q tests/web --tb=short
+
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
 
