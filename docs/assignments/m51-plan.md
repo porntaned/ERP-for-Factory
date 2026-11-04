@@ -34,20 +34,48 @@ No stock movement, no screens.
 - `approve_bom` retires the previous ACTIVE row **before** activating the new one, because the
   partial unique index is checked per statement.
 
-## Review Focus
+## Review Focus — risks and their fixes
 
-1. Approving an already ACTIVE or RETIRED version with a new key → `BomValidationError`, nothing
-   changes (Task 3 `test_approve_rejects_non_draft`).
-2. Exact replay of an approval after a newer version retired it → returns the stored row, now
-   RETIRED, no error (Task 3 `test_approve_replay_after_retirement`).
-3. Creating an order on a version that is RETIRED, or retired concurrently → `OrderValidationError`;
-   the order locks the BOM row, so a concurrent approval waits (Task 4
-   `test_order_rejects_retired_bom`, `test_order_and_approval_serialize`).
-4. Draft input with a duplicate component, the item itself, an empty list, a float or a
-   seven-decimal quantity → `BomValidationError` before any write (Task 3
-   `test_draft_rejects_bad_lines`, parametrized).
-5. A grant at a warehouse of another organization or an inactive actor never authorizes (Task 3
-   `test_draft_authority_is_scoped_to_organization`, Task 4 `test_order_requires_both_warehouses`).
+Each risk gets a guard in the command (layer 1), a guard in PostgreSQL that holds even for raw
+SQL (layer 2), and the tests that prove both. The owner asked for fixes, not only tests
+(2026-11-04).
+
+1. **Approving an ACTIVE or RETIRED version again with a new key.**
+   Command: `approve_bom` locks every version of the item (`select_for_update().order_by("id")`)
+   and reads the status after the lock; not DRAFT → `BomValidationError("only a DRAFT can be
+   approved")` before any write. DB: status moves only DRAFT→ACTIVE→RETIRED; `approved_by`,
+   `approved_at`, `approval_request_id` go NULL→value once, only on DRAFT→ACTIVE.
+   Tests: `test_approve_rejects_non_draft` (row unchanged), raw SQL in
+   `test_bom_status_moves_forward_only`.
+2. **Replaying an approval after a newer version retired it.**
+   Command: fixed order of checks — (a) a BOM with `approval_request_id = key`: same BOM and
+   actor → return it whatever its status, otherwise `BomConflictError`; (b)
+   `owned_by_other_command` → Conflict; (c) only then the DRAFT check of risk 1. DB: unique
+   `approval_request_id` plus the shared `RequestKey`.
+   Tests: `test_approve_replay_after_retirement`, `test_approve_key_reused_for_other_bom_conflicts`.
+3. **An order on a version that is retired, or being retired concurrently.**
+   Command: `create_production_order` locks the BOM row `FOR UPDATE` and checks ACTIVE after the
+   lock; `approve_bom` locks all versions `FOR UPDATE`, so the two queue. Both lock in the same
+   order (BOM rows by id → actor → grants) to avoid deadlock. DB: the order INSERT trigger reads
+   the BOM status `FOR SHARE` and rejects anything but ACTIVE.
+   Tests: `test_order_rejects_retired_bom`, `test_order_rejects_draft_bom`,
+   `test_order_and_approval_serialize` (both directions, lock wait witnessed with `wait_for_lock`).
+4. **Bad draft lines** (empty, duplicate, the item itself, float, zero or negative, seven
+   decimals). Command: validated before the transaction opens; lines is a non-empty list of
+   (saved Item, Decimal); unique component pks; component ≠ item. The quantity rule duplicated in
+   `inventory/services.py:_validate_receipt_payload` and `inventory/transfers.py:_validate_payload`
+   moves to `inventory/quantities.py:is_valid_quantity(q) -> bool` (no M4 behaviour change; M4
+   tests must stay green) and is reused here. DB: quantity CHECKs, unique (bom, component), trigger
+   for component type, organization and ≠ item.
+   Tests: `test_draft_rejects_bad_lines` (7 cases, no rows and no `RequestKey` written).
+5. **Authority from another organization, or an actor deactivated mid-command.**
+   Command: authority is checked inside the transaction after the locks, as in
+   `inventory/reversals.py:_lock_authority`: lock the actor and the relevant grants, require
+   `is_active`; grants filter `warehouse__plant__organization = item.organization` and the role;
+   an order needs PRODUCTION at both warehouses (id-set comparison); the approver must not be the
+   creator. DB: CHECK `approved_by <> created_by` (role authority stays in commands, as in M4).
+   Tests: `test_draft_authority_is_scoped_to_organization`, `test_order_requires_both_warehouses`,
+   `test_inactive_actor_rejected` (every command), `test_approve_rejects_creator`.
 
 ---
 
@@ -116,7 +144,7 @@ reading the key as `(to_jsonb(NEW) ->> TG_ARGV[1])::uuid`, same insert-or-keep l
 
 ### Task 3: BOM commands
 
-**Files:** Create `manufacturing/services.py` (BOM part); Test `tests/manufacturing/test_bom_commands.py`
+**Files:** Create `manufacturing/services.py` (BOM part), `inventory/quantities.py`; Modify `inventory/services.py`, `inventory/transfers.py` (use `is_valid_quantity`); Test `tests/manufacturing/test_bom_commands.py`
 
 **Interfaces — Produces:**
 - `class BomValidationError(ValueError)`, `BomAuthorizationError(Exception)`, `BomConflictError(Exception)`
