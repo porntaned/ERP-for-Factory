@@ -14,6 +14,7 @@ from django.db.models.functions import Now, Round
 from catalog.models import Item
 from facilities.models import Warehouse
 from inventory.fields import ExactQuantityField
+from inventory.models import StockTransfer
 
 QUANTITY_LIMIT = Decimal("100000000000000")
 
@@ -151,3 +152,38 @@ class ProductionOrder(models.Model):
                 name="order_cancel_matches_status",
             ),
         ]
+
+
+class MovementKind(models.TextChoices):
+    ISSUE = "ISSUE", "Issue to line"
+    RETURN = "RETURN", "Return from line"
+
+
+class ProductionMaterialMovement(models.Model):
+    """M5.2a (Issue #72): links one Inventory transfer to the order it issued or returned for.
+
+    Lot, quantity, warehouses and actor live on the transfer's ledger entries (Inventory owns
+    them); PostgreSQL checks direction, BOM membership and the net-issue cap on insert.
+    """
+
+    order = models.ForeignKey(ProductionOrder, on_delete=models.PROTECT, related_name="materials")
+    kind = models.CharField(max_length=6, choices=MovementKind)
+    transfer = models.OneToOneField(
+        StockTransfer, on_delete=models.PROTECT, related_name="production_movement"
+    )
+    created_at = models.DateTimeField(db_default=Now(), editable=False)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(kind__in=MovementKind.values), name="material_movement_kind_valid"
+            ),
+        ]
+
+    @property
+    def lot(self):
+        return self.transfer.source_entry.lot
+
+    @property
+    def quantity(self):
+        return self.transfer.destination_entry.quantity_delta
