@@ -9,8 +9,8 @@
 สถานะ ณ 2026-11-04 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
 - **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.6 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) และ M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) — `main` ที่ `2304efe` [CI #190](https://github.com/porntaned/ERP-for-Factory/actions/runs/41815019376): PostgreSQL 18.6, 751 passed
-- **กำลังรอเจ้าของตรวจ:** ไม่มี (หลัง Merge PR อัปเดตเอกสารนี้)
-- **ยังไม่เริ่ม:** M4.7 เดโม, M5, M6 (มีบางส่วนแล้วใน M6.2), M7
+- **กำลังรอเจ้าของตรวจ:** M4.7 เดโม ([Issue #66](https://github.com/porntaned/ERP-for-Factory/issues/66), [หลักฐาน](assignments/m47-demo.md))
+- **ยังไม่เริ่ม:** M5, M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
 ส่วนนี้ต้องอัปเดตทันทีหลัง Merge ทุกครั้ง ก่อนเริ่มงานอื่น ตาม [กติกาอัปเดตเอกสาร](../AGENTS.md#documentation-updates)
@@ -196,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-04: M4.7 ใน [Issue #66](https://github.com/porntaned/ERP-for-Factory/issues/66) — test E2E ผ่านหน้าจอ: `seed_demo` → login → โอน 30 → ยอด 70/30 → ประวัติ; การเดินเดโมพบว่าจำนวนเต็มที่ลงท้ายด้วย 0 แสดงเป็น `3E+1` (`Decimal.normalize()`) จึงแก้การแสดงผลและเพิ่มเทสต์; RED ก่อนแล้ว GREEN; local 759 passed (PostgreSQL 16.15, development check); ภาพหน้าจอใน `docs/evidence/m47/`; self-review — [หลักฐาน](assignments/m47-demo.md) รอ Merge ยังไม่ติ๊ก M4.7 ไม่มี Deploy
 
 - 2026-11-04: Merge [PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64) (M4.6) ที่ `2304efe` ตามที่เจ้าของสั่งให้ทำ M4.6 จนจบ; Issue #63 ปิด; [main CI #190](https://github.com/porntaned/ERP-for-Factory/actions/runs/41815019376) PostgreSQL 18.6, Python 3.14.8, **751 passed** ตาม comment ของ CI จึงติ๊ก M4.6; ถัดไป M4.7 เดโม ไม่มี Deploy
 
