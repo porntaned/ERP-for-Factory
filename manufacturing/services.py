@@ -202,6 +202,8 @@ def approve_bom(*, bom: BillOfMaterials, actor: Any, request_id: UUID) -> BillOf
             return replay
         if target.status != BomStatus.DRAFT:
             raise BomValidationError("only a DRAFT can be approved")
+        if not target.lines.exists():
+            raise BomValidationError("a BOM needs at least one line before approval")
         if saved_actor.pk == target.created_by_id:
             raise BomAuthorizationError("the approver must not be the creator")
         try:

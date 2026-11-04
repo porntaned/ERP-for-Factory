@@ -242,3 +242,15 @@ def test_replay_requires_current_authority(mf):
         draft(mf, key=draft_key)
     with pytest.raises(BomAuthorizationError):
         approve(mf, bom, key=approve_key)
+
+
+@pytest.mark.django_db
+def test_approve_rejects_draft_without_lines(mf):
+    """A lineless draft can exist only through raw writes; approval must not activate it."""
+    from .conftest import raw_bom
+
+    bom = raw_bom(mf)
+    bom.lines.all().delete()  # allowed while DRAFT
+    with pytest.raises(BomValidationError, match="line"):
+        approve(mf, bom)
+    assert state(bom) == "DRAFT"
