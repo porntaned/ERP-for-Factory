@@ -15,7 +15,7 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 - Django 5.2 LTS modular monolith (`facilities`, `catalog`, `access_control`, `inventory`, `quality`)
 - PostgreSQL 18.6 เป็นฐานข้อมูลหลัก กฎสำคัญบังคับด้วย constraint และ trigger
 - pytest, pytest-django และ Ruff บน GitHub Actions
-- หน้าจอ: Django Templates และ Bootstrap — มีหน้ายอดคงเหลืออ่านอย่างเดียวและ admin อ่านอย่างเดียว; หน้ารับเข้า/โอนยังไม่ส่งมอบ (M4.6)
+- หน้าจอ: Django Templates และ Bootstrap — login ที่ `/accounts/login/`, ยอดคงเหลือ, รับเข้า, โอน, ประวัติและกลับรายการ แสดงตามสิทธิ์ของผู้ใช้; admin อ่านอย่างเดียว (superuser สร้างเองด้วย `createsuperuser`)
 
 ## Run locally
 
@@ -27,7 +27,7 @@ uv sync --locked --all-groups
 uv run --env-file .env python manage.py migrate
 uv run --env-file .env pytest
 uv run --env-file .env python manage.py seed_demo      # ข้อมูลจำลอง
-uv run --env-file .env python manage.py createsuperuser
+uv run --env-file .env python manage.py set_demo_passwords  # รหัสผ่านของ demo-warehouse / demo-quality / demo-approver
 DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver  # http://127.0.0.1:8000/
 ```
 

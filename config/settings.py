@@ -53,12 +53,15 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "demo.permissions.navigation",
             ],
         },
     },
 ]
 STATIC_URL = "static/"
-LOGIN_URL = "admin:login"
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "/"
+LOGOUT_REDIRECT_URL = "login"
 
 DATABASES = {
     "default": {

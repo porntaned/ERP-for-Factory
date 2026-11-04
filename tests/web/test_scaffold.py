@@ -26,7 +26,7 @@ def superuser(db):
 @pytest.mark.django_db
 def test_overview_requires_login(client):
     response = client.get("/")
-    assert response.status_code == 302 and "/admin/login/" in response["Location"]
+    assert response.status_code == 302 and "/accounts/login/" in response["Location"]
 
 
 @pytest.mark.django_db

@@ -1,0 +1,15 @@
+{% extends "demo/base.html" %}
+{% block title %}เข้าสู่ระบบ{% endblock %}
+{% block content %}
+<h1 class="h4">เข้าสู่ระบบ</h1>
+<form method="post" class="col-md-4">{% csrf_token %}
+  {{ form.non_field_errors }}
+  <div class="mb-3"><label class="form-label" for="id_username">ชื่อผู้ใช้</label>
+    <input class="form-control" name="username" id="id_username" autocomplete="username" required></div>
+  <div class="mb-3"><label class="form-label" for="id_password">รหัสผ่าน</label>
+    <input class="form-control" type="password" name="password" id="id_password" autocomplete="current-password" required></div>
+  <input type="hidden" name="next" value="{{ next }}">
+  <button class="btn btn-primary" type="submit">เข้าสู่ระบบ</button>
+</form>
+<p class="text-secondary small mt-3">ตั้งรหัสผ่านผู้ใช้เดโมด้วย <code>python manage.py set_demo_passwords</code></p>
+{% endblock %}

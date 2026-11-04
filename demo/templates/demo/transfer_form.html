@@ -1,0 +1,7 @@
+{% extends "demo/base.html" %}
+{% block title %}โอน{% endblock %}
+{% block content %}
+<h1 class="h4">โอนระหว่างคลัง</h1>
+<p class="text-secondary">ต้องมีสิทธิ์ WAREHOUSE ทั้งสองคลัง และคลังต้นทางต้องเป็น RELEASED</p>
+{% include "demo/_form.html" with submit="บันทึกการโอน" %}
+{% endblock %}
