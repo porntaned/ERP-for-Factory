@@ -73,7 +73,9 @@ def test_database_rejects_inconsistent_pair(transfer_scope, mismatch):
         changes["warehouse"] = Warehouse.objects.create(plant=plant, code="B", display_name="B")
     debit, credit = entries(scope, **changes)
     with pytest.raises(IntegrityError), transaction.atomic():
-        StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
+        StockTransfer.objects.create(
+            source_entry=debit, destination_entry=credit, request_id=uuid4()
+        )
     assert StockTransfer.objects.count() == 0
 
 
@@ -91,7 +93,9 @@ def test_database_rejects_wrong_or_missing_entry_roles(transfer_scope, invalid):
     else:
         destination = 999999999
     with pytest.raises(IntegrityError), transaction.atomic():
-        StockTransfer.objects.create(source_entry_id=source, destination_entry_id=destination)
+        StockTransfer.objects.create(
+            source_entry_id=source, destination_entry_id=destination, request_id=uuid4()
+        )
 
 
 @pytest.mark.django_db
@@ -99,11 +103,12 @@ def test_database_rejects_wrong_or_missing_entry_roles(transfer_scope, invalid):
 def test_ledger_entry_cannot_belong_to_two_transfers(transfer_scope, reuse):
     debit, credit = entries(transfer_scope)
     other_debit, other_credit = entries(transfer_scope)
-    StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
+    StockTransfer.objects.create(source_entry=debit, destination_entry=credit, request_id=uuid4())
     with pytest.raises(IntegrityError), transaction.atomic():
         StockTransfer.objects.create(
             source_entry=debit if reuse != "destination" else other_debit,
             destination_entry=credit if reuse != "source" else other_credit,
+            request_id=uuid4(),
         )
     assert StockTransfer.objects.count() == 1
 
@@ -117,7 +122,9 @@ def test_receipt_and_transfer_cannot_claim_the_same_credit(transfer_scope, recei
         return StockReceipt.objects.create(ledger_entry=credit, request_id=uuid4())
 
     def transfer():
-        return StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
+        return StockTransfer.objects.create(
+            source_entry=debit, destination_entry=credit, request_id=uuid4()
+        )
 
     (receipt if receipt_first else transfer)()
     with pytest.raises(IntegrityError), transaction.atomic():
@@ -152,10 +159,15 @@ def test_history_delete_and_linked_ledger_delete_are_protected(transfer_scope):
 def test_database_authors_identity_and_time(transfer_scope):
     debit, credit = entries(transfer_scope)
     with pytest.raises(DatabaseError, match="GENERATED ALWAYS"), transaction.atomic():
-        StockTransfer.objects.create(pk=999, source_entry=debit, destination_entry=credit)
+        StockTransfer.objects.create(
+            pk=999, source_entry=debit, destination_entry=credit, request_id=uuid4()
+        )
     supplied = datetime(2000, 1, 1, tzinfo=timezone.utc)
     history = StockTransfer.objects.create(
-        source_entry=debit, destination_entry=credit, created_at=supplied
+        source_entry=debit,
+        destination_entry=credit,
+        created_at=supplied,
+        request_id=uuid4(),
     )
     history.refresh_from_db()
     assert history.created_at > supplied
@@ -194,7 +206,9 @@ def test_concurrent_receipt_transfer_classification_has_one_winner(transfer_scop
         return StockReceipt.objects.create(ledger_entry=credit, request_id=uuid4())
 
     def transfer():
-        return StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
+        return StockTransfer.objects.create(
+            source_entry=debit, destination_entry=credit, request_id=uuid4()
+        )
 
     _, outcome = blocked_action(
         receipt if receipt_first else transfer, transfer if receipt_first else receipt
@@ -209,7 +223,9 @@ def test_concurrent_duplicate_pair_has_one_history(transfer_scope):
     debit, credit = entries(transfer_scope)
 
     def link():
-        return StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
+        return StockTransfer.objects.create(
+            source_entry=debit, destination_entry=credit, request_id=uuid4()
+        )
 
     _, outcome = blocked_action(link, link)
     assert outcome[0] == "IntegrityError", outcome
@@ -227,7 +243,9 @@ def test_ownership_links_reject_stale_snapshot_isolation(transfer_scope, receipt
             if receipt:
                 StockReceipt.objects.create(ledger_entry=credit, request_id=uuid4())
             else:
-                StockTransfer.objects.create(source_entry=debit, destination_entry=credit)
+                StockTransfer.objects.create(
+                    source_entry=debit, destination_entry=credit, request_id=uuid4()
+                )
 
 
 @pytest.mark.django_db(transaction=True)
