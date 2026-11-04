@@ -239,9 +239,12 @@ def test_descending_event_id_is_rejected_without_hiding_the_next_decision(
                 "OVERRIDING SYSTEM VALUE "
                 "VALUES (%s, %s, %s, %s, %s, 'RELEASED', 'HOLD', %s)",
                 [
-                    released.pk - 1, quality_scope["lot"].pk,
-                    quality_scope["warehouse"].pk, quality_user.pk,
-                    hold_values["request_id"], hold_values["reason"],
+                    released.pk - 1,
+                    quality_scope["lot"].pk,
+                    quality_scope["warehouse"].pk,
+                    quality_user.pk,
+                    hold_values["request_id"],
+                    hold_values["reason"],
                 ],
             )
     assert (

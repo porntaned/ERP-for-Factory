@@ -7,8 +7,7 @@ from django.apps import apps
 from django.contrib.auth import get_user_model
 
 EXPECTED_RED = (
-    "access_control Warehouse role contract is absent; "
-    "expected RED until Issue #9 is implemented"
+    "access_control Warehouse role contract is absent; expected RED until Issue #9 is implemented"
 )
 
 

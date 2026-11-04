@@ -5,23 +5,43 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('catalog', '0001_initial'),
+        ("catalog", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Lot',
+            name="Lot",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('code', models.CharField(max_length=32)),
-                ('item', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, to='catalog.item')),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("code", models.CharField(max_length=32)),
+                (
+                    "item",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT, to="catalog.item"
+                    ),
+                ),
             ],
             options={
-                'constraints': [models.CheckConstraint(condition=models.Q(('code__regex', '\\A[ABCDEFGHIJKLMNOPQRSTUVWXYZ][ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]{0,31}\\Z')), name='lot_code_format'), models.UniqueConstraint(fields=('item', 'code'), name='lot_item_code_unique')],
+                "constraints": [
+                    models.CheckConstraint(
+                        condition=models.Q(
+                            (
+                                "code__regex",
+                                "\\A[ABCDEFGHIJKLMNOPQRSTUVWXYZ][ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-]{0,31}\\Z",
+                            )
+                        ),
+                        name="lot_code_format",
+                    ),
+                    models.UniqueConstraint(fields=("item", "code"), name="lot_item_code_unique"),
+                ],
             },
         ),
     ]
