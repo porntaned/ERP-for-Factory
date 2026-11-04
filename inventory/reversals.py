@@ -19,8 +19,8 @@ from quality.services import get_lot_disposition
 
 from .models import StockLedgerEntry, StockReceipt, StockReversal, StockTransfer
 from .request_keys import owned_by_other_command
-from .services import _lock_receipt_parents, get_stock_balance
-from .transfer_policy import lock_transfer_scope
+from .services import ReceiptValidationError, _lock_receipt_parents, get_stock_balance
+from .transfer_policy import TransferQualityValidationError, lock_transfer_scope
 from .transfers import InsufficientStockError
 
 __all__ = [
@@ -133,7 +133,10 @@ def reverse_receipt(*, receipt, actor, reason: str, request_id: UUID) -> StockRe
             raise ReversalValidationError("receipt must exist")
         entry = original.ledger_entry
         # Lot -> Item -> Warehouse -> Plant, then actor and grants: same order as receipts.
-        lot = _lock_receipt_parents(entry.lot, entry.warehouse)
+        try:
+            lot = _lock_receipt_parents(entry.lot, entry.warehouse)
+        except ReceiptValidationError as exc:
+            raise ReversalValidationError(str(exc)) from exc
         saved_actor = _lock_authority(actor, [entry.warehouse_id])
         context = dict(field="receipt", original=original, actor=saved_actor, reason=reason)
         existing = _prior_outcome(request_id, **context)
@@ -174,11 +177,14 @@ def reverse_transfer(*, transfer, actor, reason: str, request_id: UUID) -> Stock
             raise ReversalValidationError("transfer must exist")
         source, destination = original.source_entry, original.destination_entry
         # Goods leave the original destination and return to the original source.
-        lot, leaving, returning = lock_transfer_scope(
-            lot=destination.lot,
-            source_warehouse=destination.warehouse,
-            destination_warehouse=source.warehouse,
-        )
+        try:
+            lot, leaving, returning = lock_transfer_scope(
+                lot=destination.lot,
+                source_warehouse=destination.warehouse,
+                destination_warehouse=source.warehouse,
+            )
+        except TransferQualityValidationError as exc:
+            raise ReversalValidationError(str(exc)) from exc
         saved_actor = _lock_authority(actor, [leaving.pk, returning.pk])
         context = dict(field="transfer", original=original, actor=saved_actor, reason=reason)
         existing = _prior_outcome(request_id, **context)

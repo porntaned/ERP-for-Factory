@@ -328,12 +328,14 @@ def test_database_rejects_mismatched_reversal_link(transfer_scope, rv, bad):
     receipt = receive(scope)
     debit, _ = post(scope)
     transfer = StockTransfer.objects.get(source_entry=debit)
+    if bad == "warehouse":
+        receive(scope, warehouse="other")  # so -40 is a valid ledger row at the wrong warehouse
     # A valid ledger row whose link to the original is wrong in exactly one way.
     entry = StockLedgerEntry.objects.create(
         lot=scope["lot"],
         warehouse=scope["other" if bad == "warehouse" else "warehouse"],
         actor=scope["actor"],
-        quantity_delta=Decimal({"quantity": "-39", "warehouse": "-10"}.get(bad, "-40")),
+        quantity_delta=Decimal("-39" if bad == "quantity" else "-40"),
         reason="x",
     )
     links = {
@@ -428,3 +430,124 @@ def test_unapplying_reversal_migration_is_refused_while_reversals_exist(transfer
     )
     with pytest.raises(DatabaseError, match="cannot unapply 0009"):
         MigrationExecutor(connection).migrate([("inventory", "0008_require_request_key")])
+
+
+# ---------------------------------------------------------------- review follow-ups
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "bad", ["valid", "debit_quantity", "credit_warehouse", "credit_lot", "actor", "reason"]
+)
+def test_database_validates_each_transfer_reversal_field(transfer_scope, rv, bad):
+    """Each case is wrong in exactly one way; 'valid' proves the setup itself is accepted."""
+    _, model = rv
+    scope = transfer_scope
+    debit, credit = post(scope)  # 30.000001 from warehouse to other
+    transfer = StockTransfer.objects.get(source_entry=debit)
+    quantity = credit.quantity_delta
+    other_actor = approver(scope, username="synthetic-other-actor")
+    debit_row = StockLedgerEntry.objects.create(
+        lot=scope["lot"],
+        warehouse=scope["other"],
+        actor=scope["actor"],
+        quantity_delta=Decimal("-30") if bad == "debit_quantity" else -quantity,
+        reason="x",
+    )
+    credit_row = StockLedgerEntry.objects.create(
+        lot=scope["second"] if bad == "credit_lot" else scope["lot"],
+        warehouse=scope["other" if bad == "credit_warehouse" else "warehouse"],
+        actor=other_actor if bad == "actor" else scope["actor"],
+        quantity_delta=quantity,
+        reason="y" if bad == "reason" else "x",
+    )
+    values = dict(
+        transfer=transfer, debit_entry=debit_row, credit_entry=credit_row, request_id=uuid4()
+    )
+    if bad == "valid":
+        assert model.objects.create(**values).pk
+    else:
+        with pytest.raises(IntegrityError, match="exactly offset"), transaction.atomic():
+            model.objects.create(**values)
+
+
+@pytest.mark.django_db
+def test_transfer_reversal_once_only_replay_and_conflict(transfer_scope, rv):
+    module, model = rv
+    scope = transfer_scope
+    debit, _ = post(scope)
+    change_quality(scope, scope["other"], "RELEASED")
+    transfer = StockTransfer.objects.get(source_entry=debit)
+    user, key = approver(scope), uuid4()
+    first = module.reverse_transfer(transfer=transfer, actor=user, reason="Fix", request_id=key)
+    # Replay returns history even though the destination is now HOLD and empty.
+    change_quality(scope, scope["other"], "HOLD")
+    again = module.reverse_transfer(transfer=transfer, actor=user, reason="Fix", request_id=key)
+    assert again.pk == first.pk
+    with pytest.raises(module.ReversalConflictError):
+        module.reverse_transfer(transfer=transfer, actor=user, reason="Other", request_id=key)
+    with pytest.raises(module.AlreadyReversedError):
+        module.reverse_transfer(transfer=transfer, actor=user, reason="Fix", request_id=uuid4())
+    assert model.objects.count() == 1
+
+
+@pytest.mark.django_db
+def test_receipt_reversal_rejects_inactive_approver(transfer_scope, rv):
+    module, model = rv
+    receipt = receive(transfer_scope)
+    user = approver(transfer_scope)
+    type(user).objects.filter(pk=user.pk).update(is_active=False)
+    with pytest.raises(module.ReversalAuthorizationError):
+        module.reverse_receipt(receipt=receipt, actor=user, reason="x", request_id=uuid4())
+    assert model.objects.count() == 0
+
+
+@pytest.mark.django_db(transaction=True)
+def test_cross_lot_same_uuid_reversal_race_is_decided_at_the_registry(transfer_scope, rv):
+    """Different Lot and different actor: the only shared row is the registry key."""
+    module, model = rv
+    scope = transfer_scope
+    second = scope | {"lot": scope["second"]}
+    first_receipt, second_receipt = receive(scope), receive(second)
+    first_user = approver(scope)
+    second_user = approver(scope, username="synthetic-approver-other-lot")
+    ledger_second_lot = StockLedgerEntry.objects.filter(lot=scope["second"]).count()
+    key = uuid4()
+    _, outcome = blocked_action(
+        lambda: module.reverse_receipt(
+            receipt=first_receipt, actor=first_user, reason="A", request_id=key
+        ),
+        lambda: module.reverse_receipt(
+            receipt=second_receipt, actor=second_user, reason="B", request_id=key
+        ),
+    )
+    assert outcome[0] == "ReversalConflictError", outcome
+    assert model.objects.count() == 1
+    assert StockLedgerEntry.objects.filter(lot=scope["second"]).count() == ledger_second_lot
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize("hold_first", [True, False])
+def test_transfer_reversal_serializes_with_destination_hold(transfer_scope, rv, hold_first):
+    module, model = rv
+    scope = transfer_scope
+    debit, _ = post(scope)
+    change_quality(scope, scope["other"], "RELEASED")
+    transfer = StockTransfer.objects.get(source_entry=debit)
+    user = approver(scope, username="synthetic-approver-hold")
+
+    def hold():
+        return change_quality(scope, scope["other"], "HOLD")
+
+    def reverse():
+        return module.reverse_transfer(
+            transfer=transfer, actor=user, reason="x", request_id=uuid4()
+        )
+
+    _, outcome = blocked_action(hold if hold_first else reverse, reverse if hold_first else hold)
+    if hold_first:
+        assert outcome[0] == "ReversalQualityError", outcome
+        assert model.objects.count() == 0
+    else:
+        assert outcome[0] == "committed", outcome
+        assert model.objects.count() == 1

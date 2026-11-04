@@ -241,6 +241,7 @@ class Migration(migrations.Migration):
             """,
             reverse_sql="""
                 SET CONSTRAINTS ALL IMMEDIATE;
+                LOCK TABLE inventory_stockreversal IN ACCESS EXCLUSIVE MODE;
                 -- Unapplying would drop the links and leave reversal entries in the
                 -- immutable ledger as unexplained movements. Refuse instead.
                 DO $$
