@@ -61,7 +61,7 @@ def mf(db):
     return SimpleNamespace(org=org, plant=plant, wh=wh, items=items, users=users)
 
 
-def raw_bom(mf, item=None, *, version=1, creator=None, lines=None):
+def raw_bom(mf, item=None, *, version=1, creator=None, lines=None, request_id=None):
     """Insert a DRAFT BOM directly (no command), with lines."""
     from manufacturing.models import BillOfMaterials, BomLine
 
@@ -69,7 +69,7 @@ def raw_bom(mf, item=None, *, version=1, creator=None, lines=None):
         item=item or mf.items["lamp"],
         version=version,
         created_by=creator or mf.users["production"],
-        request_id=uuid4(),
+        request_id=request_id or uuid4(),
     )
     for component, qty in lines or [(mf.items["chip"], Decimal("4"))]:
         BomLine.objects.create(bom=bom, component=component, quantity_per=qty)

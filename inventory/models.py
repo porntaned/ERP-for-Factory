@@ -81,6 +81,10 @@ REQUEST_KEY_COMMANDS = (
     ("TRANSFER", "Transfer"),
     ("DISPOSITION", "Disposition"),
     ("REVERSAL", "Reversal"),
+    ("BOM_DRAFT", "BOM draft"),
+    ("BOM_APPROVE", "BOM approval"),
+    ("ORDER_CREATE", "Production order"),
+    ("ORDER_CANCEL", "Production order cancel"),
 )
 
 
