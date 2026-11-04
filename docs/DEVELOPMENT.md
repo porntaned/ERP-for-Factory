@@ -60,6 +60,28 @@ uv run ruff check .
 SQLite is deliberately unsupported because it cannot prove the PostgreSQL constraints or
 concurrency behavior required by Issue #1.
 
+## Inventory demo walkthrough (M4.7)
+
+Use a disposable database: `seed_demo --reset` flushes every table.
+
+```bash
+uv run --env-file .env python manage.py migrate
+uv run --env-file .env python manage.py seed_demo --reset   # receives 100 of L-0001 at RM-A, RELEASED
+uv run --env-file .env python manage.py set_demo_passwords  # prompts for a password (min 8 chars)
+DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver
+```
+
+1. Open `http://127.0.0.1:8000/accounts/login/` and log in as `demo-warehouse`.
+2. The balance page shows `L-0001 · RM-A · 100 · RELEASED`.
+3. **โอน**: lot `L-0001`, source `RM-A`, destination `RM-B`, quantity `30`, any reason → **บันทึกการโอน**.
+4. The balance page shows `RM-A 70 RELEASED` and `RM-B 30 HOLD` (the destination keeps its own
+   Quality state, M4.3.3).
+5. **ประวัติ** lists receipt `R1` (+100) and transfer `T1` (RM-A → RM-B, 30). Reverse buttons
+   appear only for `demo-approver`.
+
+`tests/web/test_m47_demo.py` runs the same steps through HTTP on PostgreSQL. Screenshots:
+`docs/evidence/m47/`.
+
 ## Evidence rule
 
 CI (PostgreSQL 18.6, Python 3.14.8) is the evidence of record. Each run posts a summary with
