@@ -182,8 +182,9 @@ def approve_bom(*, bom: BillOfMaterials, actor: Any, request_id: UUID) -> BillOf
     if not isinstance(request_id, UUID):
         raise BomValidationError("request_id must be a UUID")
     with transaction.atomic():
+        # of=("self",): lock only BOM rows; the joined item row stays free for stock commands.
         versions = list(
-            BillOfMaterials.objects.select_for_update()
+            BillOfMaterials.objects.select_for_update(of=("self",))
             .filter(item_id=bom.item_id)
             .select_related("item")
             .order_by("id")

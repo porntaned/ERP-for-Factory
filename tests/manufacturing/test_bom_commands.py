@@ -254,3 +254,33 @@ def test_approve_rejects_draft_without_lines(mf):
     with pytest.raises(BomValidationError, match="line"):
         approve(mf, bom)
     assert state(bom) == "DRAFT"
+
+
+def _share_lock_item_nowait(item_id, outcomes):
+    from django.db import close_old_connections, connection, connections, transaction
+
+    close_old_connections()
+    try:
+        with transaction.atomic(), connection.cursor() as cursor:
+            cursor.execute("SELECT id FROM catalog_item WHERE id = %s FOR SHARE NOWAIT", [item_id])
+        outcomes.append("locked")
+    except Exception as exc:
+        outcomes.append(type(exc).__name__)
+    finally:
+        connections.close_all()
+
+
+@pytest.mark.django_db(transaction=True)
+def test_approval_does_not_lock_the_item_row(mf):
+    """Stock commands take FOR SHARE on catalog_item; an approval must not block them."""
+    from threading import Thread
+
+    from django.db import transaction
+
+    bom, outcomes = draft(mf), []
+    with transaction.atomic():
+        approve(mf, bom)
+        thread = Thread(target=_share_lock_item_nowait, args=(bom.item_id, outcomes))
+        thread.start()
+        thread.join(timeout=10)
+    assert outcomes == ["locked"]
