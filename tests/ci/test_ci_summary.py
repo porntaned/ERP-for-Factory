@@ -40,3 +40,9 @@ def test_render_contains_marker_sha_and_counts(tmp_path):
 def test_missing_report_is_stated(tmp_path):
     body = ci_summary.render(ci_summary.parse_junit(tmp_path / "none.xml"), {}, "18.6")
     assert "no JUnit report" in body
+
+
+def test_pull_request_shows_head_and_tested_merge():
+    env = {"GITHUB_SHA": "merge1", "HEAD_SHA": "head1"}
+    body = ci_summary.render(None, env, "18.6")
+    assert "`head1` (PR head; tested as merge `merge1`)" in body

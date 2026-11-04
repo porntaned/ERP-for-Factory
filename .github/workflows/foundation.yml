@@ -136,6 +136,7 @@ jobs:
         if: always()
         env:
           JOB_STATUS: ${{ job.status }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
         run: uv run python scripts/ci_summary.py reports/junit.xml > ci-summary.md
 
       - name: Upload CI evidence summary

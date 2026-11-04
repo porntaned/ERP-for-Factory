@@ -46,6 +46,15 @@ def server_version() -> str:
         return f"unavailable ({type(exc).__name__})"
 
 
+def _commit_line(env: dict) -> str:
+    tested = env.get("GITHUB_SHA", "unknown")
+    head = env.get("HEAD_SHA") or tested
+    if head == tested:
+        return f"- Commit: `{head}`"
+    # pull_request runs test GitHub's temporary merge of the head into the base branch.
+    return f"- Commit: `{head}` (PR head; tested as merge `{tested}`)"
+
+
 def render(totals: dict | None, env: dict, postgres: str) -> str:
     run_url = f"{env.get('GITHUB_SERVER_URL', '')}/{env.get('GITHUB_REPOSITORY', '')}"
     run_url += f"/actions/runs/{env.get('GITHUB_RUN_ID', '')}"
@@ -53,7 +62,7 @@ def render(totals: dict | None, env: dict, postgres: str) -> str:
         MARKER,
         "### CI evidence",
         "",
-        f"- Commit: `{env.get('GITHUB_SHA', 'unknown')}`",
+        _commit_line(env),
         f"- Event: `{env.get('GITHUB_EVENT_NAME', 'unknown')}` · "
         f"Run [#{env.get('GITHUB_RUN_NUMBER', '?')}]({run_url})",
         f"- Job status: **{env.get('JOB_STATUS', 'unknown')}**",
