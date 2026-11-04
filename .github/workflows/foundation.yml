@@ -135,6 +135,9 @@ jobs:
       - name: Run web screen tests
         run: uv run pytest -q tests/web --tb=short
 
+      - name: Run manufacturing tests
+        run: uv run pytest -q tests/manufacturing --tb=short
+
       - name: Run ERP tests
         run: uv run pytest -q --tb=short
 
