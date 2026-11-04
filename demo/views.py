@@ -33,6 +33,7 @@ from quality.services import get_lot_disposition
 
 from .forms import ReceiptForm, ReversalForm, TransferForm
 from .permissions import can_approve_all, movable_warehouses
+from .quantities import format_quantity
 
 MESSAGES = {
     InsufficientStockError: "ยอดคงเหลือไม่พอ",
@@ -80,7 +81,7 @@ def stock_overview(request):
                 "item": lot.item.code,
                 "lot": lot.code,
                 "warehouse": warehouse.code,
-                "balance": row["balance"].normalize(),
+                "balance": format_quantity(row["balance"]),
                 "disposition": get_lot_disposition(lot=lot, warehouse=warehouse),
             }
         )
@@ -114,7 +115,7 @@ def receipt_new(request):
             reason=data["reason"],
             request_id=data["request_id"],
         )
-        return f"รับเข้าสำเร็จ {data['quantity'].normalize()} ที่ {data['warehouse'].code}"
+        return f"รับเข้าสำเร็จ {format_quantity(data['quantity'])} ที่ {data['warehouse'].code}"
 
     return _movement_view(request, ReceiptForm, "demo/receipt_form.html", post)
 
@@ -132,7 +133,7 @@ def transfer_new(request):
             request_id=data["request_id"],
         )
         return (
-            f"โอนสำเร็จ {data['quantity'].normalize()} "
+            f"โอนสำเร็จ {format_quantity(data['quantity'])} "
             f"{data['source_warehouse'].code} → {data['destination_warehouse'].code}"
         )
 

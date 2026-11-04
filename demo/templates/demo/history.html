@@ -1,4 +1,5 @@
 {% extends "demo/base.html" %}
+{% load quantities %}
 {% block title %}ประวัติ{% endblock %}
 {% block content %}
 <h1 class="h4">ประวัติการเคลื่อนไหว</h1>
@@ -11,7 +12,7 @@
   {% for row in receipts %}{% with e=row.entry %}
   <tr>
     <td>R{{ row.obj.pk }}</td><td>{{ e.lot.code }}</td><td>{{ e.warehouse.code }}</td>
-    <td class="text-end">{{ e.quantity_delta.normalize }}</td><td>{{ e.actor.username }}</td><td>{{ e.reason }}</td>
+    <td class="text-end">{{ e.quantity_delta|quantity }}</td><td>{{ e.actor.username }}</td><td>{{ e.reason }}</td>
     <td>
       {% if row.reversed %}<span class="badge text-bg-secondary">กลับรายการแล้ว</span>
       {% elif row.can_reverse %}
@@ -35,7 +36,7 @@
   <tr>
     <td>T{{ t.pk }}</td><td>{{ t.source_entry.lot.code }}</td>
     <td>{{ t.source_entry.warehouse.code }} → {{ t.destination_entry.warehouse.code }}</td>
-    <td class="text-end">{{ t.destination_entry.quantity_delta.normalize }}</td>
+    <td class="text-end">{{ t.destination_entry.quantity_delta|quantity }}</td>
     <td>{{ t.source_entry.actor.username }}</td><td>{{ t.source_entry.reason }}</td>
     <td>
       {% if row.reversed %}<span class="badge text-bg-secondary">กลับรายการแล้ว</span>
