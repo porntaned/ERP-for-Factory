@@ -11,6 +11,7 @@ from quality.models import LotDisposition
 from quality.services import get_lot_disposition
 
 from .models import StockLedgerEntry, StockTransfer
+from .quantities import fits_six_places, is_positive_bounded
 from .request_keys import owned_by_other_command
 from .services import get_stock_balance
 from .transfer_policy import TransferQualityError, lock_transfer_scope
@@ -56,15 +57,9 @@ def _existing_transfer(
 
 
 def _validate_payload(quantity, reason):
-    if (
-        not isinstance(quantity, Decimal)
-        or not quantity.is_finite()
-        or not Decimal("0") < quantity < Decimal("100000000000000")
-    ):
+    if not is_positive_bounded(quantity):
         raise TransferValidationError("quantity must be a positive finite Decimal below 10^14")
-    _, digits, exponent = quantity.as_tuple()
-    extra_places = -6 - exponent
-    if extra_places > 0 and any(digits[-extra_places:]):
+    if not fits_six_places(quantity):
         raise TransferValidationError("quantity must be representable at six fractional places")
     if not isinstance(reason, str) or not reason.strip():
         raise TransferValidationError("reason must be nonblank")

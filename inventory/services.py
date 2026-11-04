@@ -11,6 +11,7 @@ from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from facilities.models import Warehouse
 
 from .models import Lot, StockLedgerEntry, StockReceipt
+from .quantities import fits_six_places, is_positive_bounded
 from .request_keys import owned_by_other_command
 
 
@@ -51,19 +52,11 @@ def _saved_record(value, model):
 def _validate_receipt_payload(lot, warehouse, quantity, reason, request_id):
     if not _saved_record(lot, Lot) or not _saved_record(warehouse, Warehouse):
         raise ReceiptValidationError("lot and warehouse must be saved records")
-    if (
-        not isinstance(quantity, Decimal)
-        or not quantity.is_finite()
-        or not Decimal("0") < quantity < Decimal("100000000000000")
-    ):
+    if not is_positive_bounded(quantity):
         raise ReceiptValidationError(
             "quantity must be a positive finite base-UOM Decimal below 10^14"
         )
-    # Inspect digits without rounding or depending on the caller's Decimal context.
-    # Trailing zeros beyond six fractional places do not change representability.
-    _, digits, exponent = quantity.as_tuple()
-    extra_places = -6 - exponent
-    if extra_places > 0 and any(digits[-extra_places:]):
+    if not fits_six_places(quantity):
         raise ReceiptValidationError("quantity must have at most six fractional places")
     if not isinstance(reason, str) or not reason.strip():
         raise ReceiptValidationError("reason must be nonblank")
