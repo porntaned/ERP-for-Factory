@@ -51,3 +51,7 @@ CI on PostgreSQL 18.6 is recorded in the PR (step conclusions only).
 
 Independent read-only review: [m45-reversal-independent-review.md](../reviews/m45-reversal-independent-review.md),
 verdict fix-then-ship; findings repaired and self-verified, not re-reviewed.
+
+## Closeout (2026-11-04)
+
+Before merge, `main` (PR #61 CI evidence workflow) was merged into the branch; PR CI run #183 on head `bfc35ad`: PostgreSQL 18.6, Python 3.14.8, **732 passed** (CI evidence comment). Owner approved merge; PR #60 merged at `d694462fce18990737539050d3418cc63d349daa`; [main CI #184](https://github.com/porntaned/ERP-for-Factory/actions/runs/41808897325): **732 passed**. Issue #59 closed.
