@@ -1,8 +1,9 @@
 # M5.1 — versioned BOM and production order (design spec)
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/dreamy-volta-9v3i8u`; base `main` `1158ada`.
-[Issue #69](https://github.com/porntaned/ERP-for-Factory/issues/69). Status: **spec awaiting owner review**;
-no code yet. Designed with the `superpowers:brainstorming` skill (architectural path); the owner
+[Issue #69](https://github.com/porntaned/ERP-for-Factory/issues/69). Status: **implemented, PR awaiting
+owner review** (the spec was approved 2026-11-04; "awaiting owner review, no code yet" held until
+then — historical). Designed with the `superpowers:brainstorming` skill (architectural path); the owner
 answered the design questions and approved the design in chat on 2026-11-04.
 
 ## Goal
@@ -85,10 +86,15 @@ Authorization and Conflict classes.
 | `create_production_order(bom, quantity, line_warehouse, output_warehouse, actor, request_id)` | PRODUCTION at both warehouses |
 | `cancel_production_order(order, actor, reason, request_id)` | PRODUCTION at both warehouses |
 
-Authority uses `access_control.policies.has_warehouse_role` / `warehouses_for_user`. Request UUIDs
-join the shared registry: `BOM_DRAFT`, `BOM_APPROVE`, `ORDER_CREATE` and `ORDER_CANCEL` are added
-to `REQUEST_KEY_COMMANDS` (`inventory/models.py`, migration updating the CHECK), and manufacturing
-triggers call `inventory_register_request_key()` from inventory migration 0007.
+Authority is checked inside the transaction after the locks, by queries that lock the actor and
+the grants (as `inventory/reversals.py:_lock_authority`), not by `access_control.policies` — corrected
+2026-11-04: the spec first named `has_warehouse_role` / `warehouses_for_user`, which do not lock and
+were replaced by the risk-5 fix the owner approved. Request UUIDs join the shared registry:
+`BOM_DRAFT`, `BOM_APPROVE`, `ORDER_CREATE` and `ORDER_CANCEL` are added to `REQUEST_KEY_COMMANDS`
+(`inventory/models.py`, inventory migration 0010), and manufacturing triggers call
+`manufacturing_register_request_key(command, column)` (manufacturing migration 0002), the same
+insert-or-keep logic as inventory's function but with the key column as an argument so approval and
+cancel keys register on UPDATE.
 
 ## Demo data (`seed_demo`)
 
@@ -112,10 +118,80 @@ writes no new ledger entries.
 Stock movements, screens, lot genealogy, costing, routing or work centres, scrap, planning,
 Deploy.
 
+## Delivered
+
+- `manufacturing` app: models and CHECK/unique constraints (`0001_initial`), PostgreSQL triggers
+  (`0002_database_rules`, reversible), commands in `manufacturing/services.py`.
+- `inventory/quantities.py`: the ledger quantity rule shared by receipt, transfer and
+  manufacturing; receipt and transfer messages unchanged.
+- `inventory` migration 0010: four manufacturing request-key commands.
+- `seed_demo`: LINE-1, `demo-production` (PRODUCTION at RM-A, RM-B, LINE-1, FG), LAMP-A19 v1 =
+  4 LED-CHIP + 1 DRIVER drafted by `demo-production`, approved by `demo-approver`.
+- CI step `Run manufacturing tests`.
+- Plan: [`m51-plan.md`](m51-plan.md) (5 tasks), executed inline by one agent with
+  `superpowers:executing-plans` and `test-driven-development`, as the owner chose.
+
+## Rulings made while building
+
+1. A BOM row can be inserted only as DRAFT (trigger). Commands always insert DRAFT.
+2. Draft lines may be deleted while DRAFT (spec); the header is never deleted. A test that
+   expected draft-line deletes to fail was corrected.
+3. The quantity helper is split into `is_positive_bounded` and `fits_six_places` so receipt and
+   transfer keep their two distinct messages.
+4. Every command checks current authority before answering a replay (M4.3.6 rule); found while
+   comparing with M4, `test_replay_requires_current_authority` RED → GREEN.
+5. `create_production_order` checks the warehouses' plant and organization before authority, so a
+   malformed request gets a data error.
+6. `tests/web/test_scaffold.py` (M7.1) pinned the old seed: expectations now include LINE-1 and the
+   `BOM_DRAFT` / `BOM_APPROVE` keys.
+
+## RED / GREEN
+
+| Task | RED observed | GREEN |
+|---|---|---|
+| 1 Models | 16 tests: `ModuleNotFoundError: manufacturing` | 16 passed |
+| 2 DB rules | 19 failed; one test passed for the wrong reason (unique violation) and was fixed to fail first | 37 passed |
+| 3 BOM commands | collection error (no `manufacturing.services`); later the replay-authority test | 64 passed |
+| 4 Order commands | import error (`OrderAuthorizationError`); 2 bad-warehouse cases failed with an authority error | 88 passed |
+| 5 Seed | `assert 0 == 1` (no LINE-1); then 3 M7.1 seed tests pinned old contents | 125 passed (manufacturing + web) |
+
+## Self-review findings fixed
+
+Review type: **self-review only** (the owner chose no subagents); `scrutinize` pass on the branch.
+
+1. `approve_bom` would activate a draft with no lines (possible only through raw writes) —
+   `test_approve_rejects_draft_without_lines` RED → GREEN.
+2. `approve_bom` used `select_for_update()` with `select_related("item")`, which also locked the
+   `catalog_item` row FOR UPDATE and blocked stock commands that take FOR SHARE on the item; now
+   `of=("self",)` — `test_approval_does_not_lock_the_item_row` RED (`OperationalError` on
+   `FOR SHARE NOWAIT`) → GREEN.
+
+Deferred minors (not fixed, for the owner to decide):
+
+- `create_bom_draft` locks the item row FOR NO KEY UPDATE to number versions; stock commands on the
+  same item wait briefly behind it (no deadlock). Relevant when M5.2 receives output.
+- Orders on the same BOM queue behind each other (`FOR UPDATE`); `FOR SHARE` would let them run
+  together but needs raw SQL in Django.
+- If a passed warehouse no longer exists, the plant check can report a misleading error;
+  warehouses are PROTECTed, so this needs a raw delete.
+
+## Verification (development check, not evidence of record)
+
+Environment: PostgreSQL 16.15 (Ubuntu), Python 3.14.6 via `UV_PYTHON=3.14.6` (3.14.8 is not
+available in this session). Tested commit `38b297febea9fd4a12df7a001d6e6751b597de99`.
+
+| Command | Result |
+|---|---|
+| `uv run pytest -q` | 850 passed |
+| `uv run pytest -q tests/manufacturing` | 91 passed |
+| `uv run ruff check .` / `uv run ruff format --check .` | clean |
+| `uv run python manage.py makemigrations --check --dry-run` | No changes detected |
+| `migrate manufacturing zero` → `migrate inventory 0009` → `migrate` | reversible |
+
+CI evidence of record: the CI comment on the PR.
+
 ## Next steps
 
-1. Owner reviews this spec.
-2. Implementation plan with `superpowers:writing-plans`; owner reviews it and picks the execution
-   method.
-3. Build with `test-driven-development`, check with `verification-before-completion`, review with
-   `scrutinize`, then a PR for the owner to merge.
+After merge: post-merge docs PR (tick M5.1 in `docs/TASKS.md`, closeout here). M5.2 needs owner
+decisions first: issuing above the BOM, scrap, when an order closes, and whether issued
+materials must be RELEASED.
