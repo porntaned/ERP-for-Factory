@@ -80,6 +80,7 @@ REQUEST_KEY_COMMANDS = (
     ("RECEIPT", "Receipt"),
     ("TRANSFER", "Transfer"),
     ("DISPOSITION", "Disposition"),
+    ("REVERSAL", "Reversal"),
 )
 
 
@@ -95,5 +96,48 @@ class RequestKey(models.Model):
             models.CheckConstraint(
                 condition=models.Q(command__in=[c for c, _ in REQUEST_KEY_COMMANDS]),
                 name="request_key_command_valid",
+            ),
+        ]
+
+
+class StockReversal(models.Model):
+    """Compensating entries that reverse exactly one receipt or transfer (M4.5).
+
+    The original stays untouched. Receipt reversal: one negative entry at the receipt's
+    warehouse. Transfer reversal: a negative entry at the original destination and a
+    positive entry at the original source. PostgreSQL validates the link, enforces
+    once-only (one-to-one on the original) and immutability.
+    """
+
+    request_id = models.UUIDField(unique=True)
+    receipt = models.OneToOneField(
+        StockReceipt, null=True, on_delete=models.PROTECT, related_name="reversal"
+    )
+    transfer = models.OneToOneField(
+        StockTransfer, null=True, on_delete=models.PROTECT, related_name="reversal"
+    )
+    debit_entry = models.OneToOneField(
+        StockLedgerEntry, on_delete=models.PROTECT, related_name="reversal_debit"
+    )
+    credit_entry = models.OneToOneField(
+        StockLedgerEntry, null=True, on_delete=models.PROTECT, related_name="reversal_credit"
+    )
+    created_at = models.DateTimeField(db_default=Now(), editable=False)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=(
+                    models.Q(receipt__isnull=False, transfer__isnull=True)
+                    | models.Q(receipt__isnull=True, transfer__isnull=False)
+                ),
+                name="stock_reversal_one_original",
+            ),
+            models.CheckConstraint(
+                condition=(
+                    models.Q(transfer__isnull=True, credit_entry__isnull=True)
+                    | models.Q(transfer__isnull=False, credit_entry__isnull=False)
+                ),
+                name="stock_reversal_credit_iff_transfer",
             ),
         ]
