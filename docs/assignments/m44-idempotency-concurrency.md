@@ -83,3 +83,14 @@ cannot be triggered deterministically without fault-injection hooks; not attempt
 Self-review only so far. No independent review is claimed. M4.4 stays **unchecked** in
 `docs/TASKS.md`: only one of three candidate items produced new tests, and the cross-command
 key question awaits the owner.
+
+## Closeout (2026-11-04)
+
+The owner chose option (b), a shared key registry, delivered separately in
+[Issue #50](https://github.com/porntaned/ERP-for-Factory/issues/50) /
+[PR #51](https://github.com/porntaned/ERP-for-Factory/pull/51); the owner confirmed its three
+assumptions in the Issue. The owner approved merging PR #49 (`f69df51490eca68c2047104822507ec763f4325d`)
+and then PR #51 (`7d2ed620ecc8db88f648133514a356f91964c5f7`).
+[Main CI #151](https://github.com/porntaned/ERP-for-Factory/actions/runs/41782637554) on the
+combined merge succeeded (step conclusions only; log text not readable from the session).
+M4.4 is checked in `docs/TASKS.md`. Both PRs are self-reviewed; no independent review was run.
