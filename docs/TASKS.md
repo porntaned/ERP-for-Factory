@@ -8,8 +8,8 @@
 
 สถานะ ณ 2026-11-04 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
-- **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4 — `main` ที่ `c541328` [CI #195](https://github.com/porntaned/ERP-for-Factory/actions/runs/41842981403): PostgreSQL 18.6, 759 passed
-- **กำลังรอเจ้าของตรวจ:** M5.1 BOM แบบมีเวอร์ชันและ Production order ([Issue #69](https://github.com/porntaned/ERP-for-Factory/issues/69), [spec/หลักฐาน](assignments/m51-bom-production-order.md))
+- **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4; M5.1 BOM แบบมีเวอร์ชันและ Production order ([PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70)) — `main` ที่ `5891ec7` [CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833): PostgreSQL 18.6, 850 passed
+- **กำลังรอเจ้าของตรวจ:** ไม่มี (หลัง Merge PR อัปเดตเอกสารนี้)
 - **ยังไม่เริ่ม:** M5.2–M5.4, M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
@@ -164,7 +164,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 ## M5 — Manufacturing ขั้นต้น
 
 - [ ] **M5 — ผลิตสินค้าจำลองหนึ่งรุ่นได้**
-  - [ ] M5.1 BOM แบบมีเวอร์ชันและ Production order
+  - [x] M5.1 BOM แบบมีเวอร์ชันและ Production order — [Issue #69](https://github.com/porntaned/ERP-for-Factory/issues/69), [spec/หลักฐาน](assignments/m51-bom-production-order.md); เจ้าของสั่ง Merge [PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70) ที่ `5891ec7`; [main CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833) PostgreSQL 18.6: 850 passed; self-review; ไม่ขยับสต็อก
   - [ ] M5.2 เบิก คืน ใช้วัตถุดิบและรับผลผลิตผ่าน Inventory
   - [ ] M5.3 เชื่อม Lot วัตถุดิบกับ Lot ผลผลิต
   - [ ] M5.4 ทดสอบและ Scrutinize เส้นทางการผลิตจริง
@@ -196,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-04: เจ้าของสั่ง Merge [PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70) (M5.1) ที่ `5891ec7`; Issue #69 ปิด; PR CI #198 ที่ `db8144b` 850 passed และ [main CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833) PostgreSQL 18.6, Python 3.14.8, **850 passed** ตาม comment ของ CI จึงติ๊ก M5.1; self-review ไม่มี independent review; ถัดไป M5.2 ต้องให้เจ้าของตัดสินกฎ (เบิกเกิน BOM, scrap, ปิด order, Quality ของวัตถุดิบ) ไม่มี Deploy
 
 - 2026-11-04: M5.1 ใน [Issue #69](https://github.com/porntaned/ERP-for-Factory/issues/69) — app `manufacturing`: BOM มีเวอร์ชัน DRAFT→ACTIVE→RETIRED (ACTIVE ทีละเวอร์ชัน, ผู้อนุมัติ≠ผู้สร้าง, ล็อกรายการหลัง DRAFT) และ Production order OPEN/CANCELLED บน LINE-1 + FG ตามที่เจ้าของตัดสิน; trigger PostgreSQL + request key กลาง; `seed_demo` เพิ่ม LINE-1, `demo-production`, BOM LAMP-A19 v1; ใช้ skill brainstorming → writing-plans → executing-plans/TDD → scrutinize; RED ก่อนทุก task; self-review พบและแก้ 2 จุด (อนุมัติ BOM ไม่มีรายการ, ล็อกแถว Item โดยไม่ตั้งใจ); local 850 passed (PostgreSQL 16.15, development check) — [spec/หลักฐาน](assignments/m51-bom-production-order.md), [แผน](assignments/m51-plan.md) รอ Merge ยังไม่ติ๊ก M5.1 ไม่ขยับสต็อก ไม่มี Deploy
 

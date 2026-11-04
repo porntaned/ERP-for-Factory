@@ -1,8 +1,8 @@
 # M5.1 — versioned BOM and production order (design spec)
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/dreamy-volta-9v3i8u`; base `main` `1158ada`.
-[Issue #69](https://github.com/porntaned/ERP-for-Factory/issues/69). Status: **implemented, PR awaiting
-owner review** (the spec was approved 2026-11-04; "awaiting owner review, no code yet" held until
+[Issue #69](https://github.com/porntaned/ERP-for-Factory/issues/69). Status: **merged** (PR #70 at `5891ec7`, 2026-11-04;
+"implemented, PR awaiting owner review" held until then — historical) (the spec was approved 2026-11-04; "awaiting owner review, no code yet" held until
 then — historical). Designed with the `superpowers:brainstorming` skill (architectural path); the owner
 answered the design questions and approved the design in chat on 2026-11-04.
 
@@ -195,3 +195,12 @@ CI evidence of record: the CI comment on the PR.
 After merge: post-merge docs PR (tick M5.1 in `docs/TASKS.md`, closeout here). M5.2 needs owner
 decisions first: issuing above the BOM, scrap, when an order closes, and whether issued
 materials must be RELEASED.
+
+## Closeout (2026-11-04)
+
+PR CI run [#198](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859287249) on head `db8144b`
+(tested as merge `ef4e11f`): PostgreSQL 18.6, Python 3.14.8, **850 passed**
+([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/70#issuecomment-6634877953)). Merged on the
+owner's instruction in chat: PR #70 at `5891ec7172c37cb564bb7169f3011b87a80e2972`;
+[main CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833): **850 passed**.
+Issue #69 closed. Review remained self-review only.
