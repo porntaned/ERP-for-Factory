@@ -292,7 +292,9 @@ def test_full_flow_through_the_screens(client, open_order):
     assert (open_order.status, open_order.shortfall_reason) == ("CLOSED", "One lamp failed")
     assert get_stock_balance(lot=lot("LAMP-1001"), warehouse=wh("FG")) == Decimal("1")
     assert get_stock_balance(lot=lot("L-0001"), warehouse=wh("LINE-1")) == Decimal("0")
-    assert "One lamp failed" in page(client, f"/production/{o}/")
+    detail = page(client, f"/production/{o}/")
+    assert "One lamp failed" in detail
+    assert table(detail, "outputs") == [["LAMP-1001", "1", "HOLD", "กลับรายการบางส่วน"]]
 
 
 @pytest.mark.django_db

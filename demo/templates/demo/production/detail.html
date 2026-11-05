@@ -40,7 +40,7 @@
     <thead><tr><th>Lot</th><th class="text-end">สุทธิ</th><th>Quality</th><th>หมายเหตุ</th></tr></thead>
     <tbody>
     {% for row in outputs %}
-      <tr><td><a href="/lots/{{ row.lot.pk }}/genealogy/">{{ row.lot.code }}</a></td><td class="text-end">{{ row.net|quantity }}</td><td>{% include "demo/production/_status.html" with status=row.disposition %}</td><td>{% if row.reversed %}กลับรายการแล้ว{% endif %}</td></tr>
+      <tr><td><a href="/lots/{{ row.lot.pk }}/genealogy/">{{ row.lot.code }}</a></td><td class="text-end">{{ row.net|quantity }}</td><td>{% include "demo/production/_status.html" with status=row.disposition %}</td><td>{% if row.reversed %}{% if row.net %}กลับรายการบางส่วน{% else %}กลับรายการแล้ว{% endif %}{% endif %}</td></tr>
     {% empty %}
       <tr><td colspan="4" class="text-secondary">ยังไม่มีผลผลิต</td></tr>
     {% endfor %}
