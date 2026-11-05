@@ -849,6 +849,8 @@ def reverse_order_posting(
     """
     if not _saved(order_posting, OrderPosting):
         raise MaterialValidationError("order_posting must be a saved OrderPosting")
+    if not isinstance(request_id, UUID):
+        raise MaterialValidationError("request_id must be a UUID")
     with transaction.atomic():
         locked = (
             ProductionOrder.objects.select_for_update().filter(pk=order_posting.order_id).first()

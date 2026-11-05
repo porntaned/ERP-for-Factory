@@ -497,3 +497,15 @@ def test_migrations_unapply_only_without_reversals(line):
         assert ProductionPostingReversal.objects.count() == 1
     finally:
         MigrationExecutor(connection).migrate(latest)
+
+
+@pytest.mark.django_db
+def test_order_reversal_rejects_a_malformed_request(line):
+    from manufacturing.services import MaterialValidationError, reverse_order_posting
+
+    used = consume(line, "1")
+    for key in ("not-a-uuid", None):
+        with pytest.raises(MaterialValidationError):
+            reverse_order_posting(
+                order_posting=used, actor=line.users["approver2"], reason="x", request_id=key
+            )
