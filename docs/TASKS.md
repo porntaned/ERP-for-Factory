@@ -9,7 +9,7 @@
 สถานะ ณ 2026-11-04 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
 - **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4; M5.1 BOM แบบมีเวอร์ชันและ Production order ([PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70)) — `main` ที่ `5891ec7` [CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833): PostgreSQL 18.6, 850 passed
-- **กำลังดำเนินการ:** M5.2b ใช้วัตถุดิบ/รับผลผลิต/ปิด order/scrap; M5.2a (เบิก/คืน) merge แล้วใน [PR #73](https://github.com/porntaned/ERP-for-Factory/pull/73) ที่ `0205f2b`, [main CI #203](https://github.com/porntaned/ERP-for-Factory/actions/runs/41937763974) 870 passed; เจ้าของอนุญาตให้ทำต่อเนื่องและ merge เองเมื่อ CI ผ่าน ภายใน scope M5–M6
+- **กำลังดำเนินการ:** M5.3 เชื่อม Lot วัตถุดิบกับ Lot ผลผลิต; M5.2 merge ครบแล้ว (M5.2a [PR #73](https://github.com/porntaned/ERP-for-Factory/pull/73), M5.2b [PR #76](https://github.com/porntaned/ERP-for-Factory/pull/76)) — `main` ที่ `a691b24` [CI #207](https://github.com/porntaned/ERP-for-Factory/actions/runs/41940066477) 888 passed; เจ้าของอนุญาตให้ทำต่อเนื่องและ merge เองเมื่อ CI ผ่าน ภายใน scope M5–M6
 - **ยังไม่เริ่ม:** M5.2–M5.4, M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
@@ -165,7 +165,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 - [ ] **M5 — ผลิตสินค้าจำลองหนึ่งรุ่นได้**
   - [x] M5.1 BOM แบบมีเวอร์ชันและ Production order — [Issue #69](https://github.com/porntaned/ERP-for-Factory/issues/69), [spec/หลักฐาน](assignments/m51-bom-production-order.md); เจ้าของสั่ง Merge [PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70) ที่ `5891ec7`; [main CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833) PostgreSQL 18.6: 850 passed; self-review; ไม่ขยับสต็อก
-  - [ ] M5.2 เบิก คืน ใช้วัตถุดิบและรับผลผลิตผ่าน Inventory — **บางส่วนแล้ว:** M5.2a เบิก/คืน ([Issue #72](https://github.com/porntaned/ERP-for-Factory/issues/72), [หลักฐาน](assignments/m52a-material-issue-return.md), [PR #73](https://github.com/porntaned/ERP-for-Factory/pull/73) ที่ `0205f2b`, main CI #203 870 passed); ยังไม่มีใช้วัตถุดิบ/รับผลผลิต/ปิด/scrap (M5.2b)
+  - [x] M5.2 เบิก คืน ใช้วัตถุดิบและรับผลผลิตผ่าน Inventory — M5.2a เบิก/คืน ([Issue #72](https://github.com/porntaned/ERP-for-Factory/issues/72), [หลักฐาน](assignments/m52a-material-issue-return.md), [PR #73](https://github.com/porntaned/ERP-for-Factory/pull/73) ที่ `0205f2b`); M5.2b ใช้/scrap/รับผลผลิต/ปิด ([Issue #75](https://github.com/porntaned/ERP-for-Factory/issues/75), [หลักฐาน](assignments/m52b-consume-output-close.md), [PR #76](https://github.com/porntaned/ERP-for-Factory/pull/76) ที่ `a691b24`); [main CI #207](https://github.com/porntaned/ERP-for-Factory/actions/runs/41940066477) PostgreSQL 18.6: 888 passed; self-review
   - [ ] M5.3 เชื่อม Lot วัตถุดิบกับ Lot ผลผลิต
   - [ ] M5.4 ทดสอบและ Scrutinize เส้นทางการผลิตจริง
 
@@ -196,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-05: Merge [PR #76](https://github.com/porntaned/ERP-for-Factory/pull/76) (M5.2b) ที่ `a691b24` ตามที่เจ้าของอนุญาตล่วงหน้า; Issue #75 ปิด; PR CI #206 888 passed และ [main CI #207](https://github.com/porntaned/ERP-for-Factory/actions/runs/41940066477) PostgreSQL 18.6, **888 passed**; ติ๊ก M5.2; self-review ไม่มี Deploy
 
 - 2026-11-05: M5.2b ใน [Issue #75](https://github.com/porntaned/ERP-for-Factory/issues/75) — ใช้วัตถุดิบ, scrap (APPROVER + เหตุผล), รับผลผลิตเข้า FG เป็น Lot ใหม่สถานะ HOLD, ปิด order เมื่อ line ว่าง; Inventory เพิ่ม `ProductionPosting`; PostgreSQL ตรวจซ้ำ; RED แล้ว GREEN; self-review พบและแก้ 1 จุด; local 888 passed (development check) — [หลักฐาน](assignments/m52b-consume-output-close.md) ไม่มี Deploy
 
