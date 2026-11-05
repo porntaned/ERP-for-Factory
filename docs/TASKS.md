@@ -9,7 +9,7 @@
 สถานะ ณ 2026-11-05 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
 - **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4; M5.1 BOM แบบมีเวอร์ชันและ Production order ([PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70)) — `main` ที่ `5891ec7` [CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833): PostgreSQL 18.6, 850 passed
-- **กำลังดำเนินการ:** ยังไม่มี — M5.1–M5.5 merge แล้ว (`main` ที่ `866e8af`, [main CI #232](https://github.com/porntaned/ERP-for-Factory/actions/runs/42010216747) PostgreSQL 18.6, 945 passed); M5 ทั้งก้อนยังไม่ติ๊ก รอเจ้าของตัดสินกฎยกเลิก order ที่มีผลผลิตแล้ว ([Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86)); **เจ้าของเป็นผู้ merge** (ข้อความ "กำลังดำเนินการ: M5.5" ใช้ได้ถึง 2026-11-05 — historical)
+- **กำลังดำเนินการ:** Issue #86 — เจ้าของเลือกแบบ A (ห้ามยกเลิก order ที่มีผลผลิตสุทธิ > 0) ทำเสร็จใน PR ที่รอเจ้าของ review และ merge; M5 ติ๊กหลัง merge (ข้อความถัดไปคือสถานะก่อนหน้า — historical) — M5.1–M5.5 merge แล้ว (`main` ที่ `866e8af`, [main CI #232](https://github.com/porntaned/ERP-for-Factory/actions/runs/42010216747) PostgreSQL 18.6, 945 passed); M5 ทั้งก้อนยังไม่ติ๊ก รอเจ้าของตัดสินกฎยกเลิก order ที่มีผลผลิตแล้ว ([Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86)); **เจ้าของเป็นผู้ merge** (ข้อความ "กำลังดำเนินการ: M5.5" ใช้ได้ถึง 2026-11-05 — historical)
 - **ยังไม่เริ่ม:** M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
@@ -197,6 +197,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-05: [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86) — เจ้าของเลือกแบบ A ในแชต: ยกเลิก order ไม่ได้ถ้าผลผลิตสุทธิ > 0 (ทั้งในคำสั่งและ trigger PostgreSQL migration 0009) พร้อมปุ่มและฟอร์มยกเลิกบนเว็บที่ M5.5 เว้นไว้; RED แล้ว GREEN; เดินเว็บจริงด้วย Playwright (สคริปต์เลือกแถวกลับรายการผิดครั้งหนึ่ง แอปปฏิเสธถูกต้อง); local 952 passed (PostgreSQL 16.15, Python 3.14.6, development check) ที่ commit `bb2ecb68c7babeb85f13cdbb4e41bb1fbe30f243`; self-review — [หลักฐาน](assignments/m55-production-screens.md#issue-86--cancel-needs-no-output-2026-11-05) รอ review และ merge ยังไม่ติ๊ก M5 (ติ๊กใน PR เอกสารหลัง merge) ไม่มี Deploy
 
 - 2026-11-05: เจ้าของอนุมัติในแชตและสั่ง Merge [PR #92](https://github.com/porntaned/ERP-for-Factory/pull/92) (M5.5 PR 2 ฟอร์มบันทึก) ที่ `866e8af`; Issue #89 ปิดอัตโนมัติจาก PR #92; PR CI [#231](https://github.com/porntaned/ERP-for-Factory/actions/runs/42009537477) ที่ `397c9d7` 945 passed ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/92#issuecomment-6655524390)) และ [main CI #232](https://github.com/porntaned/ERP-for-Factory/actions/runs/42010216747) PostgreSQL 18.6, **945 passed**; ติ๊ก M5.5; M5 ทั้งก้อนยังรอ [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86); ยังไม่มีบันทึกว่าเจ้าของลองใช้หน้าเว็บเอง (เกณฑ์ข้อหนึ่งของ Issue #89) นอกจากเว็บเดโมใน session และลิงก์ภาพแบบอ่านอย่างเดียว; self-review ไม่มี Deploy
 
