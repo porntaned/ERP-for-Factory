@@ -39,3 +39,54 @@ turn command errors into Thai messages.
 ## Out of scope
 
 BOM approval screens, Quality release (M6), Deploy.
+
+## PR 1 — delivered
+
+- `manufacturing/queries.py`:
+  - `order_holdings` and `output_total` moved here from `services.py` with the same formulas;
+    `services.py` imports them.
+  - New: `order_materials`, `order_outputs`, `order_history`.
+- `demo/production_views.py` with three templates under `demo/templates/demo/production/`.
+- URLs in `config/urls.py` and the "การผลิต" menu entry.
+- `tests/web/test_production_screens.py`: 11 tests.
+
+### Rulings
+
+1. **The read pages are open to every logged-in user**, as the balance page is. Only the PR 2
+   buttons follow roles.
+2. **No entry-id tie-breaker for history.** The history test was added after the first GREEN
+   and passed at once: created times are distinct even within one transaction
+   (statement time), so no tie-breaker was added. The test stays as a regression guard.
+3. **Genealogy pages are keyed by Lot id**, because Lot codes are unique per item, not
+   globally.
+
+### RED / GREEN
+
+- RED: 9 failed with 404 (the pages did not exist). `test_unknown_order_or_lot_is_404` passed
+  from the start: it guards behaviour, it does not drive it.
+- GREEN: 10 passed. Then the full suite: 935 passed. With the history test: 936.
+- The query move was checked separately: `tests/manufacturing`, 166 passed, unchanged.
+
+### Verification (development check, not evidence of record)
+
+PostgreSQL 16.15 (Ubuntu), Python 3.14.6. Tested commit `4e4a9ba872ada3240a96cc2694e2dea3306919ad`.
+
+| Command | Result |
+|---|---|
+| `uv run --env-file .env pytest -q` | 936 passed |
+| `uv run ruff check .` / `ruff format --check .` | clean |
+| `makemigrations --check --dry-run` | No changes detected |
+| `runserver` on `erp_demo` (`seed_production_demo`) with Playwright: login as `demo-production` → การผลิต → #1 → LAMP-0001 → L-0003 | pages render; no 4xx/5xx in the server log |
+
+The sandbox cannot reach `cdn.jsdelivr.net`. The screenshot script therefore served Bootstrap
+5.3.3 from the npm tarball (sha256 `3c8f27e6…`, as in M4.7).
+
+### Review
+
+Self-review (scrutinize):
+- Text is autoescaped.
+- The read pages write nothing (tested).
+- The query move kept the manufacturing suite green.
+
+Deferred minor: the list and outputs query per row (`output_total`, `get_lot_disposition`).
+This is fine at demo scale.

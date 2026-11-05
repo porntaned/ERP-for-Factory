@@ -136,3 +136,26 @@ def test_unknown_order_or_lot_is_404(client, plant):
     client.force_login(get_user_model().objects.get(username="demo-warehouse"))
     assert client.get("/production/999999/").status_code == 404
     assert client.get("/lots/999999/genealogy/").status_code == 404
+
+
+@pytest.mark.django_db
+def test_history_follows_recording_order_even_within_one_transaction(client, plant):
+    rows = table(page(client, f"/production/{plant.pk}/"), "history")
+    steps = [(row[1], row[2]) for row in rows]
+    assert steps == [
+        ("เบิก", "L-0002"),
+        ("เบิก", "L-0003"),
+        ("เบิก", "D-0001"),
+        ("ใช้", "L-0002"),
+        ("ใช้", "L-0003"),
+        ("ใช้", "D-0001"),
+        ("ใช้", "L-0003"),
+        ("scrap", "L-0002"),
+        ("ผลผลิต", "LAMP-0001"),
+        ("ผลผลิต", "LAMP-0002"),
+        ("ผลผลิต", "LAMP-0003"),
+        ("กลับรายการ", "L-0003"),
+        ("กลับรายการ", "LAMP-0003"),
+        ("คืน", "L-0003"),
+        ("คืน", "D-0001"),
+    ]
