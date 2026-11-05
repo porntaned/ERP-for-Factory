@@ -149,6 +149,8 @@ class HistoryRow:
     quantity: Decimal
     actor: str
     reason: str
+    posting_link: int | None = None  # OrderPosting id, for CONSUME / SCRAP / OUTPUT rows
+    reversed: bool = False
 
 
 def order_history(order) -> list[HistoryRow]:
@@ -169,7 +171,7 @@ def order_history(order) -> list[HistoryRow]:
             )
         )
     for link in OrderPosting.objects.filter(order=order).select_related(
-        "posting__ledger_entry__lot", "posting__ledger_entry__actor"
+        "posting__ledger_entry__lot", "posting__ledger_entry__actor", "posting__reversal"
     ):
         entry = link.posting.ledger_entry
         rows.append(
@@ -180,6 +182,8 @@ def order_history(order) -> list[HistoryRow]:
                 abs(entry.quantity_delta),
                 entry.actor.username,
                 entry.reason,
+                posting_link=link.pk,
+                reversed=hasattr(link.posting, "reversal"),
             )
         )
     for reversal in ProductionPostingReversal.objects.filter(

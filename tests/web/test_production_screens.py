@@ -159,3 +159,186 @@ def test_history_follows_recording_order_even_within_one_transaction(client, pla
         ("คืน", "L-0003"),
         ("คืน", "D-0001"),
     ]
+
+
+# ---------------------------------------------------------------- PR 2: record forms
+# Every form posts through manufacturing.services; buttons follow roles; a hidden request UUID
+# makes a double submit post once; command errors are shown and write nothing.
+
+from decimal import Decimal  # noqa: E402
+from uuid import uuid4  # noqa: E402
+
+from facilities.models import Warehouse  # noqa: E402
+from inventory.services import get_stock_balance  # noqa: E402
+from manufacturing.models import (  # noqa: E402
+    BillOfMaterials,
+    OrderPosting,
+    ProductionMaterialMovement,
+)
+
+
+def as_user(client, name):
+    client.force_login(get_user_model().objects.get(username=name))
+    return client
+
+
+def wh(code):
+    return Warehouse.objects.get(code=code)
+
+
+def lot(code):
+    return Lot.objects.get(code=code)
+
+
+def submit(client, url, **data):
+    return client.post(url, {"request_id": str(uuid4())} | data)
+
+
+@pytest.fixture
+def open_order(client, plant):
+    """A new order for 2 x LAMP-A19 created through the screen by demo-production."""
+    as_user(client, "demo-production")
+    response = submit(
+        client,
+        "/production/new/",
+        bom=BillOfMaterials.objects.get(status="ACTIVE").pk,
+        quantity="2",
+        line_warehouse=wh("LINE-1").pk,
+        output_warehouse=wh("FG").pk,
+    )
+    order = ProductionOrder.objects.exclude(pk=plant.pk).get()
+    assert response.status_code == 302 and response["Location"] == f"/production/{order.pk}/"
+    return order
+
+
+def issue(client, order, code, quantity, **extra):
+    return submit(
+        client,
+        f"/production/{order.pk}/issue/",
+        lot=lot(code).pk,
+        source_warehouse=wh("RM-A").pk,
+        quantity=quantity,
+        reason="Issue on screen",
+        **extra,
+    )
+
+
+@pytest.mark.django_db
+def test_new_order_form_offers_active_bom_and_production_warehouses(client, plant):
+    html = page(client, "/production/new/", user="demo-production")
+    assert "LAMP-A19 v1" in html and "LINE-1" in html and "FG" in html
+    as_user(client, "demo-warehouse")
+    assert client.get("/production/new/").status_code == 403
+
+
+@pytest.mark.django_db
+def test_buttons_follow_roles_and_order_status(client, open_order, plant):
+    production = page(client, f"/production/{open_order.pk}/", user="demo-production")
+    for path in ("issue", "return", "consume", "output", "close"):
+        assert f'href="/production/{open_order.pk}/{path}/"' in production
+    assert f'href="/production/{open_order.pk}/scrap/"' not in production
+    approver = page(client, f"/production/{open_order.pk}/", user="demo-approver")
+    assert f'href="/production/{open_order.pk}/scrap/"' in approver
+    warehouse = page(client, f"/production/{open_order.pk}/", user="demo-warehouse")
+    assert f"/production/{open_order.pk}/issue/" not in warehouse
+    closed = page(client, f"/production/{plant.pk}/", user="demo-production")
+    assert f"/production/{plant.pk}/issue/" not in closed
+    assert "/reverse/" not in page(client, f"/production/{plant.pk}/", user="demo-approver")
+    assert 'href="/production/new/"' in page(client, "/production/", user="demo-production")
+
+
+@pytest.mark.django_db
+def test_full_flow_through_the_screens(client, open_order):
+    o = open_order.pk
+    for code, quantity in (("L-0001", "8"), ("D-0001", "2")):
+        assert issue(client, open_order, code, quantity).status_code == 302
+    consume = dict(reason="Run on screen")
+    for code, quantity in (("L-0001", "7"), ("D-0001", "2")):
+        response = submit(
+            client, f"/production/{o}/consume/", lot=lot(code).pk, quantity=quantity, **consume
+        )
+        assert response.status_code == 302
+    as_user(client, "demo-approver")
+    response = submit(
+        client,
+        f"/production/{o}/scrap/",
+        lot=lot("L-0001").pk,
+        quantity="1",
+        reason="Chip dropped",
+    )
+    assert response.status_code == 302
+    as_user(client, "demo-production")
+    for _ in range(2):
+        response = submit(
+            client,
+            f"/production/{o}/output/",
+            lot_code="LAMP-1001",
+            quantity="1",
+            reason="Output on screen",
+        )
+        assert response.status_code == 302
+    second = OrderPosting.objects.filter(order=open_order, kind="OUTPUT").order_by("pk").last()
+    as_user(client, "demo-approver")
+    detail = page(client, f"/production/{o}/", user="demo-approver")
+    assert f'href="/production/{o}/reverse/{second.pk}/"' in detail
+    response = submit(client, f"/production/{o}/reverse/{second.pk}/", reason="Lamp failed test")
+    assert response.status_code == 302
+    as_user(client, "demo-production")
+    response = submit(client, f"/production/{o}/close/", shortfall_reason="")
+    assert response.status_code == 200 and "shortfall" in response.content.decode()
+    response = submit(client, f"/production/{o}/close/", shortfall_reason="One lamp failed")
+    assert response.status_code == 302
+    open_order.refresh_from_db()
+    assert (open_order.status, open_order.shortfall_reason) == ("CLOSED", "One lamp failed")
+    assert get_stock_balance(lot=lot("LAMP-1001"), warehouse=wh("FG")) == Decimal("1")
+    assert get_stock_balance(lot=lot("L-0001"), warehouse=wh("LINE-1")) == Decimal("0")
+    assert "One lamp failed" in page(client, f"/production/{o}/")
+
+
+@pytest.mark.django_db
+def test_double_submit_posts_once(client, open_order):
+    key = str(uuid4())
+    for _ in range(2):
+        assert issue(client, open_order, "L-0001", "4", request_id=key).status_code == 302
+    assert ProductionMaterialMovement.objects.filter(order=open_order).count() == 1
+
+
+@pytest.mark.django_db
+def test_command_error_is_shown_and_writes_nothing(client, open_order):
+    response = issue(client, open_order, "L-0001", "9")  # BOM allows 4 x 2 = 8 chips
+    assert response.status_code == 200
+    assert "เกินจำนวนที่อนุญาต" in response.content.decode()
+    assert not ProductionMaterialMovement.objects.filter(order=open_order).exists()
+
+
+@pytest.mark.django_db
+def test_close_refusal_names_the_lots_on_the_line(client, open_order):
+    issue(client, open_order, "L-0001", "4")
+    response = submit(client, f"/production/{open_order.pk}/close/", shortfall_reason="x")
+    assert response.status_code == 200
+    assert "LED-CHIP lot L-0001 holds 4" in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_forms_refuse_users_without_the_role(client, open_order, plant):
+    o = open_order.pk
+    as_user(client, "demo-warehouse")
+    for path in ("issue", "return", "consume", "output", "close", "scrap"):
+        assert client.get(f"/production/{o}/{path}/").status_code == 403
+    assert issue(client, open_order, "L-0001", "4").status_code == 403
+    as_user(client, "demo-production")
+    assert client.get(f"/production/{o}/scrap/").status_code == 403
+    posting = OrderPosting.objects.filter(order=plant).first()
+    assert client.post(f"/production/{plant.pk}/reverse/{posting.pk}/").status_code == 403
+    assert not ProductionMaterialMovement.objects.filter(order=open_order).exists()
+
+
+@pytest.mark.django_db
+def test_closed_order_forms_are_refused(client, plant):
+    as_user(client, "demo-production")
+    assert client.get(f"/production/{plant.pk}/issue/").status_code == 403
+
+
+@pytest.mark.django_db
+def test_unknown_action_is_404(client, open_order):
+    assert client.get(f"/production/{open_order.pk}/explode/").status_code == 404

@@ -9,6 +9,18 @@
     <div class="col-sm-3"><div class="border rounded p-2"><div class="text-secondary small">ผลผลิตสุทธิ</div><div class="fs-5">{{ net_output|quantity }}</div></div></div>
     <div class="col-sm-3"><div class="border rounded p-2"><div class="text-secondary small">Line → ผลผลิตเข้า</div><div class="fs-5">{{ order.line_warehouse.code }} → {{ order.output_warehouse.code }}</div></div></div>
   </div>
+  {% if actions.record or actions.scrap %}
+  <div class="d-flex flex-wrap gap-2 mb-3" id="actions">
+    {% if actions.record %}
+    <a class="btn btn-primary btn-sm" href="/production/{{ order.pk }}/issue/">เบิก</a>
+    <a class="btn btn-outline-primary btn-sm" href="/production/{{ order.pk }}/return/">คืน</a>
+    <a class="btn btn-primary btn-sm" href="/production/{{ order.pk }}/consume/">ใช้</a>
+    <a class="btn btn-primary btn-sm" href="/production/{{ order.pk }}/output/">บันทึกผลผลิต</a>
+    {% endif %}
+    {% if actions.scrap %}<a class="btn btn-outline-danger btn-sm" href="/production/{{ order.pk }}/scrap/">Scrap</a>{% endif %}
+    {% if actions.record %}<a class="btn btn-success btn-sm ms-auto" href="/production/{{ order.pk }}/close/">ปิด order</a>{% endif %}
+  </div>
+  {% endif %}
   {% if order.shortfall_reason %}<div class="alert alert-warning">ผลผลิตขาด: {{ order.shortfall_reason }}</div>{% endif %}
 
   <h2 class="h5">วัตถุดิบ</h2>
@@ -37,10 +49,10 @@
 
   <h2 class="h5">ประวัติ</h2>
   <table class="table table-sm small" id="history">
-    <thead><tr><th>เวลา</th><th>รายการ</th><th>Lot</th><th class="text-end">จำนวน</th><th>ผู้บันทึก</th><th>เหตุผล</th></tr></thead>
+    <thead><tr><th>เวลา</th><th>รายการ</th><th>Lot</th><th class="text-end">จำนวน</th><th>ผู้บันทึก</th><th>เหตุผล</th><th></th></tr></thead>
     <tbody>
     {% for row, label in history %}
-      <tr><td>{{ row.at|date:"Y-m-d H:i:s" }}</td><td>{{ label }}</td><td>{{ row.lot.code }}</td><td class="text-end">{{ row.quantity|quantity }}</td><td>{{ row.actor }}</td><td>{{ row.reason }}</td></tr>
+      <tr><td>{{ row.at|date:"Y-m-d H:i:s" }}</td><td>{{ label }}</td><td>{{ row.lot.code }}</td><td class="text-end">{{ row.quantity|quantity }}</td><td>{{ row.actor }}</td><td>{{ row.reason }}</td><td>{% if row.posting_link and not row.reversed %}{% if row.kind == "OUTPUT" and actions.reverse_output or row.kind != "OUTPUT" and actions.reverse_line %}<a class="btn btn-outline-danger btn-sm py-0" href="/production/{{ order.pk }}/reverse/{{ row.posting_link }}/">กลับรายการ</a>{% endif %}{% elif row.reversed %}<span class="text-secondary small">กลับแล้ว</span>{% endif %}</td></tr>
     {% endfor %}
     </tbody>
   </table>

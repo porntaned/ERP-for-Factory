@@ -4,6 +4,7 @@
 {% block content %}
   <h1 class="h4">Production orders</h1>
   <p class="text-secondary">ผลผลิตสุทธิ = ผลผลิตที่บันทึก − ที่กลับรายการ</p>
+  {% if can_create %}<p><a class="btn btn-primary btn-sm" href="/production/new/">สร้าง order</a></p>{% endif %}
   {% if orders %}
   <table class="table table-sm align-middle" id="orders">
     <thead><tr><th>Order</th><th>สินค้า</th><th class="text-end">สั่งผลิต</th><th class="text-end">ผลผลิตสุทธิ</th><th>สถานะ</th></tr></thead>
