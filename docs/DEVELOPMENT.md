@@ -82,6 +82,49 @@ DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver
 `tests/web/test_m47_demo.py` runs the same steps through HTTP on PostgreSQL. Screenshots:
 `docs/evidence/m47/`.
 
+## Production demo walkthrough (M5.4)
+
+`seed_production_demo` runs `seed_demo` first, then makes one LAMP-A19 order end to end through
+the real commands. Manufacturing has no screens yet (M7), so the result is read in the shell.
+Use a disposable database: `--reset` flushes every table.
+
+```bash
+uv run --env-file .env python manage.py migrate
+uv run --env-file .env python manage.py seed_production_demo --reset
+```
+
+```bash
+uv run --env-file .env python manage.py shell -c "
+from inventory.models import Lot
+from manufacturing.genealogy import inputs_of, outputs_of
+from manufacturing.models import ProductionOrder
+o = ProductionOrder.objects.get()
+print(o.status, o.shortfall_reason)
+print([(i.lot.code, str(i.quantity)) for i in inputs_of(Lot.objects.get(code='LAMP-0001'))])
+print([(i.lot.code, str(i.quantity)) for i in outputs_of(Lot.objects.get(code='L-0003'))])
+"
+```
+
+What it records (order 10 × LAMP-A19 = 4 LED-CHIP + 1 DRIVER each):
+
+1. New Lots received and RELEASED at RM-A: chips L-0002 30 and L-0003 20; DRIVER D-0001 20.
+2. Issue to LINE-1: L-0002 30, L-0003 10, D-0001 10.
+3. Consume L-0002 28, L-0003 8 and D-0001 9.
+4. A second consumption of L-0003 2 is keyed by mistake; `demo-approver` reverses it.
+5. `demo-approver` scraps L-0002 2.
+6. Output LAMP-0001 5 and LAMP-0002 4 into FG as HOLD. LAMP-0003 1 is recorded and then
+   reversed.
+7. Return L-0003 2 and D-0001 1 to RM-A.
+8. Close with net output 9 of 10 and the shortfall reason "One lamp failed end-of-line test".
+
+Expected shell output:
+- `CLOSED One lamp failed end-of-line test`
+- LAMP-0001's inputs: L-0002 28, L-0003 8, D-0001 9.
+- L-0003's outputs: LAMP-0001 5 and LAMP-0002 4.
+
+L-0001 is untouched, so the M4.7 walkthrough above still starts from 100 at RM-A.
+`tests/manufacturing/test_production_path.py` checks the same results on PostgreSQL.
+
 ## Evidence rule
 
 CI (PostgreSQL 18.6, Python 3.14.8) is the evidence of record. Each run posts a summary with

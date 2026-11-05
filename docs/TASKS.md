@@ -9,7 +9,7 @@
 สถานะ ณ 2026-11-05 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
 - **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4; M5.1 BOM แบบมีเวอร์ชันและ Production order ([PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70)) — `main` ที่ `5891ec7` [CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833): PostgreSQL 18.6, 850 passed
-- **กำลังดำเนินการ:** ยังไม่มี — ถัดไป M5.4 ทดสอบและ Scrutinize เส้นทางการผลิตจริง; M5.1–M5.3 และ M5.2c merge แล้ว (`main` ที่ `d5711af`, [CI #217](https://github.com/porntaned/ERP-for-Factory/actions/runs/41980499969) PostgreSQL 18.6, 918 passed); **เจ้าของเป็นผู้ merge** — สิทธิ์ merge เองที่ให้ไว้ระหว่างงานต่อเนื่องสิ้นสุดเมื่อ 2026-11-05 (ใช้ได้ 2026-11-04 ถึง 2026-11-05 — historical) (ข้อความ "กำลังดำเนินการ: M5.2c" ใช้ได้ถึง 2026-11-05 — historical)
+- **กำลังดำเนินการ:** M5.4 ทดสอบและ Scrutinize เส้นทางการผลิตจริง ([Issue #85](https://github.com/porntaned/ERP-for-Factory/issues/85)); รอเจ้าของตัดสินกฎยกเลิก order ที่มีผลผลิตแล้ว ([Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86)); M5.1–M5.3 และ M5.2c merge แล้ว (`main` ที่ `d5711af`, [CI #217](https://github.com/porntaned/ERP-for-Factory/actions/runs/41980499969) PostgreSQL 18.6, 918 passed); **เจ้าของเป็นผู้ merge** (ข้อความ "ยังไม่มี — ถัดไป M5.4" ใช้ได้ถึง 2026-11-05 — historical)
 - **ยังไม่เริ่ม:** M5.4, M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
@@ -196,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-05: M5.4 ใน [Issue #85](https://github.com/porntaned/ERP-for-Factory/issues/85) — ลองเดินเส้นทางผลิตจริงก่อน (spike ทิ้งได้) แล้วเจ้าของเลือกแบบ A: `seed_production_demo` ผลิต LAMP-A19 หนึ่ง order ครบเส้นทางผ่านคำสั่งจริง (เบิก ใช้ scrap กลับรายการ ผลผลิต 2 Lot คืน และปิดแบบขาดพร้อมเหตุผล; `seed_demo` เดิมไม่เปลี่ยน); `inputs_of` ไม่แสดงวัตถุดิบของ Lot ผลผลิตที่ถูกกลับหมด (เจ้าของเห็นด้วย); scrutinize ทั้งเส้นทาง M5 ([รายงาน](reviews/m5-production-path-review.md), self-review) แก้ 2 จุด และพบว่า order ที่มีผลผลิตแล้วยังยกเลิกได้ → [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86) รอเจ้าของตัดสิน; RED แล้ว GREEN; local 925 passed (PostgreSQL 16.15, development check) — [หลักฐาน](assignments/m54-production-path.md) รอ review และ merge ไม่มี Deploy
 
 - 2026-11-05: เจ้าของอนุมัติในแชตและสั่ง Merge [PR #83](https://github.com/porntaned/ERP-for-Factory/pull/83) (M5.2c) ที่ `d5711af`; Issue #81 ปิด; PR CI [#216](https://github.com/porntaned/ERP-for-Factory/actions/runs/41977470766) ที่ `5133b47` 918 passed ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/83#issuecomment-6651002486)) และ [main CI #217](https://github.com/porntaned/ERP-for-Factory/actions/runs/41980499969) PostgreSQL 18.6, **918 passed**; self-review ไม่มี independent review; ถัดไป M5.4 ไม่มี Deploy
 

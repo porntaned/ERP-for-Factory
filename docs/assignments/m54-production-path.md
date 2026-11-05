@@ -1,7 +1,7 @@
 # M5.4 — test and scrutinize the production path
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/great-bardeen-dumu9p`; base `main` `ea96317`.
-[Issue #85](https://github.com/porntaned/ERP-for-Factory/issues/85). Status: **in progress**.
+[Issue #85](https://github.com/porntaned/ERP-for-Factory/issues/85). Status: **implemented, PR awaiting owner review** ("in progress" held until 2026-11-05 — historical).
 Designed with `superpowers:brainstorming`. A throwaway spike ran one LAMP-A19 order through the
 real commands on a scratch database. After seeing its results, the owner chose option A and
 agreed that a fully reversed output Lot should list no inputs (chat, 2026-11-05).
@@ -44,8 +44,10 @@ balances reconcile per Lot (e.g. 100 = 70 + 28 consumed + 2 scrapped).
     - seeds twice and checks rerun idempotence (ledger and record counts unchanged);
     - checks the closed order, its reason, every Lot × warehouse balance and Quality state, and
       genealogy in both directions;
-    - checks that the closed order refuses further issue, output and reversal;
-    - checks that the HOLD output cannot be transferred.
+    - checks that the closed order refuses further issue, output and reversal.
+    - (Planned and dropped: "the HOLD output cannot be transferred". `demo-warehouse` has no role
+      at FG, so the test would prove authority, not Quality. Transfer Quality is covered since
+      M4.3.3.)
   - Mid-path refusals (over-issue, held-Lot messages, missing reason) are already covered by the
     M5.2a–c unit tests and are not repeated.
 - **Docs:**
@@ -65,3 +67,51 @@ balances reconcile per Lot (e.g. 100 = 70 + 28 consumed + 2 scrapped).
 ## Out of scope
 
 Manufacturing screens (M7), the Quality gate for consumption (M6.2), Deploy.
+
+## Delivered
+
+- `manufacturing/genealogy.py`: `inputs_of` follows only orders where the Lot has nonzero net
+  output. The M5.2c test that pinned the old behaviour now expects no inputs.
+- `demo/management/commands/seed_production_demo.py`: the scenario above, through the real
+  commands, with fixed request UUIDs (`m54-*`). `--reset` flushes first, as in `seed_demo`.
+- `tests/manufacturing/test_production_path.py`: 6 tests.
+- `docs/DEVELOPMENT.md`: production demo walkthrough.
+- `docs/reviews/m5-production-path-review.md`: scrutinize record.
+- [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86): an order with output can be
+  cancelled. This is left for the owner to decide.
+
+## Rulings made while building
+
+1. **The scenario is a separate command; `seed_demo` is unchanged.** The M4.7 walkthrough and
+   its tests pin the balance screen to L-0001 = 100 only. Cost if wrong: one extra command.
+2. **No new chip receipts into L-0001.** The demo uses new Lots L-0002, L-0003 and D-0001.
+3. **Mid-path refusals are not repeated in the path test.** The M5.2a–c unit tests cover them,
+   and the spike showed them on PostgreSQL.
+4. **Cancel after output becomes an issue, not a fix.** It changes a business rule.
+
+## RED / GREEN
+
+| Task | RED observed | GREEN |
+|---|---|---|
+| 1 Genealogy | `assert [Link(...)] == []` for LAMP-9; then the M5.2c test pinning the old behaviour failed as intended until updated | 160 passed (manufacturing) |
+| 2 Production demo | `CommandError: Unknown command: 'seed_production_demo'` | 6 passed; full suite 925 passed |
+
+## Verification (development check, not evidence of record)
+
+PostgreSQL 16.15 (Ubuntu), Python 3.14.6 via `UV_PYTHON=3.14.6` (3.14.8 is not available in this
+session). Tested commit `99583d4de8bad28a7ad741a576342b62ef8a3d05`.
+
+| Command | Result |
+|---|---|
+| `uv run --env-file .env pytest -q` | 925 passed |
+| `uv run ruff check .` / `uv run ruff format --check .` | clean |
+| `uv run --env-file .env python manage.py makemigrations --check --dry-run` | No changes detected (no schema change) |
+| scratch DB: `seed_production_demo --reset`, then the DEVELOPMENT.md shell snippet | `CLOSED One lamp failed end-of-line test`; inputs and outputs as documented |
+
+CI evidence of record: the CI comment on the PR.
+
+## Review
+
+Self-review only (one agent, no sub-agents):
+[m5-production-path-review.md](../reviews/m5-production-path-review.md). Verdict fix-then-ship:
+two findings fixed, one open as Issue #86, one cosmetic minor.
