@@ -28,6 +28,7 @@ from inventory.production import (
 )
 from inventory.transfers import transfer_stock
 from quality.services import transition_lot_disposition
+from tests.inventory.test_stock_receipt_concurrency import blocked_action
 
 from .test_material_movements import balance, give_back, issue, order, plant, stock  # noqa: F401
 from .test_production_postings import consume, line, output, scrap  # noqa: F401
@@ -199,3 +200,165 @@ def test_database_refuses_output_reversal_of_a_used_lot(line):
     release(line, lamp)
     move(line, lamp, "FG", "RM-A", "1")
     rejected(lambda: raw_reversal(made, quantity=D("-5")))
+
+
+# ---------------------------------------------------------------- Manufacturing command
+
+
+def reverse(mf, link, *, actor="approver2", key=None):
+    from manufacturing.services import reverse_order_posting
+
+    return reverse_order_posting(
+        order_posting=link,
+        actor=mf.users[actor],
+        reason="Recorded in error",
+        request_id=key or uuid4(),
+    )
+
+
+@pytest.mark.django_db
+def test_reversed_consumption_returns_to_the_order_holding(line):
+    used = consume(line, "30")
+    reverse(line, used)
+    assert balance(line, "LINE-1") == D("40")
+    give_back(line, "40")
+    assert balance(line, "LINE-1") == D("0")
+
+
+@pytest.mark.django_db
+def test_reversed_scrap_returns_to_the_order_holding(line):
+    lost = scrap(line, "5")
+    reverse(line, lost)
+    consume(line, "40")
+    assert balance(line, "LINE-1") == D("0")
+
+
+@pytest.mark.django_db
+def test_reversed_output_lowers_net_output(line):
+    from manufacturing.services import MaterialLimitError
+
+    made = output(line, "10")
+    reverse(line, made)
+    output(line, "10")  # same Lot code again: the Lot holds only this order's outputs
+    with pytest.raises(MaterialLimitError):
+        output(line, "1")
+    assert balance(line, "FG", lot=made.posting.ledger_entry.lot) == D("10")
+
+
+@pytest.mark.django_db
+def test_order_reversal_maps_inventory_refusals(line):
+    from manufacturing.services import MaterialAuthorizationError, MaterialLimitError
+
+    used = consume(line, "1")
+    with pytest.raises(MaterialAuthorizationError):
+        reverse(line, used, actor="production")
+    reverse(line, used)
+    with pytest.raises(AlreadyReversedError):
+        reverse(line, used)
+    made = output(line, "5")
+    release(line, made.posting.ledger_entry.lot)
+    move(line, made.posting.ledger_entry.lot, "FG", "RM-A", "1")
+    with pytest.raises(MaterialLimitError):
+        reverse(line, made)
+
+
+@pytest.mark.django_db
+def test_reversal_refused_on_a_closed_order(line):
+    from manufacturing.services import MaterialValidationError, close_production_order
+
+    used = consume(line, "40")
+    output(line, "10")
+    close_production_order(order=line.order, actor=line.users["production"], request_id=uuid4())
+    with pytest.raises(MaterialValidationError):
+        reverse(line, used)
+    rejected(lambda: raw_reversal(used))
+    assert not ProductionPostingReversal.objects.exists()
+
+
+@pytest.mark.django_db
+def test_genealogy_nets_reversals(line):
+    from manufacturing.genealogy import inputs_of, outputs_of
+
+    give_back(line, "8")
+    other_lot = stock(line, "L2", D("10"))
+    issue(line, "8", lot=other_lot)
+    wrong = consume(line, "8", lot=other_lot)
+    consume(line, "32")
+    kept = output(line, "5")
+    dropped = output(line, "5", code="LAMP-0002")
+    reverse(line, wrong)
+    reverse(line, dropped)
+    lamp = kept.posting.ledger_entry.lot
+    assert [(link.lot, link.quantity) for link in inputs_of(lamp)] == [(line.lot, D("32"))]
+    assert inputs_of(dropped.posting.ledger_entry.lot) == inputs_of(lamp)
+    assert outputs_of(other_lot) == []
+    assert [(link.lot, link.quantity) for link in outputs_of(line.lot)] == [(lamp, D("5"))]
+
+
+# ---------------------------------------------------------------- concurrency
+
+
+@pytest.mark.django_db(transaction=True)
+def test_concurrent_reversals_of_one_posting(line):
+    used = consume(line, "10")
+    _, outcome = blocked_action(lambda: reverse(line, used), lambda: reverse(line, used))
+    assert outcome[0] == "AlreadyReversedError", outcome
+    assert ProductionPostingReversal.objects.count() == 1
+
+
+@pytest.mark.django_db(transaction=True)
+def test_close_racing_a_consumption_reversal(line):
+    from manufacturing.services import close_production_order
+
+    used = consume(line, "40")
+    output(line, "10")
+
+    def close():
+        return close_production_order(
+            order=line.order, actor=line.users["production"], request_id=uuid4()
+        )
+
+    _, outcome = blocked_action(lambda: reverse(line, used), close)
+    assert outcome[0] == "OrderValidationError", outcome
+    line.order.refresh_from_db()
+    assert line.order.status == "OPEN"
+
+
+@pytest.mark.django_db(transaction=True)
+def test_consumption_reversal_racing_a_close(line):
+    from manufacturing.services import close_production_order
+
+    used = consume(line, "40")
+    output(line, "10")
+    _, outcome = blocked_action(
+        lambda: close_production_order(
+            order=line.order, actor=line.users["production"], request_id=uuid4()
+        ),
+        lambda: reverse(line, used),
+    )
+    assert outcome[0] == "MaterialValidationError", outcome
+    assert balance(line, "LINE-1") == D("0")
+
+
+@pytest.mark.django_db(transaction=True)
+def test_output_reversal_racing_a_transfer(line):
+    made = output(line, "5")
+    lamp = made.posting.ledger_entry.lot
+    release(line, lamp)
+    _, outcome = blocked_action(
+        lambda: move(line, lamp, "FG", "RM-A", "1")[0], lambda: reverse(line, made)
+    )
+    assert outcome[0] == "MaterialLimitError", outcome
+    assert balance(line, "FG", lot=lamp) == D("4")
+
+
+@pytest.mark.django_db(transaction=True)
+def test_transfer_racing_an_output_reversal(line):
+    made = output(line, "5")
+    lamp = made.posting.ledger_entry.lot
+    release(line, lamp)
+    _, outcome = blocked_action(
+        lambda: reverse(line, made), lambda: move(line, lamp, "FG", "RM-A", "1")[0]
+    )
+    assert outcome[0] == "InsufficientStockError", outcome
+    assert balance(line, "FG", lot=lamp) == D("0")

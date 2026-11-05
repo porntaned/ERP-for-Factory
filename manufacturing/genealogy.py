@@ -1,7 +1,8 @@
 """M5.3 (Issue #78): Lot genealogy read from immutable production records.
 
 An output Lot belongs to one order (M5.2b). Its inputs are the Lots that order consumed;
-returned and scrapped material is not part of the output. Genealogy is at order granularity:
+returned and scrapped material is not part of the output. Reversed postings (M5.2c) net out;
+a Lot whose postings net to zero is not listed. Genealogy is at order granularity:
 when one order outputs several Lots, each of them lists all of the order's consumed Lots.
 """
 
@@ -13,6 +14,7 @@ from django.db.models import Sum
 from inventory.models import Lot
 
 from .models import OrderPosting, PostingKind, ProductionOrder
+from .services import NET_POSTED
 
 
 @dataclass(frozen=True)
@@ -35,7 +37,8 @@ def _per_order_lot(kind: str, **filters) -> list[tuple[int, int, Decimal]]:
     rows = (
         OrderPosting.objects.filter(kind=kind, **filters)
         .values("order_id", "posting__ledger_entry__lot_id")
-        .annotate(total=Sum("posting__ledger_entry__quantity_delta"))
+        .annotate(total=Sum(NET_POSTED))
+        .exclude(total=0)
         .order_by("order_id", "posting__ledger_entry__lot_id")
     )
     return [(r["order_id"], r["posting__ledger_entry__lot_id"], abs(r["total"])) for r in rows]

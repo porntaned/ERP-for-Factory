@@ -17,17 +17,20 @@ from uuid import UUID
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.db.models import Case, DecimalField, F, Max, Sum, When
-from django.db.models.functions import Now
+from django.db.models.functions import Coalesce, Now
 
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from catalog.models import Item, ItemType
 from facilities.models import Warehouse
-from inventory.models import Lot, ProductionPosting, StockTransfer
+from inventory.models import Lot, ProductionPosting, ProductionPostingReversal, StockTransfer
 from inventory.production import (
+    AlreadyReversedError,
+    OutputLotUsedError,
     PostingAuthorizationError,
     PostingConflictError,
     PostingValidationError,
     post_production_posting,
+    reverse_production_posting,
 )
 from inventory.quantities import is_valid_quantity
 from inventory.request_keys import owned_by_other_command
@@ -53,6 +56,7 @@ from .models import (
 )
 
 __all__ = [
+    "AlreadyReversedError",
     "BomAuthorizationError",
     "BomConflictError",
     "BomValidationError",
@@ -70,6 +74,7 @@ __all__ = [
     "issue_material",
     "record_output",
     "return_material",
+    "reverse_order_posting",
     "scrap_material",
     "cancel_production_order",
     "create_bom_draft",
@@ -468,6 +473,12 @@ _SIGNED = Case(
 )
 
 
+# A posting's signed quantity net of its reversal (M5.2c): zero once reversed.
+NET_POSTED = F("posting__ledger_entry__quantity_delta") + Coalesce(
+    F("posting__reversal__ledger_entry__quantity_delta"), Decimal("0")
+)
+
+
 def _order_holdings(order: ProductionOrder) -> dict[int, Decimal]:
     """Net quantity per Lot the order holds on its line: issued - returned - consumed - scrapped."""
     rows = (
@@ -479,7 +490,7 @@ def _order_holdings(order: ProductionOrder) -> dict[int, Decimal]:
     used = (
         OrderPosting.objects.filter(order=order, kind__in=(PostingKind.CONSUME, PostingKind.SCRAP))
         .values("posting__ledger_entry__lot_id")
-        .annotate(net=Sum("posting__ledger_entry__quantity_delta"))
+        .annotate(net=Sum(NET_POSTED))
     )
     for row in used:
         lot_id = row["posting__ledger_entry__lot_id"]
@@ -650,7 +661,7 @@ def _posting_replay(request_id: UUID, order: ProductionOrder, kind: str) -> Any:
 
 def _output_total(order: ProductionOrder) -> Decimal:
     total = OrderPosting.objects.filter(order=order, kind=PostingKind.OUTPUT).aggregate(
-        total=Sum("posting__ledger_entry__quantity_delta")
+        total=Sum(NET_POSTED)
     )["total"]
     return total or Decimal("0")
 
@@ -817,6 +828,39 @@ def record_output(
         reason=reason,
         request_id=request_id,
     )
+
+
+def reverse_order_posting(
+    *, order_posting: OrderPosting, actor: Any, reason: str, request_id: UUID
+) -> ProductionPostingReversal:
+    """Reverse one CONSUME, SCRAP or OUTPUT of an OPEN order (APPROVER at its warehouse).
+
+    M5.2c (Issue #81): whole posting, once only; Inventory posts the offsetting entry.
+    """
+    if not _saved(order_posting, OrderPosting):
+        raise MaterialValidationError("order_posting must be a saved OrderPosting")
+    with transaction.atomic():
+        locked = (
+            ProductionOrder.objects.select_for_update().filter(pk=order_posting.order_id).first()
+        )
+        prior = ProductionPostingReversal.objects.filter(request_id=request_id).first()
+        if prior is None and locked.status != OrderStatus.OPEN:
+            raise MaterialValidationError("a posting is reversed only while its order is OPEN")
+        try:
+            return reverse_production_posting(
+                posting=order_posting.posting,
+                actor=actor,
+                reason=reason,
+                request_id=request_id,
+            )
+        except PostingAuthorizationError as exc:
+            raise MaterialAuthorizationError(str(exc)) from exc
+        except PostingConflictError as exc:
+            raise MaterialConflictError(str(exc)) from exc
+        except (InsufficientStockError, OutputLotUsedError) as exc:
+            raise MaterialLimitError(str(exc)) from exc
+        except PostingValidationError as exc:
+            raise MaterialValidationError(str(exc)) from exc
 
 
 def close_production_order(
