@@ -16,8 +16,8 @@ from uuid import UUID
 
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
-from django.db.models import Case, DecimalField, F, Max, Sum, When
-from django.db.models.functions import Coalesce, Now
+from django.db.models import Max, Sum
+from django.db.models.functions import Now
 
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from catalog.models import Item, ItemType
@@ -54,6 +54,10 @@ from .models import (
     ProductionMaterialMovement,
     ProductionOrder,
 )
+from .queries import NET_POSTED  # noqa: F401 (re-exported for callers of M5.2c)
+from .queries import SIGNED_MOVEMENT as _SIGNED
+from .queries import order_holdings as _order_holdings
+from .queries import output_total as _output_total
 
 __all__ = [
     "AlreadyReversedError",
@@ -466,38 +470,6 @@ class MaterialQualityError(Exception):
     pass
 
 
-_SIGNED = Case(
-    When(kind=MovementKind.ISSUE, then=F("transfer__destination_entry__quantity_delta")),
-    default=-F("transfer__destination_entry__quantity_delta"),
-    output_field=DecimalField(),
-)
-
-
-# A posting's signed quantity net of its reversal (M5.2c): zero once reversed.
-NET_POSTED = F("posting__ledger_entry__quantity_delta") + Coalesce(
-    F("posting__reversal__ledger_entry__quantity_delta"), Decimal("0")
-)
-
-
-def _order_holdings(order: ProductionOrder) -> dict[int, Decimal]:
-    """Net quantity per Lot the order holds on its line: issued - returned - consumed - scrapped."""
-    rows = (
-        ProductionMaterialMovement.objects.filter(order=order)
-        .values("transfer__destination_entry__lot_id")
-        .annotate(net=Sum(_SIGNED))
-    )
-    held = {row["transfer__destination_entry__lot_id"]: row["net"] for row in rows}
-    used = (
-        OrderPosting.objects.filter(order=order, kind__in=(PostingKind.CONSUME, PostingKind.SCRAP))
-        .values("posting__ledger_entry__lot_id")
-        .annotate(net=Sum(NET_POSTED))
-    )
-    for row in used:
-        lot_id = row["posting__ledger_entry__lot_id"]
-        held[lot_id] = held.get(lot_id, Decimal("0")) + row["net"]
-    return held
-
-
 def _held_on_line(order: ProductionOrder) -> str:
     """Each Lot the order still holds on its line, e.g. "LED-CHIP lot L1 holds 40"."""
     held = {lot_id: q for lot_id, q in _order_holdings(order).items() if q}
@@ -667,13 +639,6 @@ def _posting_replay(request_id: UUID, order: ProductionOrder, kind: str) -> Any:
     if link is None or link.order_id != order.pk or link.kind != kind:
         raise MaterialConflictError("request_id was already used for another posting")
     return link
-
-
-def _output_total(order: ProductionOrder) -> Decimal:
-    total = OrderPosting.objects.filter(order=order, kind=PostingKind.OUTPUT).aggregate(
-        total=Sum(NET_POSTED)
-    )["total"]
-    return total or Decimal("0")
 
 
 def _output_lot(order: ProductionOrder, code: Any) -> Lot:
