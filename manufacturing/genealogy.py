@@ -14,7 +14,7 @@ from django.db.models import Sum
 from inventory.models import Lot
 
 from .models import OrderPosting, PostingKind, ProductionOrder
-from .services import NET_POSTED
+from .queries import NET_POSTED
 
 
 @dataclass(frozen=True)

@@ -125,6 +125,15 @@ Expected shell output:
 L-0001 is untouched, so the M4.7 walkthrough above still starts from 100 at RM-A.
 `tests/manufacturing/test_production_path.py` checks the same results on PostgreSQL.
 
+**On the web (M5.5):**
+1. Run `set_demo_passwords`, then `runserver`, as in the M4.7 walkthrough.
+2. Log in as any demo user and open **การผลิต** (`/production/`).
+3. Order #1 shows each material Lot (issued, returned, consumed, scrapped, on the line), the
+   outputs with their Quality and reversal, the history and the shortfall reason.
+4. Click a Lot to open its genealogy (`/lots/<id>/genealogy/`).
+
+The pages are read-only. Record forms come in M5.5 PR 2.
+
 ## Evidence rule
 
 CI (PostgreSQL 18.6, Python 3.14.8) is the evidence of record. Each run posts a summary with

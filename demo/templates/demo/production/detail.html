@@ -1,0 +1,47 @@
+{% extends "demo/base.html" %}
+{% load quantities %}
+{% block title %}Order #{{ order.pk }}{% endblock %}
+{% block content %}
+  <p><a href="/production/">← Production orders</a></p>
+  <h1 class="h4">Order #{{ order.pk }} · {{ order.bom.item.code }} v{{ order.bom.version }} {% include "demo/production/_status.html" with status=order.status %}</h1>
+  <div class="row g-3 mb-4">
+    <div class="col-sm-3"><div class="border rounded p-2"><div class="text-secondary small">สั่งผลิต</div><div class="fs-5">{{ order.quantity|quantity }}</div></div></div>
+    <div class="col-sm-3"><div class="border rounded p-2"><div class="text-secondary small">ผลผลิตสุทธิ</div><div class="fs-5">{{ net_output|quantity }}</div></div></div>
+    <div class="col-sm-3"><div class="border rounded p-2"><div class="text-secondary small">Line → ผลผลิตเข้า</div><div class="fs-5">{{ order.line_warehouse.code }} → {{ order.output_warehouse.code }}</div></div></div>
+  </div>
+  {% if order.shortfall_reason %}<div class="alert alert-warning">ผลผลิตขาด: {{ order.shortfall_reason }}</div>{% endif %}
+
+  <h2 class="h5">วัตถุดิบ</h2>
+  <table class="table table-sm" id="materials">
+    <thead><tr><th>Lot</th><th>Item</th><th class="text-end">เบิก</th><th class="text-end">คืน</th><th class="text-end">ใช้</th><th class="text-end">scrap</th><th class="text-end">ค้างที่ line</th></tr></thead>
+    <tbody>
+    {% for row in materials %}
+      <tr><td><a href="/lots/{{ row.lot.pk }}/genealogy/">{{ row.lot.code }}</a></td><td>{{ row.lot.item.code }}</td><td class="text-end">{{ row.issued|quantity }}</td><td class="text-end">{{ row.returned|quantity }}</td><td class="text-end">{{ row.consumed|quantity }}</td><td class="text-end">{{ row.scrapped|quantity }}</td><td class="text-end{% if row.held %} fw-bold{% endif %}">{{ row.held|quantity }}</td></tr>
+    {% empty %}
+      <tr><td colspan="7" class="text-secondary">ยังไม่มีการเบิก</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="h5">ผลผลิต ({{ order.output_warehouse.code }})</h2>
+  <table class="table table-sm" id="outputs">
+    <thead><tr><th>Lot</th><th class="text-end">สุทธิ</th><th>Quality</th><th>หมายเหตุ</th></tr></thead>
+    <tbody>
+    {% for row in outputs %}
+      <tr><td><a href="/lots/{{ row.lot.pk }}/genealogy/">{{ row.lot.code }}</a></td><td class="text-end">{{ row.net|quantity }}</td><td>{% include "demo/production/_status.html" with status=row.disposition %}</td><td>{% if row.reversed %}กลับรายการแล้ว{% endif %}</td></tr>
+    {% empty %}
+      <tr><td colspan="4" class="text-secondary">ยังไม่มีผลผลิต</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="h5">ประวัติ</h2>
+  <table class="table table-sm small" id="history">
+    <thead><tr><th>เวลา</th><th>รายการ</th><th>Lot</th><th class="text-end">จำนวน</th><th>ผู้บันทึก</th><th>เหตุผล</th></tr></thead>
+    <tbody>
+    {% for row, label in history %}
+      <tr><td>{{ row.at|date:"Y-m-d H:i:s" }}</td><td>{{ label }}</td><td>{{ row.lot.code }}</td><td class="text-end">{{ row.quantity|quantity }}</td><td>{{ row.actor }}</td><td>{{ row.reason }}</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
