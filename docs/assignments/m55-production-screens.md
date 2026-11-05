@@ -1,7 +1,7 @@
 # M5.5 — Manufacturing screens (read + record)
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/great-bardeen-dumu9p`; base `main` `b5aa7df`.
-[Issue #89](https://github.com/porntaned/ERP-for-Factory/issues/89). Status: **PR 1 merged** (PR #90 at `ac9a35d`, 2026-11-05); **PR 2 (record forms) next** ("PR 1 (read-only) in progress" held until then — historical). The owner wants to see production on the web and try it themselves. In plan mode
+[Issue #89](https://github.com/porntaned/ERP-for-Factory/issues/89). Status: **PR 1 merged** (PR #90 at `ac9a35d`, 2026-11-05); **PR 2 (record forms) implemented, PR awaiting owner review** ("PR 2 next" and "PR 1 (read-only) in progress" held until then — historical). The owner wants to see production on the web and try it themselves. In plan mode
 they chose the full flow, delivered in two PRs, and approved the plan (chat, 2026-11-05).
 
 ## Approach
@@ -28,7 +28,7 @@ turn command errors into Thai messages.
 - **Navigation:** a "การผลิต" menu entry for every logged-in user.
 - **No write buttons in PR 1.**
 
-## PR 2 — record forms (next)
+## PR 2 — record forms (planned before PR 1 merged; delivered below)
 
 - Forms: create order, issue, return, consume, scrap, record output, reverse, close (with
   shortfall reason).
@@ -93,3 +93,79 @@ Self-review (scrutinize):
 
 Deferred minor: the list and outputs query per row (`output_total`, `get_lot_disposition`).
 This is fine at demo scale.
+
+## PR 2 — delivered
+
+| URL | Command | Shown to |
+|---|---|---|
+| `/production/new/` | `create_production_order` | users with PRODUCTION anywhere (the list's "สร้าง order" button) |
+| `/production/<id>/issue/` | `issue_material` | PRODUCTION at the order's line and output warehouse; the order is OPEN |
+| `/production/<id>/return/` | `return_material` | same |
+| `/production/<id>/consume/` | `consume_material` | same |
+| `/production/<id>/output/` | `record_output` | same |
+| `/production/<id>/close/` | `close_production_order` (blank shortfall reason is sent as none) | same |
+| `/production/<id>/scrap/` | `scrap_material` | APPROVER at the line; the order is OPEN |
+| `/production/<id>/reverse/<posting>/` | `reverse_order_posting` | APPROVER at the posting's warehouse; a "กลับรายการ" button on each unreversed history row |
+
+- **Files:** `demo/production_forms.py`; `ACTIONS`, `order_action`, `production_new` and
+  `reverse_posting` in `demo/production_views.py`; `order_actions` and
+  `production_warehouses` in `demo/permissions.py`.
+- **History rows:** `HistoryRow` carries the posting link and whether it was reversed.
+- **Unauthorized:** a user without the role gets 403. So does a user on a non-OPEN order,
+  even when calling the URL directly.
+- **Unknown action:** 404.
+- **Double submit:** a hidden request UUID makes it replay instead of posting twice.
+- **Command errors:** shown as a Thai heading plus the command's own detail (for example the
+  held Lots). Nothing is written.
+
+### Rulings
+
+1. **The issue form lists every Lot of the BOM's components, not only RELEASED ones.** Whether
+   a Lot is RELEASED depends on the chosen source warehouse. The command refuses with
+   "Lot ต้องเป็น RELEASED ที่คลังต้นทาง". Cost if wrong: one extra refusal for the user.
+2. **Error detail keeps the command's English text**, for example `net issue would exceed the
+   BOM requirement` or `LED-CHIP lot L-0001 holds 4`, after a Thai heading. Translating each
+   command message is left for later.
+3. **No cancel button.** It waits for Issue #86.
+
+### RED / GREEN
+
+- RED: 6 setup errors and 2 failures. The pages did not exist, so the fixture could not create
+  an order.
+- GREEN: 19 passed.
+- `test_unknown_action_is_404`: RED with `NameError: Http404`, then GREEN.
+- Driving the real server found a partly reversed output Lot labelled "กลับรายการแล้ว". The
+  full-flow test was extended: RED, then "กลับรายการบางส่วน", GREEN.
+- `tests/web/test_production_screens.py`: 20 passed.
+
+### Verification (development check, not evidence of record)
+
+PostgreSQL 16.15 (Ubuntu), Python 3.14.6. Tested commit `12e0a3001fcc4c5c8d31758996616f877f8f505b`.
+
+| Command | Result |
+|---|---|
+| `uv run --env-file .env pytest -q` | 945 passed |
+| `uv run ruff check .` / `ruff format --check .` | clean |
+| `makemigrations --check --dry-run` | No changes detected |
+| Real `runserver` on `seed_production_demo` data, Playwright clicking through every form (see below) | order CLOSED with reason; no 5xx in the server log |
+
+The Playwright walk:
+1. `demo-production`: create an order for 2 → issue L-0001 8 and D-0001 2.
+2. An over-issue shows "เกินจำนวนที่อนุญาต: net issue would exceed the BOM requirement".
+3. Consume L-0001 7 and D-0001 2; record output twice.
+4. `demo-approver`: scrap 1; reverse the second output.
+5. `demo-production`: close without a reason, which is refused with "net output is short of
+   the order"; then close with a reason.
+
+Two runs of the walk failed on script errors, not app errors:
+- the login click hit the logout button;
+- a Lot code was reused across runs, which the app refused correctly.
+
+### Review
+
+Self-review (scrutinize):
+- Every form posts with a CSRF token.
+- Role checks happen in the view and again in the command.
+- Closed orders give 403.
+- A double submit replays.
+- Errors write nothing.

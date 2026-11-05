@@ -9,7 +9,7 @@
 สถานะ ณ 2026-11-05 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
 - **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4; M5.1 BOM แบบมีเวอร์ชันและ Production order ([PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70)) — `main` ที่ `5891ec7` [CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833): PostgreSQL 18.6, 850 passed
-- **กำลังดำเนินการ:** M5.5 หน้าจอ Manufacturing บนเว็บ ([Issue #89](https://github.com/porntaned/ERP-for-Factory/issues/89)) — PR 1 หน้าอ่านอย่างเดียว merge แล้ว ([PR #90](https://github.com/porntaned/ERP-for-Factory/pull/90) ที่ `ac9a35d`, [main CI #227](https://github.com/porntaned/ERP-for-Factory/actions/runs/41992724003) PostgreSQL 18.6, 936 passed); ถัดไป PR 2 ฟอร์มบันทึก; M5 ทั้งก้อนรอเจ้าของตัดสิน [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86); **เจ้าของเป็นผู้ merge** (ข้อความ "PR 1 หน้าอ่านอย่างเดียว" ที่ยังไม่ merge ใช้ได้ถึง 2026-11-05 — historical)
+- **กำลังดำเนินการ:** M5.5 หน้าจอ Manufacturing บนเว็บ ([Issue #89](https://github.com/porntaned/ERP-for-Factory/issues/89)) — PR 1 หน้าอ่านอย่างเดียว merge แล้ว ([PR #90](https://github.com/porntaned/ERP-for-Factory/pull/90) ที่ `ac9a35d`, [main CI #227](https://github.com/porntaned/ERP-for-Factory/actions/runs/41992724003) PostgreSQL 18.6, 936 passed); PR 2 ฟอร์มบันทึกรอ review และ merge; M5 ทั้งก้อนรอเจ้าของตัดสิน [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86); **เจ้าของเป็นผู้ merge** (ข้อความ "PR 1 หน้าอ่านอย่างเดียว" ที่ยังไม่ merge ใช้ได้ถึง 2026-11-05 — historical)
 - **ยังไม่เริ่ม:** M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
@@ -197,6 +197,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-05: M5.5 PR 2 ใน [Issue #89](https://github.com/porntaned/ERP-for-Factory/issues/89) — ฟอร์มสร้าง order, เบิก, คืน, ใช้, scrap, ผลผลิต, กลับรายการ และปิด order บนเว็บ เรียกคำสั่ง Manufacturing เท่านั้น ปุ่มตามสิทธิ์และสถานะ order กดซ้ำบันทึกครั้งเดียว; RED แล้ว GREEN; เดินเว็บจริงด้วย Playwright พบป้าย "กลับรายการแล้ว" ผิดสำหรับ Lot ที่กลับบางส่วนจึงแก้; local 945 passed (PostgreSQL 16.15, development check); self-review; ไม่มีปุ่มยกเลิก (รอ [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86)) — [หลักฐาน](assignments/m55-production-screens.md) รอ review และ merge ไม่มี Deploy
 
 - 2026-11-05: เจ้าของอนุมัติในแชตและสั่ง Merge [PR #90](https://github.com/porntaned/ERP-for-Factory/pull/90) (M5.5 PR 1 หน้าอ่านอย่างเดียว) ที่ `ac9a35d`; PR CI [#226](https://github.com/porntaned/ERP-for-Factory/actions/runs/41991095449) ที่ `d0a9a5f` 936 passed ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/90#issuecomment-6652899139)) และ [main CI #227](https://github.com/porntaned/ERP-for-Factory/actions/runs/41992724003) PostgreSQL 18.6, **936 passed**; Issue #89 ยังเปิดสำหรับ PR 2; มีภาพหน้าเว็บแบบอ่านอย่างเดียวเป็นลิงก์ claude.ai ส่วนตัวของเจ้าของ (ไม่ใช่ Deploy); self-review ไม่มี Deploy
 

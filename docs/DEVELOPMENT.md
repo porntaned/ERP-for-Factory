@@ -132,7 +132,13 @@ L-0001 is untouched, so the M4.7 walkthrough above still starts from 100 at RM-A
    outputs with their Quality and reversal, the history and the shortfall reason.
 4. Click a Lot to open its genealogy (`/lots/<id>/genealogy/`).
 
-The pages are read-only. Record forms come in M5.5 PR 2.
+5. To record production yourself (M5.5 PR 2), log in as `demo-production`.
+   - **การผลิต → สร้าง order**, for example 2 × LAMP-A19 on LINE-1 → FG.
+   - Then use the buttons in order: **เบิก** (L-0001 and D-0001 from RM-A), **ใช้**,
+     **บันทึกผลผลิต** (a new Lot code), **ปิด order**.
+   - As `demo-approver` you can also use **Scrap**, and **กลับรายการ** on a history row.
+   - Short output needs a reason when closing.
+   - A refused action shows why and records nothing.
 
 ## Evidence rule
 
