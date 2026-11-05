@@ -1,7 +1,7 @@
 # M5.2a — issue and return material for a production order
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/dreamy-volta-9v3i8u`; base `main` `eb24e25`.
-[Issue #72](https://github.com/porntaned/ERP-for-Factory/issues/72). Status: **PR awaiting CI**.
+[Issue #72](https://github.com/porntaned/ERP-for-Factory/issues/72). Status: **merged** (PR #73 at `0205f2b`, 2026-11-05; "PR awaiting CI" held until then — historical).
 
 ## Owner decisions (chat, 2026-11-04)
 
@@ -67,3 +67,7 @@ CI evidence of record: the CI comment on the PR.
 ## Review
 
 Self-review only (`scrutinize` trace of the issue/return paths and the lock order).
+
+## Closeout (2026-11-05)
+
+PR CI [#202](https://github.com/porntaned/ERP-for-Factory/actions/runs/41937492194) on head `c3b9510`: PostgreSQL 18.6, Python 3.14.8, **870 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/73#issuecomment-6645593547)). Merged under the owner's advance authorisation: PR #73 at `0205f2bfbe6a6c2f501d2422897850b24edbe1ab`; [main CI #203](https://github.com/porntaned/ERP-for-Factory/actions/runs/41937763974): **870 passed**. Issue #72 closed.
