@@ -1,7 +1,7 @@
 # M5.4 — test and scrutinize the production path
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/great-bardeen-dumu9p`; base `main` `ea96317`.
-[Issue #85](https://github.com/porntaned/ERP-for-Factory/issues/85). Status: **implemented, PR awaiting owner review** ("in progress" held until 2026-11-05 — historical).
+[Issue #85](https://github.com/porntaned/ERP-for-Factory/issues/85). Status: **merged** (PR #87 at `cc934b4`, 2026-11-05; "implemented, PR awaiting owner review" and "in progress" held until then — historical).
 Designed with `superpowers:brainstorming`. A throwaway spike ran one LAMP-A19 order through the
 real commands on a scratch database. After seeing its results, the owner chose option A and
 agreed that a fully reversed output Lot should list no inputs (chat, 2026-11-05).
@@ -115,3 +115,7 @@ CI evidence of record: the CI comment on the PR.
 Self-review only (one agent, no sub-agents):
 [m5-production-path-review.md](../reviews/m5-production-path-review.md). Verdict fix-then-ship:
 two findings fixed, one open as Issue #86, one cosmetic minor.
+
+## Closeout (2026-11-05)
+
+PR CI [#221](https://github.com/porntaned/ERP-for-Factory/actions/runs/41983756604) on head `a2818b8` (tested as merge `e6fa8b4`): PostgreSQL 18.6, Python 3.14.8, **925 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/87#issuecomment-6651862386)). The owner approved the merge in chat; PR #87 merged at `cc934b4abac0e1069f4b6080bb536c9fa186e5a5`; [main CI #222](https://github.com/porntaned/ERP-for-Factory/actions/runs/41985004405): **925 passed**. Issue #85 closed. M5 as a whole stays unticked until the owner rules on Issue #86. Review remained self-review only.
