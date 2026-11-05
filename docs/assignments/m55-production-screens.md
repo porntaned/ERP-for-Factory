@@ -1,7 +1,7 @@
 # M5.5 — Manufacturing screens (read + record)
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/great-bardeen-dumu9p`; base `main` `b5aa7df`.
-[Issue #89](https://github.com/porntaned/ERP-for-Factory/issues/89). Status: **PR 1 merged** (PR #90 at `ac9a35d`, 2026-11-05); **PR 2 (record forms) implemented, PR awaiting owner review** ("PR 2 next" and "PR 1 (read-only) in progress" held until then — historical). The owner wants to see production on the web and try it themselves. In plan mode
+[Issue #89](https://github.com/porntaned/ERP-for-Factory/issues/89). Status: **merged** (PR 1: PR #90 at `ac9a35d`; PR 2: PR #92 at `866e8af`, 2026-11-05; "PR 2 implemented, PR awaiting owner review", "PR 2 next" and "PR 1 (read-only) in progress" held until then — historical). The owner wants to see production on the web and try it themselves. In plan mode
 they chose the full flow, delivered in two PRs, and approved the plan (chat, 2026-11-05).
 
 ## Approach
@@ -169,3 +169,12 @@ Self-review (scrutinize):
 - Closed orders give 403.
 - A double submit replays.
 - Errors write nothing.
+
+## Closeout (2026-11-05)
+
+PR 2: PR CI [#231](https://github.com/porntaned/ERP-for-Factory/actions/runs/42009537477) on head `397c9d7` (tested as merge `86c0c63`): PostgreSQL 18.6, Python 3.14.8, **945 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/92#issuecomment-6655524390)). The owner approved the merge in chat; PR #92 merged at `866e8afb79be4ebefa41126ccb7a55d966daa0af`; [main CI #232](https://github.com/porntaned/ERP-for-Factory/actions/runs/42010216747): **945 passed**. Issue #89 was closed by PR #92. Review remained self-review only.
+
+Of Issue #89's acceptance criteria, "the owner tries the web themselves" has no recorded evidence. The owner was given:
+- the session's demo server, on preview port 8000;
+- a private, read-only claude.ai snapshot of the PR 1 pages;
+- local-run steps.
