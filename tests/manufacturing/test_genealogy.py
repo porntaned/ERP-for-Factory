@@ -72,3 +72,24 @@ def test_lots_without_production_history_have_no_genealogy(made):
 def test_genealogy_rejects_unsaved_lot(made):
     with pytest.raises(ValueError):
         inputs_of(Lot(item=made.items["lamp"], code="NEW"))
+
+
+@pytest.mark.django_db
+def test_a_fully_reversed_output_lot_has_no_inputs(made):
+    """M5.4 (Issue #85): a Lot whose output nets to zero came from nothing."""
+    from uuid import uuid4
+
+    from manufacturing.services import reverse_order_posting
+
+    wrong = output(made, "1", code="LAMP-9")
+    reverse_order_posting(
+        order_posting=wrong,
+        actor=made.users["approver2"],
+        reason="Recorded in error",
+        request_id=uuid4(),
+    )
+    assert inputs_of(Lot.objects.get(code="LAMP-9")) == []
+    assert rows(inputs_of(Lot.objects.get(code="LAMP-1"))) == {
+        (made.order.pk, "L1"): D("24"),
+        (made.order.pk, "L2"): D("10"),
+    }
