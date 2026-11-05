@@ -1,8 +1,8 @@
 # M5.2c — production reversal, shortfall reason, order messages (design spec)
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/great-bardeen-dumu9p`; base `main` `73362a4`.
-[Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81). Status: **implemented, PR awaiting owner review**
-("design approved, implementation in progress" held until 2026-11-05 — historical). Designed with `superpowers:brainstorming` (architectural path); the
+[Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81). Status: **merged** (PR #83 at `d5711af`, 2026-11-05; "implemented, PR awaiting owner review"
+and "design approved, implementation in progress" held until then — historical). Designed with `superpowers:brainstorming` (architectural path); the
 owner answered four questions and approved the data/database section in chat on 2026-11-05 and
 asked to start work; the command section below was written after that approval and is open to
 correction in review. The owner merges; no self-merge.
@@ -178,3 +178,7 @@ this session). Tested commit `a3dbb60268ee85d28b68f812df56dc892abda3bb`.
 | `migrate manufacturing 0006` → `migrate inventory 0012` → `migrate` (dev DB, no reversals) | reversible |
 
 CI evidence of record: the CI comment on the PR.
+
+## Closeout (2026-11-05)
+
+PR CI [#216](https://github.com/porntaned/ERP-for-Factory/actions/runs/41977470766) on head `5133b47` (tested as merge `1c71b75`): PostgreSQL 18.6, Python 3.14.8, **918 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/83#issuecomment-6651002486)). The owner approved the merge in chat; PR #83 merged at `d5711af4012574095e4690d5e7f74681af71b4a1`; [main CI #217](https://github.com/porntaned/ERP-for-Factory/actions/runs/41980499969): **result pending**. Issue #81 closed. Review remained self-review only.

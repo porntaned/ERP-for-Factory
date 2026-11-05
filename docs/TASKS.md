@@ -1,16 +1,16 @@
 # Project checklist — รายการงานโครงการ
 
-อัปเดตล่าสุด: 2026-11-04
+อัปเดตล่าสุด: 2026-11-05
 
 `[x]` หมายถึงงานเสร็จและมีหลักฐานที่ลิงก์ไว้ ส่วนงานที่กำลังทำ ติดขัด หรือยังไม่ได้ตรวจรับใช้ `[ ]` งานใหญ่เสร็จเมื่อทุกงานย่อยและเกณฑ์ตรวจรับเสร็จเท่านั้น
 
 ## สถานะปัจจุบัน
 
-สถานะ ณ 2026-11-04 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
+สถานะ ณ 2026-11-05 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
 - **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4; M5.1 BOM แบบมีเวอร์ชันและ Production order ([PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70)) — `main` ที่ `5891ec7` [CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833): PostgreSQL 18.6, 850 passed
-- **กำลังดำเนินการ:** M5.2c กลับรายการผลิต / เหตุผลเมื่อผลผลิตขาด / ข้อความยกเลิก order ([Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81)) ต้องทำก่อน M5.4; M5.1–M5.3 merge แล้ว (`main` ที่ `1a07fc5`); **เจ้าของเป็นผู้ merge** — สิทธิ์ merge เองที่ให้ไว้ระหว่างงานต่อเนื่องสิ้นสุดเมื่อ 2026-11-05 (ใช้ได้ 2026-11-04 ถึง 2026-11-05 — historical)
-- **ยังไม่เริ่ม:** M5.2–M5.4, M6 (มีบางส่วนแล้วใน M6.2), M7
+- **กำลังดำเนินการ:** ยังไม่มี — ถัดไป M5.4 ทดสอบและ Scrutinize เส้นทางการผลิตจริง; M5.1–M5.3 และ M5.2c merge แล้ว (`main` ที่ `d5711af`, [CI #217](https://github.com/porntaned/ERP-for-Factory/actions/runs/41980499969) PostgreSQL 18.6, รอผล CI); **เจ้าของเป็นผู้ merge** — สิทธิ์ merge เองที่ให้ไว้ระหว่างงานต่อเนื่องสิ้นสุดเมื่อ 2026-11-05 (ใช้ได้ 2026-11-04 ถึง 2026-11-05 — historical) (ข้อความ "กำลังดำเนินการ: M5.2c" ใช้ได้ถึง 2026-11-05 — historical)
+- **ยังไม่เริ่ม:** M5.4, M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
 ส่วนนี้ต้องอัปเดตทันทีหลัง Merge ทุกครั้ง ก่อนเริ่มงานอื่น ตาม [กติกาอัปเดตเอกสาร](../AGENTS.md#documentation-updates)
@@ -165,7 +165,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 - [ ] **M5 — ผลิตสินค้าจำลองหนึ่งรุ่นได้**
   - [x] M5.1 BOM แบบมีเวอร์ชันและ Production order — [Issue #69](https://github.com/porntaned/ERP-for-Factory/issues/69), [spec/หลักฐาน](assignments/m51-bom-production-order.md); เจ้าของสั่ง Merge [PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70) ที่ `5891ec7`; [main CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833) PostgreSQL 18.6: 850 passed; self-review; ไม่ขยับสต็อก
-  - [x] M5.2 เบิก คืน ใช้วัตถุดิบและรับผลผลิตผ่าน Inventory — M5.2a เบิก/คืน ([Issue #72](https://github.com/porntaned/ERP-for-Factory/issues/72), [หลักฐาน](assignments/m52a-material-issue-return.md), [PR #73](https://github.com/porntaned/ERP-for-Factory/pull/73) ที่ `0205f2b`); M5.2b ใช้/scrap/รับผลผลิต/ปิด ([Issue #75](https://github.com/porntaned/ERP-for-Factory/issues/75), [หลักฐาน](assignments/m52b-consume-output-close.md), [PR #76](https://github.com/porntaned/ERP-for-Factory/pull/76) ที่ `a691b24`); [main CI #207](https://github.com/porntaned/ERP-for-Factory/actions/runs/41940066477) PostgreSQL 18.6: 888 passed; self-review
+  - [x] M5.2 เบิก คืน ใช้วัตถุดิบและรับผลผลิตผ่าน Inventory — M5.2a เบิก/คืน ([Issue #72](https://github.com/porntaned/ERP-for-Factory/issues/72), [หลักฐาน](assignments/m52a-material-issue-return.md), [PR #73](https://github.com/porntaned/ERP-for-Factory/pull/73) ที่ `0205f2b`); M5.2b ใช้/scrap/รับผลผลิต/ปิด ([Issue #75](https://github.com/porntaned/ERP-for-Factory/issues/75), [หลักฐาน](assignments/m52b-consume-output-close.md), [PR #76](https://github.com/porntaned/ERP-for-Factory/pull/76) ที่ `a691b24`); [main CI #207](https://github.com/porntaned/ERP-for-Factory/actions/runs/41940066477) PostgreSQL 18.6: 888 passed; self-review; M5.2c กลับรายการผลิต/เหตุผลผลผลิตขาด/ข้อความ order ([Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81), [หลักฐาน](assignments/m52c-production-reversal.md), [PR #83](https://github.com/porntaned/ERP-for-Factory/pull/83) ที่ `d5711af`; [main CI #217](https://github.com/porntaned/ERP-for-Factory/actions/runs/41980499969) รอผล CI)
   - [x] M5.3 เชื่อม Lot วัตถุดิบกับ Lot ผลผลิต — [Issue #78](https://github.com/porntaned/ERP-for-Factory/issues/78), [หลักฐาน](assignments/m53-lot-genealogy.md); [PR #79](https://github.com/porntaned/ERP-for-Factory/pull/79) ที่ `9675626`; [main CI #211](https://github.com/porntaned/ERP-for-Factory/actions/runs/41941480913) 892 passed; self-review
   - [ ] M5.4 ทดสอบและ Scrutinize เส้นทางการผลิตจริง
 
@@ -196,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-05: เจ้าของอนุมัติในแชตและสั่ง Merge [PR #83](https://github.com/porntaned/ERP-for-Factory/pull/83) (M5.2c) ที่ `d5711af`; Issue #81 ปิด; PR CI [#216](https://github.com/porntaned/ERP-for-Factory/actions/runs/41977470766) ที่ `5133b47` 918 passed ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/83#issuecomment-6651002486)) และ [main CI #217](https://github.com/porntaned/ERP-for-Factory/actions/runs/41980499969) PostgreSQL 18.6, **รอผล CI**; self-review ไม่มี independent review; ถัดไป M5.4 ไม่มี Deploy
 
 - 2026-11-05: M5.2c ใน [Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81) — กลับรายการ CONSUME/SCRAP/OUTPUT ด้วย `ProductionPostingReversal` (APPROVER ที่คลังของรายการ, ครั้งเดียว, ทั้งรายการ, เฉพาะ order ที่ OPEN; OUTPUT เฉพาะเมื่อ Lot มีแต่ผลผลิตและการกลับผลผลิต); ยอดที่ order ถือ/ผลผลิตสุทธิ/genealogy หักรายการที่กลับแล้ว; ปิด order ที่ผลผลิตขาดต้องมี `shortfall_reason` (ผลิตครบห้ามใส่); ข้อความยกเลิก/ปิดบอก Lot และจำนวนที่ค้าง; PostgreSQL ตรวจซ้ำ; RED แล้ว GREEN; self-review พบและแก้ 1 จุด; local 918 passed (PostgreSQL 16.15, development check) — [spec/หลักฐาน](assignments/m52c-production-reversal.md), [แผน](assignments/m52c-plan.md) รอเจ้าของ review และ merge ไม่มี Deploy
 
