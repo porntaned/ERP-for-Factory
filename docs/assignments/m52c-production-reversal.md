@@ -1,8 +1,8 @@
 # M5.2c — production reversal, shortfall reason, order messages (design spec)
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/great-bardeen-dumu9p`; base `main` `73362a4`.
-[Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81). Status: **design approved,
-implementation in progress**. Designed with `superpowers:brainstorming` (architectural path); the
+[Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81). Status: **implemented, PR awaiting owner review**
+("design approved, implementation in progress" held until 2026-11-05 — historical). Designed with `superpowers:brainstorming` (architectural path); the
 owner answered four questions and approved the data/database section in chat on 2026-11-05 and
 asked to start work; the command section below was written after that approval and is open to
 correction in review. The owner merges; no self-merge.
@@ -104,3 +104,77 @@ Existing M5.2b tests that close a short order pass a `shortfall_reason`.
 ## Out of scope
 
 Quality gate for consumption (M6.2), screens, Deploy, reopening CLOSED orders.
+
+## Delivered
+
+- Inventory: `ProductionPostingReversal` (migration 0013, `POSTING_REV` key) and rules
+  (0014): exact offset, exclusivity both ways, OUTPUT Lot history, immutability, registry last,
+  unapply refused while reversals exist. `inventory/production.py:reverse_production_posting`,
+  `OutputLotUsedError`; `AlreadyReversedError` reused from M4.5.
+- Manufacturing: `reverse_order_posting` (order row locked, OPEN only); migration 0007
+  (OPEN-order trigger on reversals, holding and net output include reversals, output Lot may
+  hold its own order's output reversals); migration 0008 (`shortfall_reason`, CHECK, close
+  trigger); `close_production_order(..., shortfall_reason=None)`; cancel/close refusals list
+  each held Lot; genealogy nets reversals.
+- Plan: [`m52c-plan.md`](m52c-plan.md) (3 code tasks), executed inline by one agent with
+  `superpowers:executing-plans` and `test-driven-development`, as the owner chose.
+
+## Rulings made while building
+
+1. The shortfall rule checks the OPEN → CLOSED transition, not existing rows; an order closed
+   short before 0008 keeps no reason. Only synthetic data exists, so nothing is lost.
+2. A production posting without an order link cannot be reversed in the database (the OPEN
+   check finds no order). Every posting is written with its link, so this is the intended
+   behaviour; the Inventory command is called only by Manufacturing.
+3. A raw caller of `reverse_production_posting` (outside Manufacturing) locks the Lot before
+   the trigger locks the order, the reverse of the command order. This is the same as M5.2b
+   postings; only Manufacturing calls it.
+4. `test_migrations_unapply_only_without_reversals` was written after migration 0014;
+   mutation (refusal removed) made it fail, so it is a real check. The OPEN-order trigger and
+   the shortfall trigger were also mutation-checked (each disabled → its database test fails).
+5. M5.2b tests that closed a short order now pass `shortfall_reason` (intended contract change).
+6. The spec's "unapply refused" applies to inventory 0014; manufacturing 0007/0008 unapply
+   freely (they hold no data of their own beyond `shortfall_reason`, which is dropped with the
+   column).
+
+## RED / GREEN
+
+| Task | RED observed | GREEN |
+|---|---|---|
+| 1 Inventory reversal | collection error: `ProductionPostingReversal` missing | 7 passed |
+| 2 Manufacturing reversal, totals, genealogy | 11 failed: `ImportError reverse_order_posting` (and raw reversal on a CLOSED order accepted) | 18 passed |
+| 3 Shortfall reason, messages | 6 failed (`TypeError` on `shortfall_reason`); then 5 M5.2b close tests failed as intended until updated | 917 passed |
+| Self-review fix | `test_order_reversal_rejects_a_malformed_request`: Django `ValidationError` | 26 passed |
+
+## Self-review findings fixed
+
+Review type: **self-review only** (the owner chose one agent, no sub-agents); `scrutinize`
+pass on the branch per `docs/SCRUTINIZE.md`.
+
+1. `reverse_order_posting` queried by `request_id` before validating it, so a malformed key
+   raised Django's `ValidationError` — fixed (`test_order_reversal_rejects_a_malformed_request`
+   RED → GREEN).
+
+Traced without finding a defect: lock order (order row → Lot → Item → Warehouse → Plant →
+actor → grant) for reversal, close and transfer; once-only under concurrency; OUTPUT reversal
+vs transfer in both orders; close vs CONSUME reversal in both orders; re-output into a
+partly reversed Lot through both the Python and database ownership checks; quantity
+formatting in messages (`40.000000` → `40`).
+
+Not covered by this slice: screens and admin do not list production reversals (screens are
+out of scope).
+
+## Verification (development check, not evidence of record)
+
+PostgreSQL 16.15 (Ubuntu), Python 3.14.6 via `UV_PYTHON=3.14.6` (3.14.8 is not available in
+this session). Tested commit `a3dbb60268ee85d28b68f812df56dc892abda3bb`.
+
+| Command | Result |
+|---|---|
+| `uv run --env-file .env pytest -q` | 918 passed |
+| `uv run --env-file .env pytest -q tests/manufacturing/test_production_reversal.py` | 26 passed |
+| `uv run ruff check .` / `uv run ruff format --check .` | clean |
+| `uv run --env-file .env python manage.py makemigrations --check --dry-run` | No changes detected |
+| `migrate manufacturing 0006` → `migrate inventory 0012` → `migrate` (dev DB, no reversals) | reversible |
+
+CI evidence of record: the CI comment on the PR.
