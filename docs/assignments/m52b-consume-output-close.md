@@ -1,7 +1,7 @@
 # M5.2b — consume, scrap, record output and close a production order
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/dreamy-volta-9v3i8u`; base `main` `2d1f8d5`.
-[Issue #75](https://github.com/porntaned/ERP-for-Factory/issues/75). Status: **PR awaiting CI**.
+[Issue #75](https://github.com/porntaned/ERP-for-Factory/issues/75). Status: **merged** (PR #76 at `a691b24`, 2026-11-05; "PR awaiting CI" held until then — historical).
 
 ## Owner decisions (chat, 2026-11-04)
 
@@ -66,3 +66,7 @@ CI evidence of record: the CI comment on the PR.
 ## Review
 
 Self-review only (`scrutinize` trace; one defect fixed as above).
+
+## Closeout (2026-11-05)
+
+PR CI [#206](https://github.com/porntaned/ERP-for-Factory/actions/runs/41939614647) on head `26102c2`: PostgreSQL 18.6, Python 3.14.8, **888 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/76#issuecomment-6645909777)). Merged under the owner's advance authorisation: PR #76 at `a691b243aa33f9d1d1f95170da421ecc8e97a36b`; [main CI #207](https://github.com/porntaned/ERP-for-Factory/actions/runs/41940066477): **888 passed**. Issue #75 closed.

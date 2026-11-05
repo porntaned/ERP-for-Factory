@@ -6,9 +6,9 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 
 > **สถานะ:** ดูที่ [Checklist — สถานะปัจจุบัน](docs/TASKS.md#สถานะปัจจุบัน) ซึ่งเป็นแหล่งเดียวของสถานะงาน (README ไม่ระบุ commit SHA เพื่อไม่ให้ล้าสมัย)
 >
-> **ส่งมอบแล้ว:** Foundation, Item/UOM, Lot, สิทธิ์ตามบทบาท/คลัง, Quality Hold/Release และ Inventory M4.1–M4.5 (ledger, รับเข้า, โอนใน Plant เดียวกัน, กันคำขอซ้ำ/concurrency, ทะเบียน request key ข้ามคำสั่ง และ Reversal ที่อ้างรายการต้นฉบับ) และหน้าจอ M4.6 สำหรับรับเข้า โอน ประวัติ และกลับรายการ ตามสิทธิ์ผู้ใช้ พร้อม admin อ่านอย่างเดียวและข้อมูลจำลอง `seed_demo` (M7.1) และเดโม M4.7 รับเข้า 100 → โอน 30 → คงเหลือ 70/30 ([วิธีเดินเดโม](docs/DEVELOPMENT.md#inventory-demo-walkthrough-m47)) และ Manufacturing M5.1: BOM แบบมีเวอร์ชันที่ต้องอนุมัติ และ Production order (ยังไม่ขยับสต็อก)
+> **ส่งมอบแล้ว:** Foundation, Item/UOM, Lot, สิทธิ์ตามบทบาท/คลัง, Quality Hold/Release และ Inventory M4.1–M4.5 (ledger, รับเข้า, โอนใน Plant เดียวกัน, กันคำขอซ้ำ/concurrency, ทะเบียน request key ข้ามคำสั่ง และ Reversal ที่อ้างรายการต้นฉบับ) และหน้าจอ M4.6 สำหรับรับเข้า โอน ประวัติ และกลับรายการ ตามสิทธิ์ผู้ใช้ พร้อม admin อ่านอย่างเดียวและข้อมูลจำลอง `seed_demo` (M7.1) และเดโม M4.7 รับเข้า 100 → โอน 30 → คงเหลือ 70/30 ([วิธีเดินเดโม](docs/DEVELOPMENT.md#inventory-demo-walkthrough-m47)) และ Manufacturing M5.1–M5.2: BOM แบบมีเวอร์ชันที่ต้องอนุมัติ, Production order, เบิก/คืน/ใช้วัตถุดิบ, scrap, รับผลผลิตเข้า FG (HOLD) และปิด order ผ่านคำสั่ง Inventory
 >
-> **ยังไม่ส่งมอบ:** Manufacturing M5.2–M5.4 (เบิก/คืน/ใช้วัตถุดิบ, รับผลผลิต, เชื่อม Lot), Inspection/Traceability (M6), Portfolio delivery (M7) และไม่มีการ Deploy
+> **ยังไม่ส่งมอบ:** Manufacturing M5.3–M5.4 (เชื่อม Lot, ทดสอบเส้นทางผลิต), Inspection/Traceability (M6), Portfolio delivery (M7) และไม่มีการ Deploy
 
 ## Stack
 
