@@ -56,9 +56,10 @@ def _links(rows, consumed=None) -> list[Link]:
 def inputs_of(lot: Lot) -> list[Link]:
     """Lots consumed by the order that produced `lot`, with the quantity consumed."""
     lot = _require_saved(lot)
-    order_ids = OrderPosting.objects.filter(
-        kind=PostingKind.OUTPUT, posting__ledger_entry__lot=lot
-    ).values("order_id")
+    # M5.4: only orders where `lot` still has output; a fully reversed output came from nothing.
+    order_ids = [
+        o for o, _, _ in _per_order_lot(PostingKind.OUTPUT, posting__ledger_entry__lot=lot)
+    ]
     return _links(_per_order_lot(PostingKind.CONSUME, order_id__in=order_ids))
 
 

@@ -291,7 +291,7 @@ def test_genealogy_nets_reversals(line):
     reverse(line, dropped)
     lamp = kept.posting.ledger_entry.lot
     assert [(link.lot, link.quantity) for link in inputs_of(lamp)] == [(line.lot, D("32"))]
-    assert inputs_of(dropped.posting.ledger_entry.lot) == inputs_of(lamp)
+    assert inputs_of(dropped.posting.ledger_entry.lot) == []  # M5.4: fully reversed output
     assert outputs_of(other_lot) == []
     assert [(link.lot, link.quantity) for link in outputs_of(line.lot)] == [(lamp, D("5"))]
 
