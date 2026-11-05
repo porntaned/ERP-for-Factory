@@ -197,6 +197,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## Progress log
 
+- 2026-11-05: M5.3 ใน [Issue #78](https://github.com/porntaned/ERP-for-Factory/issues/78) — `inputs_of` / `outputs_of` อ่านความเชื่อมโยง Lot จากรายการ M5.2 ที่แก้ไขไม่ได้ (ไม่มีตารางใหม่); RED แล้ว GREEN; local 892 passed (development check); self-review — [หลักฐาน](assignments/m53-lot-genealogy.md) ไม่มี Deploy
+
 - 2026-11-05: Merge [PR #76](https://github.com/porntaned/ERP-for-Factory/pull/76) (M5.2b) ที่ `a691b24` ตามที่เจ้าของอนุญาตล่วงหน้า; Issue #75 ปิด; PR CI #206 888 passed และ [main CI #207](https://github.com/porntaned/ERP-for-Factory/actions/runs/41940066477) PostgreSQL 18.6, **888 passed**; ติ๊ก M5.2; self-review ไม่มี Deploy
 
 - 2026-11-05: M5.2b ใน [Issue #75](https://github.com/porntaned/ERP-for-Factory/issues/75) — ใช้วัตถุดิบ, scrap (APPROVER + เหตุผล), รับผลผลิตเข้า FG เป็น Lot ใหม่สถานะ HOLD, ปิด order เมื่อ line ว่าง; Inventory เพิ่ม `ProductionPosting`; PostgreSQL ตรวจซ้ำ; RED แล้ว GREEN; self-review พบและแก้ 1 จุด; local 888 passed (development check) — [หลักฐาน](assignments/m52b-consume-output-close.md) ไม่มี Deploy
