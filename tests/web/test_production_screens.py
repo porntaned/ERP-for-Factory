@@ -344,3 +344,72 @@ def test_closed_order_forms_are_refused(client, plant):
 @pytest.mark.django_db
 def test_unknown_action_is_404(client, open_order):
     assert client.get(f"/production/{open_order.pk}/explode/").status_code == 404
+
+
+# ---------------------------------------------------------------- cancel (Issue #86)
+# Owner ruling 2026-11-05 (option A): an order with net output cannot be cancelled.
+
+
+def record_output(client, order, quantity="1"):
+    for code, amount in (("L-0001", "8"), ("D-0001", "2")):
+        issue(client, order, code, amount)
+        submit(
+            client,
+            f"/production/{order.pk}/consume/",
+            lot=lot(code).pk,
+            quantity=amount,
+            reason="Run on screen",
+        )
+    return submit(
+        client,
+        f"/production/{order.pk}/output/",
+        lot_code="LAMP-1001",
+        quantity=quantity,
+        reason="Output on screen",
+    )
+
+
+@pytest.mark.django_db
+def test_cancel_button_follows_roles_and_status(client, open_order, plant):
+    link = f'href="/production/{open_order.pk}/cancel/"'
+    assert link in page(client, f"/production/{open_order.pk}/", user="demo-production")
+    assert link not in page(client, f"/production/{open_order.pk}/", user="demo-warehouse")
+    closed = page(client, f"/production/{plant.pk}/", user="demo-production")
+    assert f"/production/{plant.pk}/cancel/" not in closed
+
+
+@pytest.mark.django_db
+def test_cancel_through_the_screen_then_the_form_is_closed(client, open_order):
+    url = f"/production/{open_order.pk}/cancel/"
+    assert client.get(url).status_code == 200
+    key = str(uuid4())
+    response = client.post(url, {"request_id": key, "reason": "Customer withdrew"})
+    assert response.status_code == 302 and response["Location"] == f"/production/{open_order.pk}/"
+    open_order.refresh_from_db()
+    assert (open_order.status, open_order.cancel_reason) == ("CANCELLED", "Customer withdrew")
+    # Like "close": once cancelled the order is not OPEN, so a repeated post is a 403, not a
+    # second cancellation. The command's own request-key replay is tested in tests/manufacturing.
+    repeat = client.post(url, {"request_id": key, "reason": "Customer withdrew"})
+    assert repeat.status_code == 403
+
+
+@pytest.mark.django_db
+def test_cancel_with_output_is_refused_and_writes_nothing(client, open_order):
+    assert record_output(client, open_order).status_code == 302
+    response = submit(client, f"/production/{open_order.pk}/cancel/", reason="Changed mind")
+    assert response.status_code == 200
+    assert "net output is 1" in response.content.decode()
+    open_order.refresh_from_db()
+    assert open_order.status == "OPEN"
+
+
+@pytest.mark.django_db
+def test_cancel_refuses_users_without_the_role_and_closed_orders(client, open_order, plant):
+    url = f"/production/{open_order.pk}/cancel/"
+    as_user(client, "demo-warehouse")
+    assert client.get(url).status_code == 403
+    assert submit(client, url, reason="No").status_code == 403
+    as_user(client, "demo-production")
+    assert client.get(f"/production/{plant.pk}/cancel/").status_code == 403
+    open_order.refresh_from_db()
+    assert open_order.status == "OPEN"

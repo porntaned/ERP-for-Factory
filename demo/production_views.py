@@ -27,6 +27,7 @@ from manufacturing.queries import (
 
 from .permissions import order_actions, production_warehouses
 from .production_forms import (
+    CancelForm,
     CloseForm,
     HeldLotForm,
     IssueForm,
@@ -270,6 +271,15 @@ ACTIONS = {
             shortfall_reason=d["shortfall_reason"].strip() or None,
         ),
         "ปิด order แล้ว",
+    ),
+    "cancel": Action(
+        "ยกเลิก order",
+        "cancel",
+        lambda request, order, data: CancelForm(data),
+        lambda request, order, d: mf.cancel_production_order(
+            order=order, actor=request.user, reason=d["reason"], request_id=d["request_id"]
+        ),
+        "ยกเลิก order แล้ว",
     ),
 }
 

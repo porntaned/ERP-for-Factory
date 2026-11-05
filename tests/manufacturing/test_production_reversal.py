@@ -478,6 +478,70 @@ def test_refusals_name_each_held_lot(line):
     assert str(cancelling.value).endswith(held), cancelling.value
 
 
+# ---------------------------------------------------------------- cancel needs no output
+# Issue #86 (owner ruling, 2026-11-05, option A): an order with net output cannot be cancelled.
+
+
+def cancel(mf, *, key=None):
+    from manufacturing.services import cancel_production_order
+
+    return cancel_production_order(
+        order=mf.order, actor=mf.users["production"], reason="Stop", request_id=key or uuid4()
+    )
+
+
+@pytest.mark.django_db
+def test_cancel_refused_while_the_order_has_net_output(line):
+    from manufacturing.models import ProductionOrder
+    from manufacturing.services import OrderValidationError
+
+    consume(line, "40")
+    made = output(line, "5")
+    with pytest.raises(OrderValidationError, match="net output is 5"):
+        cancel(line)
+    assert ProductionOrder.objects.get(pk=line.order.pk).status == "OPEN"
+    reverse(line, made)
+    assert cancel(line).status == "CANCELLED"
+
+
+@pytest.mark.django_db
+def test_cancel_refused_after_a_partial_output_reversal(line):
+    from manufacturing.services import OrderValidationError
+
+    consume(line, "40")
+    output(line, "4")
+    extra = output(line, "1")
+    reverse(line, extra)
+    with pytest.raises(OrderValidationError, match="net output is 4"):
+        cancel(line)
+
+
+@pytest.mark.django_db
+def test_database_refuses_cancel_with_net_output(line):
+    from django.utils import timezone
+
+    from manufacturing.models import ProductionOrder
+
+    consume(line, "40")
+    made = output(line, "5")
+    orders = ProductionOrder.objects.filter(pk=line.order.pk)
+
+    def cancelling():
+        return orders.update(
+            status="CANCELLED",
+            cancelled_by=line.users["production"],
+            cancelled_at=timezone.now(),
+            cancel_reason="Stop",
+            cancel_request_id=uuid4(),
+        )
+
+    rejected(cancelling)
+    assert orders.get().status == "OPEN"
+    reverse(line, made)
+    cancelling()
+    assert orders.get().status == "CANCELLED"
+
+
 # ---------------------------------------------------------------- migrations
 
 

@@ -9,7 +9,7 @@
     <div class="col-sm-3"><div class="border rounded p-2"><div class="text-secondary small">ผลผลิตสุทธิ</div><div class="fs-5">{{ net_output|quantity }}</div></div></div>
     <div class="col-sm-3"><div class="border rounded p-2"><div class="text-secondary small">Line → ผลผลิตเข้า</div><div class="fs-5">{{ order.line_warehouse.code }} → {{ order.output_warehouse.code }}</div></div></div>
   </div>
-  {% if actions.record or actions.scrap %}
+  {% if actions.record or actions.scrap or actions.cancel %}
   <div class="d-flex flex-wrap gap-2 mb-3" id="actions">
     {% if actions.record %}
     <a class="btn btn-primary btn-sm" href="/production/{{ order.pk }}/issue/">เบิก</a>
@@ -19,6 +19,7 @@
     {% endif %}
     {% if actions.scrap %}<a class="btn btn-outline-danger btn-sm" href="/production/{{ order.pk }}/scrap/">Scrap</a>{% endif %}
     {% if actions.record %}<a class="btn btn-success btn-sm ms-auto" href="/production/{{ order.pk }}/close/">ปิด order</a>{% endif %}
+    {% if actions.cancel %}<a class="btn btn-outline-danger btn-sm{% if not actions.record %} ms-auto{% endif %}" href="/production/{{ order.pk }}/cancel/">ยกเลิก order</a>{% endif %}
   </div>
   {% endif %}
   {% if order.shortfall_reason %}<div class="alert alert-warning">ผลผลิตขาด: {{ order.shortfall_reason }}</div>{% endif %}
