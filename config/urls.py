@@ -10,7 +10,18 @@ urlpatterns = [
     path("transfers/new/", views.transfer_new, name="transfer-new"),
     path("history/", views.history, name="history"),
     path("production/", production_views.production_list, name="production-list"),
+    path("production/new/", production_views.production_new, name="production-new"),
     path("production/<int:pk>/", production_views.production_detail, name="production-detail"),
+    path(
+        "production/<int:pk>/<str:action>/",
+        production_views.order_action,
+        name="production-action",
+    ),
+    path(
+        "production/<int:pk>/reverse/<int:link_pk>/",
+        production_views.reverse_posting,
+        name="production-reverse",
+    ),
     path("lots/<int:pk>/genealogy/", production_views.lot_genealogy, name="lot-genealogy"),
     path("reversals/receipt/<int:pk>/", views.reverse, {"kind": "receipt"}, name="reverse-receipt"),
     path(

@@ -1,16 +1,41 @@
-"""Manufacturing screens (M5.5, Issue #89). PR 1: read-only pages over the production records.
+"""Manufacturing screens (M5.5, Issue #89): read-only pages (PR 1) and record forms (PR 2).
 
 Quantities come from manufacturing.queries and manufacturing.genealogy, the same read model the
 commands use for their checks; these views only arrange them for display.
 """
 
+from dataclasses import dataclass
+from typing import Callable
+
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, render
+from django.core.exceptions import PermissionDenied
+from django.http import Http404
+from django.shortcuts import get_object_or_404, redirect, render
 
 from inventory.models import Lot
+from manufacturing import services as mf
 from manufacturing.genealogy import inputs_of, outputs_of
-from manufacturing.models import ProductionOrder
-from manufacturing.queries import order_history, order_materials, order_outputs, output_total
+from manufacturing.models import OrderPosting, ProductionOrder
+from manufacturing.queries import (
+    order_history,
+    order_holdings,
+    order_materials,
+    order_outputs,
+    output_total,
+)
+
+from .permissions import order_actions, production_warehouses
+from .production_forms import (
+    CloseForm,
+    HeldLotForm,
+    IssueForm,
+    OrderForm,
+    OutputForm,
+    ReturnForm,
+    ReverseForm,
+)
+from .quantities import format_quantity
 
 KIND_LABELS = {
     "ISSUE": "เบิก",
@@ -29,7 +54,10 @@ def _orders():
 @login_required
 def production_list(request):
     orders = [(order, output_total(order)) for order in _orders().order_by("-id")]
-    return render(request, "demo/production/list.html", {"orders": orders})
+    can_create = production_warehouses(request.user).exists()
+    return render(
+        request, "demo/production/list.html", {"orders": orders, "can_create": can_create}
+    )
 
 
 @login_required
@@ -42,6 +70,7 @@ def production_detail(request, pk):
         "materials": order_materials(order),
         "outputs": order_outputs(order),
         "history": history,
+        "actions": order_actions(request.user, order),
     }
     return render(request, "demo/production/detail.html", context)
 
@@ -56,3 +85,253 @@ def lot_genealogy(request, pk):
         "outputs": sorted(outputs_of(lot), key=by_lot),
     }
     return render(request, "demo/production/genealogy.html", context)
+
+
+# ---------------------------------------------------------------- PR 2: record forms
+# Each form calls one manufacturing.services command; the command enforces authority, limits,
+# Quality and order state. A hidden request UUID makes a double submit replay, not post twice.
+
+MESSAGES = (
+    ((mf.MaterialAuthorizationError, mf.OrderAuthorizationError), "ไม่มีสิทธิ์ทำรายการนี้", False),
+    ((mf.MaterialQualityError,), "Lot ต้องเป็น RELEASED ที่คลังต้นทาง", False),
+    ((mf.MaterialConflictError, mf.OrderConflictError), "คำขอนี้ถูกใช้แล้ว กรุณาเปิดฟอร์มใหม่", False),
+    ((mf.AlreadyReversedError,), "รายการนี้ถูกกลับรายการไปแล้ว", False),
+    ((mf.MaterialLimitError,), "เกินจำนวนที่อนุญาต", True),
+    ((mf.MaterialValidationError, mf.OrderValidationError), "ข้อมูลไม่ถูกต้อง", True),
+)
+COMMAND_ERRORS = tuple(kind for kinds, _, _ in MESSAGES for kind in kinds)
+
+
+def _message(exc):
+    for kinds, text, detail in MESSAGES:
+        if isinstance(exc, kinds):
+            return f"{text}: {exc}" if detail else text
+    return str(exc)
+
+
+def _held(order):
+    return [lot_id for lot_id, quantity in order_holdings(order).items() if quantity > 0]
+
+
+def _run_form(request, *, form, template, context, post, success, done):
+    if request.method == "POST" and form.is_valid():
+        try:
+            post(form.cleaned_data)
+        except COMMAND_ERRORS as exc:
+            form.add_error(None, _message(exc))
+        else:
+            messages.success(request, success(form.cleaned_data))
+            return redirect(done)
+    return render(request, template, context | {"form": form})
+
+
+@login_required
+def production_new(request):
+    warehouses = production_warehouses(request.user)
+    if not warehouses.exists():
+        raise PermissionDenied("PRODUCTION role required")
+    form = OrderForm(request.POST or None, warehouses=warehouses)
+    created = {}
+
+    def post(data):
+        created["order"] = mf.create_production_order(
+            bom=data["bom"],
+            quantity=data["quantity"],
+            line_warehouse=data["line_warehouse"],
+            output_warehouse=data["output_warehouse"],
+            actor=request.user,
+            request_id=data["request_id"],
+        )
+
+    if request.method == "POST" and form.is_valid():
+        try:
+            post(form.cleaned_data)
+        except COMMAND_ERRORS as exc:
+            form.add_error(None, _message(exc))
+        else:
+            order = created["order"]
+            messages.success(request, f"สร้าง order #{order.pk} แล้ว")
+            return redirect(f"/production/{order.pk}/")
+    return render(
+        request,
+        "demo/production/form.html",
+        {"form": form, "title": "สร้าง production order", "submit": "สร้าง order"},
+    )
+
+
+@dataclass(frozen=True)
+class Action:
+    title: str
+    permission: str
+    form: Callable
+    run: Callable
+    success: str
+
+
+def _issue_form(request, order, data):
+    return IssueForm(data, order=order, warehouses=production_warehouses(request.user))
+
+
+def _return_form(request, order, data):
+    return ReturnForm(
+        data, order=order, held=_held(order), warehouses=production_warehouses(request.user)
+    )
+
+
+def _held_form(request, order, data):
+    return HeldLotForm(data, held=_held(order))
+
+
+def _quantity(data):
+    return format_quantity(data["quantity"])
+
+
+ACTIONS = {
+    "issue": Action(
+        "เบิกวัตถุดิบเข้า line",
+        "record",
+        _issue_form,
+        lambda request, order, d: mf.issue_material(
+            order=order,
+            lot=d["lot"],
+            source_warehouse=d["source_warehouse"],
+            quantity=d["quantity"],
+            actor=request.user,
+            reason=d["reason"],
+            request_id=d["request_id"],
+        ),
+        "เบิก {lot} {quantity} แล้ว",
+    ),
+    "return": Action(
+        "คืนวัตถุดิบจาก line",
+        "record",
+        _return_form,
+        lambda request, order, d: mf.return_material(
+            order=order,
+            lot=d["lot"],
+            destination_warehouse=d["destination_warehouse"],
+            quantity=d["quantity"],
+            actor=request.user,
+            reason=d["reason"],
+            request_id=d["request_id"],
+        ),
+        "คืน {lot} {quantity} แล้ว",
+    ),
+    "consume": Action(
+        "ใช้วัตถุดิบ",
+        "record",
+        _held_form,
+        lambda request, order, d: mf.consume_material(
+            order=order,
+            lot=d["lot"],
+            quantity=d["quantity"],
+            actor=request.user,
+            reason=d["reason"],
+            request_id=d["request_id"],
+        ),
+        "ใช้ {lot} {quantity} แล้ว",
+    ),
+    "scrap": Action(
+        "Scrap วัตถุดิบ (APPROVER)",
+        "scrap",
+        _held_form,
+        lambda request, order, d: mf.scrap_material(
+            order=order,
+            lot=d["lot"],
+            quantity=d["quantity"],
+            actor=request.user,
+            reason=d["reason"],
+            request_id=d["request_id"],
+        ),
+        "scrap {lot} {quantity} แล้ว",
+    ),
+    "output": Action(
+        "บันทึกผลผลิต",
+        "record",
+        lambda request, order, data: OutputForm(data),
+        lambda request, order, d: mf.record_output(
+            order=order,
+            lot_code=d["lot_code"],
+            quantity=d["quantity"],
+            actor=request.user,
+            reason=d["reason"],
+            request_id=d["request_id"],
+        ),
+        "บันทึกผลผลิต {lot_code} {quantity} แล้ว",
+    ),
+    "close": Action(
+        "ปิด order",
+        "record",
+        lambda request, order, data: CloseForm(data),
+        lambda request, order, d: mf.close_production_order(
+            order=order,
+            actor=request.user,
+            request_id=d["request_id"],
+            shortfall_reason=d["shortfall_reason"].strip() or None,
+        ),
+        "ปิด order แล้ว",
+    ),
+}
+
+
+@login_required
+def order_action(request, pk, action):
+    order = get_object_or_404(_orders().select_related("bom"), pk=pk)
+    spec = ACTIONS.get(action)
+    if spec is None:
+        raise Http404("unknown action")
+    if not order_actions(request.user, order)[spec.permission]:
+        raise PermissionDenied(f"cannot {action} on this order")
+    form = spec.form(request, order, request.POST or None)
+
+    def success(data):
+        values = {k: v for k, v in data.items() if isinstance(v, str)}
+        lot = data.get("lot")
+        return spec.success.format(
+            lot=lot.code if lot else "",
+            quantity=_quantity(data) if "quantity" in data else "",
+            **values,
+        )
+
+    context = {
+        "order": order,
+        "title": spec.title,
+        "submit": spec.title,
+        "net_output": output_total(order),
+    }
+    return _run_form(
+        request,
+        form=form,
+        template="demo/production/form.html",
+        context=context,
+        post=lambda data: spec.run(request, order, data),
+        success=success,
+        done=f"/production/{order.pk}/",
+    )
+
+
+@login_required
+def reverse_posting(request, pk, link_pk):
+    order = get_object_or_404(_orders(), pk=pk)
+    link = get_object_or_404(
+        OrderPosting.objects.select_related("posting__ledger_entry__lot"), pk=link_pk, order=order
+    )
+    needed = "reverse_output" if link.kind == "OUTPUT" else "reverse_line"
+    if not order_actions(request.user, order)[needed]:
+        raise PermissionDenied("APPROVER at the posting warehouse is required")
+    entry = link.posting.ledger_entry
+    form = ReverseForm(request.POST or None)
+    label = (
+        f"{KIND_LABELS[link.kind]} {entry.lot.code} {format_quantity(abs(entry.quantity_delta))}"
+    )
+    return _run_form(
+        request,
+        form=form,
+        template="demo/production/form.html",
+        context={"order": order, "title": f"กลับรายการ: {label}", "submit": "กลับรายการ"},
+        post=lambda d: mf.reverse_order_posting(
+            order_posting=link, actor=request.user, reason=d["reason"], request_id=d["request_id"]
+        ),
+        success=lambda d: f"กลับรายการ {label} แล้ว",
+        done=f"/production/{order.pk}/",
+    )

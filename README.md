@@ -15,7 +15,7 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 - Django 5.2 LTS modular monolith (`facilities`, `catalog`, `access_control`, `inventory`, `quality`)
 - PostgreSQL 18.6 เป็นฐานข้อมูลหลัก กฎสำคัญบังคับด้วย constraint และ trigger
 - pytest, pytest-django และ Ruff บน GitHub Actions
-- หน้าจอ: Django Templates และ Bootstrap — login ที่ `/accounts/login/`, ยอดคงเหลือ, รับเข้า, โอน, ประวัติและกลับรายการ แสดงตามสิทธิ์ของผู้ใช้; การผลิต `/production/` (รายการ order, หน้า order, genealogy — อ่านอย่างเดียว); admin อ่านอย่างเดียว (superuser สร้างเองด้วย `createsuperuser`)
+- หน้าจอ: Django Templates และ Bootstrap — login ที่ `/accounts/login/`, ยอดคงเหลือ, รับเข้า, โอน, ประวัติและกลับรายการ แสดงตามสิทธิ์ของผู้ใช้; การผลิต `/production/` (รายการ order, หน้า order, genealogy และฟอร์มสร้าง order / เบิก / คืน / ใช้ / scrap / ผลผลิต / กลับรายการ / ปิด order ตามสิทธิ์); admin อ่านอย่างเดียว (superuser สร้างเองด้วย `createsuperuser`)
 
 ## Run locally
 

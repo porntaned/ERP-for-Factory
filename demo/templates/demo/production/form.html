@@ -1,0 +1,9 @@
+{% extends "demo/base.html" %}
+{% load quantities %}
+{% block title %}{{ title }}{% endblock %}
+{% block content %}
+  {% if order %}<p><a href="/production/{{ order.pk }}/">← Order #{{ order.pk }} · {{ order.bom.item.code }} v{{ order.bom.version }}</a></p>{% else %}<p><a href="/production/">← Production orders</a></p>{% endif %}
+  <h1 class="h4">{{ title }}</h1>
+  {% if order and net_output is not None %}<p class="text-secondary">สั่งผลิต {{ order.quantity|quantity }} · ผลผลิตสุทธิ {{ net_output|quantity }} · Line {{ order.line_warehouse.code }} → {{ order.output_warehouse.code }}</p>{% endif %}
+  {% include "demo/_form.html" %}
+{% endblock %}
