@@ -1,7 +1,7 @@
 # M5.3 — Lot genealogy between inputs and outputs
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/dreamy-volta-9v3i8u`; base `main` `415be0a`.
-[Issue #78](https://github.com/porntaned/ERP-for-Factory/issues/78). Status: **PR awaiting CI**.
+[Issue #78](https://github.com/porntaned/ERP-for-Factory/issues/78). Status: **merged** (PR #79 at `9675626`, 2026-11-05; "PR awaiting CI" held until then — historical).
 Continuous work under the owner's advance authorisation (chat, 2026-11-04).
 
 ## Delivered
@@ -41,3 +41,7 @@ CI evidence of record: the CI comment on the PR.
 ## Review
 
 Self-review only.
+
+## Closeout (2026-11-05)
+
+PR CI [#210](https://github.com/porntaned/ERP-for-Factory/actions/runs/41941131608) on head `e6f8698`: PostgreSQL 18.6, **892 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/79#issuecomment-6646106029)). Merged under the owner's advance authorisation: PR #79 at `967562686d76fb5adfa69806933956d915c5bae8`; [main CI #211](https://github.com/porntaned/ERP-for-Factory/actions/runs/41941480913): **892 passed**. Issue #78 closed.
