@@ -181,4 +181,4 @@ CI evidence of record: the CI comment on the PR.
 
 ## Closeout (2026-11-05)
 
-PR CI [#216](https://github.com/porntaned/ERP-for-Factory/actions/runs/41977470766) on head `5133b47` (tested as merge `1c71b75`): PostgreSQL 18.6, Python 3.14.8, **918 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/83#issuecomment-6651002486)). The owner approved the merge in chat; PR #83 merged at `d5711af4012574095e4690d5e7f74681af71b4a1`; [main CI #217](https://github.com/porntaned/ERP-for-Factory/actions/runs/41980499969): **result pending**. Issue #81 closed. Review remained self-review only.
+PR CI [#216](https://github.com/porntaned/ERP-for-Factory/actions/runs/41977470766) on head `5133b47` (tested as merge `1c71b75`): PostgreSQL 18.6, Python 3.14.8, **918 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/83#issuecomment-6651002486)). The owner approved the merge in chat; PR #83 merged at `d5711af4012574095e4690d5e7f74681af71b4a1`; [main CI #217](https://github.com/porntaned/ERP-for-Factory/actions/runs/41980499969): **918 passed**. Issue #81 closed. Review remained self-review only.
