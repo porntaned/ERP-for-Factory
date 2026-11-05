@@ -9,7 +9,7 @@
 สถานะ ณ 2026-11-04 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง):
 
 - **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4; M5.1 BOM แบบมีเวอร์ชันและ Production order ([PR #70](https://github.com/porntaned/ERP-for-Factory/pull/70)) — `main` ที่ `5891ec7` [CI #199](https://github.com/porntaned/ERP-for-Factory/actions/runs/41859794833): PostgreSQL 18.6, 850 passed
-- **กำลังดำเนินการ:** M5.4 ทดสอบเส้นทางผลิตจริง; M5.1–M5.3 merge แล้ว — M5.3 [PR #79](https://github.com/porntaned/ERP-for-Factory/pull/79) ที่ `9675626`; เจ้าของอนุญาตให้ทำต่อเนื่องและ merge เองเมื่อ CI ผ่าน ภายใน scope M5–M6
+- **กำลังดำเนินการ:** M5.2c กลับรายการผลิต / เหตุผลเมื่อผลผลิตขาด / ข้อความยกเลิก order ([Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81)) ต้องทำก่อน M5.4; M5.1–M5.3 merge แล้ว (`main` ที่ `1a07fc5`); **เจ้าของเป็นผู้ merge** — สิทธิ์ merge เองที่ให้ไว้ระหว่างงานต่อเนื่องสิ้นสุดเมื่อ 2026-11-05 (ใช้ได้ 2026-11-04 ถึง 2026-11-05 — historical)
 - **ยังไม่เริ่ม:** M5.2–M5.4, M6 (มีบางส่วนแล้วใน M6.2), M7
 - **ไม่มีการ Deploy**
 
@@ -196,6 +196,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-05: Scrutinize การตัดสินใจ 8 ข้อของ M5.2a/M5.2b/M5.3 (ชั่งข้อละ 5 ทางเลือก) เจ้าของเห็นด้วยกับผล: ควรแก้ — กลับรายการผลิตตามแบบ M4.5, ต้องใส่เหตุผลเมื่อปิด order ที่ผลผลิตขาด, ข้อความยกเลิกบอก Lot/จำนวนที่ค้าง (รวมเป็น M5.2c [Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81)) และห้ามใช้ Lot ที่ REJECTED ไม่ว่าคลังไหน (ไปทำใน M6.2); คงเดิม — Lot ผลผลิตเป็นของ order เดียว, interface เบิกแยก, กฎการคืน, genealogy ระดับ order; เจ้าของกลับมาเป็นผู้ merge PR เอง เอกสารเท่านั้น ไม่มี Deploy
 
 - 2026-11-05: Merge [PR #79](https://github.com/porntaned/ERP-for-Factory/pull/79) (M5.3) ที่ `9675626` ตามที่เจ้าของอนุญาตล่วงหน้า; Issue #78 ปิด; PR CI #210 และ [main CI #211](https://github.com/porntaned/ERP-for-Factory/actions/runs/41941480913) PostgreSQL 18.6 **892 passed**; ติ๊ก M5.3; self-review ไม่มี Deploy
 
