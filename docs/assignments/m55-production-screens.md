@@ -1,8 +1,7 @@
 # M5.5 — Manufacturing screens (read + record)
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/great-bardeen-dumu9p`; base `main` `b5aa7df`.
-[Issue #89](https://github.com/porntaned/ERP-for-Factory/issues/89). Status: **PR 1 (read-only) in
-progress**. The owner wants to see production on the web and try it themselves. In plan mode
+[Issue #89](https://github.com/porntaned/ERP-for-Factory/issues/89). Status: **PR 1 merged** (PR #90 at `ac9a35d`, 2026-11-05); **PR 2 (record forms) next** ("PR 1 (read-only) in progress" held until then — historical). The owner wants to see production on the web and try it themselves. In plan mode
 they chose the full flow, delivered in two PRs, and approved the plan (chat, 2026-11-05).
 
 ## Approach
@@ -80,6 +79,10 @@ PostgreSQL 16.15 (Ubuntu), Python 3.14.6. Tested commit `6f111f1b7be84e8799f2507
 
 The sandbox cannot reach `cdn.jsdelivr.net`. The screenshot script therefore served Bootstrap
 5.3.3 from the npm tarball (sha256 `3c8f27e6…`, as in M4.7).
+
+### PR 1 closeout (2026-11-05)
+
+PR CI [#226](https://github.com/porntaned/ERP-for-Factory/actions/runs/41991095449) on head `d0a9a5f` (tested as merge `52d58e3`): PostgreSQL 18.6, Python 3.14.8, **936 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/90#issuecomment-6652899139)). The owner approved the merge in chat; PR #90 merged at `ac9a35d0ea5dcdef5f2d22c684025414e26586db`; [main CI #227](https://github.com/porntaned/ERP-for-Factory/actions/runs/41992724003): **936 passed**. Issue #89 stays open for PR 2.
 
 ### Review
 
