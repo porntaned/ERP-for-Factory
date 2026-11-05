@@ -89,6 +89,7 @@ REQUEST_KEY_COMMANDS = (
     ("SCRAP", "Production scrap"),
     ("OUTPUT", "Production output"),
     ("ORDER_CLOSE", "Production order close"),
+    ("POSTING_REV", "Production posting reversal"),
 )
 
 
@@ -178,3 +179,20 @@ class ProductionPosting(models.Model):
                 name="production_posting_kind_valid",
             ),
         ]
+
+
+class ProductionPostingReversal(models.Model):
+    """M5.2c (Issue #81): one opposite ledger entry reversing one production posting.
+
+    The original stays untouched; one-to-one on the posting makes it once only. PostgreSQL
+    checks the exact offset, entry exclusivity, the OUTPUT Lot history rule and immutability.
+    """
+
+    request_id = models.UUIDField(unique=True)
+    posting = models.OneToOneField(
+        ProductionPosting, on_delete=models.PROTECT, related_name="reversal"
+    )
+    ledger_entry = models.OneToOneField(
+        StockLedgerEntry, on_delete=models.PROTECT, related_name="production_reversal"
+    )
+    created_at = models.DateTimeField(db_default=Now(), editable=False)
