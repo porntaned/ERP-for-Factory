@@ -66,9 +66,15 @@ def output(mf, quantity, *, code="LAMP-0001", target=None, actor="production", k
     )
 
 
-def close(mf, *, target=None, key=None):
+SHORT = "Synthetic run stopped short"  # M5.2c: closing with output below quantity needs one
+
+
+def close(mf, *, target=None, key=None, shortfall_reason=None):
     return close_production_order(
-        order=target or mf.order, actor=mf.users["production"], request_id=key or uuid4()
+        order=target or mf.order,
+        actor=mf.users["production"],
+        request_id=key or uuid4(),
+        shortfall_reason=shortfall_reason,
     )
 
 
@@ -204,7 +210,7 @@ def test_close_requires_an_empty_line(line):
     consume(line, "38")
     scrap(line, "2")
     output(line, "9")
-    closed = close(line)
+    closed = close(line, shortfall_reason=SHORT)
     assert (closed.status, closed.closed_by) == ("CLOSED", line.users["production"])
     assert closed.closed_at is not None
 
@@ -212,7 +218,7 @@ def test_close_requires_an_empty_line(line):
 @pytest.mark.django_db
 def test_closed_order_accepts_nothing_more(line):
     give_back(line, "40")
-    close(line)
+    close(line, shortfall_reason=SHORT)
     for action in (lambda: issue(line, "1"), lambda: output(line, "1"), lambda: close(line)):
         with pytest.raises((MaterialValidationError, OrderValidationError)):
             action()
@@ -226,8 +232,8 @@ def test_closed_order_accepts_nothing_more(line):
 def test_close_replay_and_conflict(line):
     give_back(line, "40")
     key = uuid4()
-    first = close(line, key=key)
-    assert close(line, key=key) == first
+    first = close(line, key=key, shortfall_reason=SHORT)
+    assert close(line, key=key, shortfall_reason=SHORT) == first
     with pytest.raises(OrderValidationError):
         close(line)  # a new key on a CLOSED order
 
@@ -238,7 +244,7 @@ def test_keys_registered_for_postings_and_close(line):
     scrap(line, "1")
     output(line, "1")
     give_back(line, "9")
-    closed = close(line)
+    closed = close(line, shortfall_reason=SHORT)
     commands = set(RequestKey.objects.values_list("command", flat=True))
     assert {"CONSUME", "SCRAP", "OUTPUT", "ORDER_CLOSE"} <= commands
     assert RequestKey.objects.get(request_id=closed.close_request_id).command == "ORDER_CLOSE"
@@ -270,7 +276,7 @@ def test_database_enforces_posting_sign_and_exclusivity(line):
 @pytest.mark.django_db
 def test_database_enforces_holding_and_open_order(line):
     give_back(line, "40")
-    close(line)
+    close(line, shortfall_reason=SHORT)
     # A raw link to a CLOSED order is refused even with a valid Inventory posting.
     posting = ProductionPosting.objects.select_related("ledger_entry").first()
     assert posting is None

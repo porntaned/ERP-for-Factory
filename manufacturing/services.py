@@ -17,17 +17,20 @@ from uuid import UUID
 from django.contrib.auth import get_user_model
 from django.db import IntegrityError, transaction
 from django.db.models import Case, DecimalField, F, Max, Sum, When
-from django.db.models.functions import Now
+from django.db.models.functions import Coalesce, Now
 
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from catalog.models import Item, ItemType
 from facilities.models import Warehouse
-from inventory.models import Lot, ProductionPosting, StockTransfer
+from inventory.models import Lot, ProductionPosting, ProductionPostingReversal, StockTransfer
 from inventory.production import (
+    AlreadyReversedError,
+    OutputLotUsedError,
     PostingAuthorizationError,
     PostingConflictError,
     PostingValidationError,
     post_production_posting,
+    reverse_production_posting,
 )
 from inventory.quantities import is_valid_quantity
 from inventory.request_keys import owned_by_other_command
@@ -53,6 +56,7 @@ from .models import (
 )
 
 __all__ = [
+    "AlreadyReversedError",
     "BomAuthorizationError",
     "BomConflictError",
     "BomValidationError",
@@ -70,6 +74,7 @@ __all__ = [
     "issue_material",
     "record_output",
     "return_material",
+    "reverse_order_posting",
     "scrap_material",
     "cancel_production_order",
     "create_bom_draft",
@@ -414,8 +419,8 @@ def cancel_production_order(
             return replay
         if locked.status != OrderStatus.OPEN:
             raise OrderValidationError("only an OPEN order can be cancelled")
-        if any(_order_holdings(locked).values()):
-            raise OrderValidationError("return the material on the line before cancelling")
+        if held := _held_on_line(locked):
+            raise OrderValidationError(f"return the material on the line before cancelling: {held}")
         try:
             with transaction.atomic():
                 ProductionOrder.objects.filter(pk=locked.pk).update(
@@ -468,6 +473,12 @@ _SIGNED = Case(
 )
 
 
+# A posting's signed quantity net of its reversal (M5.2c): zero once reversed.
+NET_POSTED = F("posting__ledger_entry__quantity_delta") + Coalesce(
+    F("posting__reversal__ledger_entry__quantity_delta"), Decimal("0")
+)
+
+
 def _order_holdings(order: ProductionOrder) -> dict[int, Decimal]:
     """Net quantity per Lot the order holds on its line: issued - returned - consumed - scrapped."""
     rows = (
@@ -479,12 +490,22 @@ def _order_holdings(order: ProductionOrder) -> dict[int, Decimal]:
     used = (
         OrderPosting.objects.filter(order=order, kind__in=(PostingKind.CONSUME, PostingKind.SCRAP))
         .values("posting__ledger_entry__lot_id")
-        .annotate(net=Sum("posting__ledger_entry__quantity_delta"))
+        .annotate(net=Sum(NET_POSTED))
     )
     for row in used:
         lot_id = row["posting__ledger_entry__lot_id"]
         held[lot_id] = held.get(lot_id, Decimal("0")) + row["net"]
     return held
+
+
+def _held_on_line(order: ProductionOrder) -> str:
+    """Each Lot the order still holds on its line, e.g. "LED-CHIP lot L1 holds 40"."""
+    held = {lot_id: q for lot_id, q in _order_holdings(order).items() if q}
+    lots = Lot.objects.select_related("item").in_bulk(held)
+    return ", ".join(
+        f"{lots[i].item.code} lot {lots[i].code} holds {held[i].normalize():f}"
+        for i in sorted(held)
+    )
 
 
 def _net_issued(order: ProductionOrder, item_id: int) -> Decimal:
@@ -650,7 +671,7 @@ def _posting_replay(request_id: UUID, order: ProductionOrder, kind: str) -> Any:
 
 def _output_total(order: ProductionOrder) -> Decimal:
     total = OrderPosting.objects.filter(order=order, kind=PostingKind.OUTPUT).aggregate(
-        total=Sum("posting__ledger_entry__quantity_delta")
+        total=Sum(NET_POSTED)
     )["total"]
     return total or Decimal("0")
 
@@ -819,14 +840,59 @@ def record_output(
     )
 
 
+def reverse_order_posting(
+    *, order_posting: OrderPosting, actor: Any, reason: str, request_id: UUID
+) -> ProductionPostingReversal:
+    """Reverse one CONSUME, SCRAP or OUTPUT of an OPEN order (APPROVER at its warehouse).
+
+    M5.2c (Issue #81): whole posting, once only; Inventory posts the offsetting entry.
+    """
+    if not _saved(order_posting, OrderPosting):
+        raise MaterialValidationError("order_posting must be a saved OrderPosting")
+    if not isinstance(request_id, UUID):
+        raise MaterialValidationError("request_id must be a UUID")
+    with transaction.atomic():
+        locked = (
+            ProductionOrder.objects.select_for_update().filter(pk=order_posting.order_id).first()
+        )
+        prior = ProductionPostingReversal.objects.filter(request_id=request_id).first()
+        if prior is None and locked.status != OrderStatus.OPEN:
+            raise MaterialValidationError("a posting is reversed only while its order is OPEN")
+        try:
+            return reverse_production_posting(
+                posting=order_posting.posting,
+                actor=actor,
+                reason=reason,
+                request_id=request_id,
+            )
+        except PostingAuthorizationError as exc:
+            raise MaterialAuthorizationError(str(exc)) from exc
+        except PostingConflictError as exc:
+            raise MaterialConflictError(str(exc)) from exc
+        except (InsufficientStockError, OutputLotUsedError) as exc:
+            raise MaterialLimitError(str(exc)) from exc
+        except PostingValidationError as exc:
+            raise MaterialValidationError(str(exc)) from exc
+
+
 def close_production_order(
-    *, order: ProductionOrder, actor: Any, request_id: UUID
+    *,
+    order: ProductionOrder,
+    actor: Any,
+    request_id: UUID,
+    shortfall_reason: str | None = None,
 ) -> ProductionOrder:
-    """Close an OPEN order whose line holds nothing (PRODUCTION at both warehouses)."""
+    """Close an OPEN order whose line holds nothing (PRODUCTION at both warehouses).
+
+    M5.2c: when net output is below the order quantity a nonblank `shortfall_reason` is
+    required; when output is complete it must be omitted.
+    """
     if not _saved(order, ProductionOrder):
         raise OrderValidationError("order must be a saved ProductionOrder")
     if not isinstance(request_id, UUID):
         raise OrderValidationError("request_id must be a UUID")
+    if shortfall_reason is not None and not isinstance(shortfall_reason, str):
+        raise OrderValidationError("shortfall_reason must be text")
     with transaction.atomic():
         locked = ProductionOrder.objects.select_for_update().filter(pk=order.pk).first()
         if locked is None:
@@ -835,20 +901,32 @@ def close_production_order(
         _require_production_at(saved_actor, {locked.line_warehouse_id, locked.output_warehouse_id})
         prior = ProductionOrder.objects.filter(close_request_id=request_id).first()
         if prior is not None:
-            if prior.pk == locked.pk and prior.closed_by_id == saved_actor.pk:
+            if (
+                prior.pk == locked.pk
+                and prior.closed_by_id == saved_actor.pk
+                and prior.shortfall_reason == shortfall_reason
+            ):
                 return prior
             raise OrderConflictError("request_id was already used for another close")
         if owned_by_other_command(request_id, "ORDER_CLOSE"):
             raise OrderConflictError("request_id was already used by another command")
         if locked.status != OrderStatus.OPEN:
             raise OrderValidationError("only an OPEN order can be closed")
-        if any(_order_holdings(locked).values()):
-            raise OrderValidationError("return or scrap the material on the line before closing")
+        if held := _held_on_line(locked):
+            raise OrderValidationError(
+                f"return or scrap the material on the line before closing: {held}"
+            )
+        short = _output_total(locked) < locked.quantity
+        if short and (shortfall_reason is None or not shortfall_reason.strip()):
+            raise OrderValidationError("net output is short of the order: give a shortfall reason")
+        if not short and shortfall_reason is not None:
+            raise OrderValidationError("output is complete: a shortfall reason is not accepted")
         ProductionOrder.objects.filter(pk=locked.pk).update(
             status=OrderStatus.CLOSED,
             closed_by=saved_actor,
             closed_at=Now(),
             close_request_id=request_id,
+            shortfall_reason=shortfall_reason,
         )
         locked.refresh_from_db()
         return locked

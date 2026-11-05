@@ -197,6 +197,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## Progress log
 
+- 2026-11-05: M5.2c ใน [Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81) — กลับรายการ CONSUME/SCRAP/OUTPUT ด้วย `ProductionPostingReversal` (APPROVER ที่คลังของรายการ, ครั้งเดียว, ทั้งรายการ, เฉพาะ order ที่ OPEN; OUTPUT เฉพาะเมื่อ Lot มีแต่ผลผลิตและการกลับผลผลิต); ยอดที่ order ถือ/ผลผลิตสุทธิ/genealogy หักรายการที่กลับแล้ว; ปิด order ที่ผลผลิตขาดต้องมี `shortfall_reason` (ผลิตครบห้ามใส่); ข้อความยกเลิก/ปิดบอก Lot และจำนวนที่ค้าง; PostgreSQL ตรวจซ้ำ; RED แล้ว GREEN; self-review พบและแก้ 1 จุด; local 918 passed (PostgreSQL 16.15, development check) — [spec/หลักฐาน](assignments/m52c-production-reversal.md), [แผน](assignments/m52c-plan.md) รอเจ้าของ review และ merge ไม่มี Deploy
+
 - 2026-11-05: Scrutinize การตัดสินใจ 8 ข้อของ M5.2a/M5.2b/M5.3 (ชั่งข้อละ 5 ทางเลือก) เจ้าของเห็นด้วยกับผล: ควรแก้ — กลับรายการผลิตตามแบบ M4.5, ต้องใส่เหตุผลเมื่อปิด order ที่ผลผลิตขาด, ข้อความยกเลิกบอก Lot/จำนวนที่ค้าง (รวมเป็น M5.2c [Issue #81](https://github.com/porntaned/ERP-for-Factory/issues/81)) และห้ามใช้ Lot ที่ REJECTED ไม่ว่าคลังไหน (ไปทำใน M6.2); คงเดิม — Lot ผลผลิตเป็นของ order เดียว, interface เบิกแยก, กฎการคืน, genealogy ระดับ order; เจ้าของกลับมาเป็นผู้ merge PR เอง เอกสารเท่านั้น ไม่มี Deploy
 
 - 2026-11-05: Merge [PR #79](https://github.com/porntaned/ERP-for-Factory/pull/79) (M5.3) ที่ `9675626` ตามที่เจ้าของอนุญาตล่วงหน้า; Issue #78 ปิด; PR CI #210 และ [main CI #211](https://github.com/porntaned/ERP-for-Factory/actions/runs/41941480913) PostgreSQL 18.6 **892 passed**; ติ๊ก M5.3; self-review ไม่มี Deploy

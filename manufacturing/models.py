@@ -135,6 +135,8 @@ class ProductionOrder(models.Model):
     )
     closed_at = models.DateTimeField(null=True)
     close_request_id = models.UUIDField(null=True, unique=True)
+    # M5.2c: why a CLOSED order output less than its quantity; set iff short (DB trigger).
+    shortfall_reason = models.TextField(null=True)
 
     class Meta:
         constraints = [
@@ -172,6 +174,11 @@ class ProductionOrder(models.Model):
                     )
                 ),
                 name="order_close_matches_status",
+            ),
+            models.CheckConstraint(
+                condition=Q(shortfall_reason__isnull=True)
+                | (Q(status="CLOSED") & ~Q(shortfall_reason__regex=r"^\s*$")),
+                name="order_shortfall_reason_closed_nonblank",
             ),
         ]
 
