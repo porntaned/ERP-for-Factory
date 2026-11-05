@@ -69,7 +69,7 @@ BOM approval screens, Quality release (M6), Deploy.
 
 ### Verification (development check, not evidence of record)
 
-PostgreSQL 16.15 (Ubuntu), Python 3.14.6. Tested commit `4e4a9ba872ada3240a96cc2694e2dea3306919ad`.
+PostgreSQL 16.15 (Ubuntu), Python 3.14.6. Tested commit `6f111f1b7be84e8799f250776c7d73363b4b3f3c` (code at `4e4a9ba`; the later commit adds only docs and the history test).
 
 | Command | Result |
 |---|---|
