@@ -1,3 +1,4 @@
+# ruff: noqa: F811 (fixtures imported from sibling test modules)
 """M5.2c (Issue #81): reverse production postings; shortfall reason; holding messages.
 
 Owner rules (2026-11-05): APPROVER at the posting's warehouse reverses a whole posting once,
