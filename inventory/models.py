@@ -85,6 +85,10 @@ REQUEST_KEY_COMMANDS = (
     ("BOM_APPROVE", "BOM approval"),
     ("ORDER_CREATE", "Production order"),
     ("ORDER_CANCEL", "Production order cancel"),
+    ("CONSUME", "Production consumption"),
+    ("SCRAP", "Production scrap"),
+    ("OUTPUT", "Production output"),
+    ("ORDER_CLOSE", "Production order close"),
 )
 
 
@@ -143,5 +147,34 @@ class StockReversal(models.Model):
                     | models.Q(transfer__isnull=False, credit_entry__isnull=False)
                 ),
                 name="stock_reversal_credit_iff_transfer",
+            ),
+        ]
+
+
+PRODUCTION_POSTING_KINDS = (
+    ("CONSUME", "Consumption on a production line"),
+    ("SCRAP", "Scrap from a production line"),
+    ("OUTPUT", "Production output receipt"),
+)
+
+
+class ProductionPosting(models.Model):
+    """M5.2b (Issue #75): one ledger entry posted for manufacturing.
+
+    CONSUME and SCRAP are debits, OUTPUT is a credit. The entry belongs to no receipt,
+    transfer or reversal. Immutable; PostgreSQL enforces sign, exclusivity and the key.
+    """
+
+    kind = models.CharField(max_length=7, choices=PRODUCTION_POSTING_KINDS)
+    ledger_entry = models.OneToOneField(
+        StockLedgerEntry, on_delete=models.PROTECT, related_name="production_posting"
+    )
+    request_id = models.UUIDField(unique=True)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=models.Q(kind__in=[k for k, _ in PRODUCTION_POSTING_KINDS]),
+                name="production_posting_kind_valid",
             ),
         ]

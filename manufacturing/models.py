@@ -14,7 +14,7 @@ from django.db.models.functions import Now, Round
 from catalog.models import Item
 from facilities.models import Warehouse
 from inventory.fields import ExactQuantityField
-from inventory.models import StockTransfer
+from inventory.models import ProductionPosting, StockTransfer
 
 QUANTITY_LIMIT = Decimal("100000000000000")
 
@@ -32,6 +32,14 @@ def _quantity_checks(field, prefix):
     ]
 
 
+def _all_set(*fields):
+    return Q(**{f"{f}__isnull": False for f in fields})
+
+
+def _none_set(*fields):
+    return Q(**{f"{f}__isnull": True for f in fields})
+
+
 class BomStatus(models.TextChoices):
     DRAFT = "DRAFT", "Draft"
     ACTIVE = "ACTIVE", "Active"
@@ -41,6 +49,7 @@ class BomStatus(models.TextChoices):
 class OrderStatus(models.TextChoices):
     OPEN = "OPEN", "Open"
     CANCELLED = "CANCELLED", "Cancelled"
+    CLOSED = "CLOSED", "Closed"
 
 
 class BillOfMaterials(models.Model):
@@ -121,6 +130,11 @@ class ProductionOrder(models.Model):
     cancelled_at = models.DateTimeField(null=True)
     cancel_reason = models.TextField(null=True)
     cancel_request_id = models.UUIDField(null=True, unique=True)
+    closed_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL, null=True, on_delete=models.PROTECT, related_name="+"
+    )
+    closed_at = models.DateTimeField(null=True)
+    close_request_id = models.UUIDField(null=True, unique=True)
 
     class Meta:
         constraints = [
@@ -134,22 +148,30 @@ class ProductionOrder(models.Model):
             ),
             models.CheckConstraint(
                 condition=(
-                    Q(
-                        status="OPEN",
-                        cancelled_by__isnull=True,
-                        cancelled_at__isnull=True,
-                        cancel_reason__isnull=True,
-                        cancel_request_id__isnull=True,
+                    (
+                        Q(status="CANCELLED")
+                        & _all_set(
+                            "cancelled_by", "cancelled_at", "cancel_reason", "cancel_request_id"
+                        )
                     )
-                    | Q(
-                        status="CANCELLED",
-                        cancelled_by__isnull=False,
-                        cancelled_at__isnull=False,
-                        cancel_reason__isnull=False,
-                        cancel_request_id__isnull=False,
+                    | (
+                        ~Q(status="CANCELLED")
+                        & _none_set(
+                            "cancelled_by", "cancelled_at", "cancel_reason", "cancel_request_id"
+                        )
                     )
                 ),
                 name="order_cancel_matches_status",
+            ),
+            models.CheckConstraint(
+                condition=(
+                    (Q(status="CLOSED") & _all_set("closed_by", "closed_at", "close_request_id"))
+                    | (
+                        ~Q(status="CLOSED")
+                        & _none_set("closed_by", "closed_at", "close_request_id")
+                    )
+                ),
+                name="order_close_matches_status",
             ),
         ]
 
@@ -187,3 +209,27 @@ class ProductionMaterialMovement(models.Model):
     @property
     def quantity(self):
         return self.transfer.destination_entry.quantity_delta
+
+
+class PostingKind(models.TextChoices):
+    CONSUME = "CONSUME", "Consumed on the line"
+    SCRAP = "SCRAP", "Scrapped from the line"
+    OUTPUT = "OUTPUT", "Output received"
+
+
+class OrderPosting(models.Model):
+    """M5.2b (Issue #75): links one Inventory production posting to its order."""
+
+    order = models.ForeignKey(ProductionOrder, on_delete=models.PROTECT, related_name="postings")
+    kind = models.CharField(max_length=7, choices=PostingKind)
+    posting = models.OneToOneField(
+        ProductionPosting, on_delete=models.PROTECT, related_name="order_link"
+    )
+    created_at = models.DateTimeField(db_default=Now(), editable=False)
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                condition=Q(kind__in=PostingKind.values), name="order_posting_kind_valid"
+            ),
+        ]

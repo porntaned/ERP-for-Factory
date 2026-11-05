@@ -197,6 +197,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## Progress log
 
+- 2026-11-05: M5.2b ใน [Issue #75](https://github.com/porntaned/ERP-for-Factory/issues/75) — ใช้วัตถุดิบ, scrap (APPROVER + เหตุผล), รับผลผลิตเข้า FG เป็น Lot ใหม่สถานะ HOLD, ปิด order เมื่อ line ว่าง; Inventory เพิ่ม `ProductionPosting`; PostgreSQL ตรวจซ้ำ; RED แล้ว GREEN; self-review พบและแก้ 1 จุด; local 888 passed (development check) — [หลักฐาน](assignments/m52b-consume-output-close.md) ไม่มี Deploy
+
 - 2026-11-05: Merge [PR #73](https://github.com/porntaned/ERP-for-Factory/pull/73) (M5.2a) ที่ `0205f2b` ตามที่เจ้าของอนุญาตล่วงหน้า; Issue #72 ปิด; PR CI #202 870 passed และ [main CI #203](https://github.com/porntaned/ERP-for-Factory/actions/runs/41937763974) PostgreSQL 18.6, **870 passed**; self-review; M5.2 ยังไม่ติ๊กจนกว่า M5.2b เสร็จ ไม่มี Deploy
 
 - 2026-11-04: M5.2a ใน [Issue #72](https://github.com/porntaned/ERP-for-Factory/issues/72) — เบิก RM→LINE-1 และคืนให้ order ผ่าน `post_production_transfer` ของ Inventory (PRODUCTION), ยอดเบิกสุทธิไม่เกิน BOM, ต้อง RELEASED, คืนไม่เกินที่ order ถือ, ยกเลิก order ไม่ได้ถ้ามีของค้างที่ line; PostgreSQL ตรวจซ้ำ; RED แล้ว GREEN; local 870 passed (development check); self-review — [หลักฐาน](assignments/m52a-material-issue-return.md) ไม่มี Deploy

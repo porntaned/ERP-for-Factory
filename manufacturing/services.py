@@ -22,7 +22,13 @@ from django.db.models.functions import Now
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from catalog.models import Item, ItemType
 from facilities.models import Warehouse
-from inventory.models import Lot, StockTransfer
+from inventory.models import Lot, ProductionPosting, StockTransfer
+from inventory.production import (
+    PostingAuthorizationError,
+    PostingConflictError,
+    PostingValidationError,
+    post_production_posting,
+)
 from inventory.quantities import is_valid_quantity
 from inventory.request_keys import owned_by_other_command
 from inventory.transfer_policy import TransferQualityError, TransferQualityValidationError
@@ -39,7 +45,9 @@ from .models import (
     BomLine,
     BomStatus,
     MovementKind,
+    OrderPosting,
     OrderStatus,
+    PostingKind,
     ProductionMaterialMovement,
     ProductionOrder,
 )
@@ -57,8 +65,12 @@ __all__ = [
     "MaterialQualityError",
     "MaterialValidationError",
     "approve_bom",
+    "close_production_order",
+    "consume_material",
     "issue_material",
+    "record_output",
     "return_material",
+    "scrap_material",
     "cancel_production_order",
     "create_bom_draft",
     "create_production_order",
@@ -457,13 +469,22 @@ _SIGNED = Case(
 
 
 def _order_holdings(order: ProductionOrder) -> dict[int, Decimal]:
-    """Net quantity per Lot the order holds on its line."""
+    """Net quantity per Lot the order holds on its line: issued - returned - consumed - scrapped."""
     rows = (
         ProductionMaterialMovement.objects.filter(order=order)
         .values("transfer__destination_entry__lot_id")
         .annotate(net=Sum(_SIGNED))
     )
-    return {row["transfer__destination_entry__lot_id"]: row["net"] for row in rows}
+    held = {row["transfer__destination_entry__lot_id"]: row["net"] for row in rows}
+    used = (
+        OrderPosting.objects.filter(order=order, kind__in=(PostingKind.CONSUME, PostingKind.SCRAP))
+        .values("posting__ledger_entry__lot_id")
+        .annotate(net=Sum("posting__ledger_entry__quantity_delta"))
+    )
+    for row in used:
+        lot_id = row["posting__ledger_entry__lot_id"]
+        held[lot_id] = held.get(lot_id, Decimal("0")) + row["net"]
+    return held
 
 
 def _net_issued(order: ProductionOrder, item_id: int) -> Decimal:
@@ -603,3 +624,231 @@ def return_material(
         reason=reason,
         request_id=request_id,
     )
+
+
+# ---------------------------------------------------------------- consumption, scrap, output, close
+# M5.2b (Issue #75). Inventory posts the ledger entry (inventory.production); this module links
+# it to the order. Owner rules: close only with an empty line; scrap needs a reason and an
+# APPROVER at the line; output enters FG as HOLD (a new Lot-Warehouse pair has no event).
+
+_POSTING_ROLE = {
+    PostingKind.CONSUME: WarehouseRole.PRODUCTION,
+    PostingKind.SCRAP: WarehouseRole.APPROVER,
+    PostingKind.OUTPUT: WarehouseRole.PRODUCTION,
+}
+
+
+def _posting_replay(request_id: UUID, order: ProductionOrder, kind: str) -> Any:
+    posting = ProductionPosting.objects.filter(request_id=request_id).first()
+    if posting is None:
+        return None
+    link = OrderPosting.objects.filter(posting=posting).first()
+    if link is None or link.order_id != order.pk or link.kind != kind:
+        raise MaterialConflictError("request_id was already used for another posting")
+    return link
+
+
+def _output_total(order: ProductionOrder) -> Decimal:
+    total = OrderPosting.objects.filter(order=order, kind=PostingKind.OUTPUT).aggregate(
+        total=Sum("posting__ledger_entry__quantity_delta")
+    )["total"]
+    return total or Decimal("0")
+
+
+def _output_lot(order: ProductionOrder, code: Any) -> Lot:
+    if not isinstance(code, str) or not code.strip():
+        raise MaterialValidationError("lot_code must be nonblank")
+    lot = Lot.objects.filter(item_id=order.bom.item_id, code=code).first()
+    if lot is None:
+        try:
+            with transaction.atomic():
+                return Lot.objects.create(item_id=order.bom.item_id, code=code)
+        except IntegrityError as exc:
+            raise MaterialValidationError("lot_code is not a valid new Lot code") from exc
+    own = OrderPosting.objects.filter(
+        order=order, kind=PostingKind.OUTPUT, posting__ledger_entry__lot=lot
+    ).exists()
+    if not own:
+        raise MaterialValidationError("an output Lot belongs to one order and is never adopted")
+    return lot
+
+
+def _post_for_order(*, kind, order, lot, lot_code, quantity, actor, reason, request_id):
+    if not _saved(order, ProductionOrder):
+        raise MaterialValidationError("order must be a saved ProductionOrder")
+    if lot is not None and not _saved(lot, Lot):
+        raise MaterialValidationError("lot must be a saved Lot")
+    if not is_valid_quantity(quantity):
+        raise MaterialValidationError(
+            "quantity must be a positive Decimal below 10^14 with at most six places"
+        )
+    if not isinstance(reason, str) or not reason.strip():
+        raise MaterialValidationError("reason must be nonblank")
+    if not isinstance(request_id, UUID):
+        raise MaterialValidationError("request_id must be a UUID")
+    with transaction.atomic():
+        locked = (
+            ProductionOrder.objects.select_for_update(of=("self",))
+            .select_related("bom")
+            .filter(pk=order.pk)
+            .first()
+        )
+        if locked is None:
+            raise MaterialValidationError("order must exist")
+        warehouse = locked.output_warehouse if kind == PostingKind.OUTPUT else locked.line_warehouse
+        prior = _posting_replay(request_id, locked, kind)
+        if prior is not None and kind == PostingKind.OUTPUT:
+            # Output names its Lot by code; Inventory compares the rest of the payload.
+            lot = prior.posting.ledger_entry.lot
+            if lot.code != lot_code:
+                raise MaterialConflictError("request_id was already used for another output")
+        elif prior is None:
+            # Unlocked read for an early refusal; Inventory locks and re-checks authority.
+            if not WarehouseRoleAssignment.objects.filter(
+                user_id=getattr(actor, "pk", None),
+                warehouse_id=warehouse.pk,
+                role=_POSTING_ROLE[kind],
+                user__is_active=True,
+            ).exists():
+                raise MaterialAuthorizationError(
+                    f"{_POSTING_ROLE[kind]} at {warehouse.code} is required"
+                )
+            if locked.status != OrderStatus.OPEN:
+                raise MaterialValidationError("postings are only for an OPEN order")
+            if owned_by_other_command(request_id, kind):
+                raise MaterialConflictError("request_id was already used by another command")
+            if kind == PostingKind.OUTPUT:
+                if _output_total(locked) + quantity > locked.quantity:
+                    raise MaterialLimitError("output would exceed the order quantity")
+                lot = _output_lot(locked, lot_code)
+            else:
+                if not BomLine.objects.filter(
+                    bom_id=locked.bom_id, component_id=lot.item_id
+                ).exists():
+                    raise MaterialValidationError(
+                        "the Lot item is not a component of the order BOM"
+                    )
+                if _order_holdings(locked).get(lot.pk, Decimal("0")) < quantity:
+                    raise MaterialLimitError("the order holds less of this Lot on its line")
+        try:
+            posting = post_production_posting(
+                kind=kind,
+                lot=lot,
+                warehouse=warehouse,
+                actor=actor,
+                quantity=quantity,
+                reason=reason,
+                request_id=request_id,
+            )
+        except PostingAuthorizationError as exc:
+            raise MaterialAuthorizationError(str(exc)) from exc
+        except PostingConflictError as exc:
+            raise MaterialConflictError(str(exc)) from exc
+        except InsufficientStockError as exc:
+            raise MaterialLimitError(str(exc)) from exc
+        except PostingValidationError as exc:
+            raise MaterialValidationError(str(exc)) from exc
+        if prior is not None:
+            return prior
+        return OrderPosting.objects.create(order=locked, kind=kind, posting=posting)
+
+
+def consume_material(
+    *,
+    order: ProductionOrder,
+    lot: Lot,
+    quantity: Decimal,
+    actor: Any,
+    reason: str,
+    request_id: UUID,
+) -> OrderPosting:
+    """Consume material the order holds on its line (PRODUCTION at the line)."""
+    return _post_for_order(
+        kind=PostingKind.CONSUME,
+        order=order,
+        lot=lot,
+        lot_code=None,
+        quantity=quantity,
+        actor=actor,
+        reason=reason,
+        request_id=request_id,
+    )
+
+
+def scrap_material(
+    *,
+    order: ProductionOrder,
+    lot: Lot,
+    quantity: Decimal,
+    actor: Any,
+    reason: str,
+    request_id: UUID,
+) -> OrderPosting:
+    """Scrap material the order holds on its line (APPROVER at the line, reason required)."""
+    return _post_for_order(
+        kind=PostingKind.SCRAP,
+        order=order,
+        lot=lot,
+        lot_code=None,
+        quantity=quantity,
+        actor=actor,
+        reason=reason,
+        request_id=request_id,
+    )
+
+
+def record_output(
+    *,
+    order: ProductionOrder,
+    lot_code: str,
+    quantity: Decimal,
+    actor: Any,
+    reason: str,
+    request_id: UUID,
+) -> OrderPosting:
+    """Receive output of the BOM item into the order's output warehouse as a new Lot (HOLD)."""
+    return _post_for_order(
+        kind=PostingKind.OUTPUT,
+        order=order,
+        lot=None,
+        lot_code=lot_code,
+        quantity=quantity,
+        actor=actor,
+        reason=reason,
+        request_id=request_id,
+    )
+
+
+def close_production_order(
+    *, order: ProductionOrder, actor: Any, request_id: UUID
+) -> ProductionOrder:
+    """Close an OPEN order whose line holds nothing (PRODUCTION at both warehouses)."""
+    if not _saved(order, ProductionOrder):
+        raise OrderValidationError("order must be a saved ProductionOrder")
+    if not isinstance(request_id, UUID):
+        raise OrderValidationError("request_id must be a UUID")
+    with transaction.atomic():
+        locked = ProductionOrder.objects.select_for_update().filter(pk=order.pk).first()
+        if locked is None:
+            raise OrderValidationError("order must exist")
+        saved_actor = _lock_actor(actor, OrderAuthorizationError)
+        _require_production_at(saved_actor, {locked.line_warehouse_id, locked.output_warehouse_id})
+        prior = ProductionOrder.objects.filter(close_request_id=request_id).first()
+        if prior is not None:
+            if prior.pk == locked.pk and prior.closed_by_id == saved_actor.pk:
+                return prior
+            raise OrderConflictError("request_id was already used for another close")
+        if owned_by_other_command(request_id, "ORDER_CLOSE"):
+            raise OrderConflictError("request_id was already used by another command")
+        if locked.status != OrderStatus.OPEN:
+            raise OrderValidationError("only an OPEN order can be closed")
+        if any(_order_holdings(locked).values()):
+            raise OrderValidationError("return or scrap the material on the line before closing")
+        ProductionOrder.objects.filter(pk=locked.pk).update(
+            status=OrderStatus.CLOSED,
+            closed_by=saved_actor,
+            closed_at=Now(),
+            close_request_id=request_id,
+        )
+        locked.refresh_from_db()
+        return locked
