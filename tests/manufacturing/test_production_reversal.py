@@ -10,7 +10,8 @@ from decimal import Decimal
 from uuid import uuid4
 
 import pytest
-from django.db import IntegrityError, transaction
+from django.db import IntegrityError, connection, transaction
+from django.db.migrations.executor import MigrationExecutor
 
 from inventory.models import (
     ProductionPosting,
@@ -362,3 +363,137 @@ def test_transfer_racing_an_output_reversal(line):
     )
     assert outcome[0] == "InsufficientStockError", outcome
     assert balance(line, "FG", lot=lamp) == D("0")
+
+
+# ---------------------------------------------------------------- shortfall reason
+
+
+def close(mf, *, reason=None, key=None):
+    from manufacturing.services import close_production_order
+
+    return close_production_order(
+        order=mf.order,
+        actor=mf.users["production"],
+        request_id=key or uuid4(),
+        shortfall_reason=reason,
+    )
+
+
+@pytest.mark.django_db
+def test_close_short_needs_a_reason(line):
+    from manufacturing.services import OrderValidationError
+
+    consume(line, "40")
+    output(line, "9")
+    for blank in (None, "", "   "):
+        with pytest.raises(OrderValidationError, match="shortfall"):
+            close(line, reason=blank)
+    closed = close(line, reason="Yield loss on synthetic run")
+    assert (closed.status, closed.shortfall_reason) == ("CLOSED", "Yield loss on synthetic run")
+
+
+@pytest.mark.django_db
+def test_close_complete_refuses_a_reason(line):
+    from manufacturing.services import OrderValidationError
+
+    consume(line, "40")
+    output(line, "10")
+    with pytest.raises(OrderValidationError, match="shortfall"):
+        close(line, reason="Not short at all")
+    closed = close(line)
+    assert (closed.status, closed.shortfall_reason) == ("CLOSED", None)
+
+
+@pytest.mark.django_db
+def test_shortfall_follows_output_reversal(line):
+    from manufacturing.services import OrderValidationError
+
+    consume(line, "40")
+    output(line, "9")
+    extra = output(line, "1")
+    reverse(line, extra)
+    with pytest.raises(OrderValidationError, match="shortfall"):
+        close(line)
+    assert close(line, reason="One lamp recorded in error").status == "CLOSED"
+
+
+@pytest.mark.django_db
+def test_close_replay_compares_the_reason(line):
+    from manufacturing.services import OrderConflictError
+
+    give_back(line, "40")
+    key = uuid4()
+    first = close(line, reason="Order stopped", key=key)
+    assert close(line, reason="Order stopped", key=key) == first
+    with pytest.raises(OrderConflictError):
+        close(line, reason="Another story", key=key)
+
+
+@pytest.mark.django_db
+def test_database_requires_shortfall_reason_iff_short(line):
+    from django.utils import timezone
+
+    from manufacturing.models import ProductionOrder
+
+    consume(line, "40")
+    output(line, "9")
+    orders = ProductionOrder.objects.filter(pk=line.order.pk)
+
+    def closing(reason):
+        return lambda: orders.update(
+            status="CLOSED",
+            closed_by=line.users["production"],
+            closed_at=timezone.now(),
+            close_request_id=uuid4(),
+            shortfall_reason=reason,
+        )
+
+    rejected(lambda: orders.update(shortfall_reason="Not closed yet"))
+    rejected(closing(None))
+    rejected(closing("   "))
+    output(line, "1")
+    rejected(closing("Complete but explained"))
+    closing(None)()
+    assert orders.get().status == "CLOSED"
+
+
+# ---------------------------------------------------------------- refusal messages
+
+
+@pytest.mark.django_db
+def test_refusals_name_each_held_lot(line):
+    from manufacturing.services import OrderValidationError, cancel_production_order
+
+    give_back(line, "10")
+    other_lot = stock(line, "L2", D("10"))
+    issue(line, "10", lot=other_lot)
+    held = "LED-CHIP lot L1 holds 30, LED-CHIP lot L2 holds 10"
+    with pytest.raises(OrderValidationError) as closing:
+        close(line)
+    assert str(closing.value).endswith(held), closing.value
+    with pytest.raises(OrderValidationError) as cancelling:
+        cancel_production_order(
+            order=line.order, actor=line.users["production"], reason="Stop", request_id=uuid4()
+        )
+    assert str(cancelling.value).endswith(held), cancelling.value
+
+
+# ---------------------------------------------------------------- migrations
+
+
+@pytest.mark.django_db(transaction=True)
+def test_migrations_unapply_only_without_reversals(line):
+    executor = MigrationExecutor(connection)
+    latest = executor.loader.graph.leaf_nodes()
+    try:
+        used = consume(line, "5")
+        executor.migrate([("inventory", "0012_production_posting_rules")])
+        MigrationExecutor(connection).migrate(latest)
+        reverse(line, used)
+        with pytest.raises(IntegrityError, match="production reversals exist"):
+            MigrationExecutor(connection).migrate(
+                [("inventory", "0013_production_posting_reversal")]
+            )
+        assert ProductionPostingReversal.objects.count() == 1
+    finally:
+        MigrationExecutor(connection).migrate(latest)

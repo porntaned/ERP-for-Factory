@@ -419,8 +419,8 @@ def cancel_production_order(
             return replay
         if locked.status != OrderStatus.OPEN:
             raise OrderValidationError("only an OPEN order can be cancelled")
-        if any(_order_holdings(locked).values()):
-            raise OrderValidationError("return the material on the line before cancelling")
+        if held := _held_on_line(locked):
+            raise OrderValidationError(f"return the material on the line before cancelling: {held}")
         try:
             with transaction.atomic():
                 ProductionOrder.objects.filter(pk=locked.pk).update(
@@ -496,6 +496,16 @@ def _order_holdings(order: ProductionOrder) -> dict[int, Decimal]:
         lot_id = row["posting__ledger_entry__lot_id"]
         held[lot_id] = held.get(lot_id, Decimal("0")) + row["net"]
     return held
+
+
+def _held_on_line(order: ProductionOrder) -> str:
+    """Each Lot the order still holds on its line, e.g. "LED-CHIP lot L1 holds 40"."""
+    held = {lot_id: q for lot_id, q in _order_holdings(order).items() if q}
+    lots = Lot.objects.select_related("item").in_bulk(held)
+    return ", ".join(
+        f"{lots[i].item.code} lot {lots[i].code} holds {held[i].normalize():f}"
+        for i in sorted(held)
+    )
 
 
 def _net_issued(order: ProductionOrder, item_id: int) -> Decimal:
@@ -864,13 +874,23 @@ def reverse_order_posting(
 
 
 def close_production_order(
-    *, order: ProductionOrder, actor: Any, request_id: UUID
+    *,
+    order: ProductionOrder,
+    actor: Any,
+    request_id: UUID,
+    shortfall_reason: str | None = None,
 ) -> ProductionOrder:
-    """Close an OPEN order whose line holds nothing (PRODUCTION at both warehouses)."""
+    """Close an OPEN order whose line holds nothing (PRODUCTION at both warehouses).
+
+    M5.2c: when net output is below the order quantity a nonblank `shortfall_reason` is
+    required; when output is complete it must be omitted.
+    """
     if not _saved(order, ProductionOrder):
         raise OrderValidationError("order must be a saved ProductionOrder")
     if not isinstance(request_id, UUID):
         raise OrderValidationError("request_id must be a UUID")
+    if shortfall_reason is not None and not isinstance(shortfall_reason, str):
+        raise OrderValidationError("shortfall_reason must be text")
     with transaction.atomic():
         locked = ProductionOrder.objects.select_for_update().filter(pk=order.pk).first()
         if locked is None:
@@ -879,20 +899,32 @@ def close_production_order(
         _require_production_at(saved_actor, {locked.line_warehouse_id, locked.output_warehouse_id})
         prior = ProductionOrder.objects.filter(close_request_id=request_id).first()
         if prior is not None:
-            if prior.pk == locked.pk and prior.closed_by_id == saved_actor.pk:
+            if (
+                prior.pk == locked.pk
+                and prior.closed_by_id == saved_actor.pk
+                and prior.shortfall_reason == shortfall_reason
+            ):
                 return prior
             raise OrderConflictError("request_id was already used for another close")
         if owned_by_other_command(request_id, "ORDER_CLOSE"):
             raise OrderConflictError("request_id was already used by another command")
         if locked.status != OrderStatus.OPEN:
             raise OrderValidationError("only an OPEN order can be closed")
-        if any(_order_holdings(locked).values()):
-            raise OrderValidationError("return or scrap the material on the line before closing")
+        if held := _held_on_line(locked):
+            raise OrderValidationError(
+                f"return or scrap the material on the line before closing: {held}"
+            )
+        short = _output_total(locked) < locked.quantity
+        if short and (shortfall_reason is None or not shortfall_reason.strip()):
+            raise OrderValidationError("net output is short of the order: give a shortfall reason")
+        if not short and shortfall_reason is not None:
+            raise OrderValidationError("output is complete: a shortfall reason is not accepted")
         ProductionOrder.objects.filter(pk=locked.pk).update(
             status=OrderStatus.CLOSED,
             closed_by=saved_actor,
             closed_at=Now(),
             close_request_id=request_id,
+            shortfall_reason=shortfall_reason,
         )
         locked.refresh_from_db()
         return locked
