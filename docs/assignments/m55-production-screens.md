@@ -82,7 +82,7 @@ The sandbox cannot reach `cdn.jsdelivr.net`. The screenshot script therefore ser
 
 ### PR 1 closeout (2026-11-05)
 
-PR CI [#226](https://github.com/porntaned/ERP-for-Factory/actions/runs/41991095449) on head `d0a9a5f` (tested as merge `52d58e3`): PostgreSQL 18.6, Python 3.14.8, **936 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/90#issuecomment-6652899139)). The owner approved the merge in chat; PR #90 merged at `ac9a35d0ea5dcdef5f2d22c684025414e26586db`; main CI: **result pending**. Issue #89 stays open for PR 2.
+PR CI [#226](https://github.com/porntaned/ERP-for-Factory/actions/runs/41991095449) on head `d0a9a5f` (tested as merge `52d58e3`): PostgreSQL 18.6, Python 3.14.8, **936 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/90#issuecomment-6652899139)). The owner approved the merge in chat; PR #90 merged at `ac9a35d0ea5dcdef5f2d22c684025414e26586db`; [main CI #227](https://github.com/porntaned/ERP-for-Factory/actions/runs/41992724003): **936 passed**. Issue #89 stays open for PR 2.
 
 ### Review
 
