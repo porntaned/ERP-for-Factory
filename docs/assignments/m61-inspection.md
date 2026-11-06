@@ -1,8 +1,9 @@
 # M6.1 — Incoming/Final inspection and who decides
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/affectionate-hawking-eyr2d1`; base `main` `8b9c736`.
-[Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96). Status: **spec approved by the owner (chat, 2026-11-06), PR 1 next**
-("spec, awaiting owner review" held until then — historical). No product code yet.
+[Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96). Status: **PR 1 implemented, PR awaiting owner review** (2026-11-06)
+("spec approved by the owner, PR 1 next" and "spec, awaiting owner review" held until then — historical).
+Plan: [`m61-plan.md`](m61-plan.md).
 
 ## Purpose
 
@@ -223,5 +224,114 @@ follows the approach of manufacturing migration 0008.
 
 ## Evidence and review
 
-Filled in during implementation: tested SHA, commands and results, CI comment. Review will be
-self-review only (one agent, no sub-agents).
+Recorded in "PR 1 — delivered" below ("filled in during implementation" — historical, 2026-11-06).
+Review is self-review only (one agent, no sub-agents).
+
+## PR 1 — delivered (2026-11-06)
+
+| Area | Files |
+|---|---|
+| Model | `quality/models.py`: `LotDisposition.REJECTED`, `InspectionKind`, `InspectionResult`, `LotInspection`, `LotDispositionEvent.inspection` |
+| Database | `quality/migrations/0006_lot_inspection.py` (schema; kind matches origin; append-only; each inspection linked by its event at commit), `0007_inspection_transition_rules.py` (only an inspection leaves HOLD; REJECTED → HOLD needs an APPROVER who is not the rejecting inspector) |
+| Commands | `quality/services.py`: `record_inspection`, `inspection_kind`, `return_rejected_to_hold`; `transition_lot_disposition` now only RELEASED → HOLD |
+| Demo data | `seed_demo`, `seed_production_demo`: RM-A Lots released by a passing INCOMING inspection, same keys |
+| Tests | `tests/quality/test_inspection.py` (34), `tests/quality/helpers.py`; existing callers moved off the old release path |
+
+Commits: `24a06f8` (Task 1), `f240747` (Task 2), `2185311` (Task 3), `0044be1` (Task 4), then docs.
+
+### RED / GREEN
+
+1. **Task 1:** RED at collection (`LotInspection` missing); GREEN 17. The full suite then showed 14
+   legacy failures: migration tests wrote through the live model at old schemas, and pending
+   deferred triggers blocked `ALTER TABLE`. Fixed (rulings 1–2); 969 passed.
+2. **Task 2:** the two Review Focus tests passed at once (guards). Callers moved; 971 passed.
+3. **Task 3:** RED 10 (missing command; old pairs accepted; raw event accepted); GREEN 31. Closing the
+   old path broke 38 Issue #11-era tests, all rewritten (rulings 4–7); 983 passed.
+4. **Task 4:** three guards passed at once. The issue guard first failed for the wrong reason
+   (BOM limit) and moved to a fixture with nothing issued; 986 passed.
+
+### Rulings made while building
+
+1. **Legacy migration tests** (`tests/quality/test_event_identity_migration.py`,
+   `tests/inventory/test_request_key_migration.py`) write through the historical model of the
+   schema they migrate to. Two live-command calls at schema 0003 became historical inserts.
+2. **Migration 0006 runs `SET CONSTRAINTS ALL IMMEDIATE`** before and after its schema change, so
+   pending deferred checks fire first in both directions. This is the pattern of inventory 0008
+   and 0009.
+3. **Tests-only helpers** (`tests/quality/helpers.py`, owner ruling 2026-11-06):
+   - `release`: the normal path, through `record_inspection`
+   - `force_release`: writes an inspection and event directly for setups the command cannot
+     reach (a pair with no stock); the database still checks origin, kind and pairing
+   - `give_origin`, `made_receipts`, `ensure_origin`, `raw_inspection`
+4. **Quality's own contract tests** for `transition_lot_disposition` now exercise RELEASED → HOLD
+   after a setup release.
+5. **Direct-insert tests** attach a matching inspection. Tests whose insert must fail build it in
+   the same atomic block, because Django's test teardown runs `check_constraints`.
+6. **Identity-reassignment tests** now match "identity cannot be reassigned". An inspected Lot has
+   stock history, so the inventory guard fires first with its own message; reassignment is still
+   refused.
+7. **Quality concurrency tests** race `record_inspection`, which leaves HOLD; the serialization they
+   check is unchanged.
+8. **The REJECTED → HOLD trigger checks the APPROVER grant but not `is_active`**, like the earlier
+   Quality triggers. The command checks both.
+
+### Verification (development check, not evidence of record)
+
+PostgreSQL 16.15 (Ubuntu), Python 3.14.6 (the pin 3.14.8 is not available in this sandbox).
+Tested commit `0044be181671331b47383398540314ab1c7a9531`; the later commit changes docs only.
+
+| Command | Result |
+|---|---|
+| `uv run --env-file .env pytest -q` | 986 passed |
+| `uv run ruff check .` / `ruff format --check .` | clean |
+| `makemigrations --check --dry-run` | No changes detected |
+| `seed_production_demo --reset`, then again | 4 INCOMING PASS inspections at RM-A (L-0001..3, D-0001), all RELEASED; output Lots HOLD; rerun adds nothing |
+
+Demo walk on a disposable database (shell, after `seed_production_demo --reset`):
+- `demo-quality` has no QUALITY grant at FG, so FINAL inspection of LAMP-0001 was refused
+  (`DispositionAuthorizationError`); see finding 1.
+- With walk-only grants (QUALITY and WAREHOUSE at FG):
+  - FAIL gives FINAL and REJECTED
+  - a transfer out of FG gets `TransferQualityError`
+  - return to HOLD by `demo-quality` gets `DispositionAuthorizationError` (no APPROVER)
+  - return by `demo-approver` gives HOLD
+  - PASS gives RELEASED
+- The database was dropped afterwards.
+
+### Scrutinize (self-review, `docs/SCRUTINIZE.md`)
+
+**Intent:** release and reject a Lot only through a recorded inspection, with a separate APPROVER to
+undo a rejection. A smaller change (a note on the old command) would not give the database a rule
+to enforce, so it does not meet ruling 4.
+
+**Traced:**
+- `record_inspection` locks in this order: Lot, actor, grant, then reads replay, kind, state and
+  balance, then inserts the inspection and the event. The inserts' triggers take the same Lot lock,
+  then Item, Warehouse and Plant shares, then the key registry. This is the same order as the old
+  transition; receipts and transfers also lock the Lot first, so the balance read is stable
+  (`test_concurrent_inspections_one_wins`, the receipt race in
+  `tests/inventory/test_stock_receipt_concurrency.py`).
+- Origin cannot change underneath: an OUTPUT posting creates a new Lot, and a receipt into an
+  existing Lot takes the Lot lock.
+- Deferred pairing: the command writes both rows in one atomic block. An orphan fails at commit
+  (`test_orphan_inspection_fails_at_commit`, `transaction=True`).
+- Replay is checked before state, so an exact retry after a later change still returns the first
+  record. A key owned by another command conflicts (`test_replay_and_conflicts`).
+- Gates: transfer source, production issue/return and transfer reversal all require RELEASED, so
+  REJECTED is refused there (Task 4 tests). REJECTED at *other* warehouses is still allowed by
+  design (M6.2).
+- Inputs: Unicode notes (Thai and em dash in tests); the quantity is bounded by
+  `is_valid_quantity` and the check constraint; a blank note, zero, negative and seventh decimal
+  place are all refused.
+- No web or admin path writes dispositions. The admin registers `LotDispositionEvent` read-only;
+  the web reads `get_lot_disposition` and already renders REJECTED.
+
+**Findings:**
+1. *Minor:* the demo seed grants `demo-quality` QUALITY only at RM-A, so FINAL inspection cannot be
+   shown with demo users. Adding grants is a privileged-access change, so it is left for the owner
+   to decide, before PR 2.
+2. *Minor:* `LotInspection` is not in the read-only admin. It is optional; PR 2 adds screens.
+3. *Minor:* the database does not check that the approver is active (ruling 8).
+
+**Verdict:** `ship`. Every rule in the spec is enforced in the command and in PostgreSQL, the gates
+need no change, and the open items are minor.
