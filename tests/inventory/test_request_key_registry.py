@@ -16,6 +16,7 @@ from inventory.models import StockLedgerEntry, StockReceipt, StockTransfer
 from inventory.services import ReceiptConflictError, get_stock_balance, receive_stock
 from inventory.transfers import TransferConflictError
 from quality.services import DispositionConflictError, record_inspection
+from tests.quality.helpers import raw_inspection
 
 from .test_atomic_transfer import change_quality, post
 from .test_atomic_transfer import transfer_scope as transfer_scope  # noqa: F401
@@ -131,6 +132,7 @@ def test_database_rejects_raw_disposition_insert_with_key_owned_by_receipt(trans
     scope, key = transfer_scope, uuid4()
     receive(scope, key)
     with pytest.raises(IntegrityError, match="request"), transaction.atomic():
+        # M6.1: a valid event out of HOLD carries its inspection, so only the key is wrong.
         LotDispositionEvent.objects.create(
             lot=scope["lot"],
             warehouse=scope["other"],
@@ -139,6 +141,7 @@ def test_database_rejects_raw_disposition_insert_with_key_owned_by_receipt(trans
             from_disposition="HOLD",
             to_disposition="RELEASED",
             reason="Synthetic raw insert",
+            inspection=raw_inspection(scope["lot"], scope["other"], scope["actor"]),
         )
 
 

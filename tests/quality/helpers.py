@@ -36,6 +36,7 @@ def release(
 
 def force_release(lot, warehouse, actor, *, note="Synthetic setup release"):
     with transaction.atomic():
+        ensure_origin(lot, warehouse.plant, actor)
         inspection = LotInspection.objects.create(
             lot=lot,
             warehouse=warehouse,
@@ -70,3 +71,39 @@ def give_origin(entry):
 def made_receipts():
     """Receipts the test made itself, without the origin receipts give_origin linked."""
     return StockReceipt.objects.exclude(request_id__in=ORIGIN_KEYS)
+
+
+def ensure_origin(lot, plant, actor):
+    """Give a Lot an origin receipt at a separate ORIGIN warehouse, once (M6.1)."""
+    from facilities.models import Warehouse
+    from inventory.models import StockLedgerEntry
+
+    if inspection_kind(lot) is None:
+        origin, _ = Warehouse.objects.get_or_create(
+            plant=plant, code="ORIGIN", defaults={"display_name": "Synthetic origin"}
+        )
+        give_origin(
+            StockLedgerEntry.objects.create(
+                lot=lot,
+                warehouse=origin,
+                actor=actor,
+                quantity_delta=Decimal("1"),
+                reason="Synthetic origin",
+            )
+        )
+    return lot
+
+
+def raw_inspection(lot, warehouse, actor, *, result="PASS"):
+    """An inspection row for a direct event insert; its event must follow in the same
+    transaction, because PostgreSQL checks the pairing at commit."""
+    ensure_origin(lot, warehouse.plant, actor)
+    return LotInspection.objects.create(
+        lot=lot,
+        warehouse=warehouse,
+        kind=inspection_kind(lot),
+        result=result,
+        sample_quantity=Decimal("1"),
+        note="Synthetic direct inspection",
+        inspector=actor,
+    )

@@ -143,6 +143,10 @@ def test_quality_and_ledger_share_lot_lock(ledger_contract, ledger_scope):
     from uuid import uuid4
 
     def disposition():
+        from tests.quality.helpers import raw_inspection
+
+        # M6.1: leaving HOLD carries an inspection, inserted in the same transaction. Its
+        # insert takes the same Lot lock, so the seam under test is unchanged.
         LotDispositionEvent.objects.create(
             lot=ledger_scope["lot"],
             warehouse=ledger_scope["warehouse"],
@@ -151,6 +155,9 @@ def test_quality_and_ledger_share_lot_lock(ledger_contract, ledger_scope):
             from_disposition="HOLD",
             to_disposition="RELEASED",
             reason="Synthetic seam",
+            inspection=raw_inspection(
+                ledger_scope["lot"], ledger_scope["warehouse"], ledger_scope["actor"]
+            ),
         )
 
     thread = Thread(target=worker, args=(disposition, outcomes, pids))

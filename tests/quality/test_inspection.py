@@ -21,6 +21,7 @@ from inventory.services import receive_stock
 from quality.models import LotDispositionEvent, LotInspection
 from quality.services import (
     DispositionAuthorizationError,
+    DispositionConflictError,
     InspectionConflictError,
     InspectionValidationError,
     get_lot_disposition,
@@ -278,3 +279,199 @@ def test_concurrent_inspections_one_wins(line):
     assert outcome[0] == "InspectionConflictError", outcome
     assert list(LotInspection.objects.filter(lot=lot).values_list("note", flat=True)) == ["First"]
     assert first.event.to_disposition == "RELEASED"
+
+
+# ---------------------------------------------------------------- Task 3: only inspection leaves HOLD
+
+
+def hold_again(mf, lot, *, expected="RELEASED", target="HOLD", key=None, actor=None):
+    from quality.services import transition_lot_disposition
+
+    return transition_lot_disposition(
+        lot=lot,
+        warehouse=mf.wh["RM-A"],
+        actor=actor or mf.qc,
+        expected_disposition=expected,
+        target_disposition=target,
+        reason="Containment",
+        request_id=key or uuid4(),
+    )
+
+
+def back_to_hold(mf, lot, *, actor=None, reason="Re-inspect after supplier dispute", key=None):
+    from quality.services import return_rejected_to_hold
+
+    return return_rejected_to_hold(
+        lot=lot,
+        warehouse=mf.wh["RM-A"],
+        actor=actor or mf.users["approver"],
+        reason=reason,
+        request_id=key or uuid4(),
+    )
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("target", ["RELEASED", "REJECTED"])
+def test_transition_cannot_leave_hold(line, target):
+    from quality.services import DispositionValidationError
+
+    lot = received(line)
+    with pytest.raises(DispositionValidationError, match="record_inspection"):
+        hold_again(line, lot, expected="HOLD", target=target)
+    assert get_lot_disposition(lot=lot, warehouse=line.wh["RM-A"]) == "HOLD"
+
+
+@pytest.mark.django_db
+def test_transition_still_holds_a_released_lot(line):
+    lot = received(line)
+    inspect(line, lot)
+    event = hold_again(line, lot)
+    assert (event.from_disposition, event.to_disposition, event.inspection) == (
+        "RELEASED",
+        "HOLD",
+        None,
+    )
+
+
+@pytest.mark.django_db
+def test_transition_cannot_move_a_rejected_lot(line):
+    from quality.services import DispositionValidationError
+
+    lot = received(line)
+    inspect(line, lot, result="FAIL")
+    with pytest.raises(DispositionValidationError, match="return_rejected_to_hold"):
+        hold_again(line, lot, expected="REJECTED")
+
+
+@pytest.mark.django_db
+def test_approver_returns_rejected_to_hold(line):
+    lot = received(line)
+    inspect(line, lot, result="FAIL")
+    event = back_to_hold(line, lot)
+    assert (event.from_disposition, event.to_disposition) == ("REJECTED", "HOLD")
+    assert (event.actor, event.reason, event.inspection) == (
+        line.users["approver"],
+        "Re-inspect after supplier dispute",
+        None,
+    )
+    assert get_lot_disposition(lot=lot, warehouse=line.wh["RM-A"]) == "HOLD"
+
+
+@pytest.mark.django_db
+def test_inspector_cannot_return_even_as_approver(line):
+    lot = received(line)
+    WarehouseRoleAssignment.objects.create(user=line.qc, warehouse=line.wh["RM-A"], role="APPROVER")
+    inspect(line, lot, result="FAIL")
+    with pytest.raises(DispositionAuthorizationError, match="inspector"):
+        back_to_hold(line, lot, actor=line.qc)
+    with pytest.raises(IntegrityError, match="inspector"), transaction.atomic():
+        LotDispositionEvent.objects.create(
+            lot=lot,
+            warehouse=line.wh["RM-A"],
+            actor=line.qc,
+            request_id=uuid4(),
+            from_disposition="REJECTED",
+            to_disposition="HOLD",
+            reason="Raw return",
+        )
+    assert get_lot_disposition(lot=lot, warehouse=line.wh["RM-A"]) == "REJECTED"
+
+
+@pytest.mark.django_db
+def test_quality_only_cannot_return(line):
+    other_qc = get_user_model().objects.create(username="qc-two")
+    WarehouseRoleAssignment.objects.create(user=other_qc, warehouse=line.wh["RM-A"], role="QUALITY")
+    lot = received(line)
+    inspect(line, lot, result="FAIL")
+    with pytest.raises(DispositionAuthorizationError):
+        back_to_hold(line, lot, actor=other_qc)
+    with pytest.raises(IntegrityError, match="APPROVER"), transaction.atomic():
+        LotDispositionEvent.objects.create(
+            lot=lot,
+            warehouse=line.wh["RM-A"],
+            actor=other_qc,
+            request_id=uuid4(),
+            from_disposition="REJECTED",
+            to_disposition="HOLD",
+            reason="Raw return",
+        )
+
+
+@pytest.mark.django_db
+def test_return_refusals(line):
+    from quality.services import DispositionValidationError
+
+    lot = received(line)
+    with pytest.raises(DispositionConflictError, match="REJECTED"):
+        back_to_hold(line, lot)  # still HOLD
+    inspect(line, lot, result="FAIL")
+    with pytest.raises(DispositionValidationError):
+        back_to_hold(line, lot, reason="  ")
+
+
+@pytest.mark.django_db
+def test_reject_return_then_pass_releases(line):
+    lot = received(line)
+    inspect(line, lot, result="FAIL", note="Scratched die")
+    back_to_hold(line, lot)
+    inspect(line, lot, result="PASS", note="Reworked and re-inspected")
+    assert get_lot_disposition(lot=lot, warehouse=line.wh["RM-A"]) == "RELEASED"
+    events = LotDispositionEvent.objects.filter(lot=lot).order_by("id")
+    assert [(e.from_disposition, e.to_disposition) for e in events] == [
+        ("HOLD", "REJECTED"),
+        ("REJECTED", "HOLD"),
+        ("HOLD", "RELEASED"),
+    ]
+
+
+@pytest.mark.django_db
+def test_return_replay_and_conflict(line):
+    lot = received(line)
+    inspect(line, lot, result="FAIL")
+    key = uuid4()
+    first = back_to_hold(line, lot, key=key)
+    assert back_to_hold(line, lot, key=key) == first
+    with pytest.raises(DispositionConflictError):
+        back_to_hold(line, lot, key=key, reason="Another reason")
+
+
+@pytest.mark.django_db
+def test_database_refuses_leaving_hold_without_matching_inspection(line):
+    lot, other = received(line, "R1"), received(line, "R2")
+
+    def event(**fields):
+        values = {
+            "lot": lot,
+            "warehouse": line.wh["RM-A"],
+            "actor": line.qc,
+            "request_id": uuid4(),
+            "from_disposition": "HOLD",
+            "to_disposition": "RELEASED",
+            "reason": "Raw",
+        } | fields
+        return LotDispositionEvent.objects.create(**values)
+
+    with pytest.raises(IntegrityError, match="inspection"), transaction.atomic():
+        event()  # no inspection
+    for to, result, target_lot in (
+        ("RELEASED", "FAIL", lot),  # result does not match
+        ("REJECTED", "PASS", lot),
+        ("RELEASED", "PASS", other),  # inspection of another Lot
+    ):
+        with pytest.raises(IntegrityError, match="inspection"), transaction.atomic():
+            found = raw_inspection(line, target_lot, result=result)
+            event(to_disposition=to, inspection=found)
+    inspect(line, lot)
+    released = LotDispositionEvent.objects.get(lot=lot, to_disposition="RELEASED").inspection
+    with pytest.raises(IntegrityError, match="inspection"), transaction.atomic():
+        event(from_disposition="RELEASED", to_disposition="HOLD", inspection=released)
+
+
+@pytest.mark.django_db(transaction=True)
+def test_transition_rules_migration_unapplies_and_reapplies():
+    executor = MigrationExecutor(connection)
+    latest = executor.loader.graph.leaf_nodes()
+    try:
+        executor.migrate([("quality", "0006_lot_inspection")])
+    finally:
+        MigrationExecutor(connection).migrate(latest)

@@ -153,12 +153,16 @@ def transition_lot_disposition(
         if existing is not None:
             return existing
 
-        if (
-            expected_disposition not in LotDisposition.values
-            or target_disposition not in LotDisposition.values
-            or expected_disposition == target_disposition
+        # M6.1 (Issue #96): only RELEASED -> HOLD stays here. Leaving HOLD takes an inspection,
+        # and a REJECTED Lot returns to HOLD only through an APPROVER.
+        if (expected_disposition, target_disposition) != (
+            LotDisposition.RELEASED,
+            LotDisposition.HOLD,
         ):
-            raise DispositionValidationError("transition must change between HOLD and RELEASED")
+            raise DispositionValidationError(
+                "this command only holds a RELEASED Lot; use record_inspection to leave HOLD "
+                "and return_rejected_to_hold for a REJECTED Lot"
+            )
         if not isinstance(reason, str) or not reason.strip():
             raise DispositionValidationError("reason must be nonblank")
 
@@ -344,3 +348,65 @@ def record_inspection(
             raise
         inspection.refresh_from_db()
         return inspection
+
+
+def _rejecting_inspector_id(lot: Lot, warehouse: Warehouse) -> int | None:
+    event = (
+        LotDispositionEvent.objects.filter(
+            lot=lot, warehouse=warehouse, to_disposition=LotDisposition.REJECTED
+        )
+        .order_by("-id")
+        .select_related("inspection")
+        .first()
+    )
+    return event.inspection.inspector_id if event and event.inspection else None
+
+
+def return_rejected_to_hold(
+    *, lot: Lot, warehouse: Warehouse, actor: Any, reason: str, request_id: UUID
+) -> LotDispositionEvent:
+    """An APPROVER who did not reject the Lot sends a REJECTED Lot-Warehouse back to HOLD."""
+    _validate_pair(lot, warehouse)
+    if not isinstance(reason, str) or not reason.strip():
+        raise DispositionValidationError("reason must be nonblank")
+    if not isinstance(request_id, UUID):
+        raise DispositionValidationError("request_id must be a UUID")
+    with transaction.atomic():
+        locked_lot = Lot.objects.select_for_update().get(pk=lot.pk)
+        saved_actor = _lock_actor_with_role(actor, warehouse, WarehouseRole.APPROVER)
+        request = dict(
+            lot=locked_lot,
+            warehouse=warehouse,
+            actor=saved_actor,
+            expected_disposition=LotDisposition.REJECTED,
+            target_disposition=LotDisposition.HOLD,
+            reason=reason,
+        )
+        existing = _resolve_existing_request(request_id, **request)
+        if existing is not None:
+            return existing
+        if owned_by_other_command(request_id, "DISPOSITION"):
+            raise DispositionConflictError("request_id was already used by another command")
+        current = get_lot_disposition(lot=locked_lot, warehouse=warehouse)
+        if current != LotDisposition.REJECTED:
+            raise DispositionConflictError(f"expected REJECTED, current state is {current}")
+        if _rejecting_inspector_id(locked_lot, warehouse) == saved_actor.pk:
+            raise DispositionAuthorizationError(
+                "the inspector who rejected this Lot cannot return it to HOLD"
+            )
+        try:
+            with transaction.atomic():
+                return LotDispositionEvent.objects.create(
+                    lot=locked_lot,
+                    warehouse=warehouse,
+                    actor=saved_actor,
+                    request_id=request_id,
+                    from_disposition=LotDisposition.REJECTED,
+                    to_disposition=LotDisposition.HOLD,
+                    reason=reason,
+                )
+        except IntegrityError:
+            existing = _resolve_existing_request(request_id, **request)
+            if existing is not None:
+                return existing
+            raise

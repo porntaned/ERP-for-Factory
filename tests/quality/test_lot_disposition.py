@@ -6,6 +6,8 @@ import pytest
 from django.contrib.auth.models import AnonymousUser
 from django.utils import timezone
 
+from tests.quality.helpers import force_release
+
 pytestmark = pytest.mark.django_db
 
 
@@ -18,13 +20,21 @@ def transition_values(
         "lot": quality_scope["lot"],
         "warehouse": quality_scope["warehouse"],
         "actor": quality_user,
-        "expected_disposition": "HOLD",
-        "target_disposition": "RELEASED",
-        "reason": "Incoming inspection accepted",
+        # M6.1: this command only holds a RELEASED Lot; leaving HOLD is record_inspection.
+        "expected_disposition": "RELEASED",
+        "target_disposition": "HOLD",
+        "reason": "Containment pending review",
         "request_id": uuid4(),
     }
     values.update(overrides)
     return values
+
+
+def released(quality_scope: dict[str, Any], actor: Any, *, lot=None, warehouse=None) -> Any:
+    """Setup: put a pair in RELEASED with an inspection written directly (tests only)."""
+    return force_release(
+        lot or quality_scope["lot"], warehouse or quality_scope["warehouse"], actor
+    )
 
 
 def authorize_quality(
@@ -58,6 +68,9 @@ def test_disposition_is_independent_for_each_lot_warehouse_pair(
     grant_role: Any,
 ) -> None:
     authorize_quality(grant_role, quality_user, quality_scope)
+    released(quality_scope, quality_user)
+    released(quality_scope, quality_user, warehouse=quality_scope["sibling_warehouse"])
+    released(quality_scope, quality_user, lot=quality_scope["second_lot"])
     event = disposition_contract["transition"](**transition_values(quality_scope, quality_user))
 
     assert event.pk is not None
@@ -66,21 +79,21 @@ def test_disposition_is_independent_for_each_lot_warehouse_pair(
             lot=quality_scope["lot"],
             warehouse=quality_scope["warehouse"],
         )
-        == "RELEASED"
+        == "HOLD"
     )
     assert (
         disposition_contract["get_disposition"](
             lot=quality_scope["lot"],
             warehouse=quality_scope["sibling_warehouse"],
         )
-        == "HOLD"
+        == "RELEASED"
     )
     assert (
         disposition_contract["get_disposition"](
             lot=quality_scope["second_lot"],
             warehouse=quality_scope["warehouse"],
         )
-        == "HOLD"
+        == "RELEASED"
     )
 
 
@@ -90,42 +103,36 @@ def test_release_then_hold_records_an_exact_attributed_chain(
     quality_user: Any,
     grant_role: Any,
 ) -> None:
+    """M6.1: release is an inspection (setup here); the command records the exact hold."""
     authorize_quality(grant_role, quality_user, quality_scope)
     transition = disposition_contract["transition"]
-    release_request = uuid4()
+    release = released(quality_scope, quality_user)
+    hold_request = uuid4()
     before = timezone.now()
 
-    released = transition(
-        **transition_values(
-            quality_scope,
-            quality_user,
-            request_id=release_request,
-        )
-    )
     held = transition(
         **transition_values(
             quality_scope,
             quality_user,
-            expected_disposition="RELEASED",
-            target_disposition="HOLD",
+            request_id=hold_request,
             reason="Packaging damage requires review",
         )
     )
     after = timezone.now()
 
-    assert released.lot_id == quality_scope["lot"].pk
-    assert released.warehouse_id == quality_scope["warehouse"].pk
-    assert released.actor_id == quality_user.pk
-    assert released.request_id == release_request
-    assert released.from_disposition == "HOLD"
-    assert released.to_disposition == "RELEASED"
-    assert released.reason == "Incoming inspection accepted"
-    assert isinstance(released.created_at, datetime)
-    assert timezone.is_aware(released.created_at)
-    assert before <= released.created_at <= after
+    assert (release.from_disposition, release.to_disposition) == ("HOLD", "RELEASED")
+    assert held.lot_id == quality_scope["lot"].pk
+    assert held.warehouse_id == quality_scope["warehouse"].pk
+    assert held.actor_id == quality_user.pk
+    assert held.request_id == hold_request
     assert held.from_disposition == "RELEASED"
     assert held.to_disposition == "HOLD"
-    assert held.pk > released.pk
+    assert held.reason == "Packaging damage requires review"
+    assert held.inspection is None
+    assert isinstance(held.created_at, datetime)
+    assert timezone.is_aware(held.created_at)
+    assert before <= held.created_at <= after
+    assert held.pk > release.pk
     assert (
         disposition_contract["get_disposition"](
             lot=quality_scope["lot"],
@@ -336,19 +343,13 @@ def test_stale_expected_state_conflicts_without_adding_history(
 ) -> None:
     authorize_quality(grant_role, quality_user, quality_scope)
     transition = disposition_contract["transition"]
+    released(quality_scope, quality_user)
     transition(**transition_values(quality_scope, quality_user))
 
     with pytest.raises(disposition_contract["conflict_error"]):
-        transition(
-            **transition_values(
-                quality_scope,
-                quality_user,
-                expected_disposition="HOLD",
-                target_disposition="RELEASED",
-            )
-        )
+        transition(**transition_values(quality_scope, quality_user))  # it is HOLD now
 
-    assert disposition_contract["event_model"].objects.count() == 1
+    assert disposition_contract["event_model"].objects.count() == 2
 
 
 @pytest.mark.parametrize("reason", [None, "", " ", "\t\r\n"])
@@ -398,13 +399,14 @@ def test_exact_retry_returns_the_original_event_without_duplicate_history(
     grant_role: Any,
 ) -> None:
     authorize_quality(grant_role, quality_user, quality_scope)
+    released(quality_scope, quality_user)
     values = transition_values(quality_scope, quality_user)
 
     first = disposition_contract["transition"](**values)
     retried = disposition_contract["transition"](**values)
 
     assert retried.pk == first.pk
-    assert disposition_contract["event_model"].objects.count() == 1
+    assert disposition_contract["event_model"].objects.count() == 2
 
 
 @pytest.mark.parametrize(
@@ -429,6 +431,7 @@ def test_reused_request_key_with_different_payload_conflicts(
     authorize_quality(grant_role, quality_user, quality_scope)
     grant_role(quality_user, quality_scope["sibling_warehouse"], "QUALITY")
     grant_role(other_user, quality_scope["warehouse"], "QUALITY")
+    released(quality_scope, quality_user)
     values = transition_values(quality_scope, quality_user)
     original = disposition_contract["transition"](**values)
     changed = dict(values)
@@ -436,8 +439,8 @@ def test_reused_request_key_with_different_payload_conflicts(
         "lot": quality_scope["second_lot"],
         "warehouse": quality_scope["sibling_warehouse"],
         "actor": other_user,
-        "expected_disposition": "RELEASED",
-        "target_disposition": "HOLD",
+        "expected_disposition": "REJECTED",
+        "target_disposition": "RELEASED",
         "reason": "Different decision reason",
     }
     changed[changed_field] = replacements[changed_field]
@@ -445,9 +448,9 @@ def test_reused_request_key_with_different_payload_conflicts(
     with pytest.raises(disposition_contract["conflict_error"]):
         disposition_contract["transition"](**changed)
 
-    assert disposition_contract["event_model"].objects.count() == 1
+    assert disposition_contract["event_model"].objects.count() == 2
     original.refresh_from_db()
-    assert original.to_disposition == "RELEASED"
+    assert original.to_disposition == "HOLD"
 
 
 def test_request_id_is_stored_as_uuid(
@@ -457,6 +460,7 @@ def test_request_id_is_stored_as_uuid(
     grant_role: Any,
 ) -> None:
     authorize_quality(grant_role, quality_user, quality_scope)
+    released(quality_scope, quality_user)
 
     event = disposition_contract["transition"](**transition_values(quality_scope, quality_user))
 

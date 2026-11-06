@@ -4,6 +4,8 @@ from uuid import uuid4
 import pytest
 from django.db import DatabaseError, connection, transaction
 
+from tests.quality.helpers import force_release
+
 pytestmark = pytest.mark.django_db
 
 
@@ -57,14 +59,9 @@ def test_explicit_event_id_is_rejected_without_blocking_service_hold(
     assert event_model.objects.count() == 0
     assert disposition_contract["get_disposition"](lot=lot, warehouse=warehouse) == "HOLD"
 
-    released = disposition_contract["transition"](
-        lot=lot,
-        warehouse=warehouse,
-        actor=quality_user,
-        expected_disposition="HOLD",
-        target_disposition="RELEASED",
-        reason="Normal release after rejected explicit ID",
-        request_id=uuid4(),
+    # M6.1: leaving HOLD takes an inspection; this setup writes one directly (tests only).
+    released = force_release(
+        lot, warehouse, quality_user, note="Release after rejected explicit ID"
     )
     hold_command = {
         "lot": lot,
