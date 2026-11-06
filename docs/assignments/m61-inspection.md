@@ -1,7 +1,7 @@
 # M6.1 — Incoming/Final inspection and who decides
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/affectionate-hawking-eyr2d1`; base `main` `8b9c736`.
-[Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96). Status: **PR 1 merged ([PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97) at `e7f64e7`); PR 2 (web) in [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101), awaiting CI** (2026-11-06; "PR 2 (web) next" held until then — historical)
+[Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96). Status: **PR 1 merged ([PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97) at `e7f64e7`); PR 2 (web) merged in [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101) at `d3a48a5`; M6.1 complete** (2026-11-06; "PR 2 in PR #101, awaiting CI" and "PR 2 (web) next" held until then — historical)
 ("PR 1 implemented, PR awaiting owner review", "spec approved by the owner, PR 1 next" and "spec, awaiting owner review" held until then — historical).
 Plan: [`m61-plan.md`](m61-plan.md).
 
@@ -382,3 +382,7 @@ clean; no pending migrations (no schema change).
 verdict fix-then-ship, no blocker — [m61-pr2-independent-review.md](../reviews/m61-pr2-independent-review.md).
 Findings M1, m1–m3, m5, m6 fixed in one pass; m4 (per-row queries) deferred. The fixes were not
 re-reviewed; tests and CI cover them.
+
+### PR 2 closeout (2026-11-06)
+
+PR CI [#250](https://github.com/porntaned/ERP-for-Factory/actions/runs/42229101217) on head `8c8f34e` (tested as merge `6bd5975`): PostgreSQL 18.6, Python 3.14.8, **1003 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/101#issuecomment-6686196300)). Merged under the owner's authorisation: PR #101 at `d3a48a506e7b7dbcd2cc5e4555acecccdca1f18c`; [main CI #251](https://github.com/porntaned/ERP-for-Factory/actions/runs/42229722933): **1003 passed**. Issue #96 closed. M6.2 not started (owner: stop before M6.2).
