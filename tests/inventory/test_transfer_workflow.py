@@ -12,7 +12,9 @@ from inventory.services import get_stock_balance, receive_stock
 from inventory.transfer_policy import TransferQualityError
 from inventory.transfers import TransferAuthorizationError, TransferConflictError, transfer_stock
 from quality.models import LotDispositionEvent
-from quality.services import get_lot_disposition, transition_lot_disposition
+from quality.services import get_lot_disposition
+from tests.quality.helpers import force_release
+from tests.quality.helpers import release as inspect_release
 
 
 @pytest.mark.django_db(transaction=True)
@@ -30,15 +32,11 @@ def test_receipt_quality_transfer_history_and_retry_workflow(ledger_scope, desti
         return get_lot_disposition(lot=lot, warehouse=warehouse)
 
     def release(warehouse):
-        transition_lot_disposition(
-            lot=lot,
-            warehouse=warehouse,
-            actor=actor,
-            expected_disposition=disposition(warehouse),
-            target_disposition="RELEASED",
-            reason="Synthetic inspection — ตรวจรับ",
-            request_id=uuid4(),
-        )
+        # M6.1: inspect stock that is there; an empty destination is released for setup only.
+        if get_stock_balance(lot=lot, warehouse=warehouse) > 0:
+            inspect_release(lot, warehouse, actor, note="Synthetic inspection — ตรวจรับ")
+        else:
+            force_release(lot, warehouse, actor, note="Synthetic inspection — ตรวจรับ")
 
     def snapshot():
         return (

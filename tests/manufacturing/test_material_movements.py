@@ -30,8 +30,8 @@ from manufacturing.services import (
     issue_material,
     return_material,
 )
-from quality.services import transition_lot_disposition
 from tests.inventory.test_stock_receipt_concurrency import blocked_action
+from tests.quality.helpers import release as inspect_release
 
 D = Decimal
 
@@ -67,15 +67,9 @@ def stock(mf, code, quantity, *, item="chip", warehouse="RM-A", release=True):
         reason="Synthetic receipt",
         request_id=uuid4(),
     )
-    if release:
-        transition_lot_disposition(
-            lot=lot,
-            warehouse=mf.wh[warehouse],
-            actor=mf.qc,
-            expected_disposition="HOLD",
-            target_disposition="RELEASED",
-            reason="Synthetic release",
-            request_id=uuid4(),
+    if release:  # M6.1: release by an INCOMING inspection that passes
+        inspect_release(
+            lot, mf.wh[warehouse], mf.qc, quantity=Decimal("1"), note="Synthetic release"
         )
     return lot
 

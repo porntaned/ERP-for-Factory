@@ -1,5 +1,6 @@
 """M4.3.3 policy and actual PostgreSQL serialization, without transfer posting."""
 
+from decimal import Decimal
 from uuid import uuid4
 
 import pytest
@@ -14,7 +15,8 @@ from inventory.transfer_policy import (
     require_transfer_quality,
 )
 from quality.models import LotDispositionEvent
-from quality.services import get_lot_disposition, transition_lot_disposition
+from quality.services import get_lot_disposition, inspection_kind, transition_lot_disposition
+from tests.quality.helpers import force_release, give_origin
 
 from .test_stock_receipt_concurrency import blocked_action
 
@@ -28,7 +30,29 @@ def scope(ledger_scope):
     return ledger_scope
 
 
+def with_origin(scope, lot):
+    """M6.1: an inspected Lot needs an origin. One receipt at a separate warehouse gives it one
+    without stock at the pairs under test (created only when a test releases)."""
+    if inspection_kind(lot) is None:
+        elsewhere, _ = Warehouse.objects.get_or_create(
+            plant=scope["warehouse"].plant, code="ORIGIN", defaults={"display_name": "Origin"}
+        )
+        give_origin(
+            StockLedgerEntry.objects.create(
+                lot=lot,
+                warehouse=elsewhere,
+                actor=scope["actor"],
+                quantity_delta=Decimal("1"),
+                reason="Synthetic origin",
+            )
+        )
+    return lot
+
+
 def change(scope, warehouse, target):
+    """M6.1: these pairs hold no stock, so release is setup-only (force_release)."""
+    if target == "RELEASED":
+        return force_release(with_origin(scope, scope["lot"]), warehouse, scope["actor"])
     return transition_lot_disposition(
         lot=scope["lot"],
         warehouse=warehouse,
@@ -67,6 +91,7 @@ def test_quality_matrix_preserves_history_and_stock(scope, source, destination):
     prepare(scope, scope["warehouse"], source)
     prepare(scope, scope["other"], destination)
     before = list(LotDispositionEvent.objects.order_by("id").values())
+    entries = StockLedgerEntry.objects.count()
     with transaction.atomic():
         if source == "RELEASED":
             state = check(scope)
@@ -78,20 +103,14 @@ def test_quality_matrix_preserves_history_and_stock(scope, source, destination):
             with pytest.raises(TransferQualityError):
                 check(scope)
     assert list(LotDispositionEvent.objects.order_by("id").values()) == before
-    assert StockLedgerEntry.objects.count() == 0
+    assert StockLedgerEntry.objects.count() == entries  # the gate posts nothing
 
 
 @pytest.mark.django_db
 def test_release_of_other_pair_does_not_release_source(scope):
     change(scope, scope["other"], "RELEASED")
-    LotDispositionEvent.objects.create(
-        lot=scope["second"],
-        warehouse=scope["warehouse"],
-        actor=scope["actor"],
-        from_disposition="HOLD",
-        to_disposition="RELEASED",
-        reason="Other lot",
-        request_id=uuid4(),
+    force_release(
+        with_origin(scope, scope["second"]), scope["warehouse"], scope["actor"], note="Other lot"
     )
     with pytest.raises(TransferQualityError):
         check(scope)
@@ -177,6 +196,7 @@ def test_quality_transition_and_gate_serialize_until_outer_commit(
     warehouse = scope["other"] if at_destination else scope["warehouse"]
     if at_destination:
         change(scope, warehouse, "RELEASED")
+    entries = StockLedgerEntry.objects.count()
 
     def hold():
         return change(scope, warehouse, "HOLD")
@@ -193,4 +213,4 @@ def test_quality_transition_and_gate_serialize_until_outer_commit(
     else:
         assert outcome[0] == "committed", outcome
     assert get_lot_disposition(lot=scope["lot"], warehouse=warehouse) == "HOLD"
-    assert StockLedgerEntry.objects.count() == 0
+    assert StockLedgerEntry.objects.count() == entries

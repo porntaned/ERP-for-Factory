@@ -10,6 +10,7 @@ from django.db.migrations.executor import MigrationExecutor
 from inventory.models import RequestKey, StockLedgerEntry, StockReceipt, StockTransfer
 from inventory.services import receive_stock
 from quality.models import LotDispositionEvent
+from tests.quality.helpers import made_receipts
 
 from .test_atomic_transfer import post
 from .test_atomic_transfer import transfer_scope as transfer_scope  # noqa: F401
@@ -55,7 +56,11 @@ def test_backfill_registers_each_existing_key_under_its_command(transfer_scope):
     assert (receipt_key, "RECEIPT") in rows
     assert (transfer_key, "TRANSFER") in rows
     assert {(k, "DISPOSITION") for k in disposition_keys} <= rows
-    assert StockReceipt.objects.count() == 1 and StockTransfer.objects.count() == 1
+    # transfer_scope's origin receipt (M6.1) is registered too but not counted here.
+    assert made_receipts().count() == 1 and StockTransfer.objects.count() == 1
+    assert {
+        (k, "RECEIPT") for k in StockReceipt.objects.values_list("request_id", flat=True)
+    } <= rows
 
 
 @pytest.mark.django_db

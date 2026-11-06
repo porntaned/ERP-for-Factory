@@ -21,7 +21,7 @@ from inventory.models import Lot
 from inventory.services import receive_stock
 from manufacturing import services as mf
 from manufacturing.models import BillOfMaterials
-from quality.services import get_lot_disposition, transition_lot_disposition
+from quality.services import get_lot_disposition, record_inspection
 
 from .seed_demo import demo_key
 
@@ -67,13 +67,13 @@ class Command(BaseCommand):
                 request_id=demo_key(f"m54-receipt-{code}"),
             )
             if get_lot_disposition(lot=lot, warehouse=wh["RM-A"]) == "HOLD":
-                transition_lot_disposition(
+                record_inspection(  # M6.1: an INCOMING inspection that passes
                     lot=lot,
                     warehouse=wh["RM-A"],
+                    result="PASS",
+                    sample_quantity=D("1"),
+                    note="Synthetic demo incoming inspection",
                     actor=users["demo-quality"],
-                    expected_disposition="HOLD",
-                    target_disposition="RELEASED",
-                    reason="Synthetic demo incoming release",
                     request_id=demo_key(f"m54-release-{code}"),
                 )
             return lot

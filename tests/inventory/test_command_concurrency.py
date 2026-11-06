@@ -17,6 +17,7 @@ from access_control.models import WarehouseRoleAssignment
 from inventory.models import StockLedgerEntry, StockReceipt, StockTransfer
 from inventory.services import receive_stock
 from quality.models import LotDispositionEvent
+from tests.quality.helpers import made_receipts
 
 from .test_atomic_transfer import balances, change_quality, post
 from .test_atomic_transfer import transfer_scope as transfer_scope
@@ -89,7 +90,7 @@ def test_receipt_and_transfer_share_committed_stock(transfer_scope, receipt_firs
     if receipt_first and rollback_first:
         assert outcome[0] == "InsufficientStockError", outcome
         assert balances(scope) == (Decimal("100.000001"), 0)
-        assert StockReceipt.objects.count() == StockTransfer.objects.count() == 0
+        assert made_receipts().count() == StockTransfer.objects.count() == 0
         assert StockLedgerEntry.objects.count() == 1
     else:
         assert outcome[0] == "committed", outcome
@@ -169,4 +170,4 @@ def test_waiting_request_can_post_after_same_uuid_rolls_back(
         assert history.source_entry_id == outcome[1] and history.source_entry.reason == reason
         assert history.destination_entry.reason == reason
         assert balances(scope) == (Decimal("70"), Decimal("30.000001"))
-        assert StockLedgerEntry.objects.count() == 3 and StockReceipt.objects.count() == 0
+        assert StockLedgerEntry.objects.count() == 3 and made_receipts().count() == 0

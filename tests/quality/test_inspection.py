@@ -168,7 +168,7 @@ def test_replay_and_conflicts(line):
     key = uuid4()
     first = inspect(line, lot, key=key)
     assert inspect(line, lot, key=key) == first
-    assert LotInspection.objects.count() == 1
+    assert LotInspection.objects.filter(lot=lot).count() == 1
     with pytest.raises(InspectionConflictError):
         inspect(line, lot, key=key, note="Another note")
     receipt_key = uuid4()
@@ -207,7 +207,7 @@ def test_orphan_inspection_fails_at_commit(line):
     with pytest.raises(IntegrityError, match="linked by its disposition event"):
         with transaction.atomic():
             raw_inspection(line, lot)
-    assert not LotInspection.objects.exists()
+    assert not LotInspection.objects.filter(lot=lot).exists()
 
 
 @pytest.mark.django_db
@@ -238,3 +238,43 @@ def test_inspection_migration_unapplies_and_reapplies():
     finally:
         MigrationExecutor(connection).migrate(latest)
     assert LotInspection.objects.count() == 0
+
+
+# ---------------------------------------------------------------- review focus (plan)
+
+
+@pytest.mark.django_db
+def test_transferred_lot_is_inspected_at_destination_with_origin_kind(line):
+    from inventory.transfers import transfer_stock
+
+    lot = received(line, "R1", "10")
+    inspect(line, lot)
+    transfer_stock(
+        lot=lot,
+        source_warehouse=line.wh["RM-A"],
+        destination_warehouse=line.wh["FG"],
+        actor=line.staff,
+        quantity=D("3"),
+        reason="Synthetic move",
+        request_id=uuid4(),
+    )
+    assert get_lot_disposition(lot=lot, warehouse=line.wh["FG"]) == "HOLD"
+    with pytest.raises(InspectionValidationError, match="balance"):
+        inspect(line, lot, warehouse="FG", quantity="4")
+    there = inspect(line, lot, warehouse="FG", quantity="3")
+    assert (there.kind, there.warehouse) == ("INCOMING", line.wh["FG"])
+    assert get_lot_disposition(lot=lot, warehouse=line.wh["FG"]) == "RELEASED"
+
+
+@pytest.mark.django_db(transaction=True)
+def test_concurrent_inspections_one_wins(line):
+    from tests.inventory.test_stock_receipt_concurrency import blocked_action
+
+    lot = received(line)
+    first, outcome = blocked_action(
+        lambda: inspect(line, lot, note="First"),
+        lambda: inspect(line, lot, note="Second"),
+    )
+    assert outcome[0] == "InspectionConflictError", outcome
+    assert list(LotInspection.objects.filter(lot=lot).values_list("note", flat=True)) == ["First"]
+    assert first.event.to_disposition == "RELEASED"

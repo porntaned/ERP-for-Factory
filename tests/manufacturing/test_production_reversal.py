@@ -28,8 +28,8 @@ from inventory.production import (
     reverse_production_posting,
 )
 from inventory.transfers import transfer_stock
-from quality.services import transition_lot_disposition
 from tests.inventory.test_stock_receipt_concurrency import blocked_action
+from tests.quality.helpers import release as inspect_release
 
 from .test_material_movements import balance, give_back, issue, order, plant, stock  # noqa: F401
 from .test_production_postings import consume, line, output, scrap  # noqa: F401
@@ -47,15 +47,8 @@ def reverse_posting(mf, link, *, actor="approver2", reason="Recorded in error", 
 
 
 def release(mf, lot, warehouse="FG"):
-    transition_lot_disposition(
-        lot=lot,
-        warehouse=mf.wh[warehouse],
-        actor=mf.qc,
-        expected_disposition="HOLD",
-        target_disposition="RELEASED",
-        reason="Synthetic release",
-        request_id=uuid4(),
-    )
+    # M6.1: an output Lot is released by a FINAL inspection that passes.
+    inspect_release(lot, mf.wh[warehouse], mf.qc, quantity=Decimal("1"), note="Synthetic release")
 
 
 def move(mf, lot, source, destination, quantity):
