@@ -18,6 +18,7 @@ def navigation(request):
     return {
         "can_move_stock": movable_warehouses(user).exists(),
         "can_reverse": warehouses_for_user(user, ["APPROVER"]).exists(),
+        "can_quality": warehouses_for_user(user, ["QUALITY", "APPROVER"]).exists(),
     }
 
 

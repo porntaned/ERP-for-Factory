@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 
-from demo import production_views, views
+from demo import production_views, quality_views, views
 
 urlpatterns = [
     path("", views.stock_overview, name="stock-overview"),
@@ -23,6 +23,9 @@ urlpatterns = [
         name="production-reverse",
     ),
     path("lots/<int:pk>/genealogy/", production_views.lot_genealogy, name="lot-genealogy"),
+    path("quality/", quality_views.quality_list, name="quality-list"),
+    path("quality/inspect/", quality_views.inspect, name="quality-inspect"),
+    path("quality/return/", quality_views.return_to_hold, name="quality-return"),
     path("reversals/receipt/<int:pk>/", views.reverse, {"kind": "receipt"}, name="reverse-receipt"),
     path(
         "reversals/transfer/<int:pk>/", views.reverse, {"kind": "transfer"}, name="reverse-transfer"

@@ -77,7 +77,7 @@ class Command(BaseCommand):
         users = {}
         for username, role, codes in (
             ("demo-warehouse", "WAREHOUSE", ("RM-A", "RM-B")),
-            ("demo-quality", "QUALITY", ("RM-A", "RM-B")),
+            ("demo-quality", "QUALITY", ("RM-A", "RM-B", "FG")),
             ("demo-approver", "APPROVER", ("RM-A", "RM-B")),
             ("demo-production", "PRODUCTION", ("RM-A", "RM-B", "LINE-1", "FG")),
         ):

@@ -350,7 +350,7 @@ def record_inspection(
         return inspection
 
 
-def _rejecting_inspector_id(lot: Lot, warehouse: Warehouse) -> int | None:
+def rejecting_inspector_id(lot: Lot, warehouse: Warehouse) -> int | None:
     event = (
         LotDispositionEvent.objects.filter(
             lot=lot, warehouse=warehouse, to_disposition=LotDisposition.REJECTED
@@ -390,7 +390,7 @@ def return_rejected_to_hold(
         current = get_lot_disposition(lot=locked_lot, warehouse=warehouse)
         if current != LotDisposition.REJECTED:
             raise DispositionConflictError(f"expected REJECTED, current state is {current}")
-        if _rejecting_inspector_id(locked_lot, warehouse) == saved_actor.pk:
+        if rejecting_inspector_id(locked_lot, warehouse) == saved_actor.pk:
             raise DispositionAuthorizationError(
                 "the inspector who rejected this Lot cannot return it to HOLD"
             )

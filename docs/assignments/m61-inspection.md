@@ -1,7 +1,7 @@
 # M6.1 — Incoming/Final inspection and who decides
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/affectionate-hawking-eyr2d1`; base `main` `8b9c736`.
-[Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96). Status: **PR 1 merged ([PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97) at `e7f64e7`), PR 2 (web) next** (2026-11-06)
+[Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96). Status: **PR 1 merged ([PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97) at `e7f64e7`); PR 2 (web) in [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101), awaiting CI** (2026-11-06; "PR 2 (web) next" held until then — historical)
 ("PR 1 implemented, PR awaiting owner review", "spec approved by the owner, PR 1 next" and "spec, awaiting owner review" held until then — historical).
 Plan: [`m61-plan.md`](m61-plan.md).
 
@@ -339,3 +339,46 @@ need no change, and the open items are minor.
 ### PR 1 closeout (2026-11-06)
 
 PR CI [#239](https://github.com/porntaned/ERP-for-Factory/actions/runs/42189537981) on head `869ad1e` (tested as merge `df2a135`): PostgreSQL 18.6, Python 3.14.8, **986 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/97#issuecomment-6680899302)). The owner approved the merge in chat; [PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97) merged at `e7f64e7ca0070c7c84508950bc66c86c503c71c1`; [main CI #240](https://github.com/porntaned/ERP-for-Factory/actions/runs/42190005568): PostgreSQL 18.6, **986 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/e7f64e7ca0070c7c84508950bc66c86c503c71c1#commitcomment-208439236)). Review remained self-review only. Issue #96 stays open for PR 2. Open owner decision before PR 2: whether the demo seed grants `demo-quality` QUALITY at FG (finding 1).
+
+## PR 2 — design and owner rulings (chat, 2026-11-06)
+
+The owner approved this short design before code, and both demo grants (a privileged-access change
+for synthetic users, AGENTS.md):
+
+- `/quality/`: HOLD and REJECTED Lot-Warehouses with stock, at warehouses where the user holds
+  QUALITY or APPROVER (403 otherwise; nav link only for them).
+- Inspect form for QUALITY on HOLD rows → `record_inspection`; "ส่งกลับ HOLD" for APPROVER on
+  REJECTED rows → `return_rejected_to_hold`. POST-only, hidden request UUID, command errors as
+  messages.
+- Lot genealogy page: inspection history and disposition history.
+- Demo grants: `demo-quality` QUALITY at FG; `demo-approver` APPROVER at FG.
+- Reviewed by a fresh sub-agent before merge.
+
+## PR 2 — delivered (2026-11-06)
+
+- `demo/quality_views.py`, `demo/quality_forms.py`, `demo/templates/demo/quality/list.html`;
+  genealogy tables `inspections` and `dispositions`; nav "คุณภาพ"; routes `quality-list`,
+  `quality-inspect`, `quality-return`.
+- `seed_demo` grants `demo-quality` QUALITY at FG. `demo-approver` APPROVER at FG comes from
+  `seed_production_demo` (ruling after review m1: it already granted it, and it is the seed that
+  creates FG Lots; adding it to `seed_demo` only opened a reverse-output button with no FG Lots).
+- `quality.services.rejecting_inspector_id` is public, so the screen hides the return button from
+  the rejecting inspector (review m2).
+
+### RED / GREEN
+
+- 11 screen tests failed first (no routes, no grants), then passed.
+- Review fixes: m2, m3 and m6 tests failed first, then passed; CSRF and no-role tests passed at once
+  (coverage). Total 17 tests in `tests/web/test_quality_screens.py`.
+
+### Verification (development check, not evidence of record)
+
+PostgreSQL 16.15, Python 3.14.6, commit `3a9c0c4`: full suite 1003 passed; Ruff check and format
+clean; no pending migrations (no schema change).
+
+### Review
+
+**Independent** review by a separate sub-agent with a fresh context, read-only, on `38d7d45`:
+verdict fix-then-ship, no blocker — [m61-pr2-independent-review.md](../reviews/m61-pr2-independent-review.md).
+Findings M1, m1–m3, m5, m6 fixed in one pass; m4 (per-row queries) deferred. The fixes were not
+re-reviewed; tests and CI cover them.

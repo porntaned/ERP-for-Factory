@@ -24,6 +24,7 @@ from manufacturing.queries import (
     order_outputs,
     output_total,
 )
+from quality.models import LotDispositionEvent, LotInspection
 
 from .permissions import order_actions, production_warehouses
 from .production_forms import (
@@ -84,6 +85,13 @@ def lot_genealogy(request, pk):
         "lot": lot,
         "inputs": sorted(inputs_of(lot), key=by_lot),
         "outputs": sorted(outputs_of(lot), key=by_lot),
+        # M6.1 PR 2: who inspected this Lot, with what result, and every disposition change.
+        "inspections": LotInspection.objects.filter(lot=lot)
+        .select_related("warehouse", "inspector")
+        .order_by("id"),
+        "dispositions": LotDispositionEvent.objects.filter(lot=lot)
+        .select_related("warehouse", "actor")
+        .order_by("id"),
     }
     return render(request, "demo/production/genealogy.html", context)
 

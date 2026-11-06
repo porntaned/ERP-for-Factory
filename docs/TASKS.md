@@ -198,6 +198,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## Progress log
 
+- 2026-11-06: M6.1 PR 2 ใน [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101) — หน้าเว็บ Quality (`/quality/`): ตรวจ PASS/FAIL, ส่งกลับ HOLD โดย APPROVER ที่ไม่ใช่ผู้ตรวจ, ประวัติการตรวจในหน้า genealogy; เจ้าของอนุมัติแบบและสิทธิ์ demo ที่ FG; **independent review** โดย sub-agent ตัวใหม่ (fix-then-ship, ไม่มี blocker) แก้ครบยกเว้น m4 ที่เลื่อนไว้ — [รีวิว](reviews/m61-pr2-independent-review.md); local 1003 passed (development check) ไม่มี Deploy
+
 - 2026-11-06: Merge [PR #99](https://github.com/porntaned/ERP-for-Factory/pull/99) ที่ `7ef855d` ตามที่เจ้าของอนุญาต (CI #243 ผ่าน); แก้ C4 ไม่สำเร็จ: การสร้าง tag `archive/*` และลบ branch เก่า 4 ตัว (`codex/docs/m43-closeout`, `codex/docs/project-ai-handoff`, `codex/inventory/concurrent-commands`, `codex/project-audit-after-pr12`) ถูกปฏิเสธ (HTTP 403 — session push ได้เฉพาะ branch ที่กำหนด) จึงไม่หาทางเลี่ยงตามคำสั่งเจ้าของ เนื้อหาที่ main ต้องใช้ย้ายมาแล้วใน PR #99 จึงลบ branch ได้โดยลิงก์ไม่เสีย รอเจ้าของทำ เอกสารเท่านั้น
 
 - 2026-11-06: ตรวจความเรียบร้อยทั้งโปรเจกต์ตามที่เจ้าของสั่ง (เอกสารทั้งหมด, Issue, branch, full suite 986 passed และ seed บน PostgreSQL ในเครื่อง — development check); ปิด Issue #86 (ทำแล้วใน PR #94); แก้เอกสารที่ขัดกันตามวิธีที่เจ้าของอนุมัติ (C1–C3): ประเภท review ของ M4.4/M4.3, สถานะปัจจุบัน, README, DEVELOPMENT, PROJECT, MULTI_AGENT, กติกา docs/reviews ใน AGENTS.md, closeout ของ M4.3 ที่ค้างใน branch `codex/docs/m43-closeout` และรายงาน audit หลัง PR #12 ย้ายมาไว้บน main; ข้อความเก่าระบุ historical ไม่ลบ เอกสารเท่านั้น ไม่มี Deploy

@@ -1,0 +1,35 @@
+{% extends "demo/base.html" %}
+{% block title %}คุณภาพ{% endblock %}
+{% block content %}
+<h1 class="h4">คุณภาพ · Lot ที่รอตรวจหรือไม่ผ่าน</h1>
+<p class="text-secondary">ออกจาก HOLD ได้ผ่านการตรวจเท่านั้น: PASS → RELEASED, FAIL → REJECTED · REJECTED กลับเป็น HOLD ได้โดย APPROVER ที่ไม่ใช่ผู้ตรวจ</p>
+{% for e in errors %}<div class="alert alert-danger">{{ e }}</div>{% endfor %}
+<table class="table table-sm align-middle" id="pairs">
+  <thead><tr><th>คลัง</th><th>Lot</th><th>Item</th><th class="text-end">คงเหลือ</th><th>สถานะ</th><th></th></tr></thead>
+  <tbody>
+  {% for row in rows %}
+  <tr>
+    <td>{{ row.warehouse.code }}</td><td><a href="/lots/{{ row.lot.pk }}/genealogy/">{{ row.lot.code }}</a></td><td>{{ row.lot.item.code }}</td>
+    <td class="text-end">{{ row.balance }}</td><td>{{ row.disposition }}</td>
+    <td>
+      {% if row.can_inspect %}
+      <form method="post" action="{% url 'quality-inspect' %}" class="d-flex gap-1" data-action="inspect">{% csrf_token %}
+        {% for f in row.inspect_form.hidden_fields %}{{ f }}{% endfor %}
+        {{ row.inspect_form.result }}
+        <input class="form-control form-control-sm" style="width:6rem" name="sample_quantity" value="1" aria-label="จำนวนตัวอย่าง">
+        <input class="form-control form-control-sm" name="note" placeholder="บันทึก" required>
+        <button class="btn btn-sm btn-primary" type="submit">บันทึกผลตรวจ</button>
+      </form>
+      {% elif row.can_return %}
+      <form method="post" action="{% url 'quality-return' %}" class="d-flex gap-1" data-action="return-hold">{% csrf_token %}
+        {% for f in row.return_form.hidden_fields %}{{ f }}{% endfor %}
+        <input class="form-control form-control-sm" name="reason" placeholder="เหตุผล" required>
+        <button class="btn btn-sm btn-outline-warning" type="submit">ส่งกลับ HOLD</button>
+      </form>
+      {% endif %}
+    </td>
+  </tr>
+  {% empty %}<tr><td colspan="6" class="text-secondary">ไม่มี Lot ที่รอตรวจหรือไม่ผ่าน</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -28,4 +28,27 @@
     {% endfor %}
     </tbody>
   </table>
+  <h2 class="h5">การตรวจคุณภาพ</h2>
+  <table class="table table-sm" id="inspections">
+    <thead><tr><th>คลัง</th><th>ชนิด</th><th>ผล</th><th class="text-end">ตัวอย่าง</th><th>ผู้ตรวจ</th><th>บันทึก</th></tr></thead>
+    <tbody>
+    {% for i in inspections %}
+      <tr><td>{{ i.warehouse.code }}</td><td>{{ i.kind }}</td><td>{{ i.result }}</td><td class="text-end">{{ i.sample_quantity|quantity }}</td><td>{{ i.inspector.username }}</td><td>{{ i.note }}</td></tr>
+    {% empty %}
+      <tr><td colspan="6" class="text-secondary">ยังไม่มีการตรวจ</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="h5">ประวัติสถานะ Quality</h2>
+  <table class="table table-sm" id="dispositions">
+    <thead><tr><th>คลัง</th><th>จาก</th><th>เป็น</th><th>ผู้บันทึก</th><th>เหตุผล</th></tr></thead>
+    <tbody>
+    {% for e in dispositions %}
+      <tr><td>{{ e.warehouse.code }}</td><td>{{ e.from_disposition }}</td><td>{{ e.to_disposition }}</td><td>{{ e.actor.username }}</td><td>{{ e.reason }}</td></tr>
+    {% empty %}
+      <tr><td colspan="5" class="text-secondary">ยังไม่มีการเปลี่ยนสถานะ</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
 {% endblock %}
