@@ -94,6 +94,35 @@ def ensure_origin(lot, plant, actor):
     return lot
 
 
+def force_reject(lot, warehouse, actor, *, note="Synthetic setup rejection"):
+    """REJECT a HOLD pair for setup (M6.2), without the stock the command needs for a sample.
+
+    Writes the FAIL inspection and its event directly, so PostgreSQL still checks the origin,
+    kind, note and pairing. A pair that is RELEASED must first go back to HOLD.
+    """
+    with transaction.atomic():
+        ensure_origin(lot, warehouse.plant, actor)
+        inspection = LotInspection.objects.create(
+            lot=lot,
+            warehouse=warehouse,
+            kind=inspection_kind(lot),
+            result="FAIL",
+            sample_quantity=Decimal("1"),
+            note=note,
+            inspector=actor,
+        )
+        return LotDispositionEvent.objects.create(
+            lot=lot,
+            warehouse=warehouse,
+            actor=actor,
+            request_id=uuid4(),
+            from_disposition="HOLD",
+            to_disposition="REJECTED",
+            reason=note,
+            inspection=inspection,
+        )
+
+
 def raw_inspection(lot, warehouse, actor, *, result="PASS"):
     """An inspection row for a direct event insert; its event must follow in the same
     transaction, because PostgreSQL checks the pairing at commit."""
