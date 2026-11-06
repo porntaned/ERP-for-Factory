@@ -22,6 +22,7 @@ from django.db.models.functions import Now
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from catalog.models import Item, ItemType
 from facilities.models import Warehouse
+from inventory.lot_gate import LotRejectedError
 from inventory.models import Lot, ProductionPosting, ProductionPostingReversal, StockTransfer
 from inventory.production import (
     AlreadyReversedError,
@@ -70,6 +71,7 @@ __all__ = [
     "MaterialAuthorizationError",
     "MaterialConflictError",
     "MaterialLimitError",
+    "MaterialLotRejectedError",
     "MaterialQualityError",
     "MaterialValidationError",
     "approve_bom",
@@ -475,6 +477,10 @@ class MaterialQualityError(Exception):
     pass
 
 
+class MaterialLotRejectedError(MaterialQualityError):
+    """M6.2: Inventory refused because the Lot is REJECTED at some warehouse."""
+
+
 def _held_on_line(order: ProductionOrder) -> str:
     """Each Lot the order still holds on its line, e.g. "LED-CHIP lot L1 holds 40"."""
     held = {lot_id: q for lot_id, q in _order_holdings(order).items() if q}
@@ -563,6 +569,8 @@ def _move_material(*, kind, order, lot, other_warehouse, quantity, actor, reason
             )
         except TransferAuthorizationError as exc:
             raise MaterialAuthorizationError(str(exc)) from exc
+        except LotRejectedError as exc:
+            raise MaterialLotRejectedError(str(exc)) from exc
         except TransferQualityError as exc:
             raise MaterialQualityError(str(exc)) from exc
         except TransferConflictError as exc:
@@ -731,6 +739,8 @@ def _post_for_order(*, kind, order, lot, lot_code, quantity, actor, reason, requ
                 reason=reason,
                 request_id=request_id,
             )
+        except LotRejectedError as exc:
+            raise MaterialLotRejectedError(str(exc)) from exc
         except PostingAuthorizationError as exc:
             raise MaterialAuthorizationError(str(exc)) from exc
         except PostingConflictError as exc:
@@ -835,6 +845,8 @@ def reverse_order_posting(
                 reason=reason,
                 request_id=request_id,
             )
+        except LotRejectedError as exc:
+            raise MaterialLotRejectedError(str(exc)) from exc
         except PostingAuthorizationError as exc:
             raise MaterialAuthorizationError(str(exc)) from exc
         except PostingConflictError as exc:

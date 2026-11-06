@@ -10,6 +10,7 @@ from django.db.models import Sum
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from facilities.models import Warehouse
 
+from .lot_gate import require_lot_not_rejected
 from .models import Lot, StockLedgerEntry, StockReceipt
 from .quantities import fits_six_places, is_positive_bounded
 from .request_keys import owned_by_other_command
@@ -144,6 +145,7 @@ def receive_stock(*, lot, warehouse, actor, quantity: Decimal, reason: str, requ
             return existing
         if owned_by_other_command(request_id, "RECEIPT"):
             raise ReceiptConflictError("request_id was already used by another command")
+        require_lot_not_rejected(locked_lot)  # M6.2: no further receipt of a REJECTED Lot
         try:
             # Global UUID uniqueness can race across different Lots. Roll back BOTH
             # writes before reading the winning receipt, never leave an extra delta.

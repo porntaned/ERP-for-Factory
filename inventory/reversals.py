@@ -17,6 +17,7 @@ from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from quality.models import LotDisposition
 from quality.services import get_lot_disposition
 
+from .lot_gate import require_lot_not_rejected
 from .models import StockLedgerEntry, StockReceipt, StockReversal, StockTransfer
 from .request_keys import owned_by_other_command
 from .services import ReceiptValidationError, _lock_receipt_parents, get_stock_balance
@@ -192,6 +193,7 @@ def reverse_transfer(*, transfer, actor, reason: str, request_id: UUID) -> Stock
             return existing
         if get_lot_disposition(lot=lot, warehouse=leaving) != LotDisposition.RELEASED:
             raise ReversalQualityError("the original destination must be RELEASED")
+        require_lot_not_rejected(lot)  # M6.2: REJECTED at another warehouse; a reversal moves stock
         quantity = destination.quantity_delta
         _require_balance(lot, leaving, quantity)
         try:

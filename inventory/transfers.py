@@ -10,6 +10,7 @@ from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from quality.models import LotDisposition
 from quality.services import get_lot_disposition
 
+from .lot_gate import require_lot_not_rejected
 from .models import StockLedgerEntry, StockTransfer
 from .quantities import fits_six_places, is_positive_bounded
 from .request_keys import owned_by_other_command
@@ -182,6 +183,8 @@ def _post_transfer(
         if get_lot_disposition(lot=lot, warehouse=gate) != LotDisposition.RELEASED:
             side = "source" if quality_at_source else "destination"
             raise TransferQualityError(f"{side} Lot-Warehouse must be RELEASED")
+        # M6.2: the gate warehouse is RELEASED, but the Lot may be REJECTED at another one.
+        require_lot_not_rejected(lot)
         if get_stock_balance(lot=lot, warehouse=source_warehouse) < quantity:
             raise InsufficientStockError("source balance is insufficient")
         payload = dict(lot=lot, actor=saved_actor, reason=reason)
