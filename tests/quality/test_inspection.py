@@ -475,3 +475,80 @@ def test_transition_rules_migration_unapplies_and_reapplies():
         executor.migrate([("quality", "0006_lot_inspection")])
     finally:
         MigrationExecutor(connection).migrate(latest)
+
+
+# ---------------------------------------------------------------- Task 4: REJECTED is blocked
+# No Inventory or Manufacturing code changes: their gates already require RELEASED at the
+# side the goods leave from, so a REJECTED Lot-Warehouse is refused there. These tests guard it.
+
+
+def move(mf, lot, source, destination, quantity, actor=None):
+    from inventory.transfers import transfer_stock
+
+    return transfer_stock(
+        lot=lot,
+        source_warehouse=mf.wh[source],
+        destination_warehouse=mf.wh[destination],
+        actor=actor or mf.staff,
+        quantity=D(quantity),
+        reason="Synthetic move",
+        request_id=uuid4(),
+    )
+
+
+def ledger_rows():
+    from inventory.models import StockLedgerEntry, StockTransfer
+
+    return StockLedgerEntry.objects.count(), StockTransfer.objects.count()
+
+
+@pytest.mark.django_db
+def test_rejected_lot_cannot_be_transferred(line):
+    from inventory.transfer_policy import TransferQualityError
+
+    lot = received(line)
+    inspect(line, lot, result="FAIL", note="Scratched die")
+    before = ledger_rows()
+    with pytest.raises(TransferQualityError, match="RELEASED"):
+        move(line, lot, "RM-A", "FG", "1")
+    assert ledger_rows() == before
+
+
+@pytest.mark.django_db
+def test_rejected_lot_cannot_be_issued_to_production(
+    plant,
+):  # nothing issued yet, so only Quality can refuse
+    from manufacturing.models import ProductionMaterialMovement
+    from manufacturing.services import MaterialQualityError
+    from tests.manufacturing.test_material_movements import issue
+
+    lot = received(plant, "R1", "10")
+    inspect(plant, lot, result="FAIL", note="Wrong bin")
+    before = (ledger_rows(), ProductionMaterialMovement.objects.count())
+    with pytest.raises(MaterialQualityError):
+        issue(plant, "1", lot=lot)
+    assert (ledger_rows(), ProductionMaterialMovement.objects.count()) == before
+
+
+@pytest.mark.django_db
+def test_rejected_destination_blocks_transfer_reversal(line):
+    from inventory.reversals import ReversalQualityError, reverse_transfer
+
+    lot = received(line, "R1", "10")
+    inspect(line, lot)
+    _, credit = move(line, lot, "RM-A", "FG", "3")
+    inspect(line, lot, warehouse="FG", result="FAIL", quantity="3", note="Damaged in transit")
+    approver = get_user_model().objects.create(username="approver-both")
+    for code in ("RM-A", "FG"):
+        WarehouseRoleAssignment.objects.create(
+            user=approver, warehouse=line.wh[code], role="APPROVER"
+        )
+    from inventory.models import StockTransfer
+
+    transfer = StockTransfer.objects.get(destination_entry=credit)
+    before = ledger_rows()
+    with pytest.raises(ReversalQualityError, match="RELEASED"):
+        reverse_transfer(
+            transfer=transfer, actor=approver, reason="Return to stores", request_id=uuid4()
+        )
+    assert ledger_rows() == before
