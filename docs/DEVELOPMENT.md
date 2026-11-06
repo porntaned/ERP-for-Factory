@@ -151,7 +151,19 @@ an inspection, so the rerun reports a key conflict.
 Only an inspection moves a Lot-Warehouse out of HOLD: PASS → RELEASED, FAIL → REJECTED. The kind
 (INCOMING or FINAL) follows the Lot's origin. The sample may not exceed the balance there, and the
 note is required. A REJECTED pair returns to HOLD only through an APPROVER who is not the rejecting
-inspector. Web screens come in M6.1 PR 2; until then use the shell:
+inspector.
+
+**On the web (M6.1 PR 2):** after `seed_production_demo --reset`, `set_demo_passwords` and
+`runserver`:
+1. Log in as `demo-quality` and open **คุณภาพ** (`/quality/`). LAMP-0001 (5) and LAMP-0002 (4) are
+   HOLD at FG.
+2. Record **PASS** (sample 1, any note) on LAMP-0001: it becomes RELEASED and leaves the list.
+3. Record **FAIL** on LAMP-0002: it becomes REJECTED.
+4. Log in as `demo-approver` (APPROVER at FG): the REJECTED row has **ส่งกลับ HOLD**; with a reason
+   it returns to HOLD and can be inspected again.
+5. A Lot's genealogy page (`/lots/<id>/genealogy/`) lists its inspections and disposition history.
+The seed grants `demo-quality` QUALITY and `demo-approver` APPROVER at FG for this (owner-approved,
+2026-11-06). The shell still works ("web screens come in M6.1 PR 2" held until then — historical):
 
 ```bash
 uv run --env-file .env python manage.py shell -c "
