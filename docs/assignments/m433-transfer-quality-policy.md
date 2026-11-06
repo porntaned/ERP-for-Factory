@@ -1,5 +1,7 @@
 # M4.3.3 — Transfer Quality eligibility (owner-selected policy)
 
+> Current status (2026-10-24): owner-merged [PR #35](https://github.com/porntaned/ERP-for-Factory/pull/35); M4.3 accepted through PR #45. See [closeout evidence](../evidence/m43-closeout.md). Pre-merge scope, exclusions and pending statements below are historical.
+
 Repository: `porntaned/ERP-for-Factory`  
 Branch: `codex/inventory/transfer-quality-eligibility`  
 Base: `6c6c4fb7aec5705f626a3975a53dd5eb9f8578ed`  

@@ -1,5 +1,7 @@
 # M4.3.1 — กำหนดข้อมูลรายการโอน
 
+> Current status (2026-10-24): owner-merged [PR #33](https://github.com/porntaned/ERP-for-Factory/pull/33); M4.3 accepted through PR #45. See [closeout evidence](../evidence/m43-closeout.md). Pre-merge scope, exclusions and pending statements below are historical.
+
 [Issue #32](https://github.com/porntaned/ERP-for-Factory/issues/32) ·
 Repository `porntaned/ERP-for-Factory` · Branch `codex/docs/m431-transfer-contract`.
 Base: `e698f29aaa381d6a353789beb956bc905905dc2f`.

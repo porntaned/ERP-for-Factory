@@ -55,7 +55,7 @@ that docs PR is open.
    and add a dated Progress log line (what merged, merge SHA, CI run, review type, what remains).
 2. The slice's record in `docs/assignments/<slice>.md`: scope, tested SHA, actual commands and
    results, review status, then a closeout section after merge. (Issues up to #29 keep their
-   evidence in `docs/evidence/`; independent reviews go in `docs/reviews/`.)
+   evidence in `docs/evidence/`; review records go in `docs/reviews/`; only files named `*-independent-review.md` are independent reviews, and every review file states its type on its first lines.)
 3. `README.md`: change only when the delivered / not-delivered summary changes. Never pin a
    commit SHA there; point to TASKS.md.
 4. Any other document whose described behavior or setup the change affects (`DEVELOPMENT.md`,

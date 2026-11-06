@@ -4,7 +4,7 @@
 
 Demonstrate that multiple AI agents can build and review the ERP through explicit assignments, bounded authority and evidence that can be checked against GitHub state. A role is claimed only when a separate agent actually performed it.
 
-Native Codex multi-agent capabilities are the default. Noodle is an optional tool and is judged by delivered evidence, not by its presence.
+Native Codex multi-agent capabilities were the default until M4.6; since M4.7 the work is done by Claude Code sessions and, where stated, their sub-agents (corrected 2026-11-06). Noodle is an optional tool and is judged by delivered evidence, not by its presence.
 
 ## Roles
 

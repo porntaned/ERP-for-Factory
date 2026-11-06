@@ -93,4 +93,4 @@ assumptions in the Issue. The owner approved merging PR #49 (`f69df51490eca68c20
 and then PR #51 (`7d2ed620ecc8db88f648133514a356f91964c5f7`).
 [Main CI #151](https://github.com/porntaned/ERP-for-Factory/actions/runs/41782637554) on the
 combined merge succeeded (step conclusions only; log text not readable from the session).
-M4.4 is checked in `docs/TASKS.md`. Both PRs are self-reviewed; no independent review was run.
+M4.4 is checked in `docs/TASKS.md`. Both PRs are self-reviewed; no independent review was run. _Historical (corrected 2026-11-06): a separate agent later reviewed PR #51 retroactively, verdict ship — [m44-registry-independent-review.md](../reviews/m44-registry-independent-review.md)._
