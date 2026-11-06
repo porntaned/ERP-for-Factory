@@ -16,6 +16,7 @@ from django.db import IntegrityError, transaction
 
 from access_control.models import WarehouseRole, WarehouseRoleAssignment
 
+from .lot_gate import require_lot_not_rejected
 from .models import ProductionPosting, ProductionPostingReversal, StockLedgerEntry
 from .quantities import is_valid_quantity
 from .request_keys import owned_by_other_command
@@ -120,6 +121,8 @@ def post_production_posting(
             return existing
         if owned_by_other_command(request_id, kind):
             raise PostingConflictError("request_id was already used by another command")
+        if kind != "SCRAP":  # M6.2: SCRAP only takes stock out; CONSUME and OUTPUT are refused
+            require_lot_not_rejected(lot)
         debit = kind != "OUTPUT"
         if debit and get_stock_balance(lot=lot, warehouse=warehouse) < quantity:
             raise InsufficientStockError("balance is insufficient")
@@ -228,6 +231,8 @@ def reverse_production_posting(
         existing = _reversal_outcome(request_id, **command)
         if existing is not None:
             return existing
+        if original.kind != "OUTPUT":  # M6.2: undoing a CONSUME or SCRAP puts stock back
+            require_lot_not_rejected(lot)
         if original.kind == "OUTPUT":
             if not _lot_holds_only_outputs(lot):
                 raise OutputLotUsedError("the output Lot was used or moved; it cannot be reversed")

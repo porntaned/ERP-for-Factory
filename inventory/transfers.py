@@ -10,6 +10,7 @@ from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from quality.models import LotDisposition
 from quality.services import get_lot_disposition
 
+from .lot_gate import require_lot_not_rejected
 from .models import StockLedgerEntry, StockTransfer
 from .quantities import fits_six_places, is_positive_bounded
 from .request_keys import owned_by_other_command
@@ -78,6 +79,8 @@ def transfer_stock(
     """Post a debit/credit pair, requiring current WAREHOUSE authority at both ends.
 
     Source must be RELEASED; destination Quality is unchanged. Return (debit, credit).
+    M6.2 (Issue #103): a Lot that is REJECTED at ANY warehouse, source, destination or elsewhere,
+    is refused with LotRejectedError, after the Lot lock and the exact-replay check.
     Exact UUID replays recheck current authorization, returning historical results even
     after Quality changes. New movements require RELEASED source and sufficient stock.
     Legacy NULL request IDs are not adopted. There is no endpoint or automatic retry.
@@ -113,7 +116,8 @@ def post_production_transfer(
     PRODUCTION at both ends. The Quality gate is the source for an issue and the destination
     for a return (quality_at_source=False): material comes back only where its Lot is
     RELEASED. Only manufacturing.services calls it, inside its own transaction, and records
-    the order link in the same transaction.
+    the order link in the same transaction. As for transfer_stock, a Lot REJECTED at any
+    warehouse is refused with LotRejectedError (M6.2).
     """
     return _post_transfer(
         lot=lot,
@@ -182,6 +186,8 @@ def _post_transfer(
         if get_lot_disposition(lot=lot, warehouse=gate) != LotDisposition.RELEASED:
             side = "source" if quality_at_source else "destination"
             raise TransferQualityError(f"{side} Lot-Warehouse must be RELEASED")
+        # M6.2: the gate warehouse is RELEASED, but the Lot may be REJECTED at another one.
+        require_lot_not_rejected(lot)
         if get_stock_balance(lot=lot, warehouse=source_warehouse) < quantity:
             raise InsufficientStockError("source balance is insufficient")
         payload = dict(lot=lot, actor=saved_actor, reason=reason)

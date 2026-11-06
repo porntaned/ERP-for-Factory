@@ -19,6 +19,7 @@ from facilities.models import Warehouse
 from inventory.models import Lot
 from quality.models import LotInspection
 from quality.services import get_lot_disposition
+from tests.quality.helpers import settle
 
 from .test_production_screens import table
 
@@ -40,6 +41,8 @@ def lamp(code="LAMP-0001"):
 
 
 def inspect(client, fg, *, result="PASS", sample="1", code="LAMP-0001", key=None):
+    if result == "FAIL":
+        settle()  # M6.2: the history so far stands for earlier commits (see helpers.settle)
     return client.post(
         "/quality/inspect/",
         {

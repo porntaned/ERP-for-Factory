@@ -14,6 +14,7 @@ from django.views.decorators.http import require_POST
 
 from facilities.models import Warehouse
 from inventory import reversals
+from inventory.lot_gate import LotRejectedError
 from inventory.models import Lot, StockLedgerEntry, StockReceipt, StockReversal, StockTransfer
 from inventory.services import (
     ReceiptAuthorizationError,
@@ -35,7 +36,9 @@ from .forms import ReceiptForm, ReversalForm, TransferForm
 from .permissions import can_approve_all, movable_warehouses
 from .quantities import format_quantity
 
+REJECTED_TEXT = "Lot นี้ถูก REJECTED ที่คลังใดคลังหนึ่ง จึงรับเข้า โอน หรือกลับรายการไม่ได้ (scrap ได้เท่านั้น)"
 MESSAGES = {
+    LotRejectedError: REJECTED_TEXT,
     InsufficientStockError: "ยอดคงเหลือไม่พอ",
     TransferQualityError: "คลังต้นทางต้องเป็น RELEASED ก่อนโอน",
     reversals.ReversalQualityError: "คลังที่ของจะออกต้องเป็น RELEASED ก่อนกลับรายการ",
@@ -58,7 +61,7 @@ COMMAND_ERRORS = tuple(MESSAGES) + (
 def _message(exc):
     for kind, text in MESSAGES.items():
         if isinstance(exc, kind):
-            return text
+            return f"{text}: {exc}" if kind is LotRejectedError else text
     return f"ข้อมูลไม่ถูกต้อง: {exc}"
 
 

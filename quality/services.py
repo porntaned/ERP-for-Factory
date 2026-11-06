@@ -123,6 +123,24 @@ def get_lot_disposition(*, lot: Lot, warehouse: Warehouse) -> str:
     return latest or LotDisposition.HOLD
 
 
+def get_rejected_warehouses(*, lot: Lot) -> list[Warehouse]:
+    """Warehouses where the latest event of `lot` is REJECTED (M6.2, Issue #103).
+
+    Read-only. "Latest" is the highest event id per warehouse, as in get_lot_disposition.
+    Quality owns this reading; Inventory uses it to refuse a REJECTED Lot everywhere.
+    """
+    if not isinstance(lot, Lot) or lot.pk is None:
+        raise DispositionValidationError("lot must be a saved record")
+    latest = (
+        LotDispositionEvent.objects.filter(lot=lot)
+        .order_by("warehouse_id", "-id")
+        .distinct("warehouse_id")
+        .values_list("warehouse_id", "to_disposition")
+    )
+    ids = [warehouse_id for warehouse_id, to in latest if to == LotDisposition.REJECTED]
+    return list(Warehouse.objects.filter(pk__in=ids).order_by("pk"))
+
+
 def transition_lot_disposition(
     *,
     lot: Lot,

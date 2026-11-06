@@ -183,6 +183,42 @@ note='…', actor=<QUALITY user at that warehouse>, request_id=uuid4())` and
 `return_rejected_to_hold(lot=…, warehouse=…, actor=<APPROVER there>, reason='…', request_id=uuid4())`.
 In the demo data, `demo-quality` has QUALITY at RM-A, RM-B and FG ("only at RM-A" — historical, corrected 2026-11-06).
 
+## A REJECTED Lot is unusable everywhere (M6.2, Issue #103)
+
+Owner ruling (2026-11-06): while a Lot is REJECTED at **any** warehouse of its organization, it may
+not be used at any warehouse, but it may still be scrapped.
+
+- **Refused** (Inventory raises `inventory.lot_gate.LotRejectedError`): transfer (either side), issue,
+  return, CONSUME, a further receipt, a further OUTPUT, and the reversal of a transfer, a CONSUME or a
+  SCRAP.
+- **Still allowed** (they only take stock out): SCRAP, the reversal of a receipt, the reversal of an
+  OUTPUT.
+- Exact replay of a command made before the rejection still returns its history.
+- A Lot issued to a line stays HOLD there and is not inspected again. If it is REJECTED elsewhere, the
+  order is frozen for that Lot: only SCRAP by an APPROVER clears the line, then the order closes.
+  Nothing is adjusted automatically.
+- Inspecting the Lot at another warehouse (REJECTED at A, PASS at B) is recorded, but the Lot stays
+  unusable until it is no longer REJECTED anywhere (REJECTED → HOLD by an APPROVER).
+- The commands check this after the Lot lock and the exact-replay check, before any write
+  (`quality.services.get_rejected_warehouses` is the Quality read). PostgreSQL re-checks at commit
+  (migration `inventory/0015_rejected_lot_guard.py`): a new ledger entry of a REJECTED Lot must be a
+  debit linked as a SCRAP, a receipt reversal or an OUTPUT reversal. History written earlier is not
+  re-checked. The existing per-warehouse RELEASED gates are unchanged and still run first.
+
+Demo walk (disposable database; after `seed_production_demo --reset`, `set_demo_passwords`, `runserver`):
+1. As `demo-warehouse`, **โอน** L-0001 from RM-A to RM-B, quantity 20. RM-B holds 20 as HOLD.
+2. As `demo-quality`, open **คุณภาพ**, record **FAIL** on L-0001 at RM-B (sample 1). It is REJECTED at RM-B.
+3. As `demo-warehouse`, try **โอน** L-0001 from RM-A to RM-B, or **รับเข้า** at RM-A. Each shows
+   "Lot นี้ถูก REJECTED ที่คลังใดคลังหนึ่ง …" and records nothing, although RM-A is RELEASED.
+4. As `demo-production`, **เบิก** L-0001 to an order is refused the same way.
+5. As `demo-approver`, **ส่งกลับ HOLD** on the REJECTED row (a reason is required). The transfer from
+   step 3 now works.
+
+`tests/inventory/test_rejected_lot_gate.py`, `test_rejected_lot_trigger.py` and
+`tests/web/test_rejected_lot_screens.py` cover the same rules on PostgreSQL. A test that rejects a Lot
+after inserting ledger entries in the same transaction calls `tests.quality.helpers.settle()` first,
+because Django checks deferred constraints at teardown while production commits that history earlier.
+
 ## Evidence rule
 
 CI (PostgreSQL 18.6, Python 3.14.8) is the evidence of record. Each run posts a summary with

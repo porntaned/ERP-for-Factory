@@ -102,6 +102,11 @@ def lot_genealogy(request, pk):
 
 MESSAGES = (
     ((mf.MaterialAuthorizationError, mf.OrderAuthorizationError), "ไม่มีสิทธิ์ทำรายการนี้", False),
+    (
+        (mf.MaterialLotRejectedError,),
+        "Lot นี้ถูก REJECTED ที่คลังใดคลังหนึ่ง จึงใช้งานไม่ได้ (scrap ได้เท่านั้น)",
+        True,
+    ),
     ((mf.MaterialQualityError,), "Lot ต้องเป็น RELEASED ที่คลังต้นทาง", False),
     ((mf.MaterialConflictError, mf.OrderConflictError), "คำขอนี้ถูกใช้แล้ว กรุณาเปิดฟอร์มใหม่", False),
     ((mf.AlreadyReversedError,), "รายการนี้ถูกกลับรายการไปแล้ว", False),

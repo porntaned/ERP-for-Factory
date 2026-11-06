@@ -10,7 +10,7 @@ a receipt to a raw starting ledger entry so the Lot has an origin.
 from decimal import Decimal
 from uuid import uuid4
 
-from django.db import transaction
+from django.db import connection, transaction
 
 from inventory.models import StockReceipt
 from inventory.services import get_stock_balance
@@ -92,6 +92,49 @@ def ensure_origin(lot, plant, actor):
             )
         )
     return lot
+
+
+def settle():
+    """Fire the pending deferred checks now (M6.2).
+
+    PostgreSQL checks a new ledger entry of a REJECTED Lot at commit. A test runs in ONE
+    transaction that is rolled back, but Django checks its deferred constraints at teardown, when
+    the Lot is already rejected. In production the history before a rejection is committed in
+    earlier transactions, so a test that rejects a Lot calls this first to stand for them.
+    """
+    with connection.cursor() as cursor:
+        cursor.execute("SET CONSTRAINTS ALL IMMEDIATE")
+        cursor.execute("SET CONSTRAINTS ALL DEFERRED")
+
+
+def force_reject(lot, warehouse, actor, *, note="Synthetic setup rejection"):
+    """REJECT a HOLD pair for setup (M6.2), without the stock the command needs for a sample.
+
+    Writes the FAIL inspection and its event directly, so PostgreSQL still checks the origin,
+    kind, note and pairing. A pair that is RELEASED must first go back to HOLD.
+    """
+    settle()
+    with transaction.atomic():
+        ensure_origin(lot, warehouse.plant, actor)
+        inspection = LotInspection.objects.create(
+            lot=lot,
+            warehouse=warehouse,
+            kind=inspection_kind(lot),
+            result="FAIL",
+            sample_quantity=Decimal("1"),
+            note=note,
+            inspector=actor,
+        )
+        return LotDispositionEvent.objects.create(
+            lot=lot,
+            warehouse=warehouse,
+            actor=actor,
+            request_id=uuid4(),
+            from_disposition="HOLD",
+            to_disposition="REJECTED",
+            reason=note,
+            inspection=inspection,
+        )
 
 
 def raw_inspection(lot, warehouse, actor, *, result="PASS"):

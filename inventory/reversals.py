@@ -4,6 +4,9 @@ Owner policy (Issue #59): APPROVER at every warehouse involved; whole transactio
 once only (a reversal is itself never reversible); insufficient stock is rejected rather
 than cascading; receipt reversal in any Quality state; transfer reversal requires the
 original destination, where the goods leave, to be RELEASED. Quality never changes.
+M6.2 (Issue #103): reverse_transfer also puts stock back, so it is refused with LotRejectedError
+while the Lot is REJECTED at ANY warehouse (checked after the RELEASED gate and the exact-replay
+check). reverse_receipt only takes stock out and stays allowed.
 Internal command only; there is no endpoint or automatic retry.
 """
 
@@ -17,6 +20,7 @@ from access_control.models import WarehouseRole, WarehouseRoleAssignment
 from quality.models import LotDisposition
 from quality.services import get_lot_disposition
 
+from .lot_gate import require_lot_not_rejected
 from .models import StockLedgerEntry, StockReceipt, StockReversal, StockTransfer
 from .request_keys import owned_by_other_command
 from .services import ReceiptValidationError, _lock_receipt_parents, get_stock_balance
@@ -163,7 +167,8 @@ def reverse_receipt(*, receipt, actor, reason: str, request_id: UUID) -> StockRe
 
 
 def reverse_transfer(*, transfer, actor, reason: str, request_id: UUID) -> StockReversal:
-    """Move the transferred quantity back; the original destination must be RELEASED."""
+    """Move the transferred quantity back; the original destination must be RELEASED and the
+    Lot must not be REJECTED at any warehouse (M6.2)."""
     _validate(transfer, StockTransfer, actor, reason, request_id)
     with transaction.atomic():
         original = (
@@ -192,6 +197,7 @@ def reverse_transfer(*, transfer, actor, reason: str, request_id: UUID) -> Stock
             return existing
         if get_lot_disposition(lot=lot, warehouse=leaving) != LotDisposition.RELEASED:
             raise ReversalQualityError("the original destination must be RELEASED")
+        require_lot_not_rejected(lot)  # M6.2: REJECTED at another warehouse; a reversal moves stock
         quantity = destination.quantity_delta
         _require_balance(lot, leaving, quantity)
         try:
