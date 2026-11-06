@@ -1,8 +1,8 @@
 # M6.1 — Incoming/Final inspection and who decides
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/affectionate-hawking-eyr2d1`; base `main` `8b9c736`.
-[Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96). Status: **PR 1 implemented, PR awaiting owner review** (2026-11-06)
-("spec approved by the owner, PR 1 next" and "spec, awaiting owner review" held until then — historical).
+[Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96). Status: **PR 1 merged ([PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97) at `e7f64e7`), PR 2 (web) next** (2026-11-06)
+("PR 1 implemented, PR awaiting owner review", "spec approved by the owner, PR 1 next" and "spec, awaiting owner review" held until then — historical).
 Plan: [`m61-plan.md`](m61-plan.md).
 
 ## Purpose
@@ -335,3 +335,7 @@ to enforce, so it does not meet ruling 4.
 
 **Verdict:** `ship`. Every rule in the spec is enforced in the command and in PostgreSQL, the gates
 need no change, and the open items are minor.
+
+### PR 1 closeout (2026-11-06)
+
+PR CI [#239](https://github.com/porntaned/ERP-for-Factory/actions/runs/42189537981) on head `869ad1e` (tested as merge `df2a135`): PostgreSQL 18.6, Python 3.14.8, **986 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/97#issuecomment-6680899302)). The owner approved the merge in chat; [PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97) merged at `e7f64e7ca0070c7c84508950bc66c86c503c71c1`; [main CI #240](https://github.com/porntaned/ERP-for-Factory/actions/runs/42190005568): PostgreSQL 18.6, **986 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/e7f64e7ca0070c7c84508950bc66c86c503c71c1#commitcomment-208439236)). Review remained self-review only. Issue #96 stays open for PR 2. Open owner decision before PR 2: whether the demo seed grants `demo-quality` QUALITY at FG (finding 1).
