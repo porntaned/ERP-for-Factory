@@ -18,7 +18,7 @@ from facilities.models import Organization, Plant, Warehouse
 from inventory.models import Lot
 from inventory.services import receive_stock
 from manufacturing.services import approve_bom, create_bom_draft
-from quality.services import transition_lot_disposition
+from quality.services import record_inspection
 
 
 def demo_key(name):
@@ -99,13 +99,14 @@ class Command(BaseCommand):
             reason="Synthetic demo delivery",
             request_id=demo_key("receipt-1"),
         )
-        transition_lot_disposition(
+        # M6.1: an INCOMING inspection that passes releases the delivery.
+        record_inspection(
             lot=lot,
             warehouse=warehouses["RM-A"],
+            result="PASS",
+            sample_quantity=Decimal("1"),
+            note="Synthetic demo incoming inspection",
             actor=users["QUALITY"],
-            expected_disposition="HOLD",
-            target_disposition="RELEASED",
-            reason="Synthetic demo incoming release",
             request_id=demo_key("release-1"),
         )
         # M5.1: LAMP-A19 v1 = 4 LED-CHIP + 1 DRIVER, drafted by production, approved by approver.

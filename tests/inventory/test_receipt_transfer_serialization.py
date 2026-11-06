@@ -18,6 +18,7 @@ from django.db import transaction
 from access_control.models import WarehouseRoleAssignment
 from inventory.models import StockLedgerEntry, StockReceipt, StockTransfer
 from inventory.services import receive_stock
+from tests.quality.helpers import made_receipts
 
 from .test_atomic_transfer import balances, post
 from .test_atomic_transfer import transfer_scope as transfer_scope
@@ -94,7 +95,7 @@ def test_waiting_transfer_observes_receipt_rollback(race_scope):
     outcome = outcomes.get(timeout=1)
     assert outcome[0] == "InsufficientStockError", outcome
     assert balances(scope) == (START, 0)
-    assert StockReceipt.objects.count() == 0
+    assert made_receipts().count() == 0
     assert StockTransfer.objects.count() == 0
     assert StockLedgerEntry.objects.count() == 1
 
@@ -110,6 +111,6 @@ def test_waiting_receipt_does_not_change_transfer_that_committed_first(race_scop
     assert outcome[0] == "committed", outcome
     assert balances(scope) == (START - transferred + RECEIVED, transferred)
     assert StockTransfer.objects.count() == 1
-    assert StockReceipt.objects.count() == 1
+    assert made_receipts().count() == 1
     assert StockLedgerEntry.objects.count() == 4
     assert first.quantity_delta == -transferred

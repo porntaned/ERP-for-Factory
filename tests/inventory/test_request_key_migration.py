@@ -10,6 +10,7 @@ from django.db.migrations.executor import MigrationExecutor
 from inventory.models import RequestKey, StockLedgerEntry, StockReceipt, StockTransfer
 from inventory.services import receive_stock
 from quality.models import LotDispositionEvent
+from tests.quality.helpers import made_receipts
 
 from .test_atomic_transfer import post
 from .test_atomic_transfer import transfer_scope as transfer_scope  # noqa: F401
@@ -55,7 +56,11 @@ def test_backfill_registers_each_existing_key_under_its_command(transfer_scope):
     assert (receipt_key, "RECEIPT") in rows
     assert (transfer_key, "TRANSFER") in rows
     assert {(k, "DISPOSITION") for k in disposition_keys} <= rows
-    assert StockReceipt.objects.count() == 1 and StockTransfer.objects.count() == 1
+    # transfer_scope's origin receipt (M6.1) is registered too but not counted here.
+    assert made_receipts().count() == 1 and StockTransfer.objects.count() == 1
+    assert {
+        (k, "RECEIPT") for k in StockReceipt.objects.values_list("request_id", flat=True)
+    } <= rows
 
 
 @pytest.mark.django_db
@@ -114,10 +119,16 @@ def test_quality_backfill_aborts_when_a_disposition_key_was_used_by_a_receipt(tr
         reason="Synthetic pre-upgrade",
     )
     StockReceipt.objects.create(request_id=shared, ledger_entry=entry)
-    LotDispositionEvent.objects.create(
-        lot=scope["lot"],
-        warehouse=scope["other"],
-        actor=scope["actor"],
+    # The event model as of PRE: later migrations (M6.1) add a column this schema predates.
+    events = (
+        MigrationExecutor(connection)
+        .loader.project_state(PRE)
+        .apps.get_model("quality", "LotDispositionEvent")
+    )
+    events.objects.create(
+        lot_id=scope["lot"].pk,
+        warehouse_id=scope["other"].pk,
+        actor_id=scope["actor"].pk,
         request_id=shared,
         from_disposition="HOLD",
         to_disposition="RELEASED",

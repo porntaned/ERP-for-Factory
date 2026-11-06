@@ -12,6 +12,7 @@ from django.db.models.deletion import ProtectedError
 
 from facilities.models import Organization, Plant, Warehouse
 from inventory.models import StockLedgerEntry, StockReceipt, StockTransfer
+from tests.quality.helpers import made_receipts
 
 from .test_atomic_transfer import balances, post
 from .test_atomic_transfer import transfer_scope as transfer_scope
@@ -129,7 +130,7 @@ def test_receipt_and_transfer_cannot_claim_the_same_credit(transfer_scope, recei
     (receipt if receipt_first else transfer)()
     with pytest.raises(IntegrityError), transaction.atomic():
         (transfer if receipt_first else receipt)()
-    assert StockReceipt.objects.count() == int(receipt_first)
+    assert made_receipts().count() == int(receipt_first)
     assert StockTransfer.objects.count() == int(not receipt_first)
 
 
@@ -214,7 +215,7 @@ def test_concurrent_receipt_transfer_classification_has_one_winner(transfer_scop
         receipt if receipt_first else transfer, transfer if receipt_first else receipt
     )
     assert outcome[0] == "IntegrityError", outcome
-    assert StockReceipt.objects.count() == int(receipt_first)
+    assert made_receipts().count() == int(receipt_first)
     assert StockTransfer.objects.count() == int(not receipt_first)
 
 

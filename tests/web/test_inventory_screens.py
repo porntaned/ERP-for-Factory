@@ -17,7 +17,8 @@ from django.core.management.base import CommandError
 from facilities.models import Warehouse
 from inventory.models import Lot, StockReceipt, StockReversal, StockTransfer
 from inventory.services import get_stock_balance
-from quality.services import transition_lot_disposition
+from tests.quality.helpers import force_release
+from tests.quality.helpers import release as inspect_release
 
 PASSWORD = "synthetic-demo-pass"
 
@@ -40,15 +41,13 @@ def balance(demo, code):
 
 
 def release(demo, code):
-    transition_lot_disposition(
-        lot=demo["lot"],
-        warehouse=demo["wh"][code],
-        actor=demo["users"]["demo-quality"],
-        expected_disposition="HOLD",
-        target_disposition="RELEASED",
-        reason="Synthetic release for screen test",
-        request_id=uuid4(),
-    )
+    """M6.1: inspect the stock there; an empty pair is released for setup only."""
+    lot, warehouse, actor = demo["lot"], demo["wh"][code], demo["users"]["demo-quality"]
+    note = "Synthetic release for screen test"
+    if get_stock_balance(lot=lot, warehouse=warehouse) > 0:
+        inspect_release(lot, warehouse, actor, quantity=Decimal("1"), note=note)
+    else:
+        force_release(lot, warehouse, actor, note=note)
 
 
 def receipt_post(demo, **overrides):

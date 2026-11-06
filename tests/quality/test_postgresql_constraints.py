@@ -1,3 +1,4 @@
+from decimal import Decimal
 from queue import Queue
 from threading import Barrier, Event, Thread
 from time import monotonic
@@ -18,6 +19,9 @@ from django.db.migrations.executor import MigrationExecutor
 from django.db.models.deletion import ProtectedError
 from django.utils import timezone
 
+from quality.services import record_inspection
+from tests.quality.helpers import give_origin, raw_inspection
+
 pytestmark = pytest.mark.django_db
 
 
@@ -36,6 +40,21 @@ def direct_event_values(
         "reason": "Direct PostgreSQL boundary test",
     }
     values.update(overrides)
+    # M6.1: an event leaving HOLD carries a matching inspection (same transaction).
+    if (
+        "inspection" not in overrides
+        and values["from_disposition"] == "HOLD"
+        and values["to_disposition"] in ("RELEASED", "REJECTED")
+        and values["lot"] is not None
+        and values["warehouse"] is not None
+        and values["actor"] is not None
+    ):
+        values["inspection"] = raw_inspection(
+            values["lot"],
+            values["warehouse"],
+            values["actor"],
+            result="PASS" if values["to_disposition"] == "RELEASED" else "FAIL",
+        )
     return values
 
 
@@ -113,10 +132,10 @@ def test_required_event_fields_reject_null_at_database_boundary(
     null_field: str,
 ) -> None:
     authorize_quality(grant_role, quality_user, quality_scope)
-    values = direct_event_values(quality_scope, quality_user)
-    values[null_field] = None
-
     with pytest.raises(IntegrityError), transaction.atomic():
+        # Built inside the block so its inspection rolls back with the refused row (M6.1).
+        values = direct_event_values(quality_scope, quality_user)
+        values[null_field] = None
         disposition_contract["event_model"].objects.create(**values)
 
 
@@ -158,10 +177,9 @@ def test_invalid_references_fail_at_database_boundary(
     invalid_field: str,
 ) -> None:
     authorize_quality(grant_role, quality_user, quality_scope)
-    values = direct_event_values(quality_scope, quality_user)
-    values[invalid_field] = 2_147_483_647
-
     with pytest.raises(IntegrityError), transaction.atomic():
+        values = direct_event_values(quality_scope, quality_user)
+        values[invalid_field] = 2_147_483_647
         disposition_contract["event_model"].objects.create(**values)
 
 
@@ -308,7 +326,7 @@ def test_recorded_history_prevents_identity_edge_reassignment(
         **direct_event_values(quality_scope, quality_user)
     )
     with (
-        pytest.raises(IntegrityError, match="recorded disposition identity"),
+        pytest.raises(IntegrityError, match="identity cannot be reassigned"),
         transaction.atomic(),
     ):
         type(record).objects.filter(pk=record.pk).update(**changes)
@@ -455,7 +473,7 @@ def test_identity_update_waits_for_new_history_then_rejects_reassignment(
         if worker.ident is not None:
             worker.join(timeout=15)
     assert not worker.is_alive()
-    assert "recorded disposition identity" in outcomes.get(timeout=1)
+    assert "identity cannot be reassigned" in outcomes.get(timeout=1)
 
 
 def test_direct_write_rejects_cross_organization_pair(
@@ -529,25 +547,31 @@ def test_service_failure_rolls_back_without_partial_history(
     authorize_quality(grant_role, quality_user, quality_scope)
     event_model = disposition_contract["event_model"]
     event_model.objects.create(**direct_event_values(quality_scope, quality_user))
+    event_model.objects.create(
+        **direct_event_values(
+            quality_scope, quality_user, from_disposition="RELEASED", to_disposition="HOLD"
+        )
+    )
 
+    # M6.1: the command only holds a RELEASED Lot; a stale expectation must roll back.
     with pytest.raises(disposition_contract["conflict_error"]):
         disposition_contract["transition"](
             lot=quality_scope["lot"],
             warehouse=quality_scope["warehouse"],
             actor=quality_user,
-            expected_disposition="HOLD",
-            target_disposition="RELEASED",
+            expected_disposition="RELEASED",
+            target_disposition="HOLD",
             reason="Stale command must roll back",
             request_id=uuid4(),
         )
 
-    assert event_model.objects.count() == 1
+    assert event_model.objects.count() == 2
     assert (
         disposition_contract["get_disposition"](
             lot=quality_scope["lot"],
             warehouse=quality_scope["warehouse"],
         )
-        == "RELEASED"
+        == "HOLD"
     )
 
 
@@ -569,15 +593,16 @@ def test_concurrent_exact_retries_converge_on_one_event(
             )
             actor = apps.get_model("auth", "User").objects.get(pk=objects["user_id"])
             barrier.wait(timeout=10)
-            event = disposition_contract["transition"](
+            # M6.1: leaving HOLD is an inspection; the exact retry converges on one record.
+            event = record_inspection(
                 lot=lot,
                 warehouse=warehouse,
+                result="PASS",
+                sample_quantity=Decimal("1"),
+                note="Concurrent exact retry",
                 actor=actor,
-                expected_disposition="HOLD",
-                target_disposition="RELEASED",
-                reason="Concurrent exact retry",
                 request_id=request_id,
-            )
+            ).event
             results.put(("event", event.pk))
         except Exception as error:  # Surface harness and contract failures.
             results.put(("error", f"{type(error).__name__}:{error}"))
@@ -614,13 +639,13 @@ def test_concurrent_distinct_commands_allow_one_authoritative_transition(
             )
             actor = apps.get_model("auth", "User").objects.get(pk=objects["user_id"])
             barrier.wait(timeout=10)
-            disposition_contract["transition"](
+            record_inspection(  # M6.1: two distinct inspections; one wins, one conflicts
                 lot=lot,
                 warehouse=warehouse,
+                result="PASS",
+                sample_quantity=Decimal("1"),
+                note="Concurrent distinct command",
                 actor=actor,
-                expected_disposition="HOLD",
-                target_disposition="RELEASED",
-                reason="Concurrent distinct command",
                 request_id=uuid4(),
             )
             results.put("created")
@@ -656,6 +681,12 @@ def test_concurrent_direct_inserts_serialize_one_transition(
         try:
             barrier.wait(timeout=10)
             with transaction.atomic():
+                lot = apps.get_model("inventory", "Lot").objects.get(pk=objects["lot_id"])
+                warehouse = apps.get_model("facilities", "Warehouse").objects.get(
+                    pk=objects["warehouse_id"]
+                )
+                actor = apps.get_model("auth", "User").objects.get(pk=objects["user_id"])
+                # M6.1: a direct insert out of HOLD carries an inspection in its transaction.
                 disposition_contract["event_model"].objects.create(
                     lot_id=objects["lot_id"],
                     warehouse_id=objects["warehouse_id"],
@@ -664,6 +695,7 @@ def test_concurrent_direct_inserts_serialize_one_transition(
                     from_disposition="HOLD",
                     to_disposition="RELEASED",
                     reason="Concurrent direct PostgreSQL insert",
+                    inspection=raw_inspection(lot, warehouse, actor),
                 )
             results.put("created")
         except IntegrityError:
@@ -719,5 +751,15 @@ def create_concurrency_scope(disposition_contract: dict[str, Any]) -> dict[str, 
     user.set_unusable_password()
     user.save()
     assignment_model.objects.create(user=user, warehouse=warehouse, role="QUALITY")
+    # M6.1: an inspected Lot needs an origin and stock where it is inspected.
+    give_origin(
+        apps.get_model("inventory", "StockLedgerEntry").objects.create(
+            lot=lot,
+            warehouse=warehouse,
+            actor=user,
+            quantity_delta=Decimal("5"),
+            reason="Race stock",
+        )
+    )
 
     return {"lot_id": lot.pk, "warehouse_id": warehouse.pk, "user_id": user.pk}

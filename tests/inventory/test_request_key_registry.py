@@ -13,9 +13,10 @@ from django.db import IntegrityError, transaction
 
 from access_control.models import WarehouseRoleAssignment
 from inventory.models import StockLedgerEntry, StockReceipt, StockTransfer
-from inventory.services import ReceiptConflictError, receive_stock
+from inventory.services import ReceiptConflictError, get_stock_balance, receive_stock
 from inventory.transfers import TransferConflictError
-from quality.services import DispositionConflictError, transition_lot_disposition
+from quality.services import DispositionConflictError, record_inspection
+from tests.quality.helpers import raw_inspection
 
 from .test_atomic_transfer import change_quality, post
 from .test_atomic_transfer import transfer_scope as transfer_scope  # noqa: F401
@@ -34,13 +35,24 @@ def receive(scope, key, quantity=Decimal("5")):
 
 
 def release(scope, key):
-    return transition_lot_disposition(
+    """The Quality command under test is the inspection (M6.1): it carries a DISPOSITION key.
+    An inspection needs stock at the pair, so an empty destination first receives 1."""
+    if get_stock_balance(lot=scope["lot"], warehouse=scope["other"]) == 0:
+        receive_stock(
+            lot=scope["lot"],
+            warehouse=scope["other"],
+            actor=scope["actor"],
+            quantity=Decimal("1"),
+            reason="Synthetic stock to inspect",
+            request_id=uuid4(),
+        )
+    return record_inspection(
         lot=scope["lot"],
         warehouse=scope["other"],
+        result="PASS",
+        sample_quantity=Decimal("1"),
+        note="Synthetic Quality",
         actor=scope["actor"],
-        expected_disposition="HOLD",
-        target_disposition="RELEASED",
-        reason="Synthetic Quality",
         request_id=key,
     )
 
@@ -120,6 +132,7 @@ def test_database_rejects_raw_disposition_insert_with_key_owned_by_receipt(trans
     scope, key = transfer_scope, uuid4()
     receive(scope, key)
     with pytest.raises(IntegrityError, match="request"), transaction.atomic():
+        # M6.1: a valid event out of HOLD carries its inspection, so only the key is wrong.
         LotDispositionEvent.objects.create(
             lot=scope["lot"],
             warehouse=scope["other"],
@@ -128,6 +141,7 @@ def test_database_rejects_raw_disposition_insert_with_key_owned_by_receipt(trans
             from_disposition="HOLD",
             to_disposition="RELEASED",
             reason="Synthetic raw insert",
+            inspection=raw_inspection(scope["lot"], scope["other"], scope["actor"]),
         )
 
 
@@ -168,7 +182,7 @@ def other_lot_scope(scope):
 COMMANDS = {
     "receipt": (lambda s, k: receive(s, k), "ReceiptConflictError"),
     "transfer": (lambda s, k: post(s, request_id=k)[0], "TransferConflictError"),
-    "disposition": (lambda s, k: release(s, k), "DispositionConflictError"),
+    "disposition": (lambda s, k: release(s, k), "InspectionConflictError"),
 }
 
 

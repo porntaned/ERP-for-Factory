@@ -9,6 +9,8 @@ from django.apps import apps
 from django.db import DatabaseError, connection, transaction
 from django.db.models.deletion import ProtectedError
 
+from tests.quality.helpers import release
+
 
 @pytest.fixture
 def receipt_contract():
@@ -189,15 +191,9 @@ def test_receipt_preserves_existing_quality_history(receipt_contract, receipt_sc
         user=scope["actor"], warehouse=scope["warehouse"], role="QUALITY"
     )
     quality = import_module("quality.services")
-    quality.transition_lot_disposition(
-        lot=scope["lot"],
-        warehouse=scope["warehouse"],
-        actor=scope["actor"],
-        expected_disposition="HOLD",
-        target_disposition="RELEASED",
-        reason="Synthetic accepted",
-        request_id=uuid4(),
-    )
+    # M6.1: release takes an inspection of stock already there, so an earlier receipt first.
+    receipt_contract["receive"](**receipt_values(scope))
+    release(scope["lot"], scope["warehouse"], scope["actor"], note="Synthetic accepted")
     if initial == "HOLD":
         quality.transition_lot_disposition(
             lot=scope["lot"],

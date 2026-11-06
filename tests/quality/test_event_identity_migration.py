@@ -47,11 +47,17 @@ def set_sequence(value: int, called: bool) -> None:
         )
 
 
+def historical_events() -> Any:
+    """The event model as of CURRENT: later migrations (M6.1) add columns these tests predate."""
+    state = MigrationExecutor(connection).loader.project_state(CURRENT)
+    return state.apps.get_model("quality", "LotDispositionEvent")
+
+
 def event_values(scope: dict[str, Any], actor: Any) -> dict[str, Any]:
     return {
-        "lot": scope["lot"],
-        "warehouse": scope["warehouse"],
-        "actor": actor,
+        "lot_id": scope["lot"].pk,
+        "warehouse_id": scope["warehouse"].pk,
+        "actor_id": actor.pk,
         "request_id": uuid4(),
         "from_disposition": "HOLD",
         "to_disposition": "RELEASED",
@@ -71,7 +77,7 @@ def test_upgrade_preserves_high_id_history_and_reverse_reapply(
     sequence_value: int,
     called: bool,
 ) -> None:
-    events = disposition_contract["event_model"]
+    events = historical_events()
     grant_role(quality_user, quality_scope["warehouse"], "QUALITY")
     released = events.objects.create(id=1_000_000_000, **event_values(quality_scope, quality_user))
     original = events.objects.values().get(pk=released.pk)
@@ -87,14 +93,15 @@ def test_upgrade_preserves_high_id_history_and_reverse_reapply(
         )
         == "RELEASED"
     )
-    held = disposition_contract["transition"](
-        lot=quality_scope["lot"],
-        warehouse=quality_scope["warehouse"],
-        actor=quality_user,
-        expected_disposition="RELEASED",
-        target_disposition="HOLD",
-        reason="Containment after legacy high-ID upgrade",
-        request_id=uuid4(),
+    # A database-assigned id after the upgrade. Inserted through the CURRENT-state model:
+    # the live command needs columns from later migrations (M6.1).
+    held = events.objects.create(
+        **event_values(quality_scope, quality_user)
+        | {
+            "from_disposition": "RELEASED",
+            "to_disposition": "HOLD",
+            "reason": "Containment after legacy high-ID upgrade",
+        }
     )
     assert held.pk == max(released.pk + 1, sequence_value + int(called))
     assert (
@@ -111,7 +118,7 @@ def test_upgrade_preserves_high_id_history_and_reverse_reapply(
     assert list(events.objects.order_by("id").values()) == history
     assert sequence_state() == before_reverse
     reverse_values = event_values(quality_scope, quality_user)
-    reverse_values["lot"] = quality_scope["second_lot"]
+    reverse_values["lot_id"] = quality_scope["second_lot"].pk
     legacy = events.objects.create(id=held.pk + 100, **reverse_values)
     legacy_original = events.objects.values().get(pk=legacy.pk)
 
@@ -119,14 +126,14 @@ def test_upgrade_preserves_high_id_history_and_reverse_reapply(
     assert identity_mode() == "a"
     assert events.objects.values().get(pk=legacy.pk) == legacy_original
     assert list(events.objects.filter(pk__lte=held.pk).order_by("id").values()) == history
-    second_hold = disposition_contract["transition"](
-        lot=quality_scope["second_lot"],
-        warehouse=quality_scope["warehouse"],
-        actor=quality_user,
-        expected_disposition="RELEASED",
-        target_disposition="HOLD",
-        reason="Containment after reapplying identity migration",
-        request_id=uuid4(),
+    second_hold = events.objects.create(
+        **reverse_values
+        | {
+            "request_id": uuid4(),
+            "from_disposition": "RELEASED",
+            "to_disposition": "HOLD",
+            "reason": "Containment after reapplying identity migration",
+        }
     )
     assert second_hold.pk == legacy.pk + 1
 
@@ -140,7 +147,7 @@ def test_empty_upgrade_preserves_unused_or_ahead_sequence(
     sequence_value: int,
     called: bool,
 ) -> None:
-    events = disposition_contract["event_model"]
+    events = historical_events()
     assert events.objects.count() == 0
     set_sequence(sequence_value, called)
 
@@ -158,7 +165,7 @@ def test_exhausted_historical_id_aborts_migration_atomically(
     quality_scope: dict[str, Any],
     quality_user: Any,
 ) -> None:
-    events = disposition_contract["event_model"]
+    events = historical_events()
     before = sequence_state()
     with pytest.raises(DatabaseError, match="event ID space exhausted") as error:
         with transaction.atomic():

@@ -1,5 +1,6 @@
 """Observed PostgreSQL lock waits, never timing-only race assertions."""
 
+from decimal import Decimal
 from importlib import import_module
 from queue import Queue
 from threading import Thread
@@ -143,15 +144,17 @@ def test_receipt_and_quality_share_lot_serialization(
         user=quality_actor, warehouse=scope["warehouse"], role="QUALITY"
     )
     quality = import_module("quality.services")
+    # M6.1: the Quality step is an inspection, which needs stock with an origin already there.
+    receipt_contract["receive"](**receipt_values(scope))
 
     def transition():
-        return quality.transition_lot_disposition(
+        return quality.record_inspection(
             lot=scope["lot"],
             warehouse=scope["warehouse"],
+            result="PASS",
+            sample_quantity=Decimal("1"),
+            note="Synthetic accepted",
             actor=quality_actor,
-            expected_disposition="HOLD",
-            target_disposition="RELEASED",
-            reason="Synthetic accepted",
             request_id=uuid4(),
         )
 
@@ -162,7 +165,7 @@ def test_receipt_and_quality_share_lot_serialization(
         transition if quality_first else receive, receive if quality_first else transition
     )
     assert outcome[0] == "committed", outcome
-    assert receipt_contract["model"].objects.count() == 1
+    assert receipt_contract["model"].objects.count() == 2  # the earlier receipt and the racing one
     assert apps.get_model("quality", "LotDispositionEvent").objects.count() == 1
     assert quality.get_lot_disposition(lot=scope["lot"], warehouse=scope["warehouse"]) == "RELEASED"
 

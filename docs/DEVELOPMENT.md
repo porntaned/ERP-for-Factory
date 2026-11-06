@@ -123,6 +123,10 @@ Expected shell output:
 - L-0003's outputs: LAMP-0001 5 and LAMP-0002 4.
 
 L-0001 is untouched, so the M4.7 walkthrough above still starts from 100 at RM-A.
+
+Since M6.1 (Issue #96) both seeds release RM-A Lots with a passing INCOMING inspection. A database
+seeded before M6.1 must be reseeded with `--reset`: its old release key belongs to an event without
+an inspection, so the rerun reports a key conflict.
 `tests/manufacturing/test_production_path.py` checks the same results on PostgreSQL.
 
 **On the web (M5.5):**
@@ -141,6 +145,30 @@ L-0001 is untouched, so the M4.7 walkthrough above still starts from 100 at RM-A
    - **ยกเลิก order** (Issue #86): refused while the order has net output; reverse the output
      first (as `demo-approver`) and return or use the material on the line, then cancel.
    - A refused action shows why and records nothing.
+
+## Quality inspection (M6.1, shell)
+
+Only an inspection moves a Lot-Warehouse out of HOLD: PASS → RELEASED, FAIL → REJECTED. The kind
+(INCOMING or FINAL) follows the Lot's origin. The sample may not exceed the balance there, and the
+note is required. A REJECTED pair returns to HOLD only through an APPROVER who is not the rejecting
+inspector. Web screens come in M6.1 PR 2; until then use the shell:
+
+```bash
+uv run --env-file .env python manage.py shell -c "
+from decimal import Decimal; from uuid import uuid4
+from django.contrib.auth import get_user_model
+from facilities.models import Warehouse; from inventory.models import Lot
+from quality.services import get_lot_disposition, record_inspection, return_rejected_to_hold
+U = get_user_model().objects; wh = Warehouse.objects.get(code='RM-A')
+lot = Lot.objects.get(code='L-0001')  # RELEASED by the seed; use a HOLD Lot to inspect
+print(get_lot_disposition(lot=lot, warehouse=wh))
+"
+```
+
+`record_inspection(lot=…, warehouse=…, result='PASS'|'FAIL', sample_quantity=Decimal('1'),
+note='…', actor=<QUALITY user at that warehouse>, request_id=uuid4())` and
+`return_rejected_to_hold(lot=…, warehouse=…, actor=<APPROVER there>, reason='…', request_id=uuid4())`.
+In the demo data, `demo-quality` has QUALITY only at RM-A.
 
 ## Evidence rule
 

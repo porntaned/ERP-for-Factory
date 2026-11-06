@@ -19,7 +19,8 @@ from inventory.transfers import (
     transfer_stock,
 )
 from quality.models import LotDispositionEvent
-from quality.services import get_lot_disposition, transition_lot_disposition
+from quality.services import get_lot_disposition, inspection_kind, transition_lot_disposition
+from tests.quality.helpers import force_release, give_origin, release
 
 from .test_stock_receipt_concurrency import blocked_action
 
@@ -32,18 +33,31 @@ def transfer_scope(ledger_scope):
             WarehouseRoleAssignment.objects.create(
                 user=scope["actor"], warehouse=warehouse, role=role
             )
-    StockLedgerEntry.objects.create(
+    starting = StockLedgerEntry.objects.create(
         lot=scope["lot"],
         warehouse=scope["warehouse"],
         actor=scope["actor"],
         quantity_delta=Decimal("100.000001"),
         reason="Synthetic starting stock",
     )
+    give_origin(starting)  # M6.1: an inspected Lot needs an origin (see made_receipts)
     change_quality(scope, scope["warehouse"], "RELEASED")
     return scope
 
 
 def change_quality(scope, warehouse, target):
+    """Move the pair to `target`. M6.1: leaving HOLD takes an inspection; a pair with no stock
+    can only be released for setup with force_release (owner ruling, 2026-11-06)."""
+    if target == "RELEASED":
+        if inspection_kind(scope["lot"]) is None:  # raw-ledger fixtures: link a receipt
+            give_origin(
+                StockLedgerEntry.objects.filter(lot=scope["lot"], quantity_delta__gt=0)
+                .order_by("id")
+                .first()
+            )
+        if get_stock_balance(lot=scope["lot"], warehouse=warehouse) > 0:
+            return release(scope["lot"], warehouse, scope["actor"], quantity=Decimal("1")).event
+        return force_release(scope["lot"], warehouse, scope["actor"])
     return transition_lot_disposition(
         lot=scope["lot"],
         warehouse=warehouse,
