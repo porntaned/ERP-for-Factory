@@ -9,7 +9,7 @@
 สถานะ ณ 2026-11-06 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง; ส่วนนี้ระบุ 2026-11-05 ถึงวันนั้น — historical):
 
 - **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4; M5 ครบ (M5.1–M5.5 และกฎยกเลิก order [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86) ใน [PR #94](https://github.com/porntaned/ERP-for-Factory/pull/94), [main CI #236](https://github.com/porntaned/ERP-for-Factory/actions/runs/42148409105) 952 passed) และ M6.1 PR 1 ([PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97)) — `main` ที่ `5149d0f` (PR #98 เอกสาร) (ข้อความเดิมหยุดที่ M5.1 `5891ec7` — historical, แก้ 2026-11-06)
-- **กำลังดำเนินการ:** M6.1 ([Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96)) — PR 1 (การตรวจ Lot เป็นทางเดียวที่ออกจาก HOLD) merge แล้วใน [PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97); `main` ที่ `e7f64e7`, [main CI #240](https://github.com/porntaned/ERP-for-Factory/actions/runs/42190005568) PostgreSQL 18.6, 986 passed; ถัดไป PR 2 หน้าเว็บ (รอเจ้าของตัดสินสิทธิ์ QUALITY ของ demo-quality ที่ FG); **เจ้าของเป็นผู้ merge** (ข้อความ "M6.1 PR 1 … รอเจ้าของ review และ merge" ใช้ได้ถึง 2026-11-06 — historical)
+- **กำลังดำเนินการ:** ไม่มี — M6.1 เสร็จแล้ว ([PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97) + [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101)), `main` ที่ `d3a48a5`, [main CI #251](https://github.com/porntaned/ERP-for-Factory/actions/runs/42229722933) PostgreSQL 18.6, 1003 passed; **หยุดก่อน M6.2 ตามคำสั่งเจ้าของ (2026-11-06) เพื่อปรับปรุงวิธีทำงานก่อน**; เจ้าของเป็นผู้ merge (ข้อความ "กำลังดำเนินการ M6.1 PR 1/PR 2" ใช้ได้ถึง 2026-11-06 — historical)
 - **ยังไม่เริ่ม:** M6.2–M6.4 (มีบางส่วนแล้วใน M6.2), M7.2–M7.5 (M7.1 เสร็จแล้ว) (ข้อความเดิม "M6, M7" — historical, แก้ 2026-11-06)
 - **ไม่มีการ Deploy**
 
@@ -173,7 +173,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 ## M6 — Quality และ Traceability
 
 - [ ] **M6 — ตรวจคุณภาพและค้นย้อน Lot ได้**
-  - [ ] M6.1 Incoming/Final inspection และสิทธิ์ผู้ตัดสินใจ — [Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96), [spec/หลักฐาน](assignments/m61-inspection.md); PR 1 merge แล้วใน [PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97); PR 2 (หน้าเว็บ) ยังไม่เสร็จ
+  - [x] M6.1 Incoming/Final inspection และสิทธิ์ผู้ตัดสินใจ — [Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96), [spec/หลักฐาน](assignments/m61-inspection.md); PR 1 [PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97) (คำสั่ง, กฎ DB; self-review); PR 2 หน้าเว็บ [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101) ที่ `d3a48a5` ([independent review](reviews/m61-pr2-independent-review.md) fix-then-ship แก้แล้ว); [main CI #251](https://github.com/porntaned/ERP-for-Factory/actions/runs/42229722933) PostgreSQL 18.6: 1003 passed
   - [ ] M6.2 บังคับ Hold/Release ร่วมกับ Inventory — **บางส่วนแล้ว:** การโอนบังคับต้นทาง RELEASED ตั้งแต่ M4.3.3 ([Issue #34](https://github.com/porntaned/ERP-for-Factory/issues/34)); การเบิก/คืนเข้าผลิตบังคับ RELEASED ที่คลังต้นทางตั้งแต่ M5.2a ([Issue #72](https://github.com/porntaned/ERP-for-Factory/issues/72)); ที่ยังเหลือ: ห้ามใช้ Lot ที่ REJECTED ไม่ว่าคลังไหน และการตัดสินตามผล inspection (M6.1, [spec](assignments/m61-inspection.md)) (ข้อความเดิม "ยังไม่มีการบังคับกับการเบิก/ใช้ในการผลิต (M5)" ผิดตั้งแต่ M5.2a — แก้ 2026-11-06)
   - [ ] M6.3 ค้นย้อนวัตถุดิบ ↔ ผลผลิต
   - [ ] M6.4 ทดสอบจำนวน, concurrency และ Audit ของ QC
@@ -197,6 +197,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-06: Merge [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101) (M6.1 PR 2) ที่ `d3a48a5` ตามที่เจ้าของอนุญาต; PR CI #250 ที่ `8c8f34e` 1003 passed ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/101#issuecomment-6686196300)) และ [main CI #251](https://github.com/porntaned/ERP-for-Factory/actions/runs/42229722933) PostgreSQL 18.6, **1003 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/d3a48a506e7b7dbcd2cc5e4555acecccdca1f18c#commitcomment-208475117)); ติ๊ก M6.1; ปิด Issue #96; หยุดก่อน M6.2 ตามคำสั่งเจ้าของ ไม่มี Deploy
 
 - 2026-11-06: M6.1 PR 2 ใน [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101) — หน้าเว็บ Quality (`/quality/`): ตรวจ PASS/FAIL, ส่งกลับ HOLD โดย APPROVER ที่ไม่ใช่ผู้ตรวจ, ประวัติการตรวจในหน้า genealogy; เจ้าของอนุมัติแบบและสิทธิ์ demo ที่ FG; **independent review** โดย sub-agent ตัวใหม่ (fix-then-ship, ไม่มี blocker) แก้ครบยกเว้น m4 ที่เลื่อนไว้ — [รีวิว](reviews/m61-pr2-independent-review.md); local 1003 passed (development check) ไม่มี Deploy
 
