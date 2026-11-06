@@ -1,6 +1,6 @@
 # Whole-project Scrutinize after PR #12
 
-> Copied to `main` on 2026-11-06 from branch `codex/project-audit-after-pr12` (`98103b2`, 2026-10-21) so links no longer depend on that branch; the branch is archived as tag `archive/codex-project-audit-after-pr12`. Historical: all five findings were fixed in PRs #14–#23 (see TASKS.md, PA).
+> Copied to `main` on 2026-11-06 from branch `codex/project-audit-after-pr12` (`98103b2`, 2026-10-21) so links no longer depend on that branch. Archiving the branch as tag `archive/codex-project-audit-after-pr12` and deleting it was owner-approved but is not done yet: the agent session could not push tags or delete branches (pending the owner). Historical: all five findings were fixed in PRs #14–#23 (see TASKS.md, PA).
 
 
 ## Snapshot, intent and method
