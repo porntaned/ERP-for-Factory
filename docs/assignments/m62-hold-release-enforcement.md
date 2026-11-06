@@ -2,10 +2,10 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `96d15f9`.
 [Issue #103](https://github.com/porntaned/ERP-for-Factory/issues/103).
-Status: **spec, awaiting owner approval; no code written** (2026-11-06).
+Status: **spec approved by the owner in chat (2026-11-06); implementation started** ("spec, awaiting owner approval; no code written" held until then — historical).
 
 Roles in this slice (stated as they actually happen; updated as work proceeds):
-Manager = this Claude Code session. Implementer = sub-agent (not started). Reviewer = a separate
+Manager = this Claude Code session. Implementer = sub-agent spawned by the Manager (started 2026-11-06). Reviewer = a separate
 session (not started). Owner decides and merges.
 
 ## Purpose
