@@ -1,8 +1,8 @@
 # M6.1 — Incoming/Final inspection and who decides
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/affectionate-hawking-eyr2d1`; base `main` `8b9c736`.
-Issue: opened after this spec is approved. Status: **spec, awaiting owner review** (2026-11-06).
-No product code yet.
+[Issue #96](https://github.com/porntaned/ERP-for-Factory/issues/96). Status: **spec approved by the owner (chat, 2026-11-06), PR 1 next**
+("spec, awaiting owner review" held until then — historical). No product code yet.
 
 ## Purpose
 
@@ -205,7 +205,7 @@ follows the approach of manufacturing migration 0008.
   (18 call sites under `tests/`)
 - `seed_demo` and `seed_production_demo` produce the same balances
 
-## Rulings to confirm before code
+## Rulings confirmed (owner, chat, 2026-11-06; were "to confirm before code")
 
 1. **A Lot with both a production OUTPUT and a receipt is inspected as FINAL.** This is a rare case:
    it needs a receipt typed against an output Lot's code.
