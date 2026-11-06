@@ -154,6 +154,7 @@ def test_event_has_only_the_locked_persistent_fields(
         "to_disposition",
         "reason",
         "created_at",
+        "inspection",  # M6.1 (Issue #96): the inspection an event out of HOLD carries
     }
 
 

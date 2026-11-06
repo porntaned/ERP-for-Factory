@@ -114,10 +114,16 @@ def test_quality_backfill_aborts_when_a_disposition_key_was_used_by_a_receipt(tr
         reason="Synthetic pre-upgrade",
     )
     StockReceipt.objects.create(request_id=shared, ledger_entry=entry)
-    LotDispositionEvent.objects.create(
-        lot=scope["lot"],
-        warehouse=scope["other"],
-        actor=scope["actor"],
+    # The event model as of PRE: later migrations (M6.1) add a column this schema predates.
+    events = (
+        MigrationExecutor(connection)
+        .loader.project_state(PRE)
+        .apps.get_model("quality", "LotDispositionEvent")
+    )
+    events.objects.create(
+        lot_id=scope["lot"].pk,
+        warehouse_id=scope["other"].pk,
+        actor_id=scope["actor"].pk,
         request_id=shared,
         from_disposition="HOLD",
         to_disposition="RELEASED",
