@@ -2,11 +2,13 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `96d15f9`.
 [Issue #103](https://github.com/porntaned/ERP-for-Factory/issues/103).
-Status: **spec approved by the owner in chat (2026-11-06); implementation started** ("spec, awaiting owner approval; no code written" held until then — historical).
+Status: **implemented on the branch; review so far: none** (updated 2026-11-06 by the Implementer sub-agent). No
+independent review has happened and no pull request exists yet. CI on PostgreSQL 18.6 has not run on
+this branch. ("spec approved by the owner in chat (2026-11-06); implementation started" held until then — historical.)
 
 Roles in this slice (stated as they actually happen; updated as work proceeds):
-Manager = this Claude Code session. Implementer = sub-agent spawned by the Manager (started 2026-11-06). Reviewer = a separate
-session (not started). Owner decides and merges.
+Manager = Claude Code session. Implementer = sub-agent spawned by the Manager (started 2026-11-06; wrote the code,
+tests and this evidence). Reviewer = a separate session (not started). Owner decides and merges.
 
 ## Purpose
 
@@ -153,3 +155,91 @@ bare ledger entries for a REJECTED Lot, if any, are fixed only where they would 
 None blocking. Decisions taken by the Manager, for approval with this spec: the trigger shape
 (deferred, on the ledger entry), "anywhere" meaning the Lot's whole organization, and reversal of a
 SCRAP being refused because it puts stock back.
+
+
+## Evidence (Implementer, 2026-11-06)
+
+Review status: **none**. This section is the Implementer's own record (self-verification), not a review.
+
+### Scope delivered
+
+- `quality.services.get_rejected_warehouses(lot=)`: read-only; latest event per warehouse (highest id, as
+  `get_lot_disposition`), returns the Warehouses where it is REJECTED.
+- `inventory/lot_gate.py`: `LotRejectedError` and `require_lot_not_rejected(lot)`. Called after the Lot lock
+  and the exact-replay/key-conflict check, before any write, in `_post_transfer` (transfer, issue, return),
+  `receive_stock`, `post_production_posting` for CONSUME and OUTPUT (not SCRAP), `reverse_transfer`, and
+  `reverse_production_posting` for a CONSUME or SCRAP original (not OUTPUT). Not called by SCRAP,
+  `reverse_receipt`, or the reversal of an OUTPUT.
+- `manufacturing.services`: `MaterialLotRejectedError(MaterialQualityError)` raised for `LotRejectedError` in
+  issue/return, consume/scrap/output and `reverse_order_posting`.
+- `demo/views.py` and `demo/production_views.py`: a Thai message ("Lot นี้ถูก REJECTED ที่คลังใดคลังหนึ่ง …",
+  with the Lot and warehouses) instead of a 500.
+- `inventory/migrations/0015_rejected_lot_guard.py` (depends on `quality` 0007): deferred constraint trigger
+  `inventory_ledger_rejected_lot_guard` on `inventory_stockledgerentry`; reversible; `SET CONSTRAINTS ALL
+  IMMEDIATE` before and after.
+- Docs: `docs/DEVELOPMENT.md` (rule and demo walk), dated note in `docs/assignments/m61-inspection.md`,
+  docstrings in `inventory/transfers.py` and `inventory/reversals.py`. `docs/TASKS.md` and `README.md` untouched.
+
+### Rulings made while building (for the Reviewer and the owner to confirm)
+
+1. **Order of the gates.** The new gate runs AFTER the existing per-warehouse RELEASED gate. A Lot REJECTED at
+   the source (or at the leaving warehouse of a reversal) is therefore still refused with the old
+   `TransferQualityError` / `ReversalQualityError`; only a rejection elsewhere or at the destination gives
+   `LotRejectedError`. Reason: the spec says those gates "stay as they are", and two existing tests
+   (`test_rejected_lot_cannot_be_transferred`, `test_rejected_destination_blocks_transfer_reversal`) assert them.
+   The behaviour is refused in all three transfer positions either way.
+2. **`MaterialLotRejectedError`** is a subclass of `MaterialQualityError` (the spec asks for that mapping) so the
+   production screen can show a message specific to REJECTED instead of "must be RELEASED at the source".
+3. **Test harness.** Django checks deferred constraints at test teardown. A plain `django_db` test runs in one
+   transaction, so ledger entries inserted before a Lot is rejected were checked against the later rejection and
+   failed teardown (28 errors on the first full run, 9 of them in existing tests). Production commits that history
+   earlier. `tests/quality/helpers.settle()` fires the pending checks first; it is called by `force_reject` and by
+   the `inspect` helpers of `tests/quality/test_inspection.py` and `tests/web/test_quality_screens.py` when the
+   result is FAIL. No assertion in an existing test changed.
+4. The trigger reads the latest event per warehouse for the Lot (`DISTINCT ON (warehouse_id) ... ORDER BY
+   warehouse_id, id DESC`), the same rule as `get_lot_disposition`. "Anywhere" is the whole Lot, which belongs
+   to one organization.
+
+### Tested commit and environment (development check, NOT the evidence of record)
+
+- Tested code commit: `fe8aa71` (the later commits only change documentation). Branch `claude/keen-feynman-jkijlw`,
+  base `main` `96d15f9` plus the two spec commits.
+- Local: Python 3.14.6 (uv-managed; CI pins 3.14.8), PostgreSQL 16 (CI: 18.6), Django 5.2.18, pytest 9.1.1.
+  Throwaway database and role; `.env` not committed.
+- CI on PostgreSQL 18.6 is the evidence of record and has not run on this branch yet.
+
+### RED → GREEN log
+
+| Group | RED (before the code) | GREEN |
+|---|---|---|
+| Quality read function (`tests/quality/test_rejected_warehouses.py`) | 4 failed: `AttributeError: module 'quality.services' has no attribute 'get_rejected_warehouses'` (fixtures and `force_reject` worked) | 4 passed |
+| Commands (`tests/inventory/test_rejected_lot_gate.py`) | 15 failed, 5 passed: `DID NOT RAISE LotRejectedError` / `MaterialQualityError` for 14; at the source the old `TransferQualityError` (the test expectation was then changed to ruling 1). The 5 passing are the allowed commands and the replay tests, which already held | 20 passed |
+| Screens (`tests/web/test_rejected_lot_screens.py`) | 6 failed: `Internal Server Error` on `/receipts/new/`, `/transfers/new/`, `/reversals/transfer/<pk>/` (unmapped error); production forms showed the generic message without REJECTED | 6 passed (`tests/web` 83 passed) |
+| PostgreSQL trigger and migration (`tests/inventory/test_rejected_lot_trigger.py`) | 14 failed: `DID NOT RAISE IntegrityError` for the 11 refused link kinds and the autocommit case, race-with-direct-insert returned `committed`, migration test: trigger absent. 20 passed (allowed kinds, not-rejected, command-level races) | 34 passed |
+
+The refused link kinds covered by direct SQL: credit and debit with no link, receipt, transfer, issue, return, CONSUME,
+OUTPUT, reversal of a CONSUME, of a SCRAP and of a transfer. Passing while REJECTED: SCRAP, receipt reversal, OUTPUT
+reversal. All 14 kinds pass when the Lot is not REJECTED. Races (two connections, `blocked_action`): movement first
+then rejection; rejection first then the waiting command is refused; rejection first then a waiting direct INSERT fails
+at its commit.
+
+### Commands and results (development check)
+
+- `uv run --env-file .env pytest -q -p no:cacheprovider` before the change (main `96d15f9` plus spec): 1003 passed in 137.75s.
+- Same on `fe8aa71`: **1067 passed in 148.77s** (1003 + 64 new tests). A first run before the `settle()` fix: 1067 passed, 28 errors at teardown.
+- `uv run ruff check .`: All checks passed. `uv run ruff format --check .`: clean.
+- `uv run --env-file .env python manage.py makemigrations --check --dry-run`: No changes detected.
+- `migrate inventory 0014` (unapplies `0015_rejected_lot_guard`: OK) then `migrate` (reapplies: OK), on the
+  throwaway database; `tests/inventory/test_rejected_lot_trigger.py::test_migration_unapplies_and_reapplies` does the
+  same inside the suite and checks the trigger and function are gone and back.
+- The demo walk in `docs/DEVELOPMENT.md` was run against the seeded database with the Django test client
+  (transfer, FAIL inspection at RM-B, refused transfer/receipt/issue, return to HOLD, transfer works): all as described.
+
+### Open points for the Reviewer
+
+- Ruling 1 (gate order) and ruling 3 (`settle()` in the test harness).
+- The trigger checks only at commit, so a raw INSERT is refused when the transaction ends, not at the statement.
+
+### Closeout
+
+To be written after the owner merges (merge SHA, post-merge CI, TASKS.md tick in the docs PR).
