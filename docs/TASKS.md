@@ -174,7 +174,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 - [ ] **M6 — ตรวจคุณภาพและค้นย้อน Lot ได้**
   - [ ] M6.1 Incoming/Final inspection และสิทธิ์ผู้ตัดสินใจ
-  - [ ] M6.2 บังคับ Hold/Release ร่วมกับ Inventory — **บางส่วนแล้ว:** การโอนบังคับต้นทาง RELEASED ตั้งแต่ M4.3.3 ([Issue #34](https://github.com/porntaned/ERP-for-Factory/issues/34)); ยังไม่มีการบังคับกับการเบิก/ใช้ในการผลิต (M5) และการตัดสินใจตามผล inspection (M6.1)
+  - [ ] M6.2 บังคับ Hold/Release ร่วมกับ Inventory — **บางส่วนแล้ว:** การโอนบังคับต้นทาง RELEASED ตั้งแต่ M4.3.3 ([Issue #34](https://github.com/porntaned/ERP-for-Factory/issues/34)); การเบิก/คืนเข้าผลิตบังคับ RELEASED ที่คลังต้นทางตั้งแต่ M5.2a ([Issue #72](https://github.com/porntaned/ERP-for-Factory/issues/72)); ที่ยังเหลือ: ห้ามใช้ Lot ที่ REJECTED ไม่ว่าคลังไหน และการตัดสินตามผล inspection (M6.1, [spec](assignments/m61-inspection.md)) (ข้อความเดิม "ยังไม่มีการบังคับกับการเบิก/ใช้ในการผลิต (M5)" ผิดตั้งแต่ M5.2a — แก้ 2026-11-06)
   - [ ] M6.3 ค้นย้อนวัตถุดิบ ↔ ผลผลิต
   - [ ] M6.4 ทดสอบจำนวน, concurrency และ Audit ของ QC
 
@@ -197,6 +197,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-06: M6.1 brainstorming — เจ้าของตัดสินในแชต: เพิ่มสถานะ REJECTED, QUALITY ตรวจและตัดสินในคำสั่งเดียว (PASS→RELEASED, FAIL→REJECTED), บันทึกตรวจแบบหัวบันทึกอย่างเดียว, ปล่อย/ปฏิเสธได้ผ่าน inspection เท่านั้น (คำสั่ง + PostgreSQL), REJECTED→HOLD โดย APPROVER ที่ไม่ใช่ผู้ตรวจ, ชนิดตรวจกำหนดจากที่มา Lot, แบ่ง 2 PR — [spec](assignments/m61-inspection.md) รอเจ้าของ review; แก้ข้อความ M6.2 ที่ล้าสมัย; merge [PR #95](https://github.com/porntaned/ERP-for-Factory/pull/95) ที่ `8b9c736` แล้ว [main CI #238](https://github.com/porntaned/ERP-for-Factory/actions/runs/42149363738) PostgreSQL 18.6, 952 passed; เอกสารเท่านั้น ไม่มี Deploy
 
 - 2026-11-06: เจ้าของอนุมัติในแชตให้ Merge [PR #94](https://github.com/porntaned/ERP-for-Factory/pull/94) (Issue #86 แบบ A: ยกเลิก order ที่มีผลผลิตสุทธิ > 0 ไม่ได้ + ปุ่มยกเลิกบนเว็บ) ผู้ช่วยกด merge ตามที่อนุมัติ ที่ `69b4e18`; PR CI [#235](https://github.com/porntaned/ERP-for-Factory/actions/runs/42016533064) ที่ `1ec82bb` 952 passed ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/94#issuecomment-6656531421)) และ [main CI #236](https://github.com/porntaned/ERP-for-Factory/actions/runs/42148409105) PostgreSQL 18.6, **952 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/69b4e18590a59ed2e6ea10ac94a28a0af4992991#commitcomment-208403221)); ติ๊ก M5; Issue #86 ยังเปิด (PR ไม่ได้ใช้คำปิด issue) รอเจ้าของปิด; self-review ไม่มี Deploy
 
