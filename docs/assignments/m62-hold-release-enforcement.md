@@ -2,13 +2,14 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `96d15f9`.
 [Issue #103](https://github.com/porntaned/ERP-for-Factory/issues/103).
-Status: **implemented on the branch; review so far: none** (updated 2026-11-06 by the Implementer sub-agent). No
-independent review has happened and no pull request exists yet. CI on PostgreSQL 18.6 has not run on
-this branch. ("spec approved by the owner in chat (2026-11-06); implementation started" held until then — historical.)
+Status: **implemented; [PR #104](https://github.com/porntaned/ERP-for-Factory/pull/104) open; independent review done (fix-then-ship, repair round 1 of 2 applied, docs only); CI on PostgreSQL 18.6 pending at the time of writing; awaiting the owner** (2026-11-06).
+("implemented on the branch; review so far: none ... no pull request exists yet ... CI has not run" held until the PR was opened and reviewed — historical.)
+("spec approved by the owner in chat (2026-11-06); implementation started" held until then — historical.)
 
-Roles in this slice (stated as they actually happen; updated as work proceeds):
-Manager = Claude Code session. Implementer = sub-agent spawned by the Manager (started 2026-11-06; wrote the code,
-tests and this evidence). Reviewer = a separate session (not started). Owner decides and merges.
+Roles in this slice (as they actually happened): Manager = the main Claude Code session (scope, spec, PR, verification
+re-run, review record). Implementer = sub-agent spawned by the Manager (wrote the code, tests and the evidence below).
+Reviewer = a separate Claude Code session (`session_01MVmjhbsKYvC1RZ5mHmggzs`) created by the Manager; it received only the PR
+number, the Issue number and this path. Owner decides and merges.
 
 ## Purpose
 
@@ -159,7 +160,7 @@ SCRAP being refused because it puts stock back.
 
 ## Evidence (Implementer, 2026-11-06)
 
-Review status: **none**. This section is the Implementer's own record (self-verification), not a review.
+Review status of this section: it is the Implementer's own record (self-verification), not a review. The independent review is in the next section.
 
 ### Scope delivered
 
@@ -239,6 +240,17 @@ at its commit.
 
 - Ruling 1 (gate order) and ruling 3 (`settle()` in the test harness).
 - The trigger checks only at commit, so a raw INSERT is refused when the transaction ends, not at the statement.
+
+### Independent review (2026-11-06)
+
+[`docs/reviews/m62-independent-review.md`](../reviews/m62-independent-review.md): **independent review by a separate session**,
+read-only, code-reading only (no tests run), on `ea2c26f`. Verdict **fix-then-ship**, no code defect: findings 1 (review record
+missing) fixed by adding that file; 2 (no CI evidence yet) open until CI finishes at the final SHA; 3 (gate order, ruling 1)
+left for the owner to confirm; 4 and 5 not changed. Repair round 1 of 2 touched documentation only and was not re-reviewed.
+
+**Unsupported by design (finding 4):** rejecting a Lot in the same transaction that already inserted a ledger entry for it
+fails at commit, because the trigger checks the disposition at commit. No production path does this. M6.3 and M6.4 must not
+combine the two in one transaction.
 
 ### Closeout
 
