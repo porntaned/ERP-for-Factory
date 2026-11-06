@@ -34,6 +34,7 @@ from tests.manufacturing.test_material_movements import (  # noqa: F401
     stock,
 )
 from tests.manufacturing.test_production_postings import consume, line, output  # noqa: F401
+from tests.quality.helpers import settle
 
 D = Decimal
 
@@ -49,6 +50,8 @@ def inspect(
     actor=None,
     key=None,
 ):
+    if result == "FAIL":
+        settle()  # M6.2: the history so far stands for earlier commits (see helpers.settle)
     return record_inspection(
         lot=lot,
         warehouse=mf.wh[warehouse],

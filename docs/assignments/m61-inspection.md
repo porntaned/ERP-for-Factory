@@ -42,7 +42,9 @@ Out:
 - scrap or return to supplier
 - valuation
 - refusing a REJECTED Lot at *other* warehouses: this is M6.2, as the owner ruled during the M5.2
-  scrutinize
+  scrutinize. **Delivered by M6.2 (Issue #103, 2026-11-06, branch `claude/keen-feynman-jkijlw`;
+  merge SHA recorded in [`m62-hold-release-enforcement.md`](m62-hold-release-enforcement.md) after
+  the owner merges).** "Out of scope for M6.1" held until then — historical.
 - traceability views (M6.3)
 - Deploy
 

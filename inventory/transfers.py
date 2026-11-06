@@ -79,6 +79,8 @@ def transfer_stock(
     """Post a debit/credit pair, requiring current WAREHOUSE authority at both ends.
 
     Source must be RELEASED; destination Quality is unchanged. Return (debit, credit).
+    M6.2 (Issue #103): a Lot that is REJECTED at ANY warehouse, source, destination or elsewhere,
+    is refused with LotRejectedError, after the Lot lock and the exact-replay check.
     Exact UUID replays recheck current authorization, returning historical results even
     after Quality changes. New movements require RELEASED source and sufficient stock.
     Legacy NULL request IDs are not adopted. There is no endpoint or automatic retry.
@@ -114,7 +116,8 @@ def post_production_transfer(
     PRODUCTION at both ends. The Quality gate is the source for an issue and the destination
     for a return (quality_at_source=False): material comes back only where its Lot is
     RELEASED. Only manufacturing.services calls it, inside its own transaction, and records
-    the order link in the same transaction.
+    the order link in the same transaction. As for transfer_stock, a Lot REJECTED at any
+    warehouse is refused with LotRejectedError (M6.2).
     """
     return _post_transfer(
         lot=lot,
