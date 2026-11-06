@@ -8,7 +8,7 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 >
 > **ส่งมอบแล้ว:** Foundation, Item/UOM, Lot, สิทธิ์ตามบทบาท/คลัง, Quality Hold/Release และ Inventory M4.1–M4.5 (ledger, รับเข้า, โอนใน Plant เดียวกัน, กันคำขอซ้ำ/concurrency, ทะเบียน request key ข้ามคำสั่ง และ Reversal ที่อ้างรายการต้นฉบับ) และหน้าจอ M4.6 สำหรับรับเข้า โอน ประวัติ และกลับรายการ ตามสิทธิ์ผู้ใช้ พร้อม admin อ่านอย่างเดียวและข้อมูลจำลอง `seed_demo` (M7.1) และเดโม M4.7 รับเข้า 100 → โอน 30 → คงเหลือ 70/30 ([วิธีเดินเดโม](docs/DEVELOPMENT.md#inventory-demo-walkthrough-m47)) และ Manufacturing M5.1–M5.3: BOM แบบมีเวอร์ชันที่ต้องอนุมัติ, Production order, เบิก/คืน/ใช้วัตถุดิบ, scrap, รับผลผลิตเข้า FG (HOLD) และปิด order ผ่านคำสั่ง Inventory พร้อมความเชื่อมโยง Lot วัตถุดิบ ↔ ผลผลิต, การกลับรายการผลิต (M5.2c) และเหตุผลเมื่อปิด order ที่ผลผลิตขาด และเดโมการผลิตครบเส้นทาง `seed_production_demo` (M5.4)
 >
-> **ยังไม่ส่งมอบ:** กฎยกเลิก order ที่มีผลผลิตแล้ว ([Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86)), Inspection/Traceability (M6), Portfolio delivery (M7) และไม่มีการ Deploy
+> **ยังไม่ส่งมอบ:** Inspection/Traceability (M6), Portfolio delivery (M7) และไม่มีการ Deploy
 
 ## Stack
 

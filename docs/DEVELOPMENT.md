@@ -138,6 +138,8 @@ L-0001 is untouched, so the M4.7 walkthrough above still starts from 100 at RM-A
      **บันทึกผลผลิต** (a new Lot code), **ปิด order**.
    - As `demo-approver` you can also use **Scrap**, and **กลับรายการ** on a history row.
    - Short output needs a reason when closing.
+   - **ยกเลิก order** (Issue #86): refused while the order has net output; reverse the output
+     first (as `demo-approver`) and return or use the material on the line, then cancel.
    - A refused action shows why and records nothing.
 
 ## Evidence rule

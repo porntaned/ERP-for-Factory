@@ -32,6 +32,7 @@ def order_actions(user, order):
     produces = open_ and all(has_warehouse_role(user, w, ["PRODUCTION"]) for w in (line, output))
     return {
         "record": produces,
+        "cancel": produces,
         "scrap": open_ and has_warehouse_role(user, line, ["APPROVER"]),
         "reverse_line": open_ and has_warehouse_role(user, line, ["APPROVER"]),
         "reverse_output": open_ and has_warehouse_role(user, output, ["APPROVER"]),

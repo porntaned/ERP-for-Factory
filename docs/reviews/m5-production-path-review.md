@@ -54,7 +54,7 @@ The trace was exercised on PostgreSQL in two ways:
    - Cause: `demo-approver` lacked APPROVER at LINE-1/FG, and there was no DRIVER Lot.
    - Change: `seed_production_demo` grants the role and receives L-0002, L-0003 and D-0001.
    - `seed_demo` is unchanged, so the M4.7 demo keeps L-0001 = 100.
-3. **Open — owner decision, [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86):
+3. **Resolved 2026-11-05 (owner chose option A; see `docs/assignments/m55-production-screens.md`)** — was: open, owner decision, [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86):
    an order with output can be CANCELLED.**
    - Cause: `cancel_production_order` and the database check only that the line is empty.
    - Why it matters: the output Lot is left under a cancelled order, and the M5.2c
@@ -76,4 +76,4 @@ Earlier rulings re-checked and still standing (M5.2c record):
 ## Verdict
 
 **fix-then-ship** for M5. Findings 1–2 are fixed in this slice. M5 should be ticked once the
-owner has ruled on Issue #86. The biggest remaining risk is cancel bypassing the close rules.
+owner has ruled on Issue #86 (ruled 2026-11-05: option A; fixed in the PR that records it, awaiting owner merge). The biggest remaining risk is cancel bypassing the close rules.

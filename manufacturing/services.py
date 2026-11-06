@@ -425,6 +425,11 @@ def cancel_production_order(
             raise OrderValidationError("only an OPEN order can be cancelled")
         if held := _held_on_line(locked):
             raise OrderValidationError(f"return the material on the line before cancelling: {held}")
+        if (made := _output_total(locked)) > 0:
+            raise OrderValidationError(
+                "reverse the output or close the order before cancelling: "
+                f"net output is {made.normalize():f}"
+            )
         try:
             with transaction.atomic():
                 ProductionOrder.objects.filter(pk=locked.pk).update(

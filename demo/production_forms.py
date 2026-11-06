@@ -95,6 +95,11 @@ class CloseForm(forms.Form):
     request_id = _request_id()
 
 
+class CancelForm(forms.Form):
+    reason = _reason()
+    request_id = _request_id()
+
+
 class ReverseForm(forms.Form):
     reason = _reason()
     request_id = _request_id()

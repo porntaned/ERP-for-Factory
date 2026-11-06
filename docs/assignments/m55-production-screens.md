@@ -33,7 +33,7 @@ turn command errors into Thai messages.
 - Forms: create order, issue, return, consume, scrap, record output, reverse, close (with
   shortfall reason).
 - Buttons are shown by role. A hidden request UUID makes a double submit post once.
-- Cancel waits for [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86).
+- Cancel waited for [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86) (historical; delivered 2026-11-05, see the last section).
 
 ## Out of scope
 
@@ -126,7 +126,7 @@ This is fine at demo scale.
 2. **Error detail keeps the command's English text**, for example `net issue would exceed the
    BOM requirement` or `LED-CHIP lot L-0001 holds 4`, after a Thai heading. Translating each
    command message is left for later.
-3. **No cancel button.** It waits for Issue #86.
+3. **No cancel button.** It waits for Issue #86. (Historical, 2026-11-05: added after the owner ruled; see the last section.)
 
 ### RED / GREEN
 
@@ -178,3 +178,61 @@ Of Issue #89's acceptance criteria, "the owner tries the web themselves" has no 
 - the session's demo server, on preview port 8000;
 - a private, read-only claude.ai snapshot of the PR 1 pages;
 - local-run steps.
+
+## Issue #86 — cancel needs no output (2026-11-05)
+
+Branch `claude/affectionate-hawking-eyr2d1`; base `main` `bf6d58f`; tested commit `bb2ecb68c7babeb85f13cdbb4e41bb1fbe30f243`.
+Owner chose option A in chat: an order with net output cannot be cancelled.
+
+- **Rule:** OPEN → CANCELLED is refused while net output (OUTPUT − reversed OUTPUT) is above
+  zero. To cancel, reverse the output first (APPROVER, order still OPEN), then cancel; or close the
+  order with a shortfall reason.
+- **Command:** `cancel_production_order` refuses with "reverse the output or close the order
+  before cancelling: net output is N", using the existing `output_total`.
+- **Database:** migration `0009_order_cancel_needs_no_output` adds a trigger using the existing
+  `manufacturing_order_net_output`. It checks the transition only, so orders cancelled earlier are
+  untouched. Reverse SQL drops the trigger and function.
+- **Web:** `/production/<id>/cancel/` (reason, request UUID) and a "ยกเลิก order" button for users
+  with PRODUCTION at the line and output warehouses, on OPEN orders only. Others get 403.
+- **Double submit:** the command replays by request key (existing command tests). On the web, a
+  repeated post after the cancellation is a 403 because the order is no longer OPEN. "Close"
+  behaves the same way.
+
+### RED / GREEN
+
+- RED: 3 manufacturing tests failed with `DID NOT RAISE` (command twice, trigger once); the 4 new
+  web tests failed because the button was missing and the URL gave 404.
+- GREEN: `tests/manufacturing` 169 passed (166 before); web tests passed after one test fix: my
+  first draft expected a replay after cancel and the real behaviour is 403 (see above).
+- The existing migration round-trip test (`test_migrations_unapply_only_without_reversals`)
+  also unapplies and reapplies 0009.
+
+### Verification (development check, not evidence of record)
+
+PostgreSQL 16.15 (Ubuntu), Python 3.14.6 (the pin is 3.14.8, not available in this sandbox).
+
+| Command | Result |
+|---|---|
+| `uv run --env-file .env pytest -q` | 952 passed (945 before) |
+| `ruff check .` / `ruff format --check .` | clean |
+| `makemigrations --check --dry-run` | No changes detected |
+| Real `runserver` on `seed_production_demo`, Playwright as `demo-production` and `demo-approver` | see below |
+
+The walk (order #3, 2 × LAMP-A19): issue, consume, record output 1 → cancel refused with "net output
+is 1" → reverse the output as `demo-approver` → cancel again. The second cancel was also refused,
+with "return the material on the line … L-0001 holds 8": my script had reversed the first
+reversible row (the consumption) instead of the output, which was correct app behaviour and a script
+error. After reversing the output row and using the 8 chips again, the cancel succeeded; the
+database showed `CANCELLED`, and there was no 5xx in the server log.
+
+### Review
+
+Self-review only (one agent, no sub-agents); scrutinize per `docs/SCRUTINIZE.md` below.
+
+- The command and the trigger use the same definition of net output as close, so cancel and close
+  cannot disagree.
+- The trigger is the backstop for any writer that skips the command.
+- Existing data: a database that already holds a CANCELLED order with output keeps it. The rule is
+  not retroactive.
+- Not tested: concurrent output and cancel. Both lock the order row first (`select_for_update`),
+  so cancel sees committed output; no race test was added.
