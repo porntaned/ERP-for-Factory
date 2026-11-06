@@ -76,4 +76,4 @@ Earlier rulings re-checked and still standing (M5.2c record):
 ## Verdict
 
 **fix-then-ship** for M5. Findings 1–2 are fixed in this slice. M5 should be ticked once the
-owner has ruled on Issue #86 (ruled 2026-11-05: option A; fixed in the PR that records it, awaiting owner merge). The biggest remaining risk is cancel bypassing the close rules.
+owner has ruled on Issue #86 (ruled 2026-11-05: option A; fixed in [PR #94](https://github.com/porntaned/ERP-for-Factory/pull/94), merged at `69b4e18` on 2026-11-06). The biggest remaining risk is cancel bypassing the close rules.
