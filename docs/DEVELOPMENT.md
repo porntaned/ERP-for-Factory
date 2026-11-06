@@ -159,11 +159,12 @@ inspector.
    HOLD at FG.
 2. Record **PASS** (sample 1, any note) on LAMP-0001: it becomes RELEASED and leaves the list.
 3. Record **FAIL** on LAMP-0002: it becomes REJECTED.
-4. Log in as `demo-approver` (APPROVER at FG): the REJECTED row has **ส่งกลับ HOLD**; with a reason
+4. Log in as `demo-approver` (APPROVER at FG from `seed_production_demo`): the REJECTED row has **ส่งกลับ HOLD**; with a reason
    it returns to HOLD and can be inspected again.
 5. A Lot's genealogy page (`/lots/<id>/genealogy/`) lists its inspections and disposition history.
-The seed grants `demo-quality` QUALITY and `demo-approver` APPROVER at FG for this (owner-approved,
-2026-11-06). The shell still works ("web screens come in M6.1 PR 2" held until then — historical):
+`seed_demo` grants `demo-quality` QUALITY at FG and `seed_production_demo` grants `demo-approver`
+APPROVER at FG for this (owner-approved, 2026-11-06). The inspector who rejected a pair never sees
+its return button. The shell still works ("web screens come in M6.1 PR 2" held until then — historical):
 
 ```bash
 uv run --env-file .env python manage.py shell -c "
@@ -180,7 +181,7 @@ print(get_lot_disposition(lot=lot, warehouse=wh))
 `record_inspection(lot=…, warehouse=…, result='PASS'|'FAIL', sample_quantity=Decimal('1'),
 note='…', actor=<QUALITY user at that warehouse>, request_id=uuid4())` and
 `return_rejected_to_hold(lot=…, warehouse=…, actor=<APPROVER there>, reason='…', request_id=uuid4())`.
-In the demo data, `demo-quality` has QUALITY only at RM-A.
+In the demo data, `demo-quality` has QUALITY at RM-A, RM-B and FG ("only at RM-A" — historical, corrected 2026-11-06).
 
 ## Evidence rule
 
