@@ -8,7 +8,7 @@ Status: owner-authorized [PR #43](https://github.com/porntaned/ERP-for-Factory/p
 ## Verified scope — 2026-10-24
 
 Git working tree initially clean; origin/main fetched at the base above. PR #39 merged;
-main CI #126 passed. PR #41 remains open (docs only, checks passed); it was not merged
+main CI #126 passed. PR #41 remains open (docs only, checks passed; historical — closed without merge 2026-10-26, see the update below); it was not merged
 or included in this branch. Only Issue #40 was open before creating #42.
 
 Owner explicitly selected: new commands require UUID request_id; exact retry returns

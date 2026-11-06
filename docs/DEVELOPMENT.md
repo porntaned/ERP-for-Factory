@@ -85,7 +85,7 @@ DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver
 ## Production demo walkthrough (M5.4)
 
 `seed_production_demo` runs `seed_demo` first, then makes one LAMP-A19 order end to end through
-the real commands. Manufacturing has no screens yet (M7), so the result is read in the shell.
+the real commands. The result can be read in the shell below or on the M5.5 screens ("no screens yet (M7)" was true until M5.5 — historical, corrected 2026-11-06).
 Use a disposable database: `--reset` flushes every table.
 
 ```bash

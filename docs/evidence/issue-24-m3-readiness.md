@@ -119,7 +119,7 @@ Checking M3.4 does not itself accept overall M3 or authorize M4.
 
 ## Audit follow-up disposition matrix
 
-Original [post-PR12 audit](https://github.com/porntaned/ERP-for-Factory/blob/codex/project-audit-after-pr12/docs/reviews/project-audit-after-pr12.md)
+Original [post-PR12 audit](../reviews/project-audit-after-pr12.md)
 reviewed `9b1d182`; its historical `fix-then-ship` and deliberately RED reproduction
 branch are preserved. The later fixes below resolve its five recorded findings;
 this is not a claim that a test count proves absence of every possible future defect.

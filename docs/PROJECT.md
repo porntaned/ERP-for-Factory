@@ -22,13 +22,13 @@ These are demo assumptions, not claims about rules shared by every factory or in
 
 - Django modular monolith.
 - PostgreSQL is the authoritative transactional database.
-- Django Templates and Bootstrap when screens are introduced.
+- Django Templates and Bootstrap for screens (introduced in M4.6).
 - pytest, pytest-django, Ruff and GitHub Actions.
 - Small GitHub issues with explicit acceptance criteria and evidence-backed pull requests.
 
 ## Multi-Agent delivery
 
-[The execution contract](MULTI_AGENT.md) defines actual agent roles, assignments, handoffs, evidence, repair limits and stop conditions. Native Codex agents are the default. Noodle remains an optional tool; the portfolio evaluates results and evidence.
+[The execution contract](MULTI_AGENT.md) defines actual agent roles, assignments, handoffs, evidence, repair limits and stop conditions. Native Codex agents were the default until M4.6; since M4.7 the work is done by Claude Code sessions (corrected 2026-11-06). Noodle remains an optional tool; the portfolio evaluates results and evidence.
 
 ## Milestones
 

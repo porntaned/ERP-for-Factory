@@ -1,5 +1,7 @@
 # M4.3.4 — Atomic same-Plant transfer
 
+> Current status (2026-10-24): owner-merged [PR #37](https://github.com/porntaned/ERP-for-Factory/pull/37); M4.3 accepted through PR #45. See [closeout evidence](../evidence/m43-closeout.md). Pre-merge scope, exclusions and pending statements below are historical.
+
 Repository: `porntaned/ERP-for-Factory`  
 Branch: `codex/inventory/atomic-transfer`  
 Base: `b4b44579352a490e1432783e1a34d571b6bf37ac`  
@@ -85,7 +87,7 @@ Exclusions: typed transfer record/persistent pairing, request retry/deduplicatio
 UI, schema changes, dependencies, real data, reversal, valuation and deployment. Actor,
 reason and database time exist on each ledger row, but M4.3.5 is not complete.
 Each repeated invocation is a new transfer; no auto-retry or retry-safe claim is made.
-Full M4.3.7 independent review remains pending. Self-review verdict: **ship** for
+Full M4.3.7 independent review remains pending _(historical; done — [m437-transfer-independent-review.md](../reviews/m437-transfer-independent-review.md), corrected 2026-11-06)_. Self-review verdict: **ship** for
 this bounded command, because exact atomicity, rollback and serialized eligibility passed
 on PostgreSQL. A repeated invocation still posts again by design; no endpoint is exposed.
 

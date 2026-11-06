@@ -1,5 +1,7 @@
 # M4.3.5 — Immutable transfer history
 
+> Current status (2026-10-24): owner-merged [PR #39](https://github.com/porntaned/ERP-for-Factory/pull/39); M4.3 accepted through PR #45. See [closeout evidence](../evidence/m43-closeout.md). Pre-merge scope, exclusions and pending statements below are historical.
+
 [Issue #38](https://github.com/porntaned/ERP-for-Factory/issues/38)  
 Repository: `porntaned/ERP-for-Factory`  
 Branch: `codex/inventory/transfer-history`  
@@ -94,5 +96,5 @@ had 1 failed / 28 passed: the identity UPDATE guard correctly raised Programming
 The final test checks the actual database exception/message; history constraints were
 not weakened. The explicit identity INSERT assertion also checks GENERATED ALWAYS.
 
-No independent review is claimed; full M4.3.7 remains pending. A final documentation-only
+No independent review is claimed; full M4.3.7 remains pending _(historical; done — [m437-transfer-independent-review.md](../reviews/m437-transfer-independent-review.md), corrected 2026-11-06)_. A final documentation-only
 commit must pass CI before merge. Owner acceptance/merge and deployment are not inferred.
