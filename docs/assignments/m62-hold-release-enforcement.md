@@ -2,7 +2,7 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `96d15f9`.
 [Issue #103](https://github.com/porntaned/ERP-for-Factory/issues/103).
-Status: **implemented; [PR #104](https://github.com/porntaned/ERP-for-Factory/pull/104) open; independent review done (fix-then-ship, repair round 1 of 2 applied, docs only); CI on PostgreSQL 18.6 pending at the time of writing; awaiting the owner** (2026-11-06).
+Status: **implemented; [PR #104](https://github.com/porntaned/ERP-for-Factory/pull/104) open; independent review done (fix-then-ship, repair round 1 of 2 applied, docs only); CI on PostgreSQL 18.6 green; awaiting the owner** (2026-11-06).
 ("implemented on the branch; review so far: none ... no pull request exists yet ... CI has not run" held until the PR was opened and reviewed — historical.)
 ("spec approved by the owner in chat (2026-11-06); implementation started" held until then — historical.)
 
@@ -207,7 +207,14 @@ Review status of this section: it is the Implementer's own record (self-verifica
   base `main` `96d15f9` plus the two spec commits.
 - Local: Python 3.14.6 (uv-managed; CI pins 3.14.8), PostgreSQL 16 (CI: 18.6), Django 5.2.18, pytest 9.1.1.
   Throwaway database and role; `.env` not committed.
-- CI on PostgreSQL 18.6 is the evidence of record and has not run on this branch yet.
+- CI on PostgreSQL 18.6 is the evidence of record (see the next heading). ("has not run on this branch yet" held until the PR was opened — historical.)
+
+### CI evidence of record (PR #104, one updated CI comment)
+
+[CI comment](https://github.com/porntaned/ERP-for-Factory/pull/104#issuecomment-6691022466):
+- Head `ea2c26f` (all code of the PR; tested as merge `13f84af`): [run #254](https://github.com/porntaned/ERP-for-Factory/actions/runs/42260613418), PostgreSQL 18.6, Python 3.14.8, **1067 passed**, 0 failed, 0 errors, 0 skipped.
+- Head `01e235a` (documentation only after `ea2c26f`; tested as merge `04c15e8`): [run #255](https://github.com/porntaned/ERP-for-Factory/actions/runs/42261010972), same server and Python, **1067 passed**, 0 failed.
+- Commits after `01e235a` change this file only; the CI comment on the final head is the record for them.
 
 ### RED → GREEN log
 

@@ -49,7 +49,7 @@ VERDICT: fix-then-ship. The biggest reason is that CI evidence is pending and th
 | # | Disposition |
 |---|---|
 | 1 | Fixed: this file added; spec Status and Roles updated. |
-| 2 | Open until CI finishes at the final SHA; the CI comment is then cited in the spec. PG16 numbers keep the "development check" label. |
+| 2 | Closed: CI on PostgreSQL 18.6 passed (1067) on `ea2c26f` and `01e235a`, cited in the spec; PG16 numbers keep the "development check" label. |
 | 3 | **Not changed; owner to confirm.** Spec says the existing per-warehouse gates "stay as they are", and two existing tests pin them. |
 | 4 | Not changed (no production path). Recorded in the spec as unsupported by design for M6.3/M6.4. |
 | 5 | Not changed: optional, and the commands give the friendly error first. Left as an observation to avoid touching the migration after review. |
