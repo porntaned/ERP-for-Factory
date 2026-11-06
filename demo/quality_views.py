@@ -22,7 +22,8 @@ from .quantities import format_quantity
 
 MESSAGES = (
     (qs.DispositionAuthorizationError, "ไม่มีสิทธิ์ทำรายการนี้", False),
-    (qs.DispositionConflictError, "คำขอนี้ถูกใช้แล้ว กรุณาเปิดหน้าใหม่", False),
+    # Review m3: a stale page also raises Conflict/Validation; show the command's reason.
+    (qs.DispositionConflictError, "ทำรายการไม่ได้ กรุณาเปิดหน้าใหม่", True),
     (qs.DispositionValidationError, "ข้อมูลไม่ถูกต้อง", True),
 )
 COMMAND_ERRORS = tuple(kind for kind, _, _ in MESSAGES)
@@ -62,8 +63,10 @@ def _pairs(user):
                 "disposition": disposition,
                 "can_inspect": disposition == "HOLD"
                 and has_warehouse_role(user, warehouse, ["QUALITY"]),
+                # Review m2: the command refuses the inspector who rejected the pair.
                 "can_return": disposition == "REJECTED"
-                and has_warehouse_role(user, warehouse, ["APPROVER"]),
+                and has_warehouse_role(user, warehouse, ["APPROVER"])
+                and qs.rejecting_inspector_id(lot, warehouse) != user.pk,
             }
         )
     return sorted(rows, key=lambda r: (r["warehouse"].code, r["lot"].code))
@@ -75,8 +78,9 @@ def _page(request, errors=()):
     rows = _pairs(request.user)
     for row in rows:
         initial = {"lot": row["lot"].pk, "warehouse": row["warehouse"].pk}
-        row["inspect_form"] = InspectionForm(initial=initial | {"sample_quantity": "1"})
-        row["return_form"] = ReturnToHoldForm(initial=initial)
+        # Review m6: auto_id=False so the repeated row forms carry no duplicate element ids.
+        row["inspect_form"] = InspectionForm(initial=initial, auto_id=False)
+        row["return_form"] = ReturnToHoldForm(initial=initial, auto_id=False)
     return render(request, "demo/quality/list.html", {"rows": rows, "errors": errors})
 
 

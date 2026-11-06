@@ -200,3 +200,87 @@ def test_genealogy_page_shows_inspection_history(client, fg):
         ["HOLD", "REJECTED"],
         ["REJECTED", "HOLD"],
     ]
+
+
+# ---------------------------------------------------------------- independent review fixes
+
+
+@pytest.mark.django_db
+def test_rejecting_inspector_who_is_also_approver_gets_no_return_button(client, fg):
+    """Review m2: the command refuses the rejecting inspector, so the button must not show."""
+    quality = get_user_model().objects.get(username="demo-quality")
+    WarehouseRoleAssignment.objects.create(user=quality, warehouse=fg, role="APPROVER")
+    inspect(login(client, "demo-quality"), fg, result="FAIL")
+    assert 'data-action="return-hold"' not in client.get("/quality/").content.decode()
+
+
+@pytest.mark.django_db
+def test_stale_page_explains_the_current_state(client, fg):
+    """Review m3: an inspection from a stale page is refused with the command's reason."""
+    login(client, "demo-quality")
+    inspect(client, fg)
+    stale = inspect(client, fg)  # a new key on a Lot that is no longer HOLD
+    body = stale.content.decode()
+    assert "คำขอนี้ถูกใช้แล้ว" not in body and "HOLD" in body
+    assert LotInspection.objects.filter(warehouse=fg).count() == 1
+
+
+@pytest.mark.django_db
+def test_forms_enforce_csrf(fg):
+    from django.test import Client
+
+    strict = Client(enforce_csrf_checks=True)
+    strict.force_login(get_user_model().objects.get(username="demo-quality"))
+    response = strict.post(
+        "/quality/inspect/",
+        {
+            "lot": lamp().pk,
+            "warehouse": fg.pk,
+            "result": "PASS",
+            "sample_quantity": "1",
+            "note": "x",
+            "request_id": str(uuid4()),
+        },
+    )
+    assert response.status_code == 403 and state(fg) == "HOLD"
+
+
+@pytest.mark.django_db
+def test_warehouse_without_role_is_refused(client, fg):
+    rm_b = Warehouse.objects.get(code="LINE-1")  # demo-quality has no QUALITY here
+    response = login(client, "demo-quality").post(
+        "/quality/inspect/",
+        {
+            "lot": lamp().pk,
+            "warehouse": rm_b.pk,
+            "result": "PASS",
+            "sample_quantity": "1",
+            "note": "x",
+            "request_id": str(uuid4()),
+        },
+        follow=True,
+    )
+    assert "ไม่มีสิทธิ์" in response.content.decode()
+    assert not LotInspection.objects.filter(lot=lamp()).exists()
+
+
+@pytest.mark.django_db
+def test_row_forms_have_no_duplicate_ids(client, fg):
+    """Review m6: one id per page; the result select is labelled."""
+    import re
+
+    html = login(client, "demo-quality").get("/quality/").content.decode()
+    ids = re.findall(r'\bid="([^"]+)"', html)
+    assert len(ids) == len(set(ids))
+    assert 'aria-label="ผล"' in html
+
+
+@pytest.mark.django_db
+def test_plain_seed_grants_only_quality_at_fg():
+    """Review m1: APPROVER at FG comes from seed_production_demo, the seed that makes FG Lots."""
+    call_command("seed_demo", verbosity=0)
+    fg = Warehouse.objects.get(code="FG")
+    roles = set(
+        WarehouseRoleAssignment.objects.filter(warehouse=fg).values_list("user__username", "role")
+    )
+    assert ("demo-quality", "QUALITY") in roles and ("demo-approver", "APPROVER") not in roles

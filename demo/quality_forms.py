@@ -15,7 +15,11 @@ class _PairForm(forms.Form):
 
 
 class InspectionForm(_PairForm):
-    result = forms.ChoiceField(choices=(("PASS", "PASS"), ("FAIL", "FAIL")), label="ผล")
+    result = forms.ChoiceField(
+        choices=(("PASS", "PASS"), ("FAIL", "FAIL")),
+        label="ผล",
+        widget=forms.Select(attrs={"aria-label": "ผล", "class": "form-select form-select-sm"}),
+    )
     sample_quantity = forms.DecimalField(**(QUANTITY | {"label": "จำนวนตัวอย่าง"}))
     note = forms.CharField(label="บันทึก", max_length=500)
 
