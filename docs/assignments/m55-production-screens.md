@@ -236,3 +236,7 @@ Self-review only (one agent, no sub-agents); scrutinize per `docs/SCRUTINIZE.md`
   not retroactive.
 - Not tested: concurrent output and cancel. Both lock the order row first (`select_for_update`),
   so cancel sees committed output; no race test was added.
+
+### Issue #86 closeout (2026-11-06)
+
+PR CI [#235](https://github.com/porntaned/ERP-for-Factory/actions/runs/42016533064) on head `1ec82bb` (tested as merge `441a6c3`): PostgreSQL 18.6, Python 3.14.8, **952 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/94#issuecomment-6656531421)). The owner approved the merge in chat; [PR #94](https://github.com/porntaned/ERP-for-Factory/pull/94) merged at `69b4e18590a59ed2e6ea10ac94a28a0af4992991`; [main CI #236](https://github.com/porntaned/ERP-for-Factory/actions/runs/42148409105): PostgreSQL 18.6, **952 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/69b4e18590a59ed2e6ea10ac94a28a0af4992991#commitcomment-208403221)). Review remained self-review only. Issue #86 is still open: the PR said "Issue: #86" without a closing keyword, so the owner closes it.
