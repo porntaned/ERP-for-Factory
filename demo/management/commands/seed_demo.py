@@ -77,8 +77,8 @@ class Command(BaseCommand):
         users = {}
         for username, role, codes in (
             ("demo-warehouse", "WAREHOUSE", ("RM-A", "RM-B")),
-            ("demo-quality", "QUALITY", ("RM-A", "RM-B")),
-            ("demo-approver", "APPROVER", ("RM-A", "RM-B")),
+            ("demo-quality", "QUALITY", ("RM-A", "RM-B", "FG")),
+            ("demo-approver", "APPROVER", ("RM-A", "RM-B", "FG")),
             ("demo-production", "PRODUCTION", ("RM-A", "RM-B", "LINE-1", "FG")),
         ):
             user, created = get_user_model().objects.get_or_create(username=username)
