@@ -198,6 +198,7 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 
 ## Progress log
 
+- 2026-11-09: แก้ AGENTS.md (เจ้าของอนุมัติในแชต): ระหว่างที่ PR เปิดอยู่ ให้อ้างผล CI ด้วยลิงก์ CI comment เท่านั้น ห้าม commit ที่มีไว้จดผล CI ของ PR ตัวเอง; SHA และเลข CI run ไปจดใน docs PR หลัง merge; commit เอกสารล้วนหลัง review ไม่ต้อง review ใหม่ (สาเหตุ: PR #104 มี CI รันซ้ำ 3 รอบจาก commit เอกสารล้วน); แก้ PR template และ DEVELOPMENT.md ให้ตรงกัน เอกสารเท่านั้น ไม่มี Deploy
 - 2026-11-06: Merge [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101) (M6.1 PR 2) ที่ `d3a48a5` ตามที่เจ้าของอนุญาต; PR CI #250 ที่ `8c8f34e` 1003 passed ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/101#issuecomment-6686196300)) และ [main CI #251](https://github.com/porntaned/ERP-for-Factory/actions/runs/42229722933) PostgreSQL 18.6, **1003 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/d3a48a506e7b7dbcd2cc5e4555acecccdca1f18c#commitcomment-208475117)); ติ๊ก M6.1; ปิด Issue #96; หยุดก่อน M6.2 ตามคำสั่งเจ้าของ ไม่มี Deploy
 
 - 2026-11-06: M6.1 PR 2 ใน [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101) — หน้าเว็บ Quality (`/quality/`): ตรวจ PASS/FAIL, ส่งกลับ HOLD โดย APPROVER ที่ไม่ใช่ผู้ตรวจ, ประวัติการตรวจในหน้า genealogy; เจ้าของอนุมัติแบบและสิทธิ์ demo ที่ FG; **independent review** โดย sub-agent ตัวใหม่ (fix-then-ship, ไม่มี blocker) แก้ครบยกเว้น m4 ที่เลื่อนไว้ — [รีวิว](reviews/m61-pr2-independent-review.md); local 1003 passed (development check) ไม่มี Deploy
