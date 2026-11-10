@@ -2,7 +2,7 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `96d15f9`.
 [Issue #103](https://github.com/porntaned/ERP-for-Factory/issues/103).
-Status: **implemented; [PR #104](https://github.com/porntaned/ERP-for-Factory/pull/104) open; independent review done (fix-then-ship, repair round 1 of 2 applied, docs only); CI on PostgreSQL 18.6 green; awaiting the owner** (2026-11-06).
+Status: **merged: [PR #104](https://github.com/porntaned/ERP-for-Factory/pull/104) at `66c0ede` (2026-11-06); M6.2 complete** ("PR #104 open ... awaiting the owner" held until then — historical).
 ("implemented on the branch; review so far: none ... no pull request exists yet ... CI has not run" held until the PR was opened and reviewed — historical.)
 ("spec approved by the owner in chat (2026-11-06); implementation started" held until then — historical.)
 
@@ -259,6 +259,14 @@ left for the owner to confirm; 4 and 5 not changed. Repair round 1 of 2 touched 
 fails at commit, because the trigger checks the disposition at commit. No production path does this. M6.3 and M6.4 must not
 combine the two in one transaction.
 
-### Closeout
+### Closeout (2026-11-06)
 
-To be written after the owner merges (merge SHA, post-merge CI, TASKS.md tick in the docs PR).
+The owner approved the merge in chat and, on review finding 3, **accepted the gate order** (a Lot REJECTED at the source of a
+transfer/issue or at the leaving warehouse of a reversal still raises the old `TransferQualityError` / `ReversalQualityError`;
+rejection elsewhere or at the destination raises `LotRejectedError`). [PR #104](https://github.com/porntaned/ERP-for-Factory/pull/104)
+merged at `66c0ede2983d4f99ef964608f56b2cdaac56f947` (merge commit of head `cc84925`). PR CI
+[#256](https://github.com/porntaned/ERP-for-Factory/actions/runs/42261616328) on `cc84925`: PostgreSQL 18.6, Python 3.14.8,
+**1067 passed**. Main CI [#257](https://github.com/porntaned/ERP-for-Factory/actions/runs/42262359333): PostgreSQL 18.6, Python 3.14.8, **1067 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/66c0ede2983d4f99ef964608f56b2cdaac56f947#commitcomment-208509091)).
+The merge was performed by the Manager session after the owner's explicit approval ("อนุมัติ merge PR#104") and green CI on the
+final head. Review stays: independent review by a separate session (read-only); repair round 1 of 2 was documentation only and was
+not re-reviewed. Issue #103 is left open for the owner to close; M6.3 is not started (owner instruction).
