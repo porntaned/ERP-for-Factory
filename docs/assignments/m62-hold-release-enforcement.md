@@ -269,4 +269,5 @@ merged at `66c0ede2983d4f99ef964608f56b2cdaac56f947` (merge commit of head `cc84
 **1067 passed**. Main CI [#257](https://github.com/porntaned/ERP-for-Factory/actions/runs/42262359333): PostgreSQL 18.6, Python 3.14.8, **1067 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/66c0ede2983d4f99ef964608f56b2cdaac56f947#commitcomment-208509091)).
 The merge was performed by the Manager session after the owner's explicit approval ("อนุมัติ merge PR#104") and green CI on the
 final head. Review stays: independent review by a separate session (read-only); repair round 1 of 2 was documentation only and was
-not re-reviewed. Issue #103 is left open for the owner to close; M6.3 is not started (owner instruction).
+not re-reviewed. M6.3 is not started (owner instruction). ("Issue #103 is left open for the owner to close" held until
+the owner closed [Issue #103](https://github.com/porntaned/ERP-for-Factory/issues/103) as completed on 2026-11-10 — historical, corrected 2026-11-11.)

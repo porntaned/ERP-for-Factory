@@ -230,4 +230,5 @@ Open at the merge, not ruled on by the owner: review finding 3 (a caption saying
 warehouse with no event means "not inspected there") and the confirmations in finding 5 (exact,
 case-sensitive search; `lot_positions` reading disposition events in `manufacturing`; a Lot reached
 twice in one level shown as a repeat). They are recorded here so a later Issue can pick them up.
-Issue #108 is left open for the owner to close. M6.4 is not started.
+M6.4 is not started. ("Issue #108 is left open for the owner to close" held until the owner closed
+[Issue #108](https://github.com/porntaned/ERP-for-Factory/issues/108) as completed on 2026-11-11 — historical, corrected 2026-11-11.)
