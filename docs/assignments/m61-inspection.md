@@ -333,6 +333,8 @@ to enforce, so it does not meet ruling 4.
    shown with demo users. Adding grants is a privileged-access change, so it is left for the owner
    to decide, before PR 2.
 2. *Minor:* `LotInspection` is not in the read-only admin. It is optional; PR 2 adds screens.
+   *Done in M6.4 (Issue #113, 2026-11-11):* `LotInspection` is registered in the read-only admin
+   (`quality/admin.py`); the finding above held until then (historical).
 3. *Minor:* the database does not check that the approver is active (ruling 8).
 
 **Verdict:** `ship`. Every rule in the spec is enforced in the command and in PostgreSQL, the gates

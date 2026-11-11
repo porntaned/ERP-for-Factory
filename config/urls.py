@@ -28,6 +28,7 @@ urlpatterns = [
     path("quality/", quality_views.quality_list, name="quality-list"),
     path("quality/inspect/", quality_views.inspect, name="quality-inspect"),
     path("quality/return/", quality_views.return_to_hold, name="quality-return"),
+    path("quality/audit/", quality_views.quality_audit, name="quality-audit"),
     path("reversals/receipt/<int:pk>/", views.reverse, {"kind": "receipt"}, name="reverse-receipt"),
     path(
         "reversals/transfer/<int:pk>/", views.reverse, {"kind": "transfer"}, name="reverse-transfer"

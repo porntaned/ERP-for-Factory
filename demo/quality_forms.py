@@ -26,3 +26,42 @@ class InspectionForm(_PairForm):
 
 class ReturnToHoldForm(_PairForm):
     reason = forms.CharField(label="เหตุผล", max_length=500)
+
+
+class AuditFilterForm(forms.Form):
+    """M6.4 (Issue #113): GET filters of the QC history page; only the user's warehouses."""
+
+    warehouse = forms.ModelChoiceField(
+        Warehouse.objects.none(),
+        required=False,
+        label="คลัง",
+        empty_label="ทุกคลัง",
+        widget=forms.Select(attrs={"class": "form-select form-select-sm"}),
+    )
+    date_from = forms.DateField(
+        required=False,
+        label="ตั้งแต่วันที่",
+        input_formats=["%Y-%m-%d"],
+        widget=forms.DateInput(attrs={"type": "date", "class": "form-control form-control-sm"}),
+    )
+    date_to = forms.DateField(
+        required=False,
+        label="ถึงวันที่",
+        input_formats=["%Y-%m-%d"],
+        widget=forms.DateInput(attrs={"type": "date", "class": "form-control form-control-sm"}),
+    )
+    page = forms.IntegerField(
+        required=False, min_value=1, max_value=1_000_000, widget=forms.HiddenInput
+    )
+
+    def __init__(self, *args, warehouses, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["warehouse"].queryset = warehouses
+        self.fields["warehouse"].label_from_instance = lambda warehouse: warehouse.code
+
+    def clean(self):
+        data = super().clean()
+        start, end = data.get("date_from"), data.get("date_to")
+        if start and end and start > end:
+            raise forms.ValidationError("ตั้งแต่วันที่ต้องไม่เกินถึงวันที่")
+        return data

@@ -9,15 +9,16 @@ double submit replay instead of recording twice.
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from django.db.models import Sum
+from django.db.models import Sum, Value
 from django.shortcuts import redirect, render
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_GET, require_POST
 
 from access_control.policies import has_warehouse_role, warehouses_for_user
 from inventory.models import Lot, StockLedgerEntry
 from quality import services as qs
+from quality.models import LotDispositionEvent, LotInspection
 
-from .quality_forms import InspectionForm, ReturnToHoldForm
+from .quality_forms import AuditFilterForm, InspectionForm, ReturnToHoldForm
 from .quantities import format_quantity
 
 MESSAGES = (
@@ -140,3 +141,75 @@ def return_to_hold(request):
         post,
         lambda d: f"ส่ง {d['lot'].code} ที่ {d['warehouse'].code} กลับเป็น HOLD",
     )
+
+
+# ---------------------------------------------------------------- M6.4 (Issue #113): QC history
+# Owner ruling 1 (chat, 2026-11-11): every inspection and disposition change at the warehouses
+# where the user holds QUALITY or APPROVER, newest first, in one table; read-only. A fixed page
+# size with "older" paging keeps the query count independent of the history's length.
+
+AUDIT_PAGE_SIZE = 50
+
+
+def _audit_keys(warehouse_ids, start, end, page):
+    """(created_at, id, kind) of one page of both kinds, newest first; one query."""
+
+    def scoped(queryset, kind):
+        queryset = queryset.filter(warehouse_id__in=warehouse_ids)
+        if start:
+            queryset = queryset.filter(created_at__date__gte=start)  # local dates (TIME_ZONE)
+        if end:
+            queryset = queryset.filter(created_at__date__lte=end)
+        return queryset.annotate(row_kind=Value(kind)).values_list("created_at", "id", "row_kind")
+
+    combined = scoped(LotInspection.objects.order_by(), "inspection").union(
+        scoped(LotDispositionEvent.objects.order_by(), "event"), all=True
+    )
+    offset = (page - 1) * AUDIT_PAGE_SIZE
+    return list(
+        combined.order_by("-created_at", "row_kind", "-id")[offset : offset + AUDIT_PAGE_SIZE + 1]
+    )
+
+
+def _audit_rows(keys):
+    ids = {"inspection": [], "event": []}
+    for _, pk, kind in keys:
+        ids[kind].append(pk)
+    found = {
+        "inspection": LotInspection.objects.select_related("lot", "warehouse", "inspector").in_bulk(
+            ids["inspection"]
+        ),
+        "event": LotDispositionEvent.objects.select_related("lot", "warehouse", "actor").in_bulk(
+            ids["event"]
+        ),
+    }
+    return [{"kind": kind, "obj": found[kind][pk]} for _, pk, kind in keys]
+
+
+@login_required
+@require_GET
+def quality_audit(request):
+    allowed = quality_warehouses(request.user)
+    warehouses = list(allowed.order_by("code", "pk"))
+    if not warehouses:
+        raise PermissionDenied("QUALITY or APPROVER role required")
+    form = AuditFilterForm(request.GET or None, warehouses=allowed.order_by("code", "pk"))
+    context = {"form": form, "rows": [], "errors": [], "older": None, "page": 1}
+    if form.is_bound and not form.is_valid():
+        context["errors"] = [f"ตัวกรองไม่ถูกต้อง: {form.errors.as_text()}"]
+        return render(request, "demo/quality/audit.html", context)
+    data = form.cleaned_data if form.is_bound else {}
+    chosen = data.get("warehouse")
+    page = data.get("page") or 1
+    keys = _audit_keys(
+        [chosen.pk] if chosen else [w.pk for w in warehouses],
+        data.get("date_from"),
+        data.get("date_to"),
+        page,
+    )
+    if len(keys) > AUDIT_PAGE_SIZE:
+        query = request.GET.copy()
+        query["page"] = page + 1
+        context["older"] = query.urlencode()
+    context |= {"rows": _audit_rows(keys[:AUDIT_PAGE_SIZE]), "page": page}
+    return render(request, "demo/quality/audit.html", context)

@@ -273,6 +273,27 @@ Demo walk (disposable database; after `seed_production_demo --reset`, `set_demo_
 after inserting ledger entries in the same transaction calls `tests.quality.helpers.settle()` first,
 because Django checks deferred constraints at teardown while production commits that history earlier.
 
+## QC history (M6.4, Issue #113)
+
+**ประวัติ QC** (`/quality/audit/`) lists every inspection and every disposition change at the
+warehouses where the user holds QUALITY or APPROVER, newest first, in one read-only table (403
+for anyone else; the nav link shows wherever **คุณภาพ** shows). Filters: warehouse (only the
+user's) and from / to dates, inclusive, in local time (Asia/Bangkok). An invalid filter shows a
+message and no rows. 50 rows per page; **เก่ากว่า →** opens the next older page. The admin also
+lists `LotInspection`, view-only.
+
+On the demo data (after `seed_production_demo --reset`, `set_demo_passwords`, `runserver`):
+1. Log in as `demo-quality` or `demo-approver` and open **ประวัติ QC**: 14 rows, 7 inspections and
+   their 7 HOLD → RELEASED events (L-0001, L-0002, L-0003, D-0001, L-0004, D-0002 INCOMING at RM-A;
+   LED-BOARD-0001 FINAL at FG). Each event names the inspection it came from (`#n`).
+2. Choose **คลัง** FG: the two LED-BOARD-0001 rows.
+3. Record a FAIL on LAMP-0001 at FG on **คุณภาพ**, then return it as `demo-approver`: the newest
+   rows are REJECTED → HOLD (demo-approver), HOLD → REJECTED and the FAIL inspection (demo-quality).
+4. As `demo-warehouse` the page is refused (403).
+
+`tests/web/test_quality_audit.py` and `tests/web/test_quality_admin.py` cover the same on
+PostgreSQL; `tests/quality/test_qc_hardening.py` covers sample bounds, races and audit records.
+
 ## Evidence rule
 
 CI (PostgreSQL 18.6, Python 3.14.8) is the evidence of record. Each run posts a summary with
