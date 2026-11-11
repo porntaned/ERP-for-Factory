@@ -2,11 +2,11 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `94a3e38`.
 [Issue #108](https://github.com/porntaned/ERP-for-Factory/issues/108).
-Status: **implemented on the branch, not yet reviewed; PR not yet opened** (2026-11-11). ("spec, awaiting owner approval; no code written" and then "spec approved by the owner in chat (2026-11-11); implementation started" held until then — historical.)
+Status: **[PR #111](https://github.com/porntaned/ERP-for-Factory/pull/111) open; independent review by a separate session: fix-then-ship, no code findings, documentation fixes applied; awaiting the owner** (2026-11-11). ("implemented on the branch, not yet reviewed; PR not yet opened", "spec approved by the owner in chat (2026-11-11); implementation started" and "spec, awaiting owner approval; no code written" held until then — historical.)
 
 Roles (as they actually happen; updated as work proceeds): Manager = the main Claude Code session.
 Implementer = a sub-agent spawned by the Manager (started 2026-11-11). Reviewer = a separate Claude Code
-session (not started). The owner decides and merges.
+session (`session_01MVmjhewJFpBspSkUbCyJN4`), given only the PR number, the Issue number and this path; report in [`docs/reviews/m63-independent-review.md`](../reviews/m63-independent-review.md). The owner decides and merges.
 
 ## Purpose
 
@@ -213,6 +213,6 @@ Run on commit `c73c15d` (clean tree), PostgreSQL 16.15 local cluster, Python 3.1
   RELEASED, LED-BOARD-0001 none, L-0004 RM-A 10 RELEASED. The L-0004 trace reaches
   LAMP-BR30-0001. The shell snippets in `docs/DEVELOPMENT.md` were run on the same data.
 
-CI evidence of record: the PR's CI comment (linked here once the PR exists).
+CI evidence of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/111#issuecomment-6786212132) (always shows the latest head). ("linked here once the PR exists" held until PR #111 was opened — historical.)
 
 Documentation commits after `c73c15d` are documentation only.
