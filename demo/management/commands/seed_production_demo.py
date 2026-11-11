@@ -5,6 +5,11 @@ then: chip Lots L-0002 30 and L-0003 20 and DRIVER Lot D-0001 20 received and RE
 order 10 x LAMP-A19 issues, consumes (a mistaken consumption is reversed), scraps, outputs
 LAMP-0001 5 and LAMP-0002 4 (LAMP-0003 1 reversed), returns the rest and closes short with a
 reason. Every command uses a fixed request UUID, so a rerun replays and posts nothing new.
+
+M6.3 (Issue #108) adds one WIP level with new Lots only, so the balances above stay the same:
+LED-BOARD (WIP, 4 LED-CHIP) and LAMP-BR30 (FINISHED, 1 LED-BOARD + 1 DRIVER) BOMs; order A makes
+LED-BOARD-0001 5 from chip Lot L-0004 into FG, where demo-quality passes its FINAL inspection;
+order B issues it from FG with DRIVER Lot D-0002 and makes LAMP-BR30-0001 5. Both orders close.
 """
 
 from decimal import Decimal
@@ -56,7 +61,7 @@ class Command(BaseCommand):
                 user=approver, warehouse=wh[code], role="APPROVER"
             )
 
-        def stock(item, code, quantity):
+        def stock(item, code, quantity, prefix="m54"):
             lot, _ = Lot.objects.get_or_create(item=items[item], code=code)
             receive_stock(
                 lot=lot,
@@ -64,7 +69,7 @@ class Command(BaseCommand):
                 actor=users["demo-warehouse"],
                 quantity=D(quantity),
                 reason="Synthetic demo delivery",
-                request_id=demo_key(f"m54-receipt-{code}"),
+                request_id=demo_key(f"{prefix}-receipt-{code}"),
             )
             if get_lot_disposition(lot=lot, warehouse=wh["RM-A"]) == "HOLD":
                 record_inspection(  # M6.1: an INCOMING inspection that passes
@@ -74,7 +79,7 @@ class Command(BaseCommand):
                     sample_quantity=D("1"),
                     note="Synthetic demo incoming inspection",
                     actor=users["demo-quality"],
-                    request_id=demo_key(f"m54-release-{code}"),
+                    request_id=demo_key(f"{prefix}-release-{code}"),
                 )
             return lot
 
@@ -171,7 +176,98 @@ class Command(BaseCommand):
         order = step(
             "close", mf.close_production_order, actor=production, shortfall_reason=SHORTFALL
         )
+        lamp = self.seed_wip_chain(users, wh, items, stock)
         return (
             f"Seeded M5.4 production demo: order {order.pk} LAMP-A19 x 10 {order.status}, "
-            "net output 9 (LAMP-0001 5, LAMP-0002 4 at FG, HOLD); shortfall reason recorded."
+            "net output 9 (LAMP-0001 5, LAMP-0002 4 at FG, HOLD); shortfall reason recorded. "
+            f"M6.3 chain: L-0004 -> LED-BOARD-0001 -> {lamp.code} (FG, HOLD)."
+        )
+
+    def seed_wip_chain(self, users, wh, items, stock):
+        """M6.3 (Issue #108): RAW -> WIP -> FINISHED with new Lots, existing grants only."""
+        production, approver = users["demo-production"], users["demo-approver"]
+        chip = items["LED-CHIP"]
+        for code, name, kind in (
+            ("LED-BOARD", "LED board (WIP)", "WIP"),
+            ("LAMP-BR30", "BR30 LED lamp", "FINISHED"),
+        ):
+            items[code], _ = Item.objects.get_or_create(
+                organization=chip.organization,
+                code=code,
+                defaults={"display_name": name, "item_type": kind, "base_uom": chip.base_uom},
+            )
+
+        def bom(item, lines):
+            key = f"m63-bom-{item.lower()}-v1"
+            draft = mf.create_bom_draft(
+                item=items[item],
+                lines=[(items[component], D(quantity)) for component, quantity in lines],
+                actor=production,
+                request_id=demo_key(key),
+            )
+            return mf.approve_bom(bom=draft, actor=approver, request_id=demo_key(f"{key}-approve"))
+
+        def run(name, bom, quantity, materials, lot_code):
+            """Issue, consume all, output the full quantity into FG and close."""
+            order = mf.create_production_order(
+                bom=bom,
+                quantity=D(quantity),
+                line_warehouse=wh["LINE-1"],
+                output_warehouse=wh["FG"],
+                actor=production,
+                request_id=demo_key(f"m63-{name}-order"),
+            )
+            for lot, source, used in materials:
+                mf.issue_material(
+                    order=order,
+                    lot=lot,
+                    source_warehouse=wh[source],
+                    quantity=D(used),
+                    actor=production,
+                    reason="Issue to line 1",
+                    request_id=demo_key(f"m63-{name}-issue-{lot.code}"),
+                )
+            for lot, _, used in materials:
+                mf.consume_material(
+                    order=order,
+                    lot=lot,
+                    quantity=D(used),
+                    actor=production,
+                    reason="Assembly run",
+                    request_id=demo_key(f"m63-{name}-consume-{lot.code}"),
+                )
+            mf.record_output(
+                order=order,
+                lot_code=lot_code,
+                quantity=D(quantity),
+                actor=production,
+                reason="End-of-line output",
+                request_id=demo_key(f"m63-{name}-output-{lot_code}"),
+            )
+            mf.close_production_order(
+                order=order, actor=production, request_id=demo_key(f"m63-{name}-close")
+            )
+            return Lot.objects.get(item=bom.item, code=lot_code)
+
+        board_bom = bom("LED-BOARD", [("LED-CHIP", "4")])
+        lamp_bom = bom("LAMP-BR30", [("LED-BOARD", "1"), ("DRIVER", "1")])
+        chips = stock("LED-CHIP", "L-0004", "30", prefix="m63")
+        drivers = stock("DRIVER", "D-0002", "10", prefix="m63")
+        board = run("board", board_bom, "5", [(chips, "RM-A", "20")], "LED-BOARD-0001")
+        if get_lot_disposition(lot=board, warehouse=wh["FG"]) == "HOLD":
+            record_inspection(  # M6.1: a FINAL inspection at FG releases the WIP output
+                lot=board,
+                warehouse=wh["FG"],
+                result="PASS",
+                sample_quantity=D("1"),
+                note="Synthetic demo final inspection",
+                actor=users["demo-quality"],
+                request_id=demo_key("m63-final-LED-BOARD-0001"),
+            )
+        return run(
+            "br30",
+            lamp_bom,
+            "5",
+            [(board, "FG", "5"), (drivers, "RM-A", "5")],
+            "LAMP-BR30-0001",
         )

@@ -158,3 +158,20 @@ def test_trace_and_search_write_nothing_and_offer_no_post_forms(client, plant):
 @pytest.mark.django_db
 def test_unknown_lot_trace_is_404(client, plant):
     assert login(client).get("/lots/999999/trace/").status_code == 404
+
+
+@pytest.mark.django_db
+def test_trace_page_on_the_wip_demo_chain(client, plant):
+    lamp = lot("LAMP-BR30-0001")
+    order = ProductionOrder.objects.get(bom__item__code="LED-BOARD")
+    html = page(client, f"/lots/{lamp.pk}/trace/")
+    assert table(html, "backward")[-1] == [
+        "2",
+        "LED-BOARD-0001",
+        f"#{order.pk}",
+        "L-0004",
+        "LED-CHIP",
+        "20",
+        "",
+    ]
+    assert ["L-0004", "LED-CHIP", "RM-A", "10", "RELEASED"] in table(html, "positions")
