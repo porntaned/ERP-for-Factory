@@ -9,7 +9,7 @@
 สถานะ ณ 2026-11-06 บน `main` (ดู SHA ล่าสุดใน Progress log ด้านล่าง; ส่วนนี้ระบุ 2026-11-05 ถึงวันนั้น — historical):
 
 - **เสร็จและ Merge แล้ว:** M0, MA, M1, M2, M3, PA, M4.1–M4.7 (รวม M4.4.1 ทะเบียน request key และ M4.4.2 [PR #56](https://github.com/porntaned/ERP-for-Factory/pull/56)) และโครงเว็บอ่านอย่างเดียว + `seed_demo` ([PR #55](https://github.com/porntaned/ERP-for-Factory/pull/55)) และ CI สรุปผลเป็น comment ([PR #61](https://github.com/porntaned/ERP-for-Factory/pull/61)) M4.5 Reversal ([PR #60](https://github.com/porntaned/ERP-for-Factory/pull/60)) M4.6 หน้าจอ ([PR #64](https://github.com/porntaned/ERP-for-Factory/pull/64)) และ M4.7 เดโม ([PR #67](https://github.com/porntaned/ERP-for-Factory/pull/67)) จึงปิด M4; M5 ครบ (M5.1–M5.5 และกฎยกเลิก order [Issue #86](https://github.com/porntaned/ERP-for-Factory/issues/86) ใน [PR #94](https://github.com/porntaned/ERP-for-Factory/pull/94), [main CI #236](https://github.com/porntaned/ERP-for-Factory/actions/runs/42148409105) 952 passed) และ M6.1 PR 1 ([PR #97](https://github.com/porntaned/ERP-for-Factory/pull/97)) — `main` ที่ `5149d0f` (PR #98 เอกสาร) (ข้อความเดิมหยุดที่ M5.1 `5891ec7` — historical, แก้ 2026-11-06)
-- **กำลังดำเนินการ:** ไม่มี — M6.2 เสร็จแล้ว ([PR #104](https://github.com/porntaned/ERP-for-Factory/pull/104), `main` ที่ `66c0ede`, [main CI #257](https://github.com/porntaned/ERP-for-Factory/actions/runs/42262359333) PostgreSQL 18.6 — ผลบันทึกใน Progress log); **หยุดก่อน M6.3 ตามคำสั่งเจ้าของ**; เจ้าของเป็นผู้ merge (ข้อความ "ไม่มี — M6.1 เสร็จแล้ว ... หยุดก่อน M6.2" ใช้ได้ถึง 2026-11-06 — historical)
+- **กำลังดำเนินการ:** M6.3 เริ่มตามคำสั่งเจ้าของ (2026-11-11) — ขั้นถามกฎธุรกิจและเขียน spec ยังไม่มีโค้ด; M6.2 เสร็จแล้ว ([PR #104](https://github.com/porntaned/ERP-for-Factory/pull/104) + docs [PR #105](https://github.com/porntaned/ERP-for-Factory/pull/105)) (ข้อความ "ไม่มี — M6.2 เสร็จแล้ว ... หยุดก่อน M6.3 ตามคำสั่งเจ้าของ" ใช้ได้ถึง 2026-11-11 — historical)
 - **ยังไม่เริ่ม:** M6.3–M6.4, M7.2–M7.5 (M7.1 เสร็จแล้ว) (ข้อความเดิม "M6.2–M6.4 (มีบางส่วนแล้วใน M6.2)" — historical, แก้ 2026-11-06)
 - **ไม่มีการ Deploy**
 
@@ -197,6 +197,10 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-11: Merge [PR #106](https://github.com/porntaned/ERP-for-Factory/pull/106) (กติกาอ้างผล CI ด้วยลิงก์, AGENTS.md) ที่ `c0f600d` โดย Manager session ตามคำสั่งเจ้าของในแชต; PR CI ที่ head `47f6f99` ผ่าน; [main CI #262](https://github.com/porntaned/ERP-for-Factory/actions/runs/42947151591) PostgreSQL 18.6, Python 3.14.8, **1067 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/c0f600df018cca114bd9cfd5868a2ea659219ec6#commitcomment-209328673)); เอกสารเท่านั้น ไม่มี review ไม่มี Deploy
+
+- 2026-11-10: Merge docs [PR #105](https://github.com/porntaned/ERP-for-Factory/pull/105) (post-merge ของ M6.2) ที่ `808519a` โดย Manager session ตามคำสั่งเจ้าของในแชต; [main CI #260](https://github.com/porntaned/ERP-for-Factory/actions/runs/42816239775) PostgreSQL 18.6, **1067 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/808519aa3756a08e688e3e6e0a54803d6959b021#commitcomment-209195679)); ปิด [Issue #103](https://github.com/porntaned/ERP-for-Factory/issues/103) ตามคำสั่งเจ้าของ; เอกสารเท่านั้น ไม่มี Deploy
 
 - 2026-11-09: แก้ AGENTS.md (เจ้าของอนุมัติในแชต): ระหว่างที่ PR เปิดอยู่ ให้อ้างผล CI ด้วยลิงก์ CI comment เท่านั้น ห้าม commit ที่มีไว้จดผล CI ของ PR ตัวเอง; SHA และเลข CI run ไปจดใน docs PR หลัง merge; commit เอกสารล้วนหลัง review ไม่ต้อง review ใหม่ (สาเหตุ: PR #104 มี CI รันซ้ำ 3 รอบจาก commit เอกสารล้วน); แก้ PR template และ DEVELOPMENT.md ให้ตรงกัน เอกสารเท่านั้น ไม่มี Deploy
 
