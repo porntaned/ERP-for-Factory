@@ -8,9 +8,9 @@ Native Codex multi-agent capabilities were the default until M4.6; since M4.7 th
 
 ## Roles
 
-- **Manager:** selects the approved issue, assigns work, protects scope and updates the checklist from evidence.
+- **Manager:** selects the approved issue, assigns work, protects scope, updates the checklist from evidence and opens the post-merge docs PR for its slice ([AGENTS.md](../AGENTS.md#documentation-updates)).
 - **Implementer:** changes only the assigned files and records assumptions, commands, results and limitations.
-- **Reviewer:** reads the completed change independently, applies Scrutinize and does not edit during the review pass.
+- **Reviewer:** reads the completed change independently, applies Scrutinize and does not edit during the review pass. After sending its report, a Reviewer session takes no further work on that slice. Other work the owner gives it is a new task on its own branch, starting with Issue workflow step 1.
 - **Verifier:** runs the required checks in the approved environment and records the tested commit SHA. One agent may verify its own work, but that is labelled self-verification.
 
 ## Assignment contract
