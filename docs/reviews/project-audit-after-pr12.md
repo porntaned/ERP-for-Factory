@@ -10,7 +10,8 @@
 - Reviewed main: [`9b1d182eb6867b70f076e95a63dc03f1814f00ec`](https://github.com/porntaned/ERP-for-Factory/commit/9b1d182eb6867b70f076e95a63dc03f1814f00ec).
 - [PR #12](https://github.com/porntaned/ERP-for-Factory/pull/12) merged with owner authorization;
   [Issue #11](https://github.com/porntaned/ERP-for-Factory/issues/11) closed as completed.
-- Merge proof: [GitHub UI](../evidence/pr-12-merged.jpg).
+- Merge proof: [GitHub UI](../evidence/pr-12-merged.jpg). (The image existed only on the audit branch, so this
+  link was broken on `main` until it was copied from `98103b2` on 2026-11-11 — historical.)
 - Review/evidence branch: `codex/project-audit-after-pr12`; no production fix or deployment in this audit.
 - Manager/verifier: `/root`.
 - Independent Quality reviewer: `/root/audit_quality_integrity`.
@@ -47,7 +48,11 @@ review guidance; this project does not use or require a Supabase service.
 - Result: **`5 failed, 261 passed in 5.16s`**. All five failures are the new reproductions below.
 - Production files are unchanged from the reviewed main. The reproduction commit only adds the
   audit test module and this audit branch to the existing push trigger whitelist.
-- Tests: [audit reproductions](../../tests/quality/test_project_audit_reproductions.py).
+- Tests: [audit reproductions](../evidence/project-audit-reproductions.py.txt) — a verbatim copy of
+  `tests/quality/test_project_audit_reproductions.py` from `codex/project-audit-after-pr12` (`98103b2`),
+  kept as text under `docs/evidence/` so it is not collected as a test on `main`. (The link to
+  `../../tests/quality/test_project_audit_reproductions.py` was broken on `main`, because that file exists
+  only on the audit branch — historical, corrected 2026-11-11.)
 
 The audit branch is deliberately RED and is **not a merge-ready change**. No failing test was
 skipped, xfailed or weakened. These are additional counterexamples to the existing 261 passing
