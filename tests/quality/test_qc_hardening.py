@@ -173,3 +173,125 @@ def test_balance_lowered_first_then_the_waiting_inspection_is_refused(line):
     assert rows() == before
     assert balance(line, lot) == D("0")
     assert get_lot_disposition(lot=lot, warehouse=line.wh["RM-A"]) == "HOLD"
+
+
+# ---------------------------------------------------------------- concurrency (two connections)
+
+
+def assert_chain(mf, lot, code="RM-A"):
+    """Each event starts from the state the previous one left: no two events from one state."""
+    events = list(
+        LotDispositionEvent.objects.filter(lot=lot, warehouse=mf.wh[code])
+        .order_by("id")
+        .values_list("from_disposition", "to_disposition")
+    )
+    state = "HOLD"
+    for from_state, to_state in events:
+        assert from_state == state, events
+        state = to_state
+    return events
+
+
+@pytest.mark.django_db(transaction=True)
+def test_two_returns_with_different_keys_record_one_event(line):
+    from tests.inventory.test_stock_receipt_concurrency import blocked_action
+    from tests.quality.test_inspection import back_to_hold
+
+    lot = received(line)
+    inspect(line, lot, result="FAIL", note="Scratched die")
+    first, outcome = blocked_action(
+        lambda: back_to_hold(line, lot, key=uuid4()),
+        lambda: back_to_hold(line, lot, key=uuid4(), reason="Second tab"),
+    )
+    assert outcome[0] == "DispositionConflictError" and "expected REJECTED" in outcome[1], outcome
+    assert assert_chain(line, lot) == [("HOLD", "REJECTED"), ("REJECTED", "HOLD")]
+    assert LotDispositionEvent.objects.get(to_disposition="HOLD", lot=lot) == first
+
+
+@pytest.mark.django_db(transaction=True)
+@pytest.mark.parametrize(
+    ("start", "first", "second", "outcome", "chain"),
+    [
+        (
+            "REJECTED",
+            "return",
+            "PASS",
+            "committed",
+            [("HOLD", "REJECTED"), ("REJECTED", "HOLD"), ("HOLD", "RELEASED")],
+        ),
+        ("HOLD", "FAIL", "return", "committed", [("HOLD", "REJECTED"), ("REJECTED", "HOLD")]),
+        ("HOLD", "PASS", "return", "DispositionConflictError", [("HOLD", "RELEASED")]),
+    ],
+)
+def test_return_racing_an_inspection_keeps_the_chain(line, start, first, second, outcome, chain):
+    from tests.inventory.test_stock_receipt_concurrency import blocked_action
+    from tests.quality.test_inspection import back_to_hold
+
+    lot = received(line)
+    if start == "REJECTED":
+        inspect(line, lot, result="FAIL", note="Scratched die")
+
+    def action(name):
+        if name == "return":
+            return lambda: back_to_hold(line, lot)
+        return lambda: inspect(line, lot, result=name, note=f"Racing {name}")
+
+    _, result = blocked_action(action(first), action(second))
+    assert result[0] == outcome, result
+    assert assert_chain(line, lot) == chain
+
+
+def revoked_while_waiting(lot, grant, action):
+    """Hold the Lot lock, let `action` wait for it in a second connection, revoke `grant`."""
+    from queue import Queue
+    from threading import Thread
+
+    from inventory.models import Lot
+    from tests.inventory.test_stock_ledger_concurrency import wait_for_lock
+    from tests.inventory.test_stock_receipt_concurrency import receipt_worker
+
+    outcomes, pids = Queue(), Queue()
+    thread = Thread(target=receipt_worker, args=(action, outcomes, pids))
+    try:
+        with transaction.atomic():
+            Lot.objects.select_for_update().get(pk=lot.pk)
+            thread.start()
+            wait_for_lock(pids.get(timeout=5))
+            grant.delete()
+    finally:
+        if thread.ident:
+            thread.join(timeout=12)
+    assert not thread.is_alive()
+    return outcomes.get(timeout=1)
+
+
+@pytest.mark.django_db(transaction=True)
+def test_quality_grant_revoked_while_inspection_waits(line):
+    from access_control.models import WarehouseRoleAssignment
+
+    lot = received(line)
+    grant = WarehouseRoleAssignment.objects.get(
+        user=line.qc, warehouse=line.wh["RM-A"], role="QUALITY"
+    )
+    before = rows()
+    outcome = revoked_while_waiting(lot, grant, lambda: inspect(line, lot))
+    assert outcome[0] == "DispositionAuthorizationError" and "QUALITY" in outcome[1], outcome
+    assert rows() == before
+    assert get_lot_disposition(lot=lot, warehouse=line.wh["RM-A"]) == "HOLD"
+
+
+@pytest.mark.django_db(transaction=True)
+def test_approver_grant_revoked_while_return_waits(line):
+    from access_control.models import WarehouseRoleAssignment
+    from tests.quality.test_inspection import back_to_hold
+
+    lot = received(line)
+    inspect(line, lot, result="FAIL", note="Scratched die")
+    grant = WarehouseRoleAssignment.objects.get(
+        user=line.users["approver"], warehouse=line.wh["RM-A"], role="APPROVER"
+    )
+    before = rows()
+    outcome = revoked_while_waiting(lot, grant, lambda: back_to_hold(line, lot))
+    assert outcome[0] == "DispositionAuthorizationError" and "APPROVER" in outcome[1], outcome
+    assert rows() == before
+    assert get_lot_disposition(lot=lot, warehouse=line.wh["RM-A"]) == "REJECTED"
