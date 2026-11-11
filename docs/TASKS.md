@@ -1,6 +1,6 @@
 # Project checklist — รายการงานโครงการ
 
-อัปเดตล่าสุด: 2026-11-06
+อัปเดตล่าสุด: 2026-11-11
 
 `[x]` หมายถึงงานเสร็จและมีหลักฐานที่ลิงก์ไว้ ส่วนงานที่กำลังทำ ติดขัด หรือยังไม่ได้ตรวจรับใช้ `[ ]` งานใหญ่เสร็จเมื่อทุกงานย่อยและเกณฑ์ตรวจรับเสร็จเท่านั้น
 
@@ -197,6 +197,8 @@ M1.9 ตรวจรับเฉพาะเอกสารและกลไก
 - [ ] Hosting/Deployment — ต้องอนุมัติวิธีและค่าใช้จ่ายก่อน
 
 ## Progress log
+
+- 2026-11-11: แก้ AGENTS.md และ MULTI_AGENT.md (เจ้าของอนุมัติในแชต): docs PR หลัง merge มีเจ้าของคนเดียวคือ Manager ของงานนั้น, เช็ก PR/branch ที่เปิดอยู่ก่อนเปิด, docs PR หลัง merge ไม่ต่อสาย (SHA ไปจดใน docs PR ครั้งถัดไป), Reviewer ไม่รับงานต่อใน slice เดียวกัน; สาเหตุ: PR #107 และ #109 ซ้ำกัน (ปิด #109 ไม่ merge); บันทึก merge [PR #107](https://github.com/porntaned/ERP-for-Factory/pull/107) ที่ `94a3e38`; เอกสารเท่านั้น ไม่มี Deploy
 
 - 2026-11-11: Merge [PR #106](https://github.com/porntaned/ERP-for-Factory/pull/106) (กติกาอ้างผล CI ด้วยลิงก์, AGENTS.md) ที่ `c0f600d` โดย Manager session ตามคำสั่งเจ้าของในแชต; PR CI ที่ head `47f6f99` ผ่าน; [main CI #262](https://github.com/porntaned/ERP-for-Factory/actions/runs/42947151591) PostgreSQL 18.6, Python 3.14.8, **1067 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/c0f600df018cca114bd9cfd5868a2ea659219ec6#commitcomment-209328673)); เอกสารเท่านั้น ไม่มี review ไม่มี Deploy
 
