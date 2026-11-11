@@ -1,0 +1,37 @@
+{% extends "demo/base.html" %}
+{% load quantities %}
+{% block title %}ประวัติ QC{% endblock %}
+{% block content %}
+<h1 class="h4">ประวัติ QC · การตรวจและการเปลี่ยนสถานะ Quality</h1>
+<p class="text-secondary">อ่านอย่างเดียว · เฉพาะคลังที่คุณมีสิทธิ์ QUALITY หรือ APPROVER · ใหม่สุดก่อน · วันที่ตามเวลาท้องถิ่น (รวมวันเริ่มและวันสิ้นสุด)</p>
+{% for e in errors %}<div class="alert alert-danger">{{ e }}</div>{% endfor %}
+<form method="get" action="{% url 'quality-audit' %}" class="row g-2 align-items-end mb-3" id="audit-filter">
+  <div class="col-auto"><label class="form-label small" for="{{ form.warehouse.id_for_label }}">{{ form.warehouse.label }}</label>{{ form.warehouse }}</div>
+  <div class="col-auto"><label class="form-label small" for="{{ form.date_from.id_for_label }}">{{ form.date_from.label }}</label>{{ form.date_from }}</div>
+  <div class="col-auto"><label class="form-label small" for="{{ form.date_to.id_for_label }}">{{ form.date_to.label }}</label>{{ form.date_to }}</div>
+  <div class="col-auto"><button class="btn btn-sm btn-outline-primary" type="submit">กรอง</button></div>
+</form>
+<table class="table table-sm align-middle" id="audit">
+  <thead><tr><th>เวลา</th><th>คลัง</th><th>Lot</th><th>รายการ</th><th>ผล / สถานะ</th><th class="text-end">ตัวอย่าง</th><th>ผู้บันทึก</th><th>บันทึก / เหตุผล</th><th>การตรวจ</th></tr></thead>
+  <tbody>
+  {% for row in rows %}{% with o=row.obj %}
+  {% if row.kind == "inspection" %}
+  <tr data-kind="inspection" data-id="{{ o.pk }}">
+    <td>{{ o.created_at|date:"Y-m-d H:i:s" }}</td><td>{{ o.warehouse.code }}</td>
+    <td><a href="/lots/{{ o.lot.pk }}/genealogy/">{{ o.lot.code }}</a></td>
+    <td>ตรวจ {{ o.kind }}</td><td>{{ o.result }}</td><td class="text-end">{{ o.sample_quantity|quantity }}</td>
+    <td>{{ o.inspector.username }}</td><td>{{ o.note }}</td><td>#{{ o.pk }}</td>
+  </tr>
+  {% else %}
+  <tr data-kind="event" data-id="{{ o.pk }}">
+    <td>{{ o.created_at|date:"Y-m-d H:i:s" }}</td><td>{{ o.warehouse.code }}</td>
+    <td><a href="/lots/{{ o.lot.pk }}/genealogy/">{{ o.lot.code }}</a></td>
+    <td>เปลี่ยนสถานะ</td><td>{{ o.from_disposition }} → {{ o.to_disposition }}</td><td class="text-end"></td>
+    <td>{{ o.actor.username }}</td><td>{{ o.reason }}</td><td>{% if o.inspection_id %}#{{ o.inspection_id }}{% endif %}</td>
+  </tr>
+  {% endif %}
+  {% endwith %}{% empty %}<tr><td colspan="9" class="text-secondary">ไม่มีรายการ</td></tr>{% endfor %}
+  </tbody>
+</table>
+{% if older %}<a class="btn btn-sm btn-outline-secondary" data-action="older" href="?{{ older }}">เก่ากว่า →</a>{% endif %}
+{% endblock %}
