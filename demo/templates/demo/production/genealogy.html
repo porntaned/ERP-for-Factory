@@ -4,6 +4,7 @@
 {% block content %}
   <p><a href="/production/">← Production orders</a></p>
   <h1 class="h4">Genealogy · {{ lot.code }} <span class="text-secondary">({{ lot.item.code }})</span></h1>
+  <p><a href="/lots/{{ lot.pk }}/trace/">ติดตามทุกระดับ (trace) →</a></p>
 
   <h2 class="h5">ทำมาจาก (วัตถุดิบที่ใช้)</h2>
   <table class="table table-sm" id="inputs">

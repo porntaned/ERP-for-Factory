@@ -15,7 +15,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from inventory.models import Lot
 from manufacturing import services as mf
-from manufacturing.genealogy import inputs_of, outputs_of
+from manufacturing.genealogy import inputs_of, lot_positions, outputs_of, trace
 from manufacturing.models import OrderPosting, ProductionOrder
 from manufacturing.queries import (
     order_history,
@@ -32,6 +32,7 @@ from .production_forms import (
     CloseForm,
     HeldLotForm,
     IssueForm,
+    LotSearchForm,
     OrderForm,
     OutputForm,
     ReturnForm,
@@ -94,6 +95,42 @@ def lot_genealogy(request, pk):
         .order_by("id"),
     }
     return render(request, "demo/production/genealogy.html", context)
+
+
+# ---------------------------------------------------------------- M6.3: Lot search and trace
+# Login only, as the genealogy page (owner ruling 2). Read-only: no HOLD or recall action here.
+
+
+@login_required
+def lot_search(request):
+    form = LotSearchForm(request.GET or None)
+    context = {"form": form, "searched": False, "lots": [], "invalid": False}
+    if form.is_bound and not form.is_valid():
+        context["invalid"] = True
+    elif form.is_bound and form.cleaned_data["code"]:
+        code = form.cleaned_data["code"]
+        lots = list(
+            Lot.objects.filter(code=code).select_related("item").order_by("item__code", "pk")
+        )
+        if len(lots) == 1:
+            return redirect("lot-trace", pk=lots[0].pk)
+        context |= {"searched": True, "code": code, "lots": lots}
+    return render(request, "demo/production/lot_search.html", context)
+
+
+@login_required
+def lot_trace(request, pk):
+    lot = get_object_or_404(Lot.objects.select_related("item"), pk=pk)
+    backward, forward = trace(lot, "backward"), trace(lot, "forward")
+    lots = list({each.pk: each for each in backward.lots + forward.lots[1:]}.values())
+    positions = lot_positions(lots)
+    context = {
+        "lot": lot,
+        "backward": backward.edges,
+        "forward": forward.edges,
+        "positions": [(each, positions[each.pk]) for each in lots],
+    }
+    return render(request, "demo/production/trace.html", context)
 
 
 # ---------------------------------------------------------------- PR 2: record forms
