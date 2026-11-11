@@ -42,6 +42,10 @@ see every QC decision.
 4. **Open M6.3 items:** accepted as built and not done in M6.4. Finding 5 confirmed: exact,
    case-sensitive Lot search; `lot_positions` reads disposition events in `manufacturing`; a Lot
    reached twice in one level is shown as a repeat. No HOLD caption (finding 3).
+5. **Balance limit stays a command rule** (owner, chat 2026-11-11, after the Implementer stopped under
+   ruling 3): `record_inspection` refuses a sample above the balance after locking the Lot, as
+   designed in M6.1; PostgreSQL checks only the quantity format. No migration. The race test proves
+   the command reads the balance under the Lot lock.
 
 ## Scope
 
@@ -72,9 +76,13 @@ schema changes or migrations (a needed one stops for the owner), exports, refact
 ## Acceptance criteria and tests (each written first and seen failing, or recorded as a guard that
 passed at once because the behaviour already holds)
 
-Quantities (command and direct SQL):
-- `sample_quantity` 0, negative, seven decimal places, 10^14, above the balance: refused, nothing
-  written; exactly the balance and the smallest valid value (0.000001): accepted.
+Quantities (command and direct SQL; the balance limit is a command rule only, see ruling 5):
+- `sample_quantity` 0, negative, seven decimal places, 10^14: refused by the command and by direct
+  SQL, nothing written; above the balance: refused by the command, nothing written; exactly the
+  balance and the smallest valid value (0.000001): accepted.
+  (Until 2026-11-11 this line read "0, negative, seven decimal places, 10^14, above the balance:
+  refused" under "command and direct SQL", which required a database balance check that M6.1 never
+  had — historical, corrected after owner ruling 5.)
 - Race: an inspection whose sample equals the balance, and a transfer out of the same pair, in two
   connections. Exactly one order of events wins; never an inspection whose sample exceeds the balance
   at its commit.
