@@ -28,10 +28,17 @@ Build a public portfolio ERP for a fictional LED assembly factory with synthetic
 - Verify PostgreSQL-specific claims on PostgreSQL. SQLite or mocks are not equivalent evidence.
 - Run targeted tests, diagnose root causes, then run relevant regression checks.
 - Follow `docs/SCRUTINIZE.md` before opening a pull request.
-- Record actual commands, environment, results and tested commit SHA.
+- Record actual commands, environment and results. For local development checks, record the
+  commit they ran on.
 - CI on PostgreSQL 18.6 is the evidence of record. CI posts its results (commit SHA, server
-  version, test counts) as a commit comment and one updated PR comment; cite that comment.
-  Local runs on other versions are development checks only and must be labelled as such.
+  version, test counts) as a commit comment and one updated PR comment. While the PR is open,
+  cite that comment by link only: it always shows the latest head. Do not push a commit
+  whose only purpose is to record a CI result or SHA of the same PR. The CI SHA and run go
+  into the post-merge docs PR.
+- Documentation-only commits after a review need no new review and no new evidence commit.
+  The CI comment on the final head covers them. Say in the PR body which commits were
+  documentation only.
+- Local runs on other versions are development checks only and must be labelled as such.
 - Label self-review and independent review accurately.
 
 ## Domain ownership
@@ -53,8 +60,10 @@ that docs PR is open.
 
 1. `docs/TASKS.md`: check an item only when linked evidence exists; update **สถานะปัจจุบัน**
    and add a dated Progress log line (what merged, merge SHA, CI run, review type, what remains).
-2. The slice's record in `docs/assignments/<slice>.md`: scope, tested SHA, actual commands and
-   results, review status, then a closeout section after merge. (Issues up to #29 keep their
+2. The slice's record in `docs/assignments/<slice>.md`: scope, actual commands and results of
+   development checks (with the commit they ran on), review status and a link to the PR's CI
+   comment; then a closeout section in the post-merge docs PR (merge SHA, PR and `main` CI run
+   with SHA and test counts). (Issues up to #29 keep their
    evidence in `docs/evidence/`; review records go in `docs/reviews/`; only files named `*-independent-review.md` are independent reviews, and every review file states its type on its first lines.)
 3. `README.md`: change only when the delivered / not-delivered summary changes. Never pin a
    commit SHA there; point to TASKS.md.
