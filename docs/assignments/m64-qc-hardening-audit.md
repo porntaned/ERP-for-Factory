@@ -2,11 +2,12 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `3b8dac1`.
 [Issue #113](https://github.com/porntaned/ERP-for-Factory/issues/113).
-Status: **implemented on the branch (2026-11-11); review: none yet; PR not opened** ("spec approved by the owner in chat (2026-11-11); implementation started" and, before it, "spec, awaiting owner approval; no code written" — historical).
+Status: **[PR #114](https://github.com/porntaned/ERP-for-Factory/pull/114) open; independent review by a separate session: ship, no defects; documentation fixes applied; awaiting the owner** (2026-11-11). ("implemented on the branch (2026-11-11); review: none yet; PR not opened", "spec approved by the owner in chat (2026-11-11); implementation started" and "spec, awaiting owner approval; no code written" held until then — historical.)
 
 Roles (as they actually happen; updated as work proceeds): Manager = the main Claude Code session.
 Implementer = a sub-agent spawned by the Manager (started 2026-11-11). Reviewer = a separate Claude Code
-session (not started). The owner decides and merges.
+session (`session_01MVmjhbj9fzvhv1zzX1M15j`), given only the PR number, the Issue number and this path; report in
+[`docs/reviews/m64-independent-review.md`](../reviews/m64-independent-review.md). The owner decides and merges.
 
 ## Purpose
 
@@ -130,9 +131,10 @@ tells the Manager to; the Manager opens the post-merge docs PR.
 
 ## Evidence (Implementer, 2026-11-11)
 
-Review so far: **none** (no self-review is claimed as review; no independent review yet). CI on
-PostgreSQL 18.6 is the evidence of record and is cited here by link to the PR's CI comment once the
-PR exists. The results below are development checks.
+Review: independent review by a separate session, verdict ship (see the review file). CI on
+PostgreSQL 18.6 is the evidence of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/114#issuecomment-6792246771). The results below are development checks.
+("Review so far: none … cited here by link … once the PR exists" held until PR #114 was opened and
+reviewed — historical.)
 
 ### Scope delivered
 
@@ -209,5 +211,6 @@ Environment: PostgreSQL 16.15 (local cluster), Python 3.14.6, Django 5.2.18. Cod
 
 ### Review and CI
 
-- Review: none yet. The Reviewer (separate session) writes `docs/reviews/m64-independent-review.md`.
-- CI: cited by link to the PR's CI comment once the PR exists (AGENTS.md → Verification).
+- Review: independent review by a separate session, verdict ship —
+  [`docs/reviews/m64-independent-review.md`](../reviews/m64-independent-review.md). ("Review: none yet" — historical.)
+- CI: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/114#issuecomment-6792246771) (AGENTS.md → Verification). ("once the PR exists" — historical.)
