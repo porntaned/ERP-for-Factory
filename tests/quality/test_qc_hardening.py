@@ -295,3 +295,111 @@ def test_approver_grant_revoked_while_return_waits(line):
     assert outcome[0] == "DispositionAuthorizationError" and "APPROVER" in outcome[1], outcome
     assert rows() == before
     assert get_lot_disposition(lot=lot, warehouse=line.wh["RM-A"]) == "REJECTED"
+
+
+# ---------------------------------------------------------------- audit records
+# Existing: event server time on a direct insert, event UPDATE of reason and DELETE
+# (test_postgresql_constraints), inspection UPDATE of note and DELETE (test_inspection). Added here:
+# the server time and attribution of every decision a command records, a client-supplied time,
+# and UPDATE of the other audit fields.
+
+
+@pytest.mark.django_db
+def test_every_decision_records_actor_server_time_and_reason(line):
+    from django.utils import timezone
+
+    from tests.quality.test_inspection import back_to_hold, hold_again
+
+    lot = received(line)
+    approver = line.users["approver"]
+    before = timezone.now()
+    passed = inspect(line, lot, note="Visual OK — ผ่าน")
+    held = hold_again(line, lot)
+    failed = inspect(line, lot, result="FAIL", note="Scratched die")
+    returned = back_to_hold(line, lot, reason="Supplier dispute")
+    after = timezone.now()
+
+    for inspection, note in ((passed, "Visual OK — ผ่าน"), (failed, "Scratched die")):
+        inspection.refresh_from_db()
+        assert (inspection.inspector, inspection.note) == (line.qc, note)
+        assert timezone.is_aware(inspection.created_at)
+        assert before <= inspection.created_at <= after
+        assert (inspection.event.actor, inspection.event.reason) == (line.qc, note)
+    for event, actor, reason in (
+        (passed.event, line.qc, "Visual OK — ผ่าน"),
+        (held, line.qc, "Containment"),
+        (failed.event, line.qc, "Scratched die"),
+        (returned, approver, "Supplier dispute"),
+    ):
+        event.refresh_from_db()
+        assert (event.actor, event.reason) == (actor, reason)
+        assert before <= event.created_at <= after
+    assert (held.inspection, returned.inspection) == (None, None)
+    assert passed.created_at <= passed.event.created_at <= held.created_at
+
+
+@pytest.mark.django_db
+def test_direct_insert_cannot_choose_its_time(line):
+    from datetime import UTC, datetime
+
+    from django.utils import timezone
+
+    lot = received(line)
+    past = datetime(2000, 1, 1, tzinfo=UTC)
+    before = timezone.now()
+    inspection = LotInspection.objects.create(
+        lot=lot,
+        warehouse=line.wh["RM-A"],
+        kind="INCOMING",
+        result="PASS",
+        sample_quantity=D("1"),
+        note="Backdated",
+        inspector=line.qc,
+        created_at=past,
+    )
+    event = LotDispositionEvent.objects.create(
+        lot=lot,
+        warehouse=line.wh["RM-A"],
+        actor=line.qc,
+        request_id=uuid4(),
+        from_disposition="HOLD",
+        to_disposition="RELEASED",
+        reason="Backdated",
+        inspection=inspection,
+        created_at=past,
+    )
+    settle()
+    for record in (inspection, event):
+        record.refresh_from_db()
+        assert record.created_at >= before
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("model", "field", "value"),
+    [
+        ("inspection", "inspector_id", "other"),
+        ("inspection", "created_at", "past"),
+        ("inspection", "result", "FAIL"),
+        ("inspection", "sample_quantity", D("2")),
+        ("event", "actor_id", "other"),
+        ("event", "created_at", "past"),
+        ("event", "to_disposition", "REJECTED"),
+        ("event", "inspection_id", None),
+    ],
+)
+def test_recorded_decision_cannot_be_rewritten(line, model, field, value):
+    from datetime import UTC, datetime
+
+    lot = received(line)
+    inspection = inspect(line, lot)
+    record = inspection if model == "inspection" else inspection.event
+    value = {
+        "other": line.users["approver"].pk,
+        "past": datetime(2000, 1, 1, tzinfo=UTC),
+    }.get(value, value)
+    with pytest.raises(IntegrityError, match="append-only"), transaction.atomic():
+        type(record).objects.filter(pk=record.pk).update(**{field: value})
+    original = getattr(record, field)
+    record.refresh_from_db()
+    assert getattr(record, field) == original
