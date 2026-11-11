@@ -14,16 +14,19 @@ import pytest
 from access_control.models import WarehouseRoleAssignment
 from catalog.models import Item
 from inventory.models import Lot
-from manufacturing.genealogy import inputs_of, outputs_of, trace
+from inventory.services import get_stock_balance
+from manufacturing.genealogy import inputs_of, lot_positions, outputs_of, trace
 from manufacturing.services import (
     approve_bom,
     create_bom_draft,
     create_production_order,
     reverse_order_posting,
 )
+from quality.services import get_lot_disposition, record_inspection, return_rejected_to_hold
+from tests.quality.helpers import force_reject, settle
 from tests.quality.helpers import release as inspect_release
 
-from .test_material_movements import issue, plant, stock  # noqa: F401
+from .test_material_movements import issue, order, plant, stock  # noqa: F401
 from .test_production_postings import consume, output
 
 D = Decimal
@@ -272,3 +275,67 @@ def test_queries_grow_with_levels_not_lots(chain, django_assert_max_num_queries)
         result = trace(chain.lot, "forward")
         [(e.order.pk, e.to_lot.item.code) for e in result.edges]
     assert len([e for e in result.edges if e.level == 1]) == 4
+
+
+# ---------------------------------------------------------------- lot_positions
+
+
+@pytest.mark.django_db
+def test_lot_positions_show_balance_and_disposition_per_warehouse(
+    plant,  # noqa: F811
+    django_assert_max_num_queries,
+):
+    issue(plant, "40")
+    consume(plant, "30")  # L1: RM-A 60 RELEASED, LINE-1 10 HOLD (no event there)
+    output(plant, "7", code="LAMP-1")
+    lamp = Lot.objects.get(code="LAMP-1")
+    used = stock(plant, "L3", D("4"))
+    second = order(plant)
+    issue(plant, "4", lot=used, target=second)
+    consume(plant, "4", lot=used, target=second)  # L3: zero everywhere, nothing REJECTED
+    spare = stock(plant, "L2", D("50"))
+    settle()
+    record_inspection(
+        lot=lamp,
+        warehouse=plant.wh["FG"],
+        result="FAIL",
+        sample_quantity=D("1"),
+        note="Synthetic end-of-line failure",
+        actor=plant.qc,
+        request_id=uuid4(),
+    )  # LAMP-1: FG 7 REJECTED
+    # L2 at FG holds no stock: REJECTED, back to HOLD, REJECTED again (the latest event counts).
+    force_reject(spare, plant.wh["FG"], plant.qc)
+    return_rejected_to_hold(
+        lot=spare,
+        warehouse=plant.wh["FG"],
+        actor=plant.users["approver2"],
+        reason="Re-test",
+        request_id=uuid4(),
+    )
+    force_reject(spare, plant.wh["FG"], plant.qc)
+
+    lots = [plant.lot, lamp, spare, used]
+    with django_assert_max_num_queries(3):
+        positions = lot_positions(lots)
+        table = {
+            lot.code: [(p.warehouse.code, p.balance, p.disposition) for p in positions[lot.pk]]
+            for lot in lots
+        }
+    assert table == {
+        "L1": [("LINE-1", D("10"), "HOLD"), ("RM-A", D("60"), "RELEASED")],
+        "LAMP-1": [("FG", D("7"), "REJECTED")],
+        "L2": [("FG", D("0"), "REJECTED"), ("RM-A", D("50"), "RELEASED")],  # REJECTED at zero
+        "L3": [],  # zero balances that are not REJECTED are not positions
+    }
+    for lot in lots:  # the batch read agrees with the one-pair reads
+        for p in positions[lot.pk]:
+            assert p.balance == get_stock_balance(lot=lot, warehouse=p.warehouse)
+            assert p.disposition == get_lot_disposition(lot=lot, warehouse=p.warehouse)
+
+
+@pytest.mark.django_db
+def test_lot_positions_of_no_lots_and_unsaved_lots(plant):  # noqa: F811
+    assert lot_positions([]) == {}
+    with pytest.raises(ValueError):
+        lot_positions([plant.lot, Lot(item=plant.items["chip"], code="NEW")])

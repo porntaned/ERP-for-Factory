@@ -14,7 +14,9 @@ from decimal import Decimal
 
 from django.db.models import Sum
 
-from inventory.models import Lot
+from facilities.models import Warehouse
+from inventory.models import Lot, StockLedgerEntry
+from quality.models import LotDisposition, LotDispositionEvent
 
 from .models import OrderPosting, PostingKind, ProductionOrder
 from .queries import NET_POSTED
@@ -168,3 +170,52 @@ def trace(lot: Lot, direction: str) -> Trace:
                 )
             )
     return Trace(start, direction, edges)
+
+
+@dataclass(frozen=True)
+class Position:
+    warehouse: Warehouse
+    balance: Decimal
+    disposition: str  # HOLD, RELEASED or REJECTED
+
+
+def lot_positions(lots) -> dict[int, list[Position]]:
+    """Where each Lot is now: {Lot id: positions by warehouse code}. Read-only, three queries.
+
+    A position is a warehouse where the Lot has a nonzero balance, or where it is REJECTED even
+    at zero balance. The disposition follows get_lot_disposition: the latest event of the pair
+    by id, HOLD when there is none.
+    """
+    ids = [_require_saved(lot).pk for lot in lots]
+    if not ids:
+        return {}
+    balances = {
+        (row["lot_id"], row["warehouse_id"]): row["balance"]
+        for row in StockLedgerEntry.objects.filter(lot_id__in=ids)
+        .values("lot_id", "warehouse_id")
+        .annotate(balance=Sum("quantity_delta"))
+        .exclude(balance=0)
+    }
+    dispositions = {
+        (lot_id, warehouse_id): to
+        for lot_id, warehouse_id, to in LotDispositionEvent.objects.filter(lot_id__in=ids)
+        .order_by("lot_id", "warehouse_id", "-id")
+        .distinct("lot_id", "warehouse_id")
+        .values_list("lot_id", "warehouse_id", "to_disposition")
+    }
+    pairs = set(balances) | {
+        pair for pair, to in dispositions.items() if to == LotDisposition.REJECTED
+    }
+    warehouses = Warehouse.objects.in_bulk({warehouse_id for _, warehouse_id in pairs})
+    result: dict[int, list[Position]] = {lot_id: [] for lot_id in ids}
+    for lot_id, warehouse_id in pairs:
+        result[lot_id].append(
+            Position(
+                warehouses[warehouse_id],
+                balances.get((lot_id, warehouse_id), Decimal("0")),
+                dispositions.get((lot_id, warehouse_id), LotDisposition.HOLD),
+            )
+        )
+    for positions in result.values():
+        positions.sort(key=lambda p: (p.warehouse.code, p.warehouse.pk))
+    return result
