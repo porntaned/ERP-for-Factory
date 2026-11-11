@@ -1,0 +1,47 @@
+{% extends "demo/base.html" %}
+{% load quantities %}
+{% block title %}Trace {{ lot.code }}{% endblock %}
+{% block content %}
+  <p><a href="/lots/search/">← ค้นหา Lot</a> · <a href="/lots/{{ lot.pk }}/genealogy/">Genealogy (ระดับเดียว)</a></p>
+  <h1 class="h4">Trace · {{ lot.code }} <span class="text-secondary">({{ lot.item.code }})</span></h1>
+  <p class="text-secondary small">ทุกระดับของการผลิต ตามรายการที่บันทึกแล้ว (สุทธิหลังกลับรายการ) · Lot ที่พบซ้ำแสดงครั้งเดียวและไม่ขยายต่อ · อ่านอย่างเดียว</p>
+
+  <h2 class="h5">ย้อนไปวัตถุดิบ</h2>
+  <table class="table table-sm" id="backward">
+    <thead><tr><th>ระดับ</th><th>จาก Lot</th><th>Order</th><th>Lot ที่ใช้</th><th>Item</th><th class="text-end">ใช้</th><th>หมายเหตุ</th></tr></thead>
+    <tbody>
+    {% for e in backward %}
+      <tr><td>{{ e.level }}</td><td>{{ e.from_lot.code }}</td><td><a href="/production/{{ e.order.pk }}/">#{{ e.order.pk }}</a></td><td><a href="/lots/{{ e.to_lot.pk }}/trace/">{{ e.to_lot.code }}</a></td><td>{{ e.to_lot.item.code }}</td><td class="text-end">{{ e.quantity|quantity }}</td><td>{% if e.repeat %}ซ้ำ (ไม่ขยายต่อ){% endif %}</td></tr>
+    {% empty %}
+      <tr><td colspan="7" class="text-secondary">ไม่ได้เป็นผลผลิตของ order ใด</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="h5">ไปยังผลผลิต</h2>
+  <table class="table table-sm" id="forward">
+    <thead><tr><th>ระดับ</th><th>จาก Lot</th><th>Order</th><th>Lot ผลผลิต</th><th>Item</th><th class="text-end">ผลผลิต</th><th class="text-end">ใช้ Lot ต้นทาง</th><th>หมายเหตุ</th></tr></thead>
+    <tbody>
+    {% for e in forward %}
+      <tr><td>{{ e.level }}</td><td>{{ e.from_lot.code }}</td><td><a href="/production/{{ e.order.pk }}/">#{{ e.order.pk }}</a></td><td><a href="/lots/{{ e.to_lot.pk }}/trace/">{{ e.to_lot.code }}</a></td><td>{{ e.to_lot.item.code }}</td><td class="text-end">{{ e.quantity|quantity }}</td><td class="text-end">{{ e.consumed|quantity }}</td><td>{% if e.repeat %}ซ้ำ (ไม่ขยายต่อ){% endif %}</td></tr>
+    {% empty %}
+      <tr><td colspan="8" class="text-secondary">ไม่ถูกใช้ผลิตต่อ</td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 class="h5">ตอนนี้อยู่ที่ไหน (ยอดคงเหลือและ Quality ต่อคลัง)</h2>
+  <p class="text-secondary small">ทุก Lot ใน trace: คลังที่มียอดคงเหลือ และคลังที่ Lot ถูก REJECTED แม้ยอดเป็นศูนย์</p>
+  <table class="table table-sm" id="positions">
+    <thead><tr><th>Lot</th><th>Item</th><th>คลัง</th><th class="text-end">คงเหลือ</th><th>Quality</th></tr></thead>
+    <tbody>
+    {% for each, places in positions %}
+      {% for p in places %}
+      <tr{% if p.disposition == "REJECTED" %} class="table-danger" data-disposition="REJECTED"{% endif %}><td><a href="/lots/{{ each.pk }}/trace/">{{ each.code }}</a></td><td>{{ each.item.code }}</td><td>{{ p.warehouse.code }}</td><td class="text-end">{{ p.balance|quantity }}</td><td>{% if p.disposition == "REJECTED" %}<strong>REJECTED</strong>{% else %}{{ p.disposition }}{% endif %}</td></tr>
+      {% empty %}
+      <tr><td><a href="/lots/{{ each.pk }}/trace/">{{ each.code }}</a></td><td>{{ each.item.code }}</td><td colspan="3" class="text-secondary">ไม่มียอดคงเหลือ</td></tr>
+      {% endfor %}
+    {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}

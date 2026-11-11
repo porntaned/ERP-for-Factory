@@ -1,0 +1,25 @@
+{% extends "demo/base.html" %}
+{% block title %}ค้นหา Lot{% endblock %}
+{% block content %}
+  <h1 class="h4">ค้นหา Lot</h1>
+  <form method="get" action="/lots/search/" class="row g-2 mb-3">
+    <div class="col-auto"><input class="form-control" type="text" name="code" value="{{ form.code.value|default_if_none:'' }}" placeholder="รหัส Lot เช่น L-0003" aria-label="รหัส Lot"></div>
+    <div class="col-auto"><button class="btn btn-primary" type="submit">ค้นหา</button></div>
+  </form>
+  <p class="text-secondary small">ค้นหาด้วยรหัส Lot ที่ตรงทุกตัวอักษร (ทุก item)</p>
+  {% if invalid %}
+  <div class="alert alert-danger">รหัส Lot ไม่ถูกต้อง</div>
+  {% elif searched and not lots %}
+  <div class="alert alert-warning">ไม่พบ Lot รหัส {{ code }}</div>
+  {% elif lots %}
+  <p>พบ {{ lots|length }} Lot รหัส {{ code }}</p>
+  <table class="table table-sm" id="lots">
+    <thead><tr><th>Item</th><th>Lot</th></tr></thead>
+    <tbody>
+    {% for each in lots %}
+      <tr><td>{{ each.item.code }}</td><td><a href="/lots/{{ each.pk }}/trace/">{{ each.code }}</a></td></tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% endif %}
+{% endblock %}

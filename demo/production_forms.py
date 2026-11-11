@@ -103,3 +103,9 @@ class CancelForm(forms.Form):
 class ReverseForm(forms.Form):
     reason = _reason()
     request_id = _request_id()
+
+
+class LotSearchForm(forms.Form):
+    """M6.3: an exact Lot code (any item). Django's CharField refuses a NUL character."""
+
+    code = forms.CharField(label="รหัส Lot", required=False)
