@@ -2,7 +2,7 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `94a3e38`.
 [Issue #108](https://github.com/porntaned/ERP-for-Factory/issues/108).
-Status: **[PR #111](https://github.com/porntaned/ERP-for-Factory/pull/111) open; independent review by a separate session: fix-then-ship, no code findings, documentation fixes applied; awaiting the owner** (2026-11-11). ("implemented on the branch, not yet reviewed; PR not yet opened", "spec approved by the owner in chat (2026-11-11); implementation started" and "spec, awaiting owner approval; no code written" held until then — historical.)
+Status: **merged: [PR #111](https://github.com/porntaned/ERP-for-Factory/pull/111) at `5550b5c` (2026-11-11); M6.3 complete** ("PR #111 open; independent review ... awaiting the owner" held until then — historical; earlier statuses also historical).
 
 Roles (as they actually happen; updated as work proceeds): Manager = the main Claude Code session.
 Implementer = a sub-agent spawned by the Manager (started 2026-11-11). Reviewer = a separate Claude Code
@@ -216,3 +216,18 @@ Run on commit `c73c15d` (clean tree), PostgreSQL 16.15 local cluster, Python 3.1
 CI evidence of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/111#issuecomment-6786212132) (always shows the latest head). ("linked here once the PR exists" held until PR #111 was opened — historical.)
 
 Documentation commits after `c73c15d` are documentation only.
+
+## Closeout (2026-11-11)
+
+[PR #111](https://github.com/porntaned/ERP-for-Factory/pull/111) was merged by the Reviewer session
+(`session_01MVmjhewJFpBspSkUbCyJN4`) on the owner's instruction in that session's chat, after green CI on the final
+head; the owner confirmed this in the Manager's chat. The GitHub app acts as the owner's account, so GitHub shows
+`porntaned` as the merger. Merged at `5550b5c420dfc6e862dbdfc64fedff917a3faf45`
+(merge commit of head `c050cd2`). [PR CI #269](https://github.com/porntaned/ERP-for-Factory/actions/runs/42953624083) on `c050cd2` and [main CI #270](https://github.com/porntaned/ERP-for-Factory/actions/runs/42954897124) on `5550b5c`: PostgreSQL 18.6, Python
+3.14.8, **1096 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/5550b5c420dfc6e862dbdfc64fedff917a3faf45#commitcomment-209336734)). Review stays: independent review by a separate session (read-only),
+verdict fix-then-ship with no code findings; repair round 1 of 2 was documentation only (`c050cd2`).
+Open at the merge, not ruled on by the owner: review finding 3 (a caption saying that HOLD at a
+warehouse with no event means "not inspected there") and the confirmations in finding 5 (exact,
+case-sensitive search; `lot_positions` reading disposition events in `manufacturing`; a Lot reached
+twice in one level shown as a repeat). They are recorded here so a later Issue can pick them up.
+Issue #108 is left open for the owner to close. M6.4 is not started.
