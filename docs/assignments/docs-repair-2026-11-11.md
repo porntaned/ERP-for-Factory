@@ -2,10 +2,34 @@
 
 Type: documentation only. Status: **PR open, awaiting the owner** (no merge, no deployment).
 
+This is a **docs repair on the owner's instruction**, an exception to the AGENTS.md rules *No chain* and *One owner*
+that the owner allowed in chat on 2026-11-11. It is **not** the post-merge docs PR of a slice. (Earlier wording in the
+PR body, "Post-merge docs PR for PR #115", was wrong — historical, corrected 2026-11-11.)
+
+The merge SHA of the PR for this repair ([PR #116](https://github.com/porntaned/ERP-for-Factory/pull/116)) will be
+recorded in the post-merge docs PR of the next slice (M7.2). No docs PR is opened for PR #116 itself.
+
+Owner's instruction, verbatim (chat, 2026-11-11; in a code block so Markdown does not alter it):
+
+```text
+## งานที่ 1 (ทำก่อน): docs PR ซ่อมเอกสาร
+- บันทึก merge PR #115 (217be3f, main CI #281) ใน Progress log
+- README รายการหน้าจอ: เพิ่ม /quality/, /quality/audit/, /lots/search/, /lots/<id>/trace/
+- ลิงก์ CI ที่ขาด: M6.2 (main CI #257), PR #106 (CI #261), PR #107 (main CI #266)
+- m62 / m63: แก้ข้อความว่า Issue #103 / #108 ยังเปิด ให้ตรงความจริง (historical + วันที่)
+- ลิงก์เสีย 2 ลิงก์ใน docs/reviews/project-audit-after-pr12.md:
+  คัดลอกไฟล์ jpg และไฟล์ test จาก branch codex/project-audit-after-pr12
+  ไฟล์ test วางเป็น docs/evidence/project-audit-reproductions.py.txt (ห้ามวางใน tests/)
+เปิด PR รอ CI ผ่าน แล้วรายงานผม ห้าม merge
+```
+
 ## Roles (as performed)
 
-- **Manager:** the Claude Code session `session_01MVmjhdAZRZbr6kL22x7hby` (branch `claude/vibrant-sagan-ivztik`).
-  It made these edits itself; no sub-agent was used and there is no review (self-checked only).
+- **This session** (`session_01MVmjhdAZRZbr6kL22x7hby`, branch `claude/vibrant-sagan-ivztik`): the session the owner
+  gave this docs repair to directly. It is **not** the Manager of slice M6.4; that Manager is
+  `session_01MVmjhfwWvvAa4GLjR3EaTs`. It made these edits itself; no sub-agent was used and there is no review
+  (self-checked only). (Earlier wording "Manager: the Claude Code session `session_01MVmjhdAZRZbr6kL22x7hby`" did not
+  say this — historical, corrected 2026-11-11.)
 - **Owner:** gave the task list in chat (2026-11-11) and decides the merge.
 
 ## Scope (owner's list)
@@ -45,4 +69,4 @@ Excluded: M7 work, code, tests, `AGENTS.md`, `docs/MULTI_AGENT.md`, branch/tag c
 
 ## Evidence
 
-CI evidence of record: the PR's CI comment (linked from the PR once CI has run).
+CI evidence of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/116#issuecomment-6798804764) (always shows the latest head). ("linked from the PR once CI has run" held until CI ran — historical.)
