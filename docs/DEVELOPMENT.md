@@ -85,7 +85,8 @@ DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver
 ## Production demo walkthrough (M5.4)
 
 `seed_production_demo` runs `seed_demo` first, then makes one LAMP-A19 order end to end through
-the real commands. The result can be read in the shell below or on the M5.5 screens ("no screens yet (M7)" was true until M5.5 — historical, corrected 2026-11-06).
+the real commands. Since M6.3 it also makes a RAW → WIP → FINISHED chain with new Lots (see
+"Lot trace (M6.3)" below); everything described in this section is unchanged by it. The result can be read in the shell below or on the M5.5 screens ("no screens yet (M7)" was true until M5.5 — historical, corrected 2026-11-06).
 Use a disposable database: `--reset` flushes every table.
 
 ```bash
@@ -98,7 +99,7 @@ uv run --env-file .env python manage.py shell -c "
 from inventory.models import Lot
 from manufacturing.genealogy import inputs_of, outputs_of
 from manufacturing.models import ProductionOrder
-o = ProductionOrder.objects.get()
+o = ProductionOrder.objects.get(bom__item__code='LAMP-A19')
 print(o.status, o.shortfall_reason)
 print([(i.lot.code, str(i.quantity)) for i in inputs_of(Lot.objects.get(code='LAMP-0001'))])
 print([(i.lot.code, str(i.quantity)) for i in outputs_of(Lot.objects.get(code='L-0003'))])
@@ -123,6 +124,8 @@ Expected shell output:
 - L-0003's outputs: LAMP-0001 5 and LAMP-0002 4.
 
 L-0001 is untouched, so the M4.7 walkthrough above still starts from 100 at RM-A.
+The shell above selects the LAMP-A19 order: since M6.3 the seed makes three orders, and
+`ProductionOrder.objects.get()` (true until M6.3 — historical, corrected 2026-11-11) now fails.
 
 Since M6.1 (Issue #96) both seeds release RM-A Lots with a passing INCOMING inspection. A database
 seeded before M6.1 must be reseeded with `--reset`: its old release key belongs to an event without
@@ -146,6 +149,57 @@ an inspection, so the rerun reports a key conflict.
      first (as `demo-approver`) and return or use the material on the line, then cancel.
    - A refused action shows why and records nothing.
 
+## Lot trace (M6.3, Issue #108)
+
+`manufacturing.genealogy.trace(lot, "backward" | "forward")` follows the M5.3 links through every
+production level: backward to Lots no order produced (received material), forward to Lots no order
+consumed. Quantities are net of reversals, as `inputs_of` / `outputs_of`. A Lot reached a second
+time (a diamond or a cycle) is listed once more as a repeat and not expanded again. Links are per
+order, not apportioned between the output Lots of one order. `lot_positions(lots)` gives each Lot's
+balance and Quality disposition per warehouse, plus any warehouse where it is REJECTED at zero
+balance. Both only read; there is no HOLD or recall action.
+
+Demo data: `seed_production_demo` adds, with new Lots only and the existing grants:
+1. BOMs LED-BOARD v1 (WIP: 4 LED-CHIP) and LAMP-BR30 v1 (FINISHED: 1 LED-BOARD + 1 DRIVER),
+   drafted by `demo-production` and approved by `demo-approver`.
+2. Chip Lot L-0004 30 and DRIVER Lot D-0002 10 received and RELEASED at RM-A.
+3. Order #2, 5 × LED-BOARD: issue and consume 20 of L-0004, output LED-BOARD-0001 5 into FG,
+   close. `demo-quality` passes its FINAL inspection at FG (RELEASED).
+4. Order #3, 5 × LAMP-BR30: issue LED-BOARD-0001 5 from FG and D-0002 5 from RM-A, consume both,
+   output LAMP-BR30-0001 5 into FG (HOLD), close.
+
+New balances: L-0004 RM-A 10 RELEASED; D-0002 RM-A 5 RELEASED; LED-BOARD-0001 0 at FG and LINE-1;
+LAMP-BR30-0001 FG 5 HOLD. The M4.7 and M5.4 balances above do not change.
+(Order numbers #2 and #3 hold after `--reset`, which restarts the id sequences.)
+
+**On the web:** after `seed_production_demo --reset`, `set_demo_passwords` and `runserver`, log in as
+any demo user.
+1. **ค้นหา Lot** (`/lots/search/`): enter `LAMP-BR30-0001`. One match opens its trace
+   (`/lots/<id>/trace/`); several Lots with the same code (different items) are listed by item;
+   none shows "ไม่พบ Lot". The code must match exactly.
+2. **ย้อนไปวัตถุดิบ** lists level 1: order #3 used D-0002 5 and LED-BOARD-0001 5; level 2: order #2
+   used L-0004 20. **ไปยังผลผลิต** is empty (nothing consumed the lamp).
+3. The positions table shows LAMP-BR30-0001 FG 5 HOLD, D-0002 RM-A 5 RELEASED, LED-BOARD-0001 with
+   no balance and L-0004 RM-A 10 RELEASED. A REJECTED row is highlighted.
+4. Click L-0004: **ไปยังผลผลิต** shows LED-BOARD-0001 (level 1) and LAMP-BR30-0001 (level 2).
+5. A Lot's genealogy page (`/lots/<id>/genealogy/`) links to its trace.
+
+Shell:
+
+```bash
+uv run --env-file .env python manage.py shell -c "
+from inventory.models import Lot
+from manufacturing.genealogy import lot_positions, trace
+t = trace(Lot.objects.get(code='LAMP-BR30-0001'), 'backward')
+print([(e.level, e.from_lot.code, e.order.pk, e.to_lot.code, str(e.quantity)) for e in t.edges])
+p = lot_positions(t.lots)
+print({l.code: [(x.warehouse.code, str(x.balance), x.disposition) for x in p[l.pk]] for l in t.lots})
+"
+```
+
+`tests/manufacturing/test_trace.py`, `tests/manufacturing/test_wip_demo.py` and
+`tests/web/test_trace_screens.py` cover the same behaviour on PostgreSQL.
+
 ## Quality inspection (M6.1, shell)
 
 Only an inspection moves a Lot-Warehouse out of HOLD: PASS → RELEASED, FAIL → REJECTED. The kind
@@ -156,7 +210,7 @@ inspector.
 **On the web (M6.1 PR 2):** after `seed_production_demo --reset`, `set_demo_passwords` and
 `runserver`:
 1. Log in as `demo-quality` and open **คุณภาพ** (`/quality/`). LAMP-0001 (5) and LAMP-0002 (4) are
-   HOLD at FG.
+   HOLD at FG. Since M6.3, LAMP-BR30-0001 (5) is also HOLD at FG (added 2026-11-11).
 2. Record **PASS** (sample 1, any note) on LAMP-0001: it becomes RELEASED and leaves the list.
 3. Record **FAIL** on LAMP-0002: it becomes REJECTED.
 4. Log in as `demo-approver` (APPROVER at FG from `seed_production_demo`): the REJECTED row has **ส่งกลับ HOLD**; with a reason
