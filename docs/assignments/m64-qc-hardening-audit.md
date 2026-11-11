@@ -2,7 +2,7 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `3b8dac1`.
 [Issue #113](https://github.com/porntaned/ERP-for-Factory/issues/113).
-Status: **spec approved by the owner in chat (2026-11-11); implementation started** ("spec, awaiting owner approval; no code written" held until then — historical).
+Status: **implemented on the branch (2026-11-11); review: none yet; PR not opened** ("spec approved by the owner in chat (2026-11-11); implementation started" and, before it, "spec, awaiting owner approval; no code written" — historical).
 
 Roles (as they actually happen; updated as work proceeds): Manager = the main Claude Code session.
 Implementer = a sub-agent spawned by the Manager (started 2026-11-11). Reviewer = a separate Claude Code
@@ -119,3 +119,87 @@ tells the Manager to; the Manager opens the post-merge docs PR.
 2. Fixed page size with "older" paging (bounded queries).
 3. Date filters as inclusive local dates.
 4. Race tests reuse the existing two-connection helpers.
+
+## Evidence (Implementer, 2026-11-11)
+
+Review so far: **none** (no self-review is claimed as review; no independent review yet). CI on
+PostgreSQL 18.6 is the evidence of record and is cited here by link to the PR's CI comment once the
+PR exists. The results below are development checks.
+
+### Scope delivered
+
+- Tests: `tests/quality/test_qc_hardening.py` (quantities, concurrency, audit records),
+  `tests/web/test_quality_audit.py` (audit page), `tests/web/test_quality_admin.py` (admin).
+- Audit page: `GET /quality/audit/` (`quality-audit`) in `demo/quality_views.py`
+  (`quality_audit`, `AUDIT_PAGE_SIZE = 50`), `demo/quality_forms.py` (`AuditFilterForm`),
+  `demo/templates/demo/quality/audit.html`, route in `config/urls.py`, nav link "ประวัติ QC" in
+  `demo/templates/demo/base.html` (shown with "คุณภาพ", same rule).
+- Admin: `register_read_only(LotDispositionEvent, LotInspection)` in `quality/admin.py`.
+- No change to `quality/services.py`, models, migrations, roles or grants. No new dependency.
+
+### Test groups: RED / GREEN or guard
+
+| Group | Tests | Result first run | Why |
+|---|---|---|---|
+| Quantities | command refuses 0, -1, -0.000001, 0.0000001, 1.0000001, 10^14, 10^14+1 (format message) and 10.000001, 11 above a balance of 10 (balance message); accepts 10, 10.000000, 0.000001; raw SQL `INSERT` refuses the same format set with `inspection_sample_quantity_valid` and accepts 10, 0.000001, 99999999999999.999999; two balance races | **guard (passed at once)**, 24 tests | `is_valid_quantity`, the balance read after the Lot lock and the check constraint already hold. Checked against deliberate breaks, not committed: without the command's format and balance checks 10 tests fail; reading the balance before the Lot lock fails the reversal race; with the check constraint dropped the SQL tests fail with "DID NOT RAISE" |
+| Concurrency | two returns with different keys; return racing an inspection (3 orders); QUALITY grant revoked while `record_inspection` waits; APPROVER grant revoked while `return_rejected_to_hold` waits | **guard (passed at once)**, 6 tests | Every command locks the Lot first and reads state and grants after it. Checked: reading the return's state before the Lot lock, or checking the QUALITY grant before it, fails 3 of them |
+| Audit records | actor, server time and note or reason on every inspection and event a command records (PASS, RELEASED→HOLD, FAIL, REJECTED→HOLD); a direct insert cannot choose its time; UPDATE of inspector, time, result, sample, actor, target state, inspection link refused as append-only | **guard (passed at once)**, 10 tests | The insert triggers set `created_at := statement_timestamp()` and the append-only triggers refuse UPDATE/DELETE. Checked: with the user triggers disabled, the time test and UPDATE tests fail. UPDATE of note/reason and DELETE were already covered (`test_inspection.py`, `test_postgresql_constraints.py`) and are not repeated |
+| Audit page | login; 403 without QUALITY/APPROVER and no nav link; only the user's warehouses (also in the filter choices); both row kinds with their fields; an event without inspection; newest first; warehouse filter; another warehouse's id, unknown and non-numeric ids; inclusive local dates (rows placed at 00:30 and 23:59:59 local and at the next local midnight); invalid dates, from after to, bad page numbers; extreme valid dates; Thai text and HTML escaped; no POST form, POST → 405; "older" paging walks every row once; query count | **RED → GREEN**, 23 tests | RED on `28ec20b`: 404, the route did not exist. GREEN after the view, form, template, route and nav link |
+| Admin | `LotInspection` listed and viewable; add, change POST, delete and the bulk delete action refused | **RED → GREEN**, 1 test | RED on `28ec20b`: not listed in the admin. GREEN after `register_read_only` |
+
+The RED run of the page and admin tests was repeated on a clean worktree of `28ec20b` with only the
+two new test files: 24 failed.
+
+### Rulings made while building (Implementer; for the Reviewer and owner to check)
+
+1. **Balance race.** A transfer out of a HOLD Lot-Warehouse is refused by the RELEASED gate at its
+   source, so a transfer can only follow an inspection, never precede it.
+   `test_inspection_of_the_whole_balance_then_a_transfer_out` checks that order (the transfer waits
+   for the inspection's Lot lock, then commits; the inspection's sample equals the balance at its
+   commit) and that the transfer cannot go first. The other order uses a **receipt reversal**, the
+   movement that lowers a HOLD balance (`reverse_receipt`, Quality irrelevant):
+   `test_balance_lowered_first_then_the_waiting_inspection_is_refused`. Inspecting at the line was
+   not used, because M6.2 ruling Q2 says a Lot at the line is not inspected again.
+2. **"Above the balance … direct SQL".** PostgreSQL has no balance check on an inspection; the
+   balance is the command's rule (M6.1, and `tests/quality/helpers.force_release` depends on it for
+   setups without stock, owner ruling 2026-11-06). Adding one would need a migration and change a
+   rule, so under ruling 3 it was **not** added and no test asserts either way. **Open for the
+   owner.** The direct-SQL tests cover the format bounds only.
+3. Page details: one combined table (`inspection` / `event` rows); a row's "การตรวจ" column shows the
+   inspection number, on the inspection and on the event it produced. Invalid filters (including a
+   warehouse the user may not see) show "ตัวกรองไม่ถูกต้อง: …" and **no rows**, rather than falling
+   back to all warehouses. "ตั้งแต่วันที่" after "ถึงวันที่" is invalid. The page number is limited to
+   1–1,000,000. Dates use the `__date` lookup in `TIME_ZONE` (Asia/Bangkok), so `date.max` cannot
+   overflow. Paging is by page number (offset); rows added between two page loads can shift a row
+   to the next page (read-only, accepted). Nav link shown wherever "คุณภาพ" is.
+4. The date-filter test moves three synthetic rows to chosen times with the append-only triggers
+   disabled **inside that test's transaction only** (rolled back); no production code path changes
+   them.
+
+### Bugs found
+
+None in existing code. While making the page test GREEN, the warehouse filter first listed
+"Warehouse object (n)" (the model has no `__str__`); the tightened test now requires the choices
+`["ทุกคลัง", "FG"]` and the form labels choices by code.
+
+### Development checks (not evidence of record)
+
+Environment: PostgreSQL 16.15 (local cluster), Python 3.14.6, Django 5.2.18. Code commit
+`d25f2da` (docs commits after it change no code).
+
+- `UV_PYTHON=3.14 uv run --env-file .env pytest -q` → **1160 passed** (base `main` `3b8dac1`:
+  1096; +64 new: 40 + 23 + 1).
+- `uv run ruff check .` → All checks passed; `uv run ruff format --check .` → 269 files already
+  formatted.
+- `python manage.py makemigrations --check --dry-run` → No changes detected.
+- `seed_production_demo --reset`, then `/quality/audit/` through the Django test client:
+  `demo-quality` 200, 14 rows (7 inspections, 7 events) at RM-A and FG; `demo-approver` 200, the
+  same 14 rows; `demo-warehouse` 403; `?warehouse=<FG>` 2 rows; `?date_from=2026-13-01` 200 with
+  the message.
+- Query count of the page: 10 queries with the seeded history and with 120 more rows
+  (`test_query_count_does_not_grow_with_history`, bound 12).
+
+### Review and CI
+
+- Review: none yet. The Reviewer (separate session) writes `docs/reviews/m64-independent-review.md`.
+- CI: cited by link to the PR's CI comment once the PR exists (AGENTS.md → Verification).
