@@ -32,7 +32,7 @@ def table(html, table_id):
 @pytest.fixture
 def plant(db):
     call_command("seed_production_demo", verbosity=0)
-    return ProductionOrder.objects.get()
+    return ProductionOrder.objects.get(bom__item__code="LAMP-A19")  # M6.3 adds two more orders
 
 
 def page(client, url, user="demo-warehouse"):
@@ -58,7 +58,14 @@ def test_menu_links_to_production(client, plant):
 @pytest.mark.django_db
 def test_order_list_shows_status_and_net_output(client, plant):
     rows = table(page(client, "/production/"), "orders")
-    assert rows == [[f"#{plant.pk}", "LAMP-A19 v1", "10", "9", "CLOSED"]]
+    board, br30 = (
+        ProductionOrder.objects.get(bom__item__code=c) for c in ("LED-BOARD", "LAMP-BR30")
+    )
+    assert rows == [  # newest first; M6.3 adds the LED-BOARD and LAMP-BR30 orders
+        [f"#{br30.pk}", "LAMP-BR30 v1", "5", "5", "CLOSED"],
+        [f"#{board.pk}", "LED-BOARD v1", "5", "5", "CLOSED"],
+        [f"#{plant.pk}", "LAMP-A19 v1", "10", "9", "CLOSED"],
+    ]
     assert f'href="/production/{plant.pk}/"' in page(client, "/production/")
 
 
@@ -197,16 +204,17 @@ def submit(client, url, **data):
 @pytest.fixture
 def open_order(client, plant):
     """A new order for 2 x LAMP-A19 created through the screen by demo-production."""
+    seeded = list(ProductionOrder.objects.values_list("pk", flat=True))  # M6.3: three orders
     as_user(client, "demo-production")
     response = submit(
         client,
         "/production/new/",
-        bom=BillOfMaterials.objects.get(status="ACTIVE").pk,
+        bom=BillOfMaterials.objects.get(status="ACTIVE", item__code="LAMP-A19").pk,
         quantity="2",
         line_warehouse=wh("LINE-1").pk,
         output_warehouse=wh("FG").pk,
     )
-    order = ProductionOrder.objects.exclude(pk=plant.pk).get()
+    order = ProductionOrder.objects.exclude(pk__in=seeded).get()
     assert response.status_code == 302 and response["Location"] == f"/production/{order.pk}/"
     return order
 

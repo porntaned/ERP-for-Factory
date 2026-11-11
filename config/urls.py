@@ -23,6 +23,8 @@ urlpatterns = [
         name="production-reverse",
     ),
     path("lots/<int:pk>/genealogy/", production_views.lot_genealogy, name="lot-genealogy"),
+    path("lots/search/", production_views.lot_search, name="lot-search"),
+    path("lots/<int:pk>/trace/", production_views.lot_trace, name="lot-trace"),
     path("quality/", quality_views.quality_list, name="quality-list"),
     path("quality/inspect/", quality_views.inspect, name="quality-inspect"),
     path("quality/return/", quality_views.return_to_hold, name="quality-return"),

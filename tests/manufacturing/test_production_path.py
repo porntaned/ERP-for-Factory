@@ -62,7 +62,7 @@ def links(result):
 @pytest.fixture
 def seeded(db):
     call_command("seed_production_demo", verbosity=0)
-    return ProductionOrder.objects.get()
+    return ProductionOrder.objects.get(bom__item__code="LAMP-A19")  # M6.3 adds two more orders
 
 
 @pytest.mark.django_db
@@ -96,6 +96,14 @@ def test_every_lot_reconciles_by_warehouse(seeded):
         ("LAMP-0001", "FG"): (D("5"), hold),
         ("LAMP-0002", "FG"): (D("4"), hold),
         ("LAMP-0003", "FG"): (D("0"), hold),  # output reversed
+        # M6.3 (Issue #108): the RAW -> WIP -> FINISHED chain uses new Lots only.
+        ("L-0004", "RM-A"): (D("10"), released),
+        ("L-0004", "LINE-1"): (D("0"), hold),
+        ("D-0002", "RM-A"): (D("5"), released),
+        ("D-0002", "LINE-1"): (D("0"), hold),
+        ("LED-BOARD-0001", "FG"): (D("0"), released),
+        ("LED-BOARD-0001", "LINE-1"): (D("0"), hold),
+        ("LAMP-BR30-0001", "FG"): (D("5"), hold),
     }
 
 

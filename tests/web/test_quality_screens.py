@@ -151,6 +151,7 @@ def test_fail_rejects_and_only_an_approver_returns_to_hold(client, fg):
 
 @pytest.mark.django_db
 def test_inspection_errors_become_messages_and_write_nothing(client, fg):
+    before = LotInspection.objects.filter(warehouse=fg).count()  # M6.3: the WIP Lot's FINAL
     login(client, "demo-quality")
     too_many = inspect(client, fg, sample="6")
     assert "ข้อมูลไม่ถูกต้อง" in too_many.content.decode()
@@ -167,16 +168,17 @@ def test_inspection_errors_become_messages_and_write_nothing(client, fg):
         follow=True,
     )
     assert blank.status_code == 200
-    assert state(fg) == "HOLD" and not LotInspection.objects.filter(warehouse=fg).exists()
+    assert state(fg) == "HOLD" and LotInspection.objects.filter(warehouse=fg).count() == before
 
 
 @pytest.mark.django_db
 def test_double_submit_records_one_inspection(client, fg):
     key = uuid4()
+    before = LotInspection.objects.filter(warehouse=fg).count()  # M6.3: the WIP Lot's FINAL
     login(client, "demo-quality")
     inspect(client, fg, key=key)
     inspect(client, fg, key=key)
-    assert LotInspection.objects.filter(warehouse=fg).count() == 1
+    assert LotInspection.objects.filter(warehouse=fg).count() == before + 1
 
 
 @pytest.mark.django_db
@@ -220,12 +222,13 @@ def test_rejecting_inspector_who_is_also_approver_gets_no_return_button(client, 
 @pytest.mark.django_db
 def test_stale_page_explains_the_current_state(client, fg):
     """Review m3: an inspection from a stale page is refused with the command's reason."""
+    before = LotInspection.objects.filter(warehouse=fg).count()  # M6.3: the WIP Lot's FINAL
     login(client, "demo-quality")
     inspect(client, fg)
     stale = inspect(client, fg)  # a new key on a Lot that is no longer HOLD
     body = stale.content.decode()
     assert "คำขอนี้ถูกใช้แล้ว" not in body and "HOLD" in body
-    assert LotInspection.objects.filter(warehouse=fg).count() == 1
+    assert LotInspection.objects.filter(warehouse=fg).count() == before + 1
 
 
 @pytest.mark.django_db

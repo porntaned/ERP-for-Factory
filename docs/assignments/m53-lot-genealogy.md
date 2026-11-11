@@ -24,6 +24,10 @@ Both read immutable M5.2 records: output Lot â†’ order (`OrderPosting` OUTPUT) â
    Lots (no apportioning between output Lots). An output Lot belongs to one order (M5.2b), so the
    link is never ambiguous across orders.
 3. One level only; multi-level tracing (through WIP) and a screen belong to M6.3.
+   Note (2026-11-11): multi-level tracing and the screens were delivered by M6.3 (Issue #108):
+   `trace` and `lot_positions` in `manufacturing/genealogy.py`, built on these functions, and the
+   `/lots/search/` and `/lots/<pk>/trace/` screens (record: `docs/assignments/m63-lot-trace.md`). `inputs_of` and
+   `outputs_of` are unchanged.
 
 ## RED / GREEN
 
