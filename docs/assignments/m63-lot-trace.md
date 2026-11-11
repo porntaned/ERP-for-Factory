@@ -219,7 +219,10 @@ Documentation commits after `c73c15d` are documentation only.
 
 ## Closeout (2026-11-11)
 
-The owner merged [PR #111](https://github.com/porntaned/ERP-for-Factory/pull/111) at `5550b5c420dfc6e862dbdfc64fedff917a3faf45`
+[PR #111](https://github.com/porntaned/ERP-for-Factory/pull/111) was merged by the Reviewer session
+(`session_01MVmjhewJFpBspSkUbCyJN4`) on the owner's instruction in that session's chat, after green CI on the final
+head; the owner confirmed this in the Manager's chat. The GitHub app acts as the owner's account, so GitHub shows
+`porntaned` as the merger. Merged at `5550b5c420dfc6e862dbdfc64fedff917a3faf45`
 (merge commit of head `c050cd2`). [PR CI #269](https://github.com/porntaned/ERP-for-Factory/actions/runs/42953624083) on `c050cd2` and [main CI #270](https://github.com/porntaned/ERP-for-Factory/actions/runs/42954897124) on `5550b5c`: PostgreSQL 18.6, Python
 3.14.8, **1096 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/5550b5c420dfc6e862dbdfc64fedff917a3faf45#commitcomment-209336734)). Review stays: independent review by a separate session (read-only),
 verdict fix-then-ship with no code findings; repair round 1 of 2 was documentation only (`c050cd2`).
