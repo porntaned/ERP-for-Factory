@@ -2,7 +2,7 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/keen-feynman-jkijlw`; base `main` `3b8dac1`.
 [Issue #113](https://github.com/porntaned/ERP-for-Factory/issues/113).
-Status: **[PR #114](https://github.com/porntaned/ERP-for-Factory/pull/114) open; independent review by a separate session: ship, no defects; documentation fixes applied; awaiting the owner** (2026-11-11). ("implemented on the branch (2026-11-11); review: none yet; PR not opened", "spec approved by the owner in chat (2026-11-11); implementation started" and "spec, awaiting owner approval; no code written" held until then — historical.)
+Status: **merged: [PR #114](https://github.com/porntaned/ERP-for-Factory/pull/114) at `e67b8e3` (2026-11-11); M6.4 and M6 complete** ("PR #114 open; independent review ... awaiting the owner" held until then — historical; earlier statuses also historical).
 
 Roles (as they actually happen; updated as work proceeds): Manager = the main Claude Code session.
 Implementer = a sub-agent spawned by the Manager (started 2026-11-11). Reviewer = a separate Claude Code
@@ -214,3 +214,21 @@ Environment: PostgreSQL 16.15 (local cluster), Python 3.14.6, Django 5.2.18. Cod
 - Review: independent review by a separate session, verdict ship —
   [`docs/reviews/m64-independent-review.md`](../reviews/m64-independent-review.md). ("Review: none yet" — historical.)
 - CI: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/114#issuecomment-6792246771) (AGENTS.md → Verification). ("once the PR exists" — historical.)
+
+## Closeout (2026-11-11)
+
+**Owner approval:** the owner approved the merge in the Manager's chat: "ผมอนุมัติ merge PR #114 (head
+71aae3a, CI #278 ผ่าน)". The Manager session merged [PR #114](https://github.com/porntaned/ERP-for-Factory/pull/114)
+with a merge commit, guarded on head `71aae3a`, at `e67b8e367db680f040c89db1f89d5ea3346c3e93`.
+
+**CI:** [PR CI #278](https://github.com/porntaned/ERP-for-Factory/actions/runs/42999452650) on head `71aae3a` (tested as merge `3a23fec`) and [main CI #279](https://github.com/porntaned/ERP-for-Factory/actions/runs/43001633076) on `e67b8e3`: PostgreSQL 18.6,
+Python 3.14.8, **1160 passed**, 0 failed ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/e67b8e367db680f040c89db1f89d5ea3346c3e93#commitcomment-209374829)).
+
+**Review:** independent review by a separate session (`session_01MVmjhbj9fzvhv1zzX1M15j`), read-only, verdict
+**ship** with no defects; findings 1–3 fixed in documentation (`10a3e99`); findings 4–6 not changed (see the
+review file). After the review, `71aae3a` changed `docs/TASKS.md` only, on the owner's instruction; no new review
+was needed under AGENTS.md.
+
+**Open, not part of M6.4:** review finding 4 (the date filter cannot use an index; offset paging) and finding 6
+(the genealogy page is not scoped per warehouse) are left for a later Issue if the owner wants them. Issue #113
+is left open for the owner to close. M7 is not started.
