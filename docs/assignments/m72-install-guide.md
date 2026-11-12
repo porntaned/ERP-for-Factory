@@ -2,14 +2,15 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/vibrant-sagan-ivztik` (restarted from `main` `1261e86`
 after PR #116 merged); [Issue #117](https://github.com/porntaned/ERP-for-Factory/issues/117).
-Status: **spec approved by the owner; implementation not started.**
+Status: **implemented on the branch; PR not opened; review: none.** (Was "spec approved by the owner;
+implementation not started" until 2026-11-12 — historical.)
 
 Owner approval: [Issue #117 comment](https://github.com/porntaned/ERP-for-Factory/issues/117#issuecomment-6820317207)
 (2026-11-12) and the owner's chat message of the same day (conditions 1–5 below).
 
 Roles (as they actually happen; updated as work proceeds):
 - **Manager** = Claude Code session `session_01MVmjhdAZRZbr6kL22x7hby` (the owner's chat session for this period).
-- **Implementer** = a sub-agent spawned by the Manager (not started yet).
+- **Implementer** = a sub-agent spawned by the Manager (started 2026-11-12).
 - **Reviewer** = a **separate Claude Code session**, given only the PR number, the Issue number and this path,
   as in M6.2–M6.4. Not a sub-agent of the Manager. Report in `docs/reviews/m72-independent-review.md`.
 - **Owner** decides the merge. No deployment.
@@ -167,4 +168,125 @@ The Manager opens it immediately after the owner merges M7.2. It also does:
 
 ## Evidence
 
-Not started.
+### Fresh-state run — development check (PostgreSQL 16, session container) — not evidence of record; CI on PostgreSQL 18.6 is
+
+Run by the Implementer (a sub-agent of the Manager) on 2026-11-12. Self-verification, not a review. The CI
+result of the `install-guide` job is cited by link to the PR's CI comment / job status once the PR is open.
+
+**Environment:** Ubuntu 24.04.5 LTS (session container, kernel 6.18.44); PostgreSQL **16.15**
+(Ubuntu 16.15-0ubuntu0.24.04.1), a throwaway cluster made with `initdb` (superuser `postgres`, synthetic password,
+scram-sha-256, TCP 127.0.0.1:55432 only), empty except `postgres`/`template0`/`template1`, no `erp_factory` role;
+uv **0.13.1** (installed from PyPI into the scratchpad, see problem 1); Python **3.14.8** (installed by the guide's
+`uv python install 3.14.8`); git 2.43.0; curl 8.5.0; Django 5.2.18, pytest 9.1.1, pytest-django 4.14.0 (from
+`uv.lock`). Each run started from a new directory with a new `git clone` of the branch's committed state from the
+local repository and an empty database (role and databases dropped before the run).
+
+**Run 2 — the guide's commands, in order, literally** (every ` ```bash ` block of `docs/INSTALL.md` extracted by a
+script and run with `set -euo pipefail`). Commit **`0fd26cc`** (clone printed
+`commit 0fd26cc642537ec9d5da02f396653d51cefd53a0`); `docs/INSTALL.md` is byte-identical at `1a4738e`
+(`git diff --quiet 0fd26cc 1a4738e -- docs/INSTALL.md`). Only these substitutions, the first four being the values
+the guide tells the reader to choose:
+`PGPORT=55432`, `PGPASSWORD`/`ERP_DB_PASSWORD`/`ERP_DEMO_PASSWORD` set to synthetic values
+(`ERP_SECRET_KEY` from the guide's own `openssl rand -hex 32`); `git clone --branch claude/vibrant-sagan-ivztik
+/home/user/ERP-for-Factory ERP-for-Factory` instead of the GitHub URL (the branch's new commits were not pushed);
+`runserver` in the background with HTTP checks instead of a browser, then stopped.
+
+| Guide step / command | Result |
+|---|---|
+| `git --version`; `uv --version` | `git version 2.43.0`; `uv 0.13.1 (x86_64-unknown-linux-gnu)` |
+| `psql -d postgres -tAc 'SHOW server_version'` | `16.15 (Ubuntu 16.15-0ubuntu0.24.04.1)` |
+| `psql -v ON_ERROR_STOP=1 -v db_password=… -d postgres <<'SQL' …` | `CREATE ROLE`, `CREATE DATABASE` |
+| `git clone …`; `cd ERP-for-Factory`; `sed … .env.example > .env` | clone done; `.env` written (no `replace-with` left) |
+| `uv python install 3.14.8` | `Installed Python 3.14.8` |
+| `uv sync --locked --all-groups` | `Installed 12 packages` (django 5.2.18, psycopg 3.3.6, pytest 9.1.1, pytest-django 4.14.0, ruff 0.17.1, …) |
+| `uv run python --version` | `Python 3.14.8` |
+| `… manage.py check` | `System check identified no issues (0 silenced).` |
+| `… manage.py migrate` | every migration `OK` (last `sessions.0001_initial`) |
+| `uv run --env-file .env pytest` | **`1160 passed in 273.49s`** (test database `test_erp_factory` created by the role through `CREATEDB`) |
+| `… seed_demo` | `Seeded LEDCO/P1: RM-A, RM-B, LINE-1, FG; lot L-0001 received 100 at RM-A and RELEASED; BOM LAMP-A19 v1 ACTIVE.` |
+| `… seed_production_demo` | the line above, then `Seeded M5.4 production demo: order 1 LAMP-A19 x 10 CLOSED, net output 9 (LAMP-0001 5, LAMP-0002 4 at FG, HOLD); shortfall reason recorded. M6.3 chain: L-0004 -> LED-BOARD-0001 -> LAMP-BR30-0001 (FG, HOLD).` |
+| `printf … \| … set_demo_passwords --password-stdin` | `Password set for demo-approver, demo-production, demo-quality, demo-warehouse` |
+| `DJANGO_DEBUG=true … runserver` (background) | login page **200**; login POST as `demo-warehouse` with CSRF **302**; `/` **200**, nav shows `demo-warehouse` and the row `<tr><td>LED-CHIP</td><td>L-0001</td><td>RM-A</td><td class="text-end">100</td><td>RELEASED</td></tr>`; server stopped (`pgrep` empty) |
+| Seeds run again (check, not a guide command) | per-model row counts before and after identical (`diff` empty): 340 rows in all tables, `auth.User 4`, `inventory.StockLedgerEntry 37`, `quality.LotInspection 7`, `manufacturing.ProductionOrder 3` |
+| `… seed_production_demo --reset`; `printf … \| … set_demo_passwords --password-stdin` | both seed lines again; `Password set for demo-approver, demo-production, demo-quality, demo-warehouse` |
+
+Balance page rows seen after both seeds (Item Lot Warehouse Balance Quality): LED-CHIP L-0001 RM-A 100 RELEASED;
+L-0002 RM-A 0 RELEASED; L-0002 LINE-1 0 HOLD; L-0003 RM-A 12 RELEASED; L-0003 LINE-1 0 HOLD; DRIVER D-0001 RM-A 11
+RELEASED; D-0001 LINE-1 0 HOLD; LAMP-A19 LAMP-0001 FG 5 HOLD; LAMP-0002 FG 4 HOLD; LAMP-0003 FG 0 HOLD; LED-CHIP L-0004
+RM-A 10 RELEASED; L-0004 LINE-1 0 HOLD; DRIVER D-0002 RM-A 5 RELEASED; D-0002 LINE-1 0 HOLD; LED-BOARD LED-BOARD-0001
+LINE-1 0 HOLD; LED-BOARD-0001 FG 0 RELEASED; LAMP-BR30 LAMP-BR30-0001 FG 5 HOLD.
+
+"Who sees what" in the guide, checked over HTTP after logging in as each user (status codes):
+
+| User | `/` | `/receipts/new/` | `/transfers/new/` | `/history/` | `/production/` | `/production/new/` | `/lots/search/` | `/quality/` | `/quality/audit/` | `/admin/` |
+|---|---|---|---|---|---|---|---|---|---|---|
+| demo-warehouse | 200 | 200 | 200 | 200 | 200 | 403 | 200 | 403 | 403 | 302 (admin login) |
+| demo-quality | 200 | 403 | 403 | 200 | 200 | 403 | 200 | 200 | 200 | 302 |
+| demo-approver | 200 | 403 | 403 | 200 | 200 | 403 | 200 | 200 | 200 | 302 |
+| demo-production | 200 | 403 | 403 | 200 | 200 | 200 | 200 | 403 | 403 | 302 |
+
+The approver's reverse/Scrap buttons and the production record buttons were not clicked; the table states them from
+`demo/permissions.py` (`order_actions`, `can_approve_all`) and the seeds' role assignments.
+
+**Run 3 — the `install-guide` job's own `run:` lines**, on commit **`1a4738e`** (clone printed
+`commit 1a4738e3641e24cd1ded0cbdfabee2ef3b1150d3`), new directory, empty database. A script turned the job into a
+shell script: the job's `env` exported (with `PGPORT=55432` and the local superuser password instead of the
+service's), `setup-uv` → the local uv 0.13.1, `actions/checkout` → the local clone, and every `run:` block verbatim
+(the `if: failure()` log step skipped). Results: `16.15 …`, `CREATE ROLE`, `CREATE DATABASE`, `Python 3.14.8`,
+`System check identified no issues (0 silenced).`, migrations `OK`, **`1160 passed in 261.26s`**, both seed lines,
+`Password set for …`, `login page: 200`, `login POST: 302`, both `grep -F` lines matched, server stopped, seed rerun
+`diff counts-before.txt counts-after.txt` empty, reset and passwords as in run 2; script exit 0.
+
+**Problems met, and what changed:**
+1. uv 0.11.32 (the container's uv) cannot install the pinned Python: `uv python install 3.14.8` →
+   `error: No download found for request: cpython-3.14.8-linux-x86_64-gnu`. Added to the guide's Troubleshooting;
+   the guide already requires the uv of the Version contract. The uv installer host (`astral.sh`) and GitHub release
+   downloads are refused by this container's network proxy (`curl: (56) CONNECT tunnel failed, response 403`), so uv
+   0.13.1 came from PyPI into the scratchpad. A container limit, not a guide problem; not in the guide.
+2. Run 1 stopped at a bug in my own run script (`git log` before `cd`), not in the guide; re-run from scratch as run 2.
+3. The throwaway cluster could not live under the scratchpad: the Unix socket path there is over 107 bytes, and the
+   session tool resets the scratchpad root to mode 700, so the server lost access to its data directory
+   (`PANIC:  could not open file ".../global/pg_control": Permission denied`). The cluster was re-made in
+   `/var/tmp/claude-m72-pg` with TCP only; container-specific, not in the guide.
+No command of `docs/INSTALL.md` had to change.
+
+**`# CI-only:` differences** (the only differences between the guide's commands and the job; computed by a script that
+diffs the guide's ` ```bash ` lines against the job's steps — nothing else differs):
+1. `astral-sh/setup-uv` (existing pin `1c37ad0…`, v10.3.0, uv 0.13.1; no cache, since the checkout comes later)
+   replaces installing uv by hand (guide step 1).
+2. The job `env` (`PGHOST`, `PGPORT`, `PGUSER`, `PGPASSWORD`, `ERP_DB_PASSWORD`, `ERP_SECRET_KEY`,
+   `ERP_DEMO_PASSWORD`, synthetic) replaces the seven `export` lines of guide step 2. No `POSTGRES_*` or `DJANGO_*`
+   variable is set in the job, so the app reads its settings only from the `.env` the guide writes.
+3. The service `postgres:18.6-bookworm` starts with only the superuser (`POSTGRES_USER: postgres`); the guide's
+   step 3 creates the role and the database.
+4. `actions/checkout` (existing pin `3d3c42e…`, v7.0.1) replaces `git clone https://github.com/porntaned/ERP-for-Factory.git`
+   and `cd ERP-for-Factory`, at the same place in the order (after step 3).
+5. `runserver` runs with `> runserver.log 2>&1 &`, followed by curl checks (wait; login page 200; GET + POST login as
+   `demo-warehouse` with the CSRF cookie → 302; the balance page contains the nav `demo-warehouse` and the L-0001 row
+   above) and `pkill`, then a check that it stopped.
+6. An extra step reruns `seed_demo` and `seed_production_demo` and diffs per-model row counts before and after.
+7. An extra `if: failure()` step prints `runserver.log`.
+
+**Existing jobs unchanged:** the first 7070 bytes of the new `foundation.yml` equal the whole file at `main` `1261e86`
+(`head -c 7070 … | cmp`), the diff has 0 removed lines and one hunk `@@ -192,3 +192,133 @@` appended after the last
+line; parsed with PyYAML 6.0.3 (system Python, no new dependency), `postgresql-tdd`, `report` and the top-level keys
+are equal to `main`'s, and `report` still `needs: postgresql-tdd` only. `scripts/ci_summary.py` is not changed or used
+by the new job.
+
+**Other checks** (on the working tree of `5b022b4`, then re-run before the Evidence commit): `uv run ruff check .` →
+`All checks passed!`; `uv run ruff format --check .` → `273 files already formatted`; `git diff --check` → clean.
+
+**Relative links** in every changed Markdown file (`README.md`, `docs/DEVELOPMENT.md`, `docs/INSTALL.md`, this file),
+checked by a script that resolves each relative path and its `#anchor` against the target's headings: **21 links,
+0 broken** (the checker reported 2 of 3 deliberately broken links in a negative test).
+
+**No conflicting commands** between `README.md`, `docs/DEVELOPMENT.md` and `docs/INSTALL.md`:
+- Setup (`psql` role/database, `git clone`, `.env` via `sed`, `uv python install 3.14.8`, `uv sync --locked
+  --all-groups`, `check`, `migrate`, `pytest`, both seeds, `set_demo_passwords --password-stdin`, `runserver`,
+  `--reset`): only in `docs/INSTALL.md` as commands. `README.md` "Run locally" names the steps in prose and links the
+  guide; `docs/DEVELOPMENT.md` "Local commands" links the guide and marks its former PowerShell list historical.
+- `uv run ruff check .` / `uv run ruff format --check .` / `uv run ruff format .`: only in `docs/DEVELOPMENT.md`
+  ("Local commands", and the Evidence rule line).
+- The walkthroughs in `docs/DEVELOPMENT.md` (M4.7–M6.4) keep their own `migrate`, `seed_* --reset`,
+  `set_demo_passwords` (interactive prompt) and `runserver` lines; they are the same commands as the guide's (same
+  `uv run --env-file .env python manage.py …` form; the guide states the prompt is used without `--password-stdin`).
