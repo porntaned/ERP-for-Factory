@@ -306,12 +306,16 @@ checked by a script that resolves each relative path and its `#anchor` against t
 ## Closeout (2026-11-12)
 
 [PR #118](https://github.com/porntaned/ERP-for-Factory/pull/118) was merged on GitHub at 2026-11-12T14:35:40Z as merge commit
-`86ff46ae8221d46f6d65d00d2d9c91f67e614b08` (head `093aff0`). GitHub shows the owner's account (`porntaned`) as the
-actor. The Manager session did not merge it and received no merge instruction for it in its chat.
+`86ff46ae8221d46f6d65d00d2d9c91f67e614b08` (head `093aff0`) **by the owner on GitHub** (the owner confirmed this in chat on
+2026-11-12). ("GitHub shows the owner's account … The Manager session did not merge it and received no merge instruction
+for it" was written before the owner confirmed — historical.)
 [PR CI #287](https://github.com/porntaned/ERP-for-Factory/actions/runs/43201621735) on `093aff0`: `postgresql-tdd` PostgreSQL 18.6 / Python 3.14.8 **1160 passed**
 ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/118#issuecomment-6820950684)), `install-guide` success, `report` success.
-[Main CI #288](https://github.com/porntaned/ERP-for-Factory/actions/runs/43238815024) on `86ff46a`: all 3 jobs passed: `postgresql-tdd` PostgreSQL 18.6 / Python 3.14.8 **1160 passed**; `install-guide` success (PostgreSQL 18.6, 1160 passed, login page 200, login 302); `report` success (counts read from the job logs).
+[Main CI #288](https://github.com/porntaned/ERP-for-Factory/actions/runs/43238815024) on `86ff46a`: all 3 jobs passed: `postgresql-tdd` PostgreSQL 18.6 / Python 3.14.8 **1160 passed**; `install-guide` success (PostgreSQL 18.6, 1160 passed, login page 200, login 302); `report` success ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/86ff46ae8221d46f6d65d00d2d9c91f67e614b08#commitcomment-209587321), 1160 passed).
 Review stays: independent review by a separate session (`session_01MVmjhffM5mrrwnjZ2VDjRz`, head `2277b71`),
 fix-then-ship; repair round 1 of 2 (`093aff0`) was documentation only and was not re-reviewed. Finding 3 is follow-up
 [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119) (awaiting the owner's priority). Post-merge items (a)–(d) and (f) are done in the post-merge
-docs PR; (e) is not done yet: the archive tags exist, but the five branches are not deleted. No deployment.
+docs PR; so is (e): the owner created tags `archive/codex-project-audit-after-pr12` (`98103b2`) and
+`archive/codex-inventory-concurrent-commands` (`3530bb6`) and deleted the five stale branches on 2026-11-12 ("(e) is not
+done yet … the five branches are not deleted" held until then — historical). Issue #119 comes after this docs PR and
+before M7.5; not started. No deployment.
