@@ -14,7 +14,8 @@ Exact versions are in the [Version contract](DEVELOPMENT.md#version-contract); t
 repeat them.
 
 - **Git** ([downloads](https://git-scm.com/downloads)).
-- **uv** at the version in the Version contract
+- **uv** 0.13.1, the version CI uses (the Version contract says "uv 0.13.1 in CI"; it pins no local
+  uv version)
   ([installation](https://docs.astral.sh/uv/getting-started/installation/)). uv installs the
   pinned Python for you; you do not need Python yourself.
 - **PostgreSQL** at the version in the Version contract, installed any way you like
@@ -63,7 +64,8 @@ SQL
 The first command prints the server version; it should match the Version contract. If your
 superuser can only log in through the local socket (for example Debian/Ubuntu packages), put
 `sudo -u postgres` in front of both `psql` commands instead of setting `PGUSER` and `PGPASSWORD`;
-keep `PGHOST` and `PGPORT` for `.env`.
+keep `PGHOST` and `PGPORT` for `.env`. This `sudo -u postgres` route ยังไม่ได้ตรวจจริง (not checked): the
+checked path is the superuser login over TCP above.
 
 ## 4. Get the code and write `.env`
 
@@ -170,6 +172,6 @@ The flush removes the demo users' passwords too, so the second command sets them
 Only problems actually met while checking this guide are listed.
 
 - `uv python install 3.14.8` fails with
-  `error: No download found for request: cpython-3.14.8-linux-x86_64-gnu`: your uv is older than
-  the Version contract and does not know Python 3.14.8 (seen with uv 0.11.32). Install the uv
-  version from the Version contract and run the command again.
+  `error: No download found for request: cpython-3.14.8-linux-x86_64-gnu`: your uv is too old to
+  know Python 3.14.8 (seen with uv 0.11.32). Install uv 0.13.1, the version CI uses (Version
+  contract: "uv 0.13.1 in CI"), and run the command again.

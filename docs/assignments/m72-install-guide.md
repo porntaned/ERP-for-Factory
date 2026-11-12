@@ -2,8 +2,17 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/vibrant-sagan-ivztik` (restarted from `main` `1261e86`
 after PR #116 merged); [Issue #117](https://github.com/porntaned/ERP-for-Factory/issues/117).
-Status: **implemented on the branch; PR not opened; review: none.** (Was "spec approved by the owner;
-implementation not started" until 2026-11-12 — historical.)
+Status: **[PR #118](https://github.com/porntaned/ERP-for-Factory/pull/118) open, awaiting the owner; independent review by a
+separate session: [fix-then-ship](../reviews/m72-independent-review.md), repair round 1 of 2 done (documentation only).**
+("implemented on the branch; PR not opened; review: none" held until PR #118 was opened and reviewed on
+2026-11-12 — historical; before that "spec approved by the owner; implementation not started" — historical.)
+
+CI evidence of record (PostgreSQL 18.6): [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/118#issuecomment-6820950684)
+(always shows the latest head; it covers `postgresql-tdd` only) and the
+[`install-guide` job](https://github.com/porntaned/ERP-for-Factory/actions/runs/43198580663/job/131115776822), whose result
+**is not in the CI comment by design** (`report` needs only `postgresql-tdd`); on later heads see the `install-guide`
+check on the PR. Follow-up for review finding 3: [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119)
+("รอเจ้าของ จัดลำดับ", not started).
 
 Owner approval: [Issue #117 comment](https://github.com/porntaned/ERP-for-Factory/issues/117#issuecomment-6820317207)
 (2026-11-12) and the owner's chat message of the same day (conditions 1–5 below).
@@ -13,6 +22,7 @@ Roles (as they actually happen; updated as work proceeds):
 - **Implementer** = a sub-agent spawned by the Manager (started 2026-11-12).
 - **Reviewer** = a **separate Claude Code session**, given only the PR number, the Issue number and this path,
   as in M6.2–M6.4. Not a sub-agent of the Manager. Report in `docs/reviews/m72-independent-review.md`.
+  Performed by session `session_01MVmjhffM5mrrwnjZ2VDjRz` (created by the Manager), on head `2277b71`, 2026-11-12.
 - **Owner** decides the merge. No deployment.
 
 **Merge rule as it stands.** `AGENTS.md:5` and `:20` on `main` still say the owner merges ("The owner reviews and
@@ -171,7 +181,8 @@ The Manager opens it immediately after the owner merges M7.2. It also does:
 ### Fresh-state run — development check (PostgreSQL 16, session container) — not evidence of record; CI on PostgreSQL 18.6 is
 
 Run by the Implementer (a sub-agent of the Manager) on 2026-11-12. Self-verification, not a review. The CI
-result of the `install-guide` job is cited by link to the PR's CI comment / job status once the PR is open.
+result of the `install-guide` job is cited at the top of this file (Status). ("is cited by link … once the PR is
+open" held until PR #118 was opened — historical, 2026-11-12.)
 
 **Environment:** Ubuntu 24.04.5 LTS (session container, kernel 6.18.44); PostgreSQL **16.15**
 (Ubuntu 16.15-0ubuntu0.24.04.1), a throwaway cluster made with `initdb` (superuser `postgres`, synthetic password,
