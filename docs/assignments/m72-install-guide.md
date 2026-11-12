@@ -310,7 +310,7 @@ checked by a script that resolves each relative path and its `#anchor` against t
 actor. The Manager session did not merge it and received no merge instruction for it in its chat.
 [PR CI #287](https://github.com/porntaned/ERP-for-Factory/actions/runs/43201621735) on `093aff0`: `postgresql-tdd` PostgreSQL 18.6 / Python 3.14.8 **1160 passed**
 ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/118#issuecomment-6820950684)), `install-guide` success, `report` success.
-[Main CI #288](https://github.com/porntaned/ERP-for-Factory/actions/runs/43238815024) on `86ff46a`: (in progress when this commit was made; result added in the next commit).
+[Main CI #288](https://github.com/porntaned/ERP-for-Factory/actions/runs/43238815024) on `86ff46a`: all 3 jobs passed: `postgresql-tdd` PostgreSQL 18.6 / Python 3.14.8 **1160 passed**; `install-guide` success (PostgreSQL 18.6, 1160 passed, login page 200, login 302); `report` success (counts read from the job logs).
 Review stays: independent review by a separate session (`session_01MVmjhffM5mrrwnjZ2VDjRz`, head `2277b71`),
 fix-then-ship; repair round 1 of 2 (`093aff0`) was documentation only and was not re-reviewed. Finding 3 is follow-up
 [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119) (awaiting the owner's priority). Post-merge items (a)–(d) and (f) are done in the post-merge
