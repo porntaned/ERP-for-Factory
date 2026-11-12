@@ -19,17 +19,9 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 
 ## Run locally
 
-ต้องมี PostgreSQL 18.6 และ [uv](https://docs.astral.sh/uv/) ขั้นตอนเต็ม เวอร์ชัน และค่าตั้งค่าอยู่ใน [Development and test environment](docs/DEVELOPMENT.md)
+ขั้นตอนเต็มอยู่ใน [Install guide](docs/INSTALL.md) (bash): ติดตั้ง Git, uv และ PostgreSQL 18.6 → สร้าง role และ database ด้วย `psql` (role ต้องมี `CREATEDB` เพื่อให้ pytest-django สร้าง test database ได้) → clone → เขียน `.env` จาก `.env.example` → `uv sync --locked --all-groups` → `check` / `migrate` / `pytest` → `seed_demo` / `seed_production_demo` / `set_demo_passwords` → `runserver` แล้ว login เป็นผู้ใช้ `demo-*` ทุกคำสั่งใน guide ถูกรันซ้ำใน CI job `install-guide` บน PostgreSQL 18.6 ยังไม่ได้ทดสอบบน Windows
 
-```bash
-cp .env.example .env   # แก้ทุกค่าใน .env ก่อน
-uv sync --locked --all-groups
-uv run --env-file .env python manage.py migrate
-uv run --env-file .env pytest
-uv run --env-file .env python manage.py seed_demo      # ข้อมูลจำลอง
-uv run --env-file .env python manage.py set_demo_passwords  # รหัสผ่านของ demo-warehouse / demo-quality / demo-approver / demo-production
-DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver  # http://127.0.0.1:8000/
-```
+(ชุดคำสั่งเดิมในส่วนนี้ไม่มี `seed_production_demo` และไม่บอกวิธีสร้าง role/database ที่สร้าง test database ได้ — historical, ย้ายไป [docs/INSTALL.md](docs/INSTALL.md) 2026-11-12)
 
 ## Project evidence
 

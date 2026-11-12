@@ -192,3 +192,133 @@ jobs:
               gh api "repos/$REPO/issues/$PR/comments" -F body=@ci-summary.md > /dev/null
             fi
           fi
+
+  # M7.2 (Issue #117): follows docs/INSTALL.md from a fresh state on PostgreSQL 18.6. Each step is
+  # one section of the guide; its commands are the guide's, character for character and in order.
+  # Every difference is marked "# CI-only:". This job does not feed the CI comment: `report` needs
+  # only postgresql-tdd, and scripts/ci_summary.py is not used here.
+  install-guide:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:18.6-bookworm
+        # CI-only: the service starts with only a superuser; step 3 of the guide creates the role
+        # and the database.
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: synthetic-ci-superuser-only
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    # CI-only: the values step 2 of the guide tells the reader to choose, synthetic and job-only,
+    # instead of its `export` lines. The app reads its settings only from the .env of step 4.
+    env:
+      PGHOST: 127.0.0.1
+      PGPORT: "5432"
+      PGUSER: postgres
+      PGPASSWORD: synthetic-ci-superuser-only
+      ERP_DB_PASSWORD: synthetic-ci-db-only
+      ERP_SECRET_KEY: synthetic-ci-only-not-for-production
+      ERP_DEMO_PASSWORD: synthetic-ci-demo-only
+
+    steps:
+      # CI-only: replaces installing uv by hand (guide step 1). No cache: the checkout comes later,
+      # at the place of `git clone` in the guide.
+      - name: Install uv
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+        with:
+          version: 0.13.1
+
+      - name: "Guide 1: What you need"
+        run: |
+          git --version
+          uv --version
+
+      - name: "Guide 3: Create the database role and database"
+        run: |
+          psql -d postgres -tAc 'SHOW server_version'
+          psql -v ON_ERROR_STOP=1 -v db_password="$ERP_DB_PASSWORD" -d postgres <<'SQL'
+          CREATE ROLE erp_factory LOGIN CREATEDB PASSWORD :'db_password';
+          CREATE DATABASE erp_factory OWNER erp_factory;
+          SQL
+
+      # CI-only: replaces `git clone https://github.com/porntaned/ERP-for-Factory.git` and
+      # `cd ERP-for-Factory` (guide step 4); the later steps run in the checkout.
+      - name: "Guide 4: Get the code"
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: "Guide 4: Write .env"
+        run: |
+          sed -e "s|^DJANGO_SECRET_KEY=.*|DJANGO_SECRET_KEY=$ERP_SECRET_KEY|" \
+            -e "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=$ERP_DB_PASSWORD|" \
+            -e "s|^POSTGRES_HOST=.*|POSTGRES_HOST=$PGHOST|" \
+            -e "s|^POSTGRES_PORT=.*|POSTGRES_PORT=$PGPORT|" \
+            .env.example > .env
+
+      - name: "Guide 5: Install Python and dependencies"
+        run: |
+          uv python install 3.14.8
+          uv sync --locked --all-groups
+          uv run python --version
+
+      - name: "Guide 6: Check, migrate and test"
+        run: |
+          uv run --env-file .env python manage.py check
+          uv run --env-file .env python manage.py migrate
+          uv run --env-file .env pytest
+
+      - name: "Guide 7: Load the demo data"
+        run: |
+          uv run --env-file .env python manage.py seed_demo
+          uv run --env-file .env python manage.py seed_production_demo
+          printf '%s\n' "$ERP_DEMO_PASSWORD" | uv run --env-file .env python manage.py set_demo_passwords --password-stdin
+
+      - name: "Guide 8: Run and log in"
+        run: |
+          # CI-only: runserver runs in the background, is checked over HTTP and is then stopped.
+          DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver > runserver.log 2>&1 &
+          # CI-only: wait for the server, then the login page must answer 200.
+          for i in $(seq 1 30); do curl -fsS -o /dev/null http://127.0.0.1:8000/accounts/login/ && break; sleep 1; done
+          code=$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8000/accounts/login/)
+          echo "login page: $code"; test "$code" = 200
+          # CI-only: log in as demo-warehouse with the CSRF token, as the browser form does.
+          curl -sS -c cookies.txt -b cookies.txt -o /dev/null http://127.0.0.1:8000/accounts/login/
+          csrf=$(awk '$6 == "csrftoken" {print $7}' cookies.txt)
+          code=$(curl -sS -c cookies.txt -b cookies.txt -o /dev/null -w '%{http_code}' \
+            --data-urlencode "csrfmiddlewaretoken=$csrf" --data-urlencode "username=demo-warehouse" \
+            --data-urlencode "password=$ERP_DEMO_PASSWORD" http://127.0.0.1:8000/accounts/login/)
+          echo "login POST: $code"; test "$code" = 302
+          # CI-only: the balance page shows the seeded stock (guide: LED-CHIP · L-0001 · RM-A · 100 · RELEASED).
+          curl -sS -b cookies.txt -o balance.html http://127.0.0.1:8000/
+          grep -F '<span class="navbar-text me-3">demo-warehouse</span>' balance.html
+          grep -F '<td>LED-CHIP</td><td>L-0001</td><td>RM-A</td><td class="text-end">100</td><td>RELEASED</td>' balance.html
+          # CI-only: stop the server.
+          pkill -f 'manage.py runserver'
+          sleep 2
+          if pgrep -f 'manage.py runserver'; then echo "runserver still running"; exit 1; fi
+
+      # CI-only: running both seeds again adds nothing (row count of every model before and after).
+      - name: "CI-only: rerunning the seeds adds nothing"
+        run: |
+          count='from django.apps import apps; [print(m._meta.label, m.objects.count()) for m in apps.get_models()]'
+          uv run --env-file .env python manage.py shell -c "$count" > counts-before.txt
+          uv run --env-file .env python manage.py seed_demo
+          uv run --env-file .env python manage.py seed_production_demo
+          uv run --env-file .env python manage.py shell -c "$count" > counts-after.txt
+          cat counts-after.txt
+          diff counts-before.txt counts-after.txt
+
+      - name: "Guide 9: Start the demo data again"
+        run: |
+          uv run --env-file .env python manage.py seed_production_demo --reset
+          printf '%s\n' "$ERP_DEMO_PASSWORD" | uv run --env-file .env python manage.py set_demo_passwords --password-stdin
+
+      # CI-only: show the server log when a step fails.
+      - name: "CI-only: runserver log"
+        if: failure()
+        run: cat runserver.log || true
