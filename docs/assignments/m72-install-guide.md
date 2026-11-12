@@ -14,6 +14,13 @@ Roles (as they actually happen; updated as work proceeds):
   as in M6.2–M6.4. Not a sub-agent of the Manager. Report in `docs/reviews/m72-independent-review.md`.
 - **Owner** decides the merge. No deployment.
 
+**Merge rule as it stands.** `AGENTS.md:5` and `:20` on `main` still say the owner merges ("The owner reviews and
+merges changes"; "never ... merge ... automatically"). In practice the owner has had sessions merge on an explicit
+merge instruction (e.g. PR #116). That practice — *a session merges only on the owner's explicit instruction, quoted
+in the record* — is **how work is done now, not yet a written rule**; it becomes the rule only after post-merge
+item (c) is merged. Until then **no session merges anything without an explicit merge instruction from the owner
+for that round**.
+
 ## Purpose
 
 A visitor who clones the repository should get from nothing to the running demo by following one page, and
@@ -48,6 +55,13 @@ Further conditions from the owner's chat (2026-11-12), summarised:
 4. The `--depth=50` finding about AGENTS.md step 1 is reported to the owner; AGENTS.md is not edited in M7.2.
 5. Post-merge docs PR item (e) is added (below).
 
+**Owner ruling on the CI image (2026-11-12, chat):** the new CI job may use the service image
+`postgres:18.6-bookworm`, the same image as `postgresql-tdd`; **no other image**. (The statements of this in Scope
+item 4 and in the D3 parenthesis of Issue #117 were written by the Manager before the owner confirmed it; the owner
+confirmed it on 2026-11-12.)
+
+Further item (f) for the post-merge docs PR was added by the owner in chat on 2026-11-12 (below).
+
 ## Scope
 
 1. **`docs/INSTALL.md`** (new), the single install guide, bash first:
@@ -70,6 +84,7 @@ Further conditions from the owner's chat (2026-11-12), summarised:
 4. **`.github/workflows/foundation.yml`**: one **new job** (for example `install-guide`) that follows
    `docs/INSTALL.md` on `ubuntu-24.04` with PostgreSQL 18.6. The jobs `postgresql-tdd` and `report` are not edited.
    - It uses the same service image already used by `postgresql-tdd` (`postgres:18.6-bookworm`); no other image.
+     (Written before the owner confirmed it; owner ruling 2026-11-12 above.)
      The service starts with only a superuser, so the job runs the guide's own role/database `psql` commands.
    - Every command in the guide's checked path appears in the job **in the same order and character for
      character**. The only allowed differences, each marked in the workflow with a `# CI-only:` comment and listed
@@ -124,11 +139,31 @@ The Manager opens it immediately after the owner merges M7.2. It also does:
 - (b) `docs/assignments/docs-repair-2026-11-11.md`: "PR open, awaiting the owner" → historical; closeout with merge
   SHA, PR CI #284 and main CI #285;
 - (c) `AGENTS.md:5` and `:20` describe what happens: the owner decides; a session merges only on the owner's explicit
-  instruction, and that instruction is quoted in the record;
+  instruction, and that instruction is quoted in the record (current practice; it is the rule only once this item is
+  merged — see "Merge rule as it stands" above);
 - (d) a `Type:` line at the top of `docs/reviews/m61-pr2-independent-review.md` saying it was a sub-agent of the
   Manager, with the date of the correction;
 - (e) if the owner has created the archive tags and deleted the branches by then:
-  `docs/reviews/project-audit-after-pr12.md:3` "not done yet" → historical, with the tag name and the date.
+  `docs/reviews/project-audit-after-pr12.md:3` "not done yet" → historical, with the tag name and the date;
+- (f) `AGENTS.md` Issue workflow step 1: check `git rev-parse --is-shallow-repository`; if it prints `true`, run
+  `git fetch --unshallow origin` before trusting `git branch -r --no-merged`. Attach the commands and results below.
+
+  Observed in this session's clone on 2026-11-12 (after `main` moved from `217be3f` to `1261e86`):
+
+  ```bash
+  git fetch --depth=50 origin '+refs/heads/*:refs/remotes/origin/*'
+  for b in $(git branch -r | grep -v HEAD); do if ! git merge-base --is-ancestor $b origin/main 2>/dev/null; then echo "UNMERGED: $b"; fi; done
+  ```
+
+  | Step | `git rev-parse --is-shallow-repository` | Branches reported unmerged |
+  |---|---|---|
+  | First run at session start (2026-11-11) | not checked | 5 |
+  | Same commands after `main` moved to `1261e86` | `true` (`.git/shallow` had 2 lines; all 31 gave exit code 1) | **31** (false) |
+  | After `git fetch --unshallow origin` and the same fetch again | `false` | **5** (correct) |
+
+  Re-tried in the scratchpad: a full `git clone` and a `git clone --depth=50`, each followed by the AGENTS.md fetch,
+  both reported 5 and ended non-shallow. So the 31 came from this clone's shallow state; the check of
+  `--is-shallow-repository` is what guards against it.
 
 ## Evidence
 
