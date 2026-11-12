@@ -8,7 +8,9 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 >
 > **ส่งมอบแล้ว:** Foundation, Item/UOM, Lot, สิทธิ์ตามบทบาท/คลัง, Quality Hold/Release (inspection M6.1 และห้ามใช้ Lot ที่ REJECTED ทุกคลัง M6.2), ค้นย้อน Lot ทุกชั้น (M6.3), ทดสอบจำนวน/concurrency และหน้าประวัติ QC `/quality/audit/` (M6.4) และ Inventory M4.1–M4.5 (ledger, รับเข้า, โอนใน Plant เดียวกัน, กันคำขอซ้ำ/concurrency, ทะเบียน request key ข้ามคำสั่ง และ Reversal ที่อ้างรายการต้นฉบับ) และหน้าจอ M4.6 สำหรับรับเข้า โอน ประวัติ และกลับรายการ ตามสิทธิ์ผู้ใช้ พร้อม admin อ่านอย่างเดียวและข้อมูลจำลอง `seed_demo` (M7.1) และเดโม M4.7 รับเข้า 100 → โอน 30 → คงเหลือ 70/30 ([วิธีเดินเดโม](docs/DEVELOPMENT.md#inventory-demo-walkthrough-m47)) และ Manufacturing M5 (M5.1–M5.5): BOM แบบมีเวอร์ชันที่ต้องอนุมัติ, Production order, เบิก/คืน/ใช้วัตถุดิบ, scrap, รับผลผลิตเข้า FG (HOLD) และปิด order ผ่านคำสั่ง Inventory พร้อมความเชื่อมโยง Lot วัตถุดิบ ↔ ผลผลิต, การกลับรายการผลิต (M5.2c) และเหตุผลเมื่อปิด order ที่ผลผลิตขาด และเดโมการผลิตครบเส้นทาง `seed_production_demo` (M5.4), หน้าจอการผลิตบนเว็บ (M5.5) และกฎยกเลิก order ได้เฉพาะเมื่อยังไม่มีผลผลิตสุทธิ; Quality M6.1 (คำสั่งและหน้าเว็บ `/quality/`): บันทึกตรวจ Lot (INCOMING/FINAL) เป็นทางเดียวที่ปล่อย (RELEASED) หรือปฏิเสธ (REJECTED) และ APPROVER ส่ง Lot ที่ REJECTED กลับ HOLD (ข้อความเดิม "หน้าเว็บการตรวจยังไม่ส่งมอบ" ผิดตั้งแต่ M6.1 PR 2 [PR #101](https://github.com/porntaned/ERP-for-Factory/pull/101) — historical, แก้ 2026-11-11)
 >
-> **ยังไม่ส่งมอบ:** Portfolio delivery (M7.2–M7.5) และไม่มีการ Deploy
+> **ส่งมอบเพิ่ม (M7.2):** [คู่มือติดตั้ง](docs/INSTALL.md) แบบ bash ที่ CI job `install-guide` รันจากสภาพใหม่บน PostgreSQL 18.6 (ยังไม่ได้ทดสอบบน Windows)
+>
+> **ยังไม่ส่งมอบ:** Portfolio delivery (M7.3–M7.5) และไม่มีการ Deploy (ข้อความเดิม "M7.2–M7.5" ใช้ได้ถึง merge PR #118 วันที่ 2026-11-12 — historical)
 
 ## Stack
 

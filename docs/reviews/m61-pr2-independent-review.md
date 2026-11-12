@@ -1,3 +1,5 @@
+Type: review by a sub-agent of the Manager session (a fresh-context sub-agent spawned by the Manager; not a separate session). (Type line added 2026-11-12.)
+
 # Review — PR #101 (Issue #96, M6.1 PR 2: Quality web screens)
 
 Reviewer: separate sub-agent (fresh context), date 2026-11-06, read-only, following docs/SCRUTINIZE.md

@@ -2,8 +2,9 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/vibrant-sagan-ivztik` (restarted from `main` `1261e86`
 after PR #116 merged); [Issue #117](https://github.com/porntaned/ERP-for-Factory/issues/117).
-Status: **[PR #118](https://github.com/porntaned/ERP-for-Factory/pull/118) open, awaiting the owner; independent review by a
-separate session: [fix-then-ship](../reviews/m72-independent-review.md), repair round 1 of 2 done (documentation only).**
+Status: **merged: [PR #118](https://github.com/porntaned/ERP-for-Factory/pull/118) at `86ff46a` (2026-11-12); M7.2 complete**
+("PR #118 open, awaiting the owner; independent review … fix-then-ship, repair round 1 of 2 done" held until the merge —
+historical).
 ("implemented on the branch; PR not opened; review: none" held until PR #118 was opened and reviewed on
 2026-11-12 — historical; before that "spec approved by the owner; implementation not started" — historical.)
 
@@ -301,3 +302,16 @@ checked by a script that resolves each relative path and its `#anchor` against t
 - The walkthroughs in `docs/DEVELOPMENT.md` (M4.7–M6.4) keep their own `migrate`, `seed_* --reset`,
   `set_demo_passwords` (interactive prompt) and `runserver` lines; they are the same commands as the guide's (same
   `uv run --env-file .env python manage.py …` form; the guide states the prompt is used without `--password-stdin`).
+
+## Closeout (2026-11-12)
+
+[PR #118](https://github.com/porntaned/ERP-for-Factory/pull/118) was merged on GitHub at 2026-11-12T14:35:40Z as merge commit
+`86ff46ae8221d46f6d65d00d2d9c91f67e614b08` (head `093aff0`). GitHub shows the owner's account (`porntaned`) as the
+actor. The Manager session did not merge it and received no merge instruction for it in its chat.
+[PR CI #287](https://github.com/porntaned/ERP-for-Factory/actions/runs/43201621735) on `093aff0`: `postgresql-tdd` PostgreSQL 18.6 / Python 3.14.8 **1160 passed**
+([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/118#issuecomment-6820950684)), `install-guide` success, `report` success.
+[Main CI #288](https://github.com/porntaned/ERP-for-Factory/actions/runs/43238815024) on `86ff46a`: (in progress when this commit was made; result added in the next commit).
+Review stays: independent review by a separate session (`session_01MVmjhffM5mrrwnjZ2VDjRz`, head `2277b71`),
+fix-then-ship; repair round 1 of 2 (`093aff0`) was documentation only and was not re-reviewed. Finding 3 is follow-up
+[Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119) (awaiting the owner's priority). Post-merge items (a)–(d) and (f) are done in the post-merge
+docs PR; (e) is not done yet: the archive tags exist, but the five branches are not deleted. No deployment.

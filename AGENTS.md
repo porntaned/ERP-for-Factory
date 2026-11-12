@@ -2,13 +2,17 @@
 
 ## Purpose
 
-Build a public portfolio ERP for a fictional LED assembly factory with synthetic data. Start with a Django modular monolith and PostgreSQL. The owner reviews and merges changes.
+Build a public portfolio ERP for a fictional LED assembly factory with synthetic data. Start with a Django modular monolith and PostgreSQL. The owner reviews changes and decides every merge; a session merges a PR only on the owner's explicit merge instruction for that PR, and the record of the merge quotes that instruction. ("The owner reviews and merges changes" held until 2026-11-12 — historical; owner-approved change, Issue #117 item (c).)
 
 ## Issue workflow
 
 1. Confirm repository, branch, HEAD and working state. Fetch every branch ref first
    (`git fetch --depth=50 origin '+refs/heads/*:refs/remotes/origin/*'`) and list remote
-   branches not merged into `main`, so stale or parallel work is not missed.
+   branches not merged into `main`, so stale or parallel work is not missed. Then run
+   `git rev-parse --is-shallow-repository`; if it prints `true`, run `git fetch --unshallow origin`
+   before trusting `git branch -r --no-merged`, because a shallow clone can report merged branches
+   as unmerged (2026-11-12: a shallow clone reported 31 unmerged branches, 5 after unshallowing —
+   [Issue #117](https://github.com/porntaned/ERP-for-Factory/issues/117), item (f)).
 2. Read the current GitHub issue and relevant checklist tasks.
 3. State scope, exclusions, dependencies and acceptance criteria.
 4. Make the smallest change that satisfies the issue.
@@ -17,7 +21,9 @@ Build a public portfolio ERP for a fictional LED assembly factory with synthetic
 ## Safety boundaries
 
 - Work only in `porntaned/ERP-for-Factory`.
-- Use a feature branch; never force-push, merge or deploy automatically.
+- Use a feature branch; never force-push or deploy, and never merge without the owner's explicit merge
+  instruction for that PR (quote it in the merge record). ("never force-push, merge or deploy automatically" held
+  until 2026-11-12 — historical.)
 - Never publish secrets, credentials, personal data or real factory data.
 - Do not add unrelated features or significant dependencies without an approved issue.
 - Real data, stock adjustments, valuation, privileged access and PLC/SCADA integration require explicit owner approval.
