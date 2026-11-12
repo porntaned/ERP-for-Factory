@@ -1,6 +1,6 @@
 # Docs repair after M6 (2026-11-11)
 
-Type: documentation only. Status: **PR open, awaiting the owner** (no merge, no deployment).
+Type: documentation only. Status: **merged: [PR #116](https://github.com/porntaned/ERP-for-Factory/pull/116) at `1261e86` (2026-11-11)** ("PR open, awaiting the owner" held until the merge — historical, corrected 2026-11-12). No deployment.
 
 This is a **docs repair on the owner's instruction**, an exception to the AGENTS.md rules *No chain* and *One owner*
 that the owner allowed in chat on 2026-11-11. It is **not** the post-merge docs PR of a slice. (Earlier wording in the
@@ -70,3 +70,21 @@ Excluded: M7 work, code, tests, `AGENTS.md`, `docs/MULTI_AGENT.md`, branch/tag c
 ## Evidence
 
 CI evidence of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/116#issuecomment-6798804764) (always shows the latest head). ("linked from the PR once CI has run" held until CI ran — historical.)
+
+## Closeout (recorded 2026-11-12 in the M7.2 post-merge docs PR)
+
+[PR #116](https://github.com/porntaned/ERP-for-Factory/pull/116) was merged by this session (`session_01MVmjhdAZRZbr6kL22x7hby`) on the owner's explicit
+instruction in chat (2026-11-11), quoted verbatim:
+
+```text
+ผมอนุมัติ merge PR #116 (head fb850b4, CI #284 ผ่าน 1160 passed)
+merge แบบ merge commit เท่านั้น และกำหนด expected head SHA = fb850b4593bb77d2c022491e37f1f552bcf15940
+ถ้า head ไม่ตรงให้หยุดแล้วรายงาน ห้ามเปิด docs PR หลัง merge (SHA ไปจดใน docs PR หลัง merge ของ M7.2)
+รายงาน merge SHA และผล main CI (run number, จำนวน passed) เมื่อจบ ห้ามเริ่ม M7.2
+```
+
+Merge commit (merge method, expected head `fb850b4`): `1261e86a5dbd396dd9f10234e44e353829cebcc6`.
+[PR CI #284](https://github.com/porntaned/ERP-for-Factory/actions/runs/43044958164) on head `fb850b4` and [main CI #285](https://github.com/porntaned/ERP-for-Factory/actions/runs/43046537315) on `1261e86`:
+PostgreSQL 18.6, Python 3.14.8, **1160 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/1261e86a5dbd396dd9f10234e44e353829cebcc6#commitcomment-209414826)).
+Commits: `7308084`, `2dea6f8`, `fb850b4`, all documentation only. Review: none (self-checked only). No post-merge docs PR
+was opened for PR #116 (owner instruction); it is recorded here and in `docs/TASKS.md` by the M7.2 post-merge docs PR.

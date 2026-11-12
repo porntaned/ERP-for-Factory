@@ -11,7 +11,8 @@ Owner approved on 2026-11-04. No merge or deployment authorized by this work.
   `tests/inventory/test_command_concurrency.py`; rewrote its mixed receipt/transfer test with
   distinct keys (it reused one UUID across commands, which M4.4.1 rejects). Its doc
   `m44-command-concurrency.md` was not ported because it contradicts the registry decision.
-  The branch itself was not deleted.
+  The branch itself was not deleted. (Historical: the owner archived it as tag
+  `archive/codex-inventory-concurrent-commands` (`3530bb6`) and deleted it on 2026-11-12.)
 - **Transfer key required:** inventory/0008 `CHECK (request_id IS NOT NULL) NOT VALID` on new
   rows; legacy NULL rows untouched and unregistered. Direct inserts in
   `test_transfer_history.py` now pass a key; their assertions are unchanged.
