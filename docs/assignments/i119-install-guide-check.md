@@ -2,8 +2,12 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/vibrant-sagan-ivztik` (restarted from `main` `4f6c065` after
 PR #120 merged); [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119).
-Status: **implemented on the branch; PR not opened; review: none.** ("spec approved by the owner; implementation
-not started" held until 2026-11-13 — historical.)
+Status: **[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) open, awaiting the owner; independent review by a
+separate session: [ship](../reviews/i119-independent-review.md) (findings 1–5 await the owner's decision; no repair
+made).** CI evidence of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964)
+(covers `postgresql-tdd`) and the `install-guide` check on the PR (first passing run: [job](https://github.com/porntaned/ERP-for-Factory/actions/runs/43364021863/job/131684043453); not in
+the CI comment by design). ("implemented on the branch; PR not opened; review: none" held until PR #121 was opened and
+reviewed on 2026-11-13; before that "spec approved by the owner; implementation not started" — historical.)
 
 Owner approval: [Issue #119 comment](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6842699856)
 (2026-11-13) and the owner's chat message of the same day.
