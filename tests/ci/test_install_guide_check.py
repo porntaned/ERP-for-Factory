@@ -187,7 +187,8 @@ def test_f_sql_heredoc_differs(tmp_path, capsys, side):
 @pytest.mark.parametrize("comment", ["# check the tools", "  # check the tools"])
 def test_g_hash_line_inside_a_guide_bash_block(tmp_path, capsys, comment):
     guide = edit(GUIDE, "```bash\ngit --version\n", f"```bash\n{comment}\ngit --version\n")
-    assert_fails(tmp_path, capsys, "line 27", "`#`", guide=guide)
+    number = guide.split("\n").index(comment) + 1
+    assert_fails(tmp_path, capsys, f"INSTALL.md line {number}:", "`#`", comment, guide=guide)
 
 
 def test_h_job_missing(tmp_path, capsys):
