@@ -252,6 +252,11 @@ jobs:
       - name: "Guide 4: Get the code"
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # CI-only: the commands of docs/INSTALL.md and of this job must match (Issue #119). Runs
+      # right after the checkout, the first step with the files, on the runner's python3.
+      - name: "CI-only: guide and job commands match"
+        run: python3 scripts/check_install_guide.py
+
       - name: "Guide 4: Write .env"
         run: |
           sed -e "s|^DJANGO_SECRET_KEY=.*|DJANGO_SECRET_KEY=$ERP_SECRET_KEY|" \

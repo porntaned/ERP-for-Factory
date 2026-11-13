@@ -48,10 +48,11 @@ Required variables:
 
 Setting up from nothing (PostgreSQL role and database, `.env`, dependencies, `check`, `migrate`,
 `pytest`, the demo seeds and `runserver`) is in the [Install guide](INSTALL.md), in bash; the CI
-job `install-guide` runs the same commands. Until 2026-11-12 this section listed part of that
-setup in PowerShell (`Copy-Item .env.example .env`, `uv sync`, `check`, `pytest`) without
-`migrate`, the seeds or the role and database — historical, replaced by the guide on 2026-11-12.
-The guide is not tested on Windows.
+job `install-guide` runs the same commands, and the match is checked automatically by
+[`scripts/check_install_guide.py`](../scripts/check_install_guide.py) in that job. Until
+2026-11-12 this section listed part of that setup in PowerShell (`Copy-Item .env.example .env`,
+`uv sync`, `check`, `pytest`) without `migrate`, the seeds or the role and database — historical,
+replaced by the guide on 2026-11-12. The guide is not tested on Windows.
 
 Developer-only commands the guide does not cover (CI runs both checks):
 
