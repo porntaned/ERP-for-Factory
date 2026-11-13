@@ -70,8 +70,11 @@ def test_real_job_is_read_step_by_step():
     assert steps["Guide 4: Write .env"][1] == (
         '  -e "s|^POSTGRES_PASSWORD=.*|POSTGRES_PASSWORD=$ERP_DB_PASSWORD|" \\'
     )
-    # `# CI-only:` comment lines inside a run: block are skipped (D4)
-    assert not any(line.lstrip().startswith("#") for line in steps["Guide 8: Run and log in"])
+    # `# CI-only:` comment lines inside a run: block are read, then skipped for the comparison (D4)
+    guide_8 = "Guide 8: Run and log in"
+    assert any(line.startswith("# CI-only:") for line in steps[guide_8])
+    compared = [line for step, line in check.ci_lines(steps.items()) if step == guide_8]
+    assert compared and not any(line.lstrip().startswith("#") for line in compared)
     # only the install-guide job is read
     assert "uv run ruff check ." not in [line for lines in steps.values() for line in lines]
 
