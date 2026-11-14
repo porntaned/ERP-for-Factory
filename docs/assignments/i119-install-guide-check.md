@@ -2,15 +2,15 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/vibrant-sagan-ivztik` (restarted from `main` `4f6c065` after
 PR #120 merged); [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119).
-Status: **repair round 1 done on the branch; re-review pending** ([PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121)
-open, awaiting the owner; findings 1–3 and 6 fixed, 4 recorded as a known limit, 5 kept, per the owner's rulings — see
-[Repair round 1](#repair-round-1-2026-11-14); the new independent review must be done by a new separate session, not
-the first Reviewer). CI evidence of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964)
-(covers `postgresql-tdd`; it always shows the latest head) and the `install-guide` check on the PR (not in the CI
-comment by design). ("PR #121 open, awaiting the owner; independent review by a separate session: ship (findings 1–5
-await the owner's decision; no repair made)" held until repair round 1 on 2026-11-14; before that "implemented on the
-branch; PR not opened; review: none" held until PR #121 was opened and reviewed on 2026-11-13; before that "spec
-approved by the owner; implementation not started" — historical.)
+Status: **[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) open, awaiting the owner's merge (the owner merges on GitHub); first review ship,
+re-review by a new separate session ship ([review record](../reviews/i119-independent-review.md)); re-review findings
+recorded as known limits and spec notes per the owner ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)), documentation only, no new review.** CI evidence of
+record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964) (covers `postgresql-tdd`; always shows the latest
+head) and the `install-guide` check on the PR (not in the CI comment by design). ("repair round 1 done on the branch;
+re-review pending" held until the re-review and the owner's ruling on 2026-11-14; before that "PR #121 open, awaiting
+the owner; independent review by a separate session: ship (findings 1–5 await the owner's decision; no repair made)"
+held until repair round 1 on 2026-11-14; before that "implemented on the branch; PR not opened; review: none" until
+2026-11-13; before that "spec approved by the owner; implementation not started" — historical.)
 
 Owner approval: [Issue #119 comment](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6842699856)
 (2026-11-13) and the owner's chat message of the same day.
@@ -72,7 +72,9 @@ differ.
 3. **`.github/workflows/foundation.yml`**: one new step in the job `install-guide`, **immediately after the step
    "Guide 4: Get the code"** (checkout), marked `# CI-only:`, that runs the script with the runner's `python3`
    (3.12). Nothing else in the workflow changes: `postgresql-tdd` and `report` are byte-for-byte unchanged, and the
-   existing steps of `install-guide` keep their commands.
+   existing steps of `install-guide` keep their commands. (Historical, 2026-11-14: one existing CI-only line changed —
+   `sleep 2` in "Guide 8: Run and log in" became a wait loop of up to 20 s, finding 6 of repair round 1, owner
+   [comment 6877846545](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6877846545); noted per [comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755).)
 4. **Tests `tests/ci/test_install_guide_check.py`** (no database), written **RED first** (the script does not exist →
    fail), then GREEN:
    - the real `docs/INSTALL.md` and `foundation.yml` pass;
@@ -99,7 +101,9 @@ blocks itself; editing `AGENTS.md` (the `--depth=50` change goes in the post-mer
 - [ ] Standard library only; `pyproject.toml` and `uv.lock` unchanged; the script uses no syntax or stdlib API newer
       than Python 3.12. CI runs it with the runner's Python 3.12; the tests run it on 3.14.
 - [ ] The new step sits immediately after "Guide 4: Get the code"; `postgresql-tdd` and `report` are byte-for-byte
-      unchanged (checked with `cmp` as in M7.2); the other `install-guide` commands are unchanged.
+      unchanged (checked with `cmp` as in M7.2); the other `install-guide` commands are unchanged. (Historical,
+      2026-11-14: except `sleep 2` in "Guide 8: Run and log in", replaced by a wait loop of up to 20 s — finding 6,
+      owner comment 6877846545; noted per [comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755).)
 - [ ] CI on PostgreSQL 18.6 passes all 3 jobs (CI comment link; the `install-guide` result by its job link).
 - [ ] Relative links in changed Markdown files: 0 broken; `ruff check` and `ruff format --check` pass.
 - [ ] Independent review by a separate session → `docs/reviews/i119-independent-review.md`; at most 2 repair rounds.
@@ -313,12 +317,16 @@ own item 6 ("evidence of record is pending"), which the Manager had already reso
    info string's first word is `sh` or `shell` (any letter case) fails with its INSTALL.md line number. **Chosen
    scope:** other fences are not rejected (the ruling names `sh` and `shell`, and an output block such as ` ```text `
    may be wanted in the guide; a test shows ` ```text ` passes). **Remaining limit:** a command in a ` ```console `,
-   ` ```zsh ` or unlabelled fence is still not read.
+   ` ```zsh ` or unlabelled fence is still not read. **Also a known limit** (re-review finding 1, owner [comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755): recorded,
+   no code change): a ` ```bash title=x ` fence (info string with attributes), a `~~~bash` fence and a four-backtick
+   ` ````sh ` fence are neither read nor rejected, so commands in them bypass the check.
 4. **Known limit, not changed** (owner, [comment 6843916308](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6843916308)):
    only `name:` and `run:` of each step are read. Step-level keys `if:`, `working-directory:`, `shell:`,
    `continue-on-error:` and per-step `env:` are not compared. For example, `continue-on-error: true` on the check step
    itself would turn the check off while the check still passes, and `if: false` on a guide step would skip its
-   commands. Such edits show in the workflow diff, which the owner reviews.
+   commands. Such edits show in the workflow diff, which the owner reviews. **Also a known limit** (re-review, owner
+   [comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)): the check does not verify its own position — moving the step "CI-only: guide and job commands match" away
+   from right after "Guide 4: Get the code" still passes; this too is protected only by workflow-diff review.
 5. **Kept** (owner, same comment): the check fails on an allow-list entry that matches nothing.
 6. *runserver stop.* In run #293 attempt 1 ([job 131687066384](https://github.com/porntaned/ERP-for-Factory/actions/runs/43364954152/job/131687066384)),
    2 s after `pkill` two processes still matched (`4714`, `4720`) and the step failed with "runserver still running";

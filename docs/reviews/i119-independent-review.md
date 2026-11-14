@@ -345,11 +345,13 @@ None of these findings blocks the acceptance criteria. All are low or informatio
 
 **Biggest reason:** repair round 1 does exactly what the owner ruled. I confirmed each fix with my own probes (Q5, Q7, Q12), the RED → GREEN transition reproduces on Python 3.12, and the jobs that must not change are byte-identical. The remaining items are a narrow fence gap that the spec should name (or that a small code change would close), a stale PR description, and two spec lines that need a historical note. None of them lets an ordinary edit to a command in only one of the two files slip through, which is the drift Issue #119 targets.
 
-### Manager disposition (re-review; Manager session, 2026-11-14; no repair made)
+### Manager disposition (re-review; Manager session, 2026-11-14; updated the same day after the owner's ruling)
 
 | # | Disposition |
 |---|---|
-| 1 | Owner to decide: docs-only (add `` ```bash title=x ``, `~~~bash` and four-backtick fences to the spec's remaining limit) or a small code change (would need another review). |
+| 1 | **Known limit**, no code change (owner, [comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)): the three fence forms are recorded in the spec (Repair round 1, item 3). ("Owner to decide" held until that ruling — historical.) |
 | 2 | The Manager updated the PR body at 13:26 UTC on 2026-11-14, around the time this review started (repair round 1, `6 1` diff, test counts, full commit list with docs-only commits marked); to be re-checked against the final head. |
-| 3 | Owner to decide: add dated "superseded by repair round 1, item 6" notes to Scope 3 and the acceptance line of the spec (docs only). |
+| 3 | **Fixed (docs only)** per the owner ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)): dated historical notes added to Scope 3 and the acceptance line; the check not verifying its own position is recorded as a known limit next to first-review finding 4. ("Owner to decide" held until that ruling — historical.) |
 | 4 | Resolved after the review: PR CI [#294](https://github.com/porntaned/ERP-for-Factory/actions/runs/43599732586) on `c052f4c` passed all 3 jobs on attempt 1 (`postgresql-tdd` 1195 passed per [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964); `install-guide` success, including the check step and the new stop loop; `report` success). |
+
+The owner ruled these items documentation only, needing no new review ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)).
