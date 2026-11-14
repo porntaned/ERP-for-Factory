@@ -2,13 +2,16 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/vibrant-sagan-ivztik` (restarted from `main` `4f6c065` after
 PR #120 merged); [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119).
-Status: **[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) open, awaiting the owner's merge (the owner merges on GitHub); first review ship,
-re-review by a new separate session ship ([review record](../reviews/i119-independent-review.md)); re-review findings
-recorded as known limits and spec notes per the owner ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)), documentation only, no new review.** CI evidence of
-record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964) (covers `postgresql-tdd`; always shows the latest
-head) and the `install-guide` check on the PR (not in the CI comment by design). ("repair round 1 done on the branch;
-re-review pending" held until the re-review and the owner's ruling on 2026-11-14; before that "PR #121 open, awaiting
-the owner; independent review by a separate session: ship (findings 1–5 await the owner's decision; no repair made)"
+Status: **[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) open, awaiting the owner's merge (the owner merges on GitHub); [repair round 2](#repair-round-2-2026-11-14)
+(the final round: runserver stop fallback, owner [comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215)) done on the branch; independent review of the
+round-2 diff by a new separate session pending. Merge criterion (owner): 3/3 checks pass on the PR page.** CI evidence
+of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964) (covers `postgresql-tdd`; always shows the latest
+head; not changed for this round, owner) and the `install-guide` check on the PR (not in the CI comment by design).
+("PR #121 open, awaiting the owner's merge; first review ship, re-review by a new separate session ship; re-review
+findings recorded as known limits and spec notes per the owner ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)), documentation only, no new
+review" held until `install-guide` failed in run #296 and the owner ordered repair round 2 on 2026-11-14; before
+that "repair round 1 done on the branch; re-review pending" held until the re-review and the owner's ruling on
+2026-11-14; before that "PR #121 open, awaiting the owner; independent review by a separate session: ship (findings 1–5 await the owner's decision; no repair made)"
 held until repair round 1 on 2026-11-14; before that "implemented on the branch; PR not opened; review: none" until
 2026-11-13; before that "spec approved by the owner; implementation not started" — historical.)
 
@@ -18,7 +21,8 @@ Owner approval: [Issue #119 comment](https://github.com/porntaned/ERP-for-Factor
 Roles (as they actually happen; updated as work proceeds):
 - **Manager** = Claude Code session `session_01MVmjhdAZRZbr6kL22x7hby`.
 - **Implementer** = a sub-agent spawned by the Manager, started 2026-11-13. ("not started yet" held until
-  2026-11-13 — historical.) Repair round 1 (2026-11-14): a sub-agent spawned by the Manager.
+  2026-11-13 — historical.) Repair round 1 (2026-11-14): a sub-agent spawned by the Manager. Repair round 2
+  (2026-11-14): another sub-agent spawned by the Manager.
 - **Reviewer** = a **separate Claude Code session**, given only the PR number, the Issue number and this path, as in
   M7.2. Not a sub-agent of the Manager. Report in `docs/reviews/i119-independent-review.md`.
 - **Owner** decides the merge. No deployment. No session merges without the owner's explicit merge instruction for
@@ -103,8 +107,11 @@ blocks itself; editing `AGENTS.md` (the `--depth=50` change goes in the post-mer
 - [ ] The new step sits immediately after "Guide 4: Get the code"; `postgresql-tdd` and `report` are byte-for-byte
       unchanged (checked with `cmp` as in M7.2); the other `install-guide` commands are unchanged. (Historical,
       2026-11-14: except `sleep 2` in "Guide 8: Run and log in", replaced by a wait loop of up to 20 s — finding 6,
-      owner comment 6877846545; noted per [comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755).)
-- [ ] CI on PostgreSQL 18.6 passes all 3 jobs (CI comment link; the `install-guide` result by its job link).
+      owner comment 6877846545; noted per [comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755); and, in repair round 2, the stop check
+      `if pgrep … "runserver still running"; exit 1; fi` of the same step, replaced by the `pkill -9` fallback —
+      owner [comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215).)
+- [ ] CI on PostgreSQL 18.6 passes all 3 jobs (CI comment link; the `install-guide` result by its job link). Merge
+      criterion (owner, [comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215)): 3/3 checks pass on the PR page; the CI comment is not changed.
 - [ ] Relative links in changed Markdown files: 0 broken; `ruff check` and `ruff format --check` pass.
 - [ ] Independent review by a separate session → `docs/reviews/i119-independent-review.md`; at most 2 repair rounds.
 - [ ] Owner decides the merge; no deployment.
@@ -190,7 +197,7 @@ checks the reasons. Items 1 (setup-uv) and 3 (service superuser) change no `run:
 | guide-only | the 7 `export` lines of guide step 2 | M7.2 CI-only item 2 (job `env`) |
 | guide-only | `git clone https://github.com/porntaned/ERP-for-Factory.git`, `cd ERP-for-Factory` | M7.2 CI-only item 4 (`actions/checkout`) |
 | guide-only | `DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver` | M7.2 CI-only item 5 |
-| CI-only, step "Guide 8: Run and log in" | 16 lines: background `runserver … > runserver.log 2>&1 &`; the wait loop; login page `code=…`/`echo … test … 200`; GET with cookies; `csrf=$(awk …)`; the 3 physical lines of the login POST; `echo … test … 302`; GET balance; the 2 `grep -F` lines; `pkill`; the stop loop `for i in $(seq 1 20); do pgrep …` (`sleep 2` until repair round 1, 2026-11-14 — historical); `if pgrep …` | M7.2 CI-only item 5 |
+| CI-only, step "Guide 8: Run and log in" | 22 lines: background `runserver … > runserver.log 2>&1 &`; the wait loop; login page `code=…`/`echo … test … 200`; GET with cookies; `csrf=$(awk …)`; the 3 physical lines of the login POST; `echo … test … 302`; GET balance; the 2 `grep -F` lines; `pkill`; the stop loop `for i in $(seq 1 20); do pgrep …` (`sleep 2` until repair round 1, 2026-11-14 — historical); the 7 lines of the `pkill -9` fallback, `if pids=$(pgrep -d, …); then` … `fi` (see [Repair round 2](#repair-round-2-2026-11-14); "16 lines" ending with `if pgrep … "runserver still running"; exit 1; fi` held until repair round 2, 2026-11-14 — historical) | M7.2 CI-only item 5 |
 | CI-only, step "CI-only: rerunning the seeds adds nothing" | 7 lines: `count=…`, counts before, `seed_demo`, `seed_production_demo`, counts after, `cat counts-after.txt`, `diff …` | M7.2 CI-only item 6 |
 | CI-only, step "CI-only: runserver log" | `cat runserver.log \|\| true` | M7.2 CI-only item 7 |
 | CI-only, step "CI-only: guide and job commands match" | `python3 scripts/check_install_guide.py` | owner ruling D1 |
@@ -250,10 +257,12 @@ Development check on `068d65f` and again on `820d9c7` (the workflow does not cha
 ### Review
 
 First independent review by a separate session (2026-11-13, head `aae03d8`): **ship**, with findings 1–6, in
-[`docs/reviews/i119-independent-review.md`](../reviews/i119-independent-review.md). Re-review after repair round 1:
-**pending**, by a new separate session, not the first Reviewer (owner,
-[comment 6843916308](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6843916308)). ("None yet"
-held until 2026-11-13 — historical.)
+[`docs/reviews/i119-independent-review.md`](../reviews/i119-independent-review.md). Re-review after repair round 1,
+by a new separate session, not the first Reviewer (owner,
+[comment 6843916308](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6843916308)): **ship**, same
+record. ("None yet" held until 2026-11-13; "pending" for the re-review until it reported on 2026-11-14 — historical.)
+Review of the [repair round 2](#repair-round-2-2026-11-14) diff only: **pending**, by a new separate session, not
+either earlier Reviewer (owner, [comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215)); the Manager records it in the review record.
 
 ### Repair round 1 (2026-11-14)
 
@@ -378,3 +387,124 @@ process whose command line contains `manage.py runserver`: one that exits 3 s af
   `git diff --numstat origin/main` → `6 1` (the check step of `068d65f`, +5, and the one replaced line);
   `git diff 6e4526c 0a92489 -- .github/workflows/foundation.yml` → only `sleep 2` replaced by the loop line.
 - The full suite on PostgreSQL was not rerun in this round (no Django or app code changed); CI runs it.
+
+### Repair round 2 (2026-11-14)
+
+The final repair round. Done by a sub-agent spawned by the Manager (Implementer role), on `claude/vibrant-sagan-ivztik`
+from `1553e7c`. All runs below are **development checks** in that sub-agent's container, not CI; CI on PostgreSQL
+18.6 stays the evidence of record ([the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964), latest head, not changed for this round),
+and the merge criterion is 3/3 checks passing on the PR page (owner).
+
+**The failure.** [Run #296](https://github.com/porntaned/ERP-for-Factory/actions/runs/43601378350) (head `1553e7c`),
+[job 132466649783](https://github.com/porntaned/ERP-for-Factory/actions/runs/43601378350/job/132466649783) `install-guide`,
+step "Guide 8: Run and log in": the HTTP checks passed (`login page: 200`, `login POST: 302`, the balance row) at
+13:49:18Z; after `pkill -f 'manage.py runserver'` the 20 s wait loop ran out and the stop check printed `4161`,
+`4166`, `runserver still running`, exit 1 at 13:49:38Z. The step printed nothing else about the two processes, so the
+root cause is not known. The runserver log (step "CI-only: runserver log") ends with Django's normal start banner
+and shows no shutdown. Same symptom as run #293 attempt 1 (see [Repair round 1](#repair-round-1-2026-11-14), item 6).
+
+**Owner ruling (verbatim).** [Issue #119 comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215) (2026-11-14):
+
+```text
+คำตัดสินเรื่อง runserver ค้าง (run #296) — รอบแก้ที่ 2 (รอบสุดท้าย):
+- ใช้ A + C: เมื่อครบเวลารอแล้วยังมี process ค้าง ให้พิมพ์ ps -o pid,ppid,stat,etime,cmd ของ process ที่ค้าง
+  แล้ว pkill -9 เก็บกวาด และพิมพ์ว่าใช้ทางสำรอง; job ล้มเฉพาะเมื่อ pkill -9 แล้วยังไม่ปิด
+- แก้เฉพาะบรรทัด CI-only ใน step "Guide 8" และ allow-list ห้ามแก้คำสั่งในคู่มือ ห้ามแตะ postgresql-tdd และ report
+- independent review โดย session แยกตัวใหม่ (ไม่ใช่ 2 ตัวก่อน) ตรวจเฉพาะ diff ของรอบนี้
+- ถ้ารีวิวเจอแค่ low/info: บันทึกเป็นข้อจำกัดตามกติกาข้อ 1 ไม่ต้องถาม
+- ถ้าหลังแก้ install-guide ยังล้ม: ห้ามแก้รอบที่ 3 หยุดแล้วส่ง log ให้ผม
+- CI comment ไม่ต้องแก้ เกณฑ์ merge คือ check 3/3 ผ่านบนหน้า PR
+```
+
+The owner also asked (as relayed by the Manager) for tests of the allow-list for this change.
+
+**Commits**
+
+| Commit | What |
+|---|---|
+| `905ca51` | RED tests for the new allow-list (12 cases) |
+| `1922d9a` | GREEN: the Guide 8 stop lines in the workflow and their CI-only entries |
+| this commit | documentation only: this section, Status, Roles, Review, the acceptance-criteria notes and the allow-list table |
+
+**What changed.** In step "Guide 8: Run and log in", under the unchanged `# CI-only: stop the server.` comment,
+`pkill -f …` and the 20 s wait loop are unchanged; the last line
+`if pgrep -f 'manage.py runserver'; then echo "runserver still running"; exit 1; fi` was replaced by one `# CI-only:`
+comment and seven lines:
+
+```bash
+# CI-only: still running after 20 s (run #296): show the processes, then pkill -9; fail only if that fails too.
+if pids=$(pgrep -d, -f 'manage.py runserver'); then
+  echo "runserver did not stop after SIGTERM; fallback: pkill -9"
+  ps -o pid,ppid,stat,etime,cmd -p "$pids" || true
+  pkill -9 -f 'manage.py runserver' || true
+  for i in $(seq 1 5); do pgrep -f 'manage.py runserver' > /dev/null || break; sleep 1; done
+  if pgrep -f 'manage.py runserver'; then echo "runserver still running after pkill -9"; exit 1; fi
+fi
+```
+
+When SIGTERM works, `pgrep` finds nothing, the `if` body does not run and the step prints nothing extra. Under the
+step's `bash -e` (run #296 shows `shell: /usr/bin/bash -e {0}`), commands in an `if` condition, left of `||` and in a
+`for` body after `||` do not end the step; `ps` (exit 1 if every listed PID has already gone) and `pkill -9` (exit 1
+if nothing matched any more) end in `|| true`, because the last `pgrep` decides. The step's own command line is the
+temp-file path, so it never matches `pgrep -f`, and `pgrep` never matches itself. No guide command changed; this again
+changes an existing M7.2 CI-only line of the job, which "Not in scope" excludes; the owner approved it.
+
+**Allow-list** (`scripts/check_install_guide.py`): the `(GUIDE_8, "if pgrep … \"runserver still running\"; exit 1;
+fi")` entry was replaced by seven `(GUIDE_8, line)` entries, one per new line exactly as the check reads it (the
+block indentation removed, so the inner lines keep a 2-space prefix; the closing line is `fi`), each citing
+`M7.2 CI-only item 5`, under a comment citing run #296 and owner comment 6878538215. No other script logic changed.
+The check now reports `23 commands match in order (allow-listed: 10 guide-only lines, 31 CI-only lines)` (25 before).
+
+**RED, then GREEN** (development checks; uv 0.11.32; synthetic env `DJANGO_SECRET_KEY=x POSTGRES_DB=x
+POSTGRES_USER=x POSTGRES_PASSWORD=x POSTGRES_HOST=127.0.0.1 POSTGRES_PORT=5432`)
+
+| Run | Tree | Python | Result |
+|---|---|---|---|
+| `uv run pytest tests/ci -q` | `905ca51` | 3.14.8 | **12 failed**, 39 passed |
+| `uv run pytest tests/ci -q` | `1922d9a` | 3.14.8 | **51 passed** (4 other + 47 install-guide tests) |
+| `uv run --no-project --isolated --python /usr/bin/python3.12 --with pytest==9.1.1 python -m pytest -q -p no:cacheprovider tests/ci/test_install_guide_check.py`, on a `git archive` copy of each commit | `905ca51` / `1922d9a` | 3.12.3 | 12 failed, 35 passed / **47 passed** (one `Unknown config option: DJANGO_SETTINGS_MODULE` warning: no pytest-django) |
+
+The 12 new tests: the compared lines of Guide 8 end with the 9 stop lines in order and the old stop check is gone;
+each stop line is allow-listed in Guide 8 only, citing M7.2 CI-only item 5, and the old entry is gone; each of the 7
+fallback lines removed from the workflow fails as "not used" (7 cases); the old stop check put back in place of the
+fallback fails as a job line not in the allow-list; `pkill -9 …` moved from Guide 8 to "Guide 9: Start the demo data
+again" fails naming Guide 9; the fallback block duplicated fails as "matched more than once". On `905ca51` the first
+two fail on their assertions (the new lines are not in the job or the allow-list) and the other 10 fail on the test
+helper's precondition (the fallback lines do not exist yet in the workflow).
+
+**Stop logic, run locally** (development check, on the lines of `1922d9a`). A driver script copied the lines after
+`# CI-only: stop the server.` up to the blank line out of the workflow (de-indented) into `stop.sh` and ran it with
+`bash --noprofile --norc -e -o pipefail stop.sh` against a dummy `python3 …/dummy/manage.py runserver` started in
+the background (the driver's and `stop.sh`'s own command lines do not contain the pattern):
+
+| Dummy | Output of `stop.sh` | Exit | Time |
+|---|---|---|---|
+| exits on SIGTERM | nothing | 0 | 0.02 s |
+| exits 3 s after SIGTERM | nothing | 0 | 3.04 s |
+| ignores SIGTERM | marker line; `ps` header and the one PID with `PPID`, `STAT S`, `ELAPSED 00:21`, `CMD …manage.py runserver` | 0 | 20.21 s |
+| parent and child both ignore SIGTERM (like runserver's autoreloader and its worker) | marker line; `ps` with both PIDs (the child's `PPID` is the parent) | 0 | 20.20 s |
+| ignores SIGTERM and a supervisor that does not match restarts it after every kill (the fail path) | marker line; `ps` line; the new PID; `runserver still running after pkill -9` | 1 | 25.24 s |
+
+After each case nothing matched any more. A process that survives SIGKILL itself (e.g. in uninterruptible sleep) was
+not reproduced; the respawn case exercises the same final check.
+
+**Other checks** (`1922d9a`, development checks)
+
+- `/usr/bin/python3.12 -I -X dev -W error scripts/check_install_guide.py` (3.12.3) and `python3 -I -X dev -W error …`
+  (3.13.18) → the OK line above, exit 0.
+- `uv run ruff check .` → `All checks passed!`; `uv run ruff format --check .` → `278 files already formatted`;
+  `git diff --check` → no output.
+- Workflow against `git show origin/main:.github/workflows/foundation.yml` (`4f6c065`): `  install-guide:` starts at
+  byte 7436 in both; `head -c 7436` of both are equal (`cmp`), so `postgresql-tdd` and `report` are byte-for-byte
+  unchanged. `git diff 1553e7c 1922d9a -- .github/workflows/foundation.yml` → one hunk in Guide 8: 1 line removed,
+  8 added (the comment and the 7 lines). The workflow parses as YAML (PyYAML in an isolated `uv run --with pyyaml`,
+  not a project dependency) and the Guide 8 `run:` ends with the lines above.
+- The guide's ` ```bash ` lines are unchanged against `origin/main`, and `docs/INSTALL.md` is unchanged against
+  `1553e7c`.
+
+**Known limits** (this round)
+
+- The cause of the stuck processes is still unknown; the fallback prints `ps` for them so the next occurrence shows
+  their parent, state and age. If it happens, the step passes with the marker line in the log.
+- The check matches CI-only lines per step as a set, not in order; the order of the stop lines is pinned by the test
+  `test_r2_guide_8_ends_with_the_stop_lines_in_order`, not by the check script.
