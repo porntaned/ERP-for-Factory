@@ -248,3 +248,94 @@ def test_i_seed_rerun_lines_only_allowed_in_their_step(tmp_path, capsys):
 def test_unused_allow_list_entry_fails(tmp_path, capsys):
     guide = edit(GUIDE, "cd ERP-for-Factory\n", "")
     assert_fails(tmp_path, capsys, "cd ERP-for-Factory", "not used", guide=guide)
+
+
+# Repair round 1 (Issue #119 review findings 1-3; owner comment 6843916308)
+
+CD_LINE = "cd ERP-for-Factory\n"
+SED_LINE = 'sed -e "s|^DJANGO_SECRET_KEY=.*|DJANGO_SECRET_KEY=$ERP_SECRET_KEY|" \\\n'
+ENV_EXAMPLE_LINE = "  .env.example > .env\n"
+
+
+def test_1_guide_only_line_moved_to_a_new_block_at_the_end(tmp_path, capsys):
+    # Reviewer probe P2.
+    guide = edit(GUIDE, CD_LINE, "") + "\n```bash\ncd ERP-for-Factory\n```\n"
+    assert_fails(
+        tmp_path, capsys, "not where the allow-list puts them", "cd ERP-for-Factory", guide=guide
+    )
+
+
+def test_1_guide_only_line_moved_after_a_compared_line(tmp_path, capsys):
+    guide = edit(GUIDE, CD_LINE + SED_LINE, SED_LINE)
+    guide = edit(guide, ENV_EXAMPLE_LINE, ENV_EXAMPLE_LINE + CD_LINE)
+    assert_fails(
+        tmp_path, capsys, "not where the allow-list puts them", "cd ERP-for-Factory", guide=guide
+    )
+
+
+def test_1_guide_only_lines_swapped(tmp_path, capsys):
+    clone = "git clone https://github.com/porntaned/ERP-for-Factory.git\n"
+    guide = edit(GUIDE, clone + CD_LINE, CD_LINE + clone)
+    assert_fails(
+        tmp_path, capsys, "not where the allow-list puts them", "cd ERP-for-Factory", guide=guide
+    )
+
+
+def test_1_guide_only_line_duplicated(tmp_path, capsys):
+    port = "export PGPORT=5432\n"
+    guide = edit(GUIDE, port, port + port)
+    assert_fails(tmp_path, capsys, "more than once", "export PGPORT=5432", guide=guide)
+
+
+def test_2_ci_only_line_duplicated_in_its_own_step(tmp_path, capsys):
+    # Reviewer probe P10.
+    seed = "          uv run --env-file .env python manage.py seed_production_demo\n"
+    after = (
+        '          uv run --env-file .env python manage.py shell -c "$count" > counts-after.txt\n'
+    )
+    workflow = edit(WORKFLOW, seed + after, seed + seed + after)
+    assert_fails(
+        tmp_path,
+        capsys,
+        "more than once",
+        f"step `{SEED_STEP}`: uv run --env-file .env python manage.py seed_production_demo",
+        workflow=workflow,
+    )
+
+
+def test_2_ci_only_stop_line_duplicated(tmp_path, capsys):
+    pkill = "          pkill -f 'manage.py runserver'\n"
+    workflow = edit(WORKFLOW, pkill, pkill + pkill)
+    assert_fails(
+        tmp_path, capsys, "more than once", "pkill -f 'manage.py runserver'", workflow=workflow
+    )
+
+
+def test_2_duplicate_step_name_before_write_env(tmp_path, capsys):
+    # Reviewer probe P8: a second "Guide 8" step could run Guide 8's allow-listed lines anywhere.
+    write_env = '      - name: "Guide 4: Write .env"\n'
+    extra = (
+        "      - name: \"Guide 8: Run and log in\"\n        run: pkill -f 'manage.py runserver'\n\n"
+    )
+    workflow = edit(WORKFLOW, write_env, extra + write_env)
+    assert_fails(
+        tmp_path, capsys, "Guide 8: Run and log in", "more than one step", workflow=workflow
+    )
+
+
+def test_2_duplicate_step_name_of_compared_steps(tmp_path, capsys):
+    workflow = edit(
+        WORKFLOW,
+        '- name: "Guide 9: Start the demo data again"',
+        '- name: "Guide 7: Load the demo data"',
+    )
+    assert_fails(
+        tmp_path, capsys, "Guide 7: Load the demo data", "more than one step", workflow=workflow
+    )
+
+
+@pytest.mark.parametrize("info", ["sh", "shell"])
+def test_3_sh_or_shell_block_in_the_guide(tmp_path, capsys, info):
+    guide = GUIDE + f"\n```{info}\nuv run --env-file .env python manage.py flush --noinput\n```\n"
+    number = guide.split("\n").index(f"```{info}") + 1
+    assert_fails(tmp_path, capsys, f"INSTALL.md line {number}:", f"```{info}", guide=guide)
