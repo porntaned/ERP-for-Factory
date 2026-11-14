@@ -196,3 +196,160 @@ At review time, CI on PostgreSQL 18.6 for head `aae03d8` was in progress: `postg
 
 2026-11-14: the repair (repair round 1) was done by the Implementer sub-agent spawned by the Manager session, not by this
 Reviewer; it needs a new independent review by a new separate session (owner, [comment 6843916308](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6843916308)).
+
+## Re-review
+
+Type: independent review by a separate session (session_01MVmjhfwZuoJ19Fys5UNKmE), a new session — not the first
+Reviewer (`session_01MVmjhg9gAi1DN28QQBeVER`) and not a sub-agent of the Manager; reviewed commit
+`c052f4cdabf67e373d5d0f8f6f5237103d63f97f` (PR #121 head after repair round 1), base `main` `4f6c065`.
+
+Created by the Manager session and given only the PR number, the Issue number and the spec path (plus the Reviewer
+role rules). "Re-review report" is the Reviewer's final message as received (2026-11-14), copied by the Manager
+without edits; its own top-level heading is shown one level lower so it nests under this section. "Manager
+disposition (re-review)" is the Manager's own and is not part of the review.
+
+### Re-review report
+
+#### Independent review (re-review after repair round 1): PR #121 (Issue #119)
+
+- **Type:** independent review by a separate Claude Code session. This session is not a sub-agent of the Manager and is not the first Reviewer (`session_01MVmjhg9gAi1DN28QQBeVER`).
+- **Reviewer session:** `session_01MVmjhfwZuoJ19Fys5UNKmE`
+- **Date:** 2026-11-14
+- **Head reviewed:** `c052f4cdabf67e373d5d0f8f6f5237103d63f97f` (`claude/vibrant-sagan-ivztik`)
+- **Base:** `main` `4f6c065ba4523b28aa4d848128dedf0771f27bb4`, which is also the merge-base.
+- **Mode:** read-only. I edited, committed, pushed and commented nothing, and changed no settings. All probes ran on copies in my scratchpad.
+- **Repository state:** I fetched every branch ref. The repo is not shallow. The only branch not merged into `main` is `origin/claude/vibrant-sagan-ivztik`, which is this PR.
+
+#### 1. Intent
+
+**Goal:** CI must fail when the bash commands in `docs/INSTALL.md` and the `run:` lines of job `install-guide` differ, apart from allow-listed lines that each state a reason. This round adds four things on top of that:
+
+- It closes first-review findings 1–3 as the owner ruled ([comment 6843916308](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6843916308)).
+- It fixes the runserver-stop timing flake, which the owner calls "finding 6" ([comment 6877846545](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6877846545)).
+- It records finding 4 as a known limit.
+- It keeps the unused-entry check (finding 5).
+
+**Is there a simpler way?** Generating the job from the guide would be simpler, but the owner excluded it, and PyYAML is excluded too. Within those rulings, anchoring each guide-only line to the next compared command is a small and sufficient answer to "check the order of guide-only lines". Plain list order alone would not catch `cd` moved to just after `sed`, so the extra anchoring is justified.
+
+#### 2. Trace (changes since `6e4526c`)
+
+- **`guide_lines()`** (`scripts/check_install_guide.py`, after `REJECTED_FENCES`):
+  - Outside a block, a fence that starts with ```` ``` ```` or `~~~` and has the info word `sh` or `shell` (any case) raises an error.
+  - A block opens only when the line strips to exactly ```` ```bash ````.
+  - A `#` line inside a block raises an error, as before.
+- **`job_steps()`:** a `seen` dict rejects duplicate step names. It counts every step, `uses:` steps included, and names both workflow lines. Names are compared after `_unquote`, so a quoted and an unquoted copy of the same name collide (probe Q7).
+- **`compare()`** works in this order:
+  1. Compares the sequences in order.
+  2. `Counter` checks fail on entries matched 0 times ("not used") or more than once.
+  3. `_check_guide_only_places()` runs last.
+- **`_check_guide_only_places()`:** each guide-only line is paired with the next non-guide-only guide line (or the end of the guide). The pairs are then zipped against `GUIDE_ONLY` in dict order. The two lists have equal length because the exactly-once check ran first.
+- **Workflow:** in "Guide 8: Run and log in", `sleep 2` became `for i in $(seq 1 20); do pgrep … > /dev/null || break; sleep 1; done`. The `CI_ONLY` entry was updated to match, still citing M7.2 item 5. `pgrep` sits on the left of `||`, so a non-zero exit does not trip `bash -e`. The step's command line is a temp-file path that does not contain `manage.py runserver`, so `pkill`/`pgrep` cannot match the step itself. That part is unchanged from M7.2.
+
+#### 3. Verify
+
+| Claim | Command / path | Observed |
+|---|---|---|
+| Head, base, merge-base | `git rev-parse`, `git merge-base` | `c052f4c…`, `4f6c065…`, `4f6c065…` |
+| Real files pass on 3.12 | `/usr/bin/python3.12 -I -X dev -W error scripts/check_install_guide.py` | `OK: 23 commands match in order (allow-listed: 10 guide-only lines, 25 CI-only lines)`, exit 0 |
+| Real files pass on 3.13 | `python3` (3.13.18) | same, exit 0 |
+| Tests pass on 3.12 and 3.13 | `uv run --no-project --isolated --python <py> --with pytest==9.1.1 python -m pytest -q -p no:cacheprovider tests/ci/test_install_guide_check.py` | **35 passed** on both |
+| RED for repair round 1 | same command on `git archive` copies, 3.12 | `627fff0`: **10 failed, 23 passed**; `0b58fbd`: **35 passed** |
+| Stdlib only; no dependency or AGENTS change | imports `argparse`, `sys`, `collections.Counter`, `pathlib`; `git diff --quiet 4f6c065 HEAD -- pyproject.toml uv.lock AGENTS.md` | unchanged |
+| `postgresql-tdd` and `report` byte-identical | `cmp` of `head -c 7436` of both versions | equal |
+| Workflow diff | `git diff --numstat` | `6 1`: the check step (+5) right after "Guide 4: Get the code", plus the one replaced stop line |
+| Lint | ruff 0.17.1 (version pinned in `uv.lock`, run on 3.12): `ruff check .` and `ruff format --check .` | `All checks passed!`; `278 files already formatted` |
+| Whitespace | `git diff --check 4f6c065 HEAD` | no output |
+| Stop loop | the 3 lines copied out of the workflow into a file, run with `bash -e` against a dummy that exits 3 s after SIGTERM | exit 0 after 4 s. (My first attempt with `bash -c` killed itself, because `pkill -f` matched its own command line. That is an artifact of my test setup and does not happen in CI.) |
+| Tests on 3.14 | not run: no 3.14.8 interpreter in this container | CI's full suite runs on 3.14.8 |
+| **CI on PostgreSQL 18.6 for `c052f4c`** | PR check runs | **in progress** at review time: [run 43599732586](https://github.com/porntaned/ERP-for-Factory/actions/runs/43599732586) (`install-guide` job 132461708156, `postgresql-tdd` job 132461707989). The [CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964) still shows `6e4526c`. |
+
+Not verified, taken from the record: the Implementer's mutation checks, the 3.14.8 runs, and the 20.17 s failure path of the stop loop.
+
+##### Adversarial probes
+
+Each probe passes a tmp copy of the real files with `--guide` / `--workflow`.
+
+| # | Input | Result | Assessment |
+|---|---|---|---|
+| Q12 | two `export` lines swapped | FAILED: place check, expected and found lines shown | correct (finding 1 closed) |
+| Q7 | a second step named `Guide 8: Run and log in` (unquoted), placed before "Guide 4: Write .env" | FAILED: duplicate name, both workflow lines named | correct (finding 2 closed) |
+| Q5 | indented ```` ```sh ```` block appended | FAILED with the line number | correct (finding 3 closed) |
+| Q10 | tab-indented `# comment` in a bash block | FAILED | correct |
+| Q9 | workflow with CRLF line endings | OK | correct (`read_text` converts the line endings) |
+| Q3 | last fence changed to ```` ```Bash ```` | FAILED: the guide ends early | correct, but only because a real block disappears from the reading |
+| **Q1** | new block ```` ```bash title=x ```` with a command, appended | **OK, exit 0**; the command is not read | gap (finding 1 below) |
+| **Q6** | new ```` ~~~bash ```` block with a command | **OK, exit 0** | gap (finding 1) |
+| **Q4** | new ```` ````sh ```` (four backticks) block | **OK, exit 0** | gap (finding 1) |
+| Q13 | check step moved to the end of the job | OK, exit 0 | informational (finding 3) |
+
+#### 4. Findings, most severe first
+
+None of these findings blocks the acceptance criteria. All are low or informational. First-review findings 1, 2, 3 and 6 are closed as ruled, finding 4 is recorded as a limit, and finding 5 is kept.
+
+##### 1. Low: some bash-looking fences are neither read nor rejected, and the spec's list of these limits is incomplete
+
+- **Where:** `guide_lines()`. A block opens only on `line.strip() == "```bash"`. The rejection test looks only at `stripped[3:]` after a 3-character ```` ``` ```` or `~~~`.
+- **Why it matters:** these three fence forms would all render as shell blocks to a reader, but their commands bypass the check:
+  - ```` ```bash title=x ```` (an info string with attributes)
+  - ```` ~~~bash ````
+  - ```` ````sh ````. With four backticks the info word parses as `` `sh ``, so it is not rejected.
+
+  The spec's "Remaining limit" lists only ```` ```console ````, ```` ```zsh ```` and unlabelled fences. Its description of the chosen scope ("a fence line that starts with ```` ``` ```` or `~~~`…") also suggests `~~~sh` is the only tilde case. `~~~bash` itself is silently ignored.
+- **Evidence:** Q1, Q4 and Q6 all return OK with exit 0.
+- **Smallest change:** either option is enough.
+  - Code: treat any fence whose first info word, lowercased, is `bash` but that is not exactly ```` ```bash ```` as an error, and strip all leading backticks or tildes before reading the info word. Add one test.
+  - Docs only: add these three forms to the spec's remaining-limit sentence.
+
+  The owner's ruling (3) names only `sh` and `shell`, so the docs-only option fully meets the ruling.
+
+##### 2. Low (documentation): the PR body is stale after repair round 1
+
+- **Where:** the PR #121 description.
+- **Why it matters:** AGENTS.md requires the PR body to say which commits after a review were documentation only. The body still describes head `aae03d8`, which is now wrong:
+  - It gives the workflow diff as "Diff `5 0`" (now `6 1`) and says the existing `install-guide` steps are unchanged (the stop line changed).
+  - It reports "27 passed (4 existing + 23 new)" (now 39 in `tests/ci`, 35 in this module).
+  - Its commit list ends at `aae03d8`, so `6e4526c`, `627fff0`, `0b58fbd`, `0a92489` and `c052f4c` are missing. Of those, `6e4526c` and `c052f4c` are documentation only.
+  - It says nothing about repair round 1 or the owner's finding-6 approval.
+
+  The spec and the review record are up to date, so this concerns only the PR description.
+- **Smallest change:** edit the PR body to cover repair round 1, the `6 1` diff with the owner-approved stop-line change, the test counts, the full commit list with docs-only commits marked, and the review status. This needs no commit.
+
+##### 3. Info: Scope 3 and the spec's acceptance criterion still say the `install-guide` commands are unchanged; the check also does not enforce its own position
+
+- **Where:** in `docs/assignments/i119-install-guide-check.md`, Scope item 3 ("Nothing else in the workflow changes… keep their commands") and the acceptance line ("the other `install-guide` commands are unchanged"). The repair section explains the owner-approved exception, but those two lines are not marked as superseded. The project's rule is to mark changed statements as historical rather than leave them.
+- **Check position:** the check does not verify its own place. Moving the step to the end of the job still passes (Q13). It is keyed by step name only, and the position under ruling D1 is protected only by diff review, like the step-level keys in limit 4.
+- **Smallest change:** add a dated note to those two spec lines that points to repair round 1, item 6. Optionally, mention the step's position under the existing limit 4.
+
+##### 4. Info: evidence of record is pending
+
+- CI for `c052f4c` ([run 43599732586](https://github.com/porntaned/ERP-for-Factory/actions/runs/43599732586)) was in progress at review time.
+- The CI comment has not yet updated from `6e4526c`.
+- `install-guide` has not yet run with the new stop loop or with the repaired check on the runner's Python 3.12. The acceptance criterion "CI on 18.6 passes all 3 jobs" is open until it does.
+
+#### 5. Checked against the spec's acceptance criteria
+
+| Criterion | Status |
+|---|---|
+| RED first, then GREEN; (a)–(i) and the round-1 cases proven; real files pass | verified on 3.12 and 3.13: `627fff0` 10 failed, `0b58fbd`/head 35 passed |
+| Every entry cites an M7.2 item or D1 | verified, including the replaced stop-line entry (item 5) |
+| Stdlib only; no dependency; nothing newer than 3.12 | verified (`-X dev -W error` on 3.12.3) |
+| Step right after "Guide 4: Get the code"; `postgresql-tdd` and `report` byte-identical; other commands unchanged | step position and byte-identity verified. One other command changed, with the owner's approval (comment 6877846545). See finding 3. |
+| CI on 18.6 passes all 3 jobs | **pending** (run 43599732586) |
+| 0 broken relative links; ruff clean | ruff verified; no new links added in this round |
+| Independent review by a new separate session | this document |
+| At most 2 repair rounds | this is after round 1 |
+
+#### Verdict
+
+**ship**, once CI run 43599732586 on `c052f4c` is green on all three jobs (already an acceptance criterion).
+
+**Biggest reason:** repair round 1 does exactly what the owner ruled. I confirmed each fix with my own probes (Q5, Q7, Q12), the RED → GREEN transition reproduces on Python 3.12, and the jobs that must not change are byte-identical. The remaining items are a narrow fence gap that the spec should name (or that a small code change would close), a stale PR description, and two spec lines that need a historical note. None of them lets an ordinary edit to a command in only one of the two files slip through, which is the drift Issue #119 targets.
+
+### Manager disposition (re-review; Manager session, 2026-11-14; no repair made)
+
+| # | Disposition |
+|---|---|
+| 1 | Owner to decide: docs-only (add `` ```bash title=x ``, `~~~bash` and four-backtick fences to the spec's remaining limit) or a small code change (would need another review). |
+| 2 | The Manager updated the PR body at 13:26 UTC on 2026-11-14, around the time this review started (repair round 1, `6 1` diff, test counts, full commit list with docs-only commits marked); to be re-checked against the final head. |
+| 3 | Owner to decide: add dated "superseded by repair round 1, item 6" notes to Scope 3 and the acceptance line of the spec (docs only). |
+| 4 | Resolved after the review: PR CI [#294](https://github.com/porntaned/ERP-for-Factory/actions/runs/43599732586) on `c052f4c` passed all 3 jobs on attempt 1 (`postgresql-tdd` 1195 passed per [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964); `install-guide` success, including the check step and the new stop loop; `report` success). |
