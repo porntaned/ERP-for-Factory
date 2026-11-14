@@ -304,7 +304,7 @@ jobs:
           grep -F '<td>LED-CHIP</td><td>L-0001</td><td>RM-A</td><td class="text-end">100</td><td>RELEASED</td>' balance.html
           # CI-only: stop the server.
           pkill -f 'manage.py runserver'
-          sleep 2
+          for i in $(seq 1 20); do pgrep -f 'manage.py runserver' > /dev/null || break; sleep 1; done
           if pgrep -f 'manage.py runserver'; then echo "runserver still running"; exit 1; fi
 
       # CI-only: running both seeds again adds nothing (row count of every model before and after).

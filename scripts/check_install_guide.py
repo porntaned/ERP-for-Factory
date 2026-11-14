@@ -103,7 +103,12 @@ CI_ONLY = {
         "<td>RELEASED</td>' balance.html",
     ): "M7.2 CI-only item 5",
     (GUIDE_8, "pkill -f 'manage.py runserver'"): "M7.2 CI-only item 5",
-    (GUIDE_8, "sleep 2"): "M7.2 CI-only item 5",
+    # Finding 6 (owner comment 6877846545): wait up to 20 s for it to stop (was `sleep 2`).
+    (
+        GUIDE_8,
+        "for i in $(seq 1 20); do pgrep -f 'manage.py runserver' > /dev/null || break;"
+        " sleep 1; done",
+    ): "M7.2 CI-only item 5",
     (
         GUIDE_8,
         "if pgrep -f 'manage.py runserver'; then echo \"runserver still running\"; exit 1; fi",
