@@ -6,40 +6,53 @@ an error (owner ruling D4). CI side: every line of every `run:` of the job `inst
 as text with the standard library (D3). After removing the allow-listed lines below (D2 (a)), the
 two sequences must be equal, character for character and in order.
 
+Repair round 1 (review findings 1-3, owner comment 6843916308): every allow-list entry matches
+exactly once; each guide-only line sits right before the compared command its entry names, in the
+order of the list; step names in the job are unique; a ```sh or ```shell block in the guide fails.
+
 Standard library only; runs on Python 3.12 (the runner's python3) and 3.14.
 """
 
 import argparse
 import sys
+from collections import Counter
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 JOB = "install-guide"
 
-# Lines in the guide that the job does not run. Each cites its item of the M7.2 `# CI-only:` list
-# (docs/assignments/m72-install-guide.md). Items 1 (setup-uv) and 3 (service superuser) change no
-# command line and need no entry.
+# The compared guide commands that the guide-only lines must come right before (finding 1).
+BEFORE_PSQL = "psql -d postgres -tAc 'SHOW server_version'"
+BEFORE_SED = 'sed -e "s|^DJANGO_SECRET_KEY=.*|DJANGO_SECRET_KEY=$ERP_SECRET_KEY|" \\'
+BEFORE_RESET = "uv run --env-file .env python manage.py seed_production_demo --reset"
+
+# Lines in the guide that the job does not run, as line: (reason, the compared command that must
+# come next in the guide). The guide must have them exactly once each, in this order (finding 1).
+# Each cites its item of the M7.2 `# CI-only:` list (docs/assignments/m72-install-guide.md). Items 1
+# (setup-uv) and 3 (service superuser) change no command line and need no entry.
+ITEM_2, ITEM_4, ITEM_5 = "M7.2 CI-only item 2", "M7.2 CI-only item 4", "M7.2 CI-only item 5"
 GUIDE_ONLY = {
     # Item 2: the job `env` replaces the seven `export` lines of guide step 2.
-    "export PGHOST=127.0.0.1": "M7.2 CI-only item 2",
-    "export PGPORT=5432": "M7.2 CI-only item 2",
-    "export PGUSER=postgres": "M7.2 CI-only item 2",
-    "export PGPASSWORD='replace-with-your-superuser-password'": "M7.2 CI-only item 2",
-    "export ERP_DB_PASSWORD='replace-with-a-local-db-password'": "M7.2 CI-only item 2",
-    'export ERP_SECRET_KEY="$(openssl rand -hex 32)"': "M7.2 CI-only item 2",
-    "export ERP_DEMO_PASSWORD='replace-with-a-demo-password'": "M7.2 CI-only item 2",
+    "export PGHOST=127.0.0.1": (ITEM_2, BEFORE_PSQL),
+    "export PGPORT=5432": (ITEM_2, BEFORE_PSQL),
+    "export PGUSER=postgres": (ITEM_2, BEFORE_PSQL),
+    "export PGPASSWORD='replace-with-your-superuser-password'": (ITEM_2, BEFORE_PSQL),
+    "export ERP_DB_PASSWORD='replace-with-a-local-db-password'": (ITEM_2, BEFORE_PSQL),
+    'export ERP_SECRET_KEY="$(openssl rand -hex 32)"': (ITEM_2, BEFORE_PSQL),
+    "export ERP_DEMO_PASSWORD='replace-with-a-demo-password'": (ITEM_2, BEFORE_PSQL),
     # Item 4: actions/checkout replaces `git clone` and `cd` of guide step 4.
-    "git clone https://github.com/porntaned/ERP-for-Factory.git": "M7.2 CI-only item 4",
-    "cd ERP-for-Factory": "M7.2 CI-only item 4",
+    "git clone https://github.com/porntaned/ERP-for-Factory.git": (ITEM_4, BEFORE_SED),
+    "cd ERP-for-Factory": (ITEM_4, BEFORE_SED),
     # Item 5: the job runs runserver in the background instead (see CI_ONLY).
-    "DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver": "M7.2 CI-only item 5",
+    "DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver": (ITEM_5, BEFORE_RESET),
 }
 
 GUIDE_8 = "Guide 8: Run and log in"
 SEED_RERUN = "CI-only: rerunning the seeds adds nothing"
 
 # Lines the job runs that the guide does not, as (step name, exact line): a line is allowed only in
-# the step named here, so the seed-rerun step cannot hide a repeated command in another step.
+# the step named here, so the seed-rerun step cannot hide a repeated command in another step. Each
+# entry must match exactly once (finding 2).
 CI_ONLY = {
     # Item 5: runserver in the background, HTTP checks, then stopped and checked to be stopped.
     (
@@ -130,6 +143,10 @@ class CheckError(Exception):
     """The guide and the job differ, or a file cannot be read as expected."""
 
 
+# Fences whose commands the check would not read (finding 3): a guide command goes in ```bash.
+REJECTED_FENCES = {"sh", "shell"}
+
+
 def guide_lines(text):
     """Return (line number, line) for every line inside a ```bash block, in order."""
     lines = []
@@ -137,6 +154,13 @@ def guide_lines(text):
     for number, line in enumerate(text.split("\n"), start=1):
         if not in_block:
             in_block = line.strip() == "```bash"
+            stripped = line.strip()
+            info = stripped[3:].split()[:1] if stripped[:3] in ("```", "~~~") else []
+            if info and info[0].lower() in REJECTED_FENCES:
+                raise CheckError(
+                    f"INSTALL.md line {number}: a {stripped[:3]}{info[0]} block; guide commands"
+                    f" go in ```bash blocks, the only ones this check reads: {line}"
+                )
         elif line.strip() == "```":
             in_block = False
         elif line.lstrip().startswith("#"):
@@ -263,10 +287,17 @@ def job_steps(text, job=JOB):
     first = _first_content(lines, start, end, f"a step of job `{job}`")
     item = " " * _indent(lines[first]) + "- "
     starts = [i for i in range(start, end) if lines[i].startswith(item)]
+    seen = {}
     steps = []
     for index, step_start in enumerate(starts):
         step_end = starts[index + 1] if index + 1 < len(starts) else end
         name, commands = _parse_step(lines, step_start, step_end)
+        if name in seen:
+            raise CheckError(
+                f"workflow: job `{job}`: step name `{name}` is used by more than one step"
+                f" (workflow lines {seen[name]} and {step_start + 1})"
+            )
+        seen[name] = step_start + 1
         if commands is not None:
             steps.append((name, commands))
     if not steps:
@@ -296,6 +327,32 @@ def _show_ci(entry):
     return f"job:   {entry[1]}    [step `{entry[0]}`]"
 
 
+def _next_text(line):
+    return "(end of the guide's commands)" if line is None else line
+
+
+def _check_guide_only_places(guide):
+    """Each guide-only line must come right before the compared command its entry names, in the
+    order of GUIDE_ONLY (finding 1). Call after the exactly-once check."""
+    found, pending = [], []
+    for number, line in guide:
+        if line in GUIDE_ONLY:
+            pending.append((number, line))
+        else:
+            found += [(n, only, line) for n, only in pending]
+            pending = []
+    found += [(n, only, None) for n, only in pending]
+    expected = [(line, before) for line, (_, before) in GUIDE_ONLY.items()]
+    for (number, line, before), (want, want_before) in zip(found, expected):
+        if (line, before) != (want, want_before):
+            raise CheckError(
+                "guide-only lines are not where the allow-list puts them; first difference:\n"
+                f"  expected: {want}    (next compared command: {_next_text(want_before)})\n"
+                f"  found:    {line}    [INSTALL.md line {number}]"
+                f" (next compared command: {_next_text(before)})"
+            )
+
+
 def compare(guide, ci):
     """Compare guide lines with CI lines after the allow-lists; return the success summary."""
     kept_guide = [entry for entry in guide if entry[1] not in GUIDE_ONLY]
@@ -308,12 +365,30 @@ def compare(guide, ci):
                 f"first difference at compared command {index} (0-based):\n"
                 f"  {_show_guide(g)}\n  {_show_ci(c)}"
             )
-    guide_seen = {line for _, line in guide}
-    ci_seen = set(ci)
-    unused = [line for line in GUIDE_ONLY if line not in guide_seen]
-    unused += [f"step `{step}`: {line}" for step, line in CI_ONLY if (step, line) not in ci_seen]
+    guide_seen = Counter(line for _, line in guide if line in GUIDE_ONLY)
+    ci_seen = Counter(entry for entry in ci if entry in CI_ONLY)
+    unused = [line for line in GUIDE_ONLY if not guide_seen[line]]
+    unused += [f"step `{step}`: {line}" for step, line in CI_ONLY if not ci_seen[(step, line)]]
     if unused:
         raise CheckError("allow-list entries not used:\n  " + "\n  ".join(unused))
+    repeated = [
+        f"{line}: {count} times [INSTALL.md lines "
+        + ", ".join(str(n) for n, other in guide if other == line)
+        + "]"
+        for line, count in guide_seen.items()
+        if count > 1
+    ]
+    repeated += [
+        f"step `{step}`: {line}: {count} times"
+        for (step, line), count in ci_seen.items()
+        if count > 1
+    ]
+    if repeated:
+        raise CheckError(
+            "allow-list entries matched more than once (each must match exactly once):\n  "
+            + "\n  ".join(repeated)
+        )
+    _check_guide_only_places(guide)
     return (
         f"OK: {len(kept_guide)} commands match in order"
         f" (allow-listed: {len(guide) - len(kept_guide)} guide-only lines,"

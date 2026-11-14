@@ -95,7 +95,7 @@ def test_every_allow_list_entry_has_a_reason():
         "owner ruling D1",
     }
     assert check.GUIDE_ONLY and check.CI_ONLY
-    assert set(check.GUIDE_ONLY.values()) <= guide_reasons
+    assert {reason for reason, _ in check.GUIDE_ONLY.values()} <= guide_reasons
     assert set(check.CI_ONLY.values()) <= ci_reasons
     real_steps = {name for name, _ in check.job_steps(WORKFLOW, "install-guide")}
     assert {step for step, _ in check.CI_ONLY} <= real_steps
@@ -281,6 +281,19 @@ def test_1_guide_only_lines_swapped(tmp_path, capsys):
     )
 
 
+def test_1_guide_only_runserver_line_moved_before_migrate(tmp_path, capsys):
+    runserver = "DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver\n"
+    migrate = "uv run --env-file .env python manage.py migrate\n"
+    guide = edit(edit(GUIDE, runserver, ""), migrate, runserver + migrate)
+    assert_fails(
+        tmp_path,
+        capsys,
+        "not where the allow-list puts them",
+        "(next compared command: uv run --env-file .env python manage.py migrate)",
+        guide=guide,
+    )
+
+
 def test_1_guide_only_line_duplicated(tmp_path, capsys):
     port = "export PGPORT=5432\n"
     guide = edit(GUIDE, port, port + port)
@@ -339,3 +352,9 @@ def test_3_sh_or_shell_block_in_the_guide(tmp_path, capsys, info):
     guide = GUIDE + f"\n```{info}\nuv run --env-file .env python manage.py flush --noinput\n```\n"
     number = guide.split("\n").index(f"```{info}") + 1
     assert_fails(tmp_path, capsys, f"INSTALL.md line {number}:", f"```{info}", guide=guide)
+
+
+def test_3_other_fences_are_not_rejected(tmp_path, capsys):
+    # Only sh and shell are rejected (owner ruling); a text block is prose output, not commands.
+    code, output = run(tmp_path, capsys, guide=GUIDE + "\n```text\nSystem check\n```\n")
+    assert code == 0, output
