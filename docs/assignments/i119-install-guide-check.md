@@ -4,7 +4,9 @@ Repository `porntaned/ERP-for-Factory`; branch `claude/vibrant-sagan-ivztik` (re
 PR #120 merged); [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119).
 Status: **[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) open, awaiting the owner's merge (the owner merges on GitHub); [repair round 2](#repair-round-2-2026-11-14)
 (the final round: runserver stop fallback, owner [comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215)) done on the branch; independent review of the
-round-2 diff by a new separate session pending. Merge criterion (owner): 3/3 checks pass on the PR page.** CI evidence
+round-2 diff by a new separate session (`session_01MVmjhdTUAG56qPZmJnVeJn`): [ship](../reviews/i119-independent-review.md#re-review-2),
+its low/info findings recorded as known limits (owner rule 1) ("…review of the round-2 diff by a new separate session
+pending" held until that review on 2026-11-14 — historical). Merge criterion (owner): 3/3 checks pass on the PR page.** CI evidence
 of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964) (covers `postgresql-tdd`; always shows the latest
 head; not changed for this round, owner) and the `install-guide` check on the PR (not in the CI comment by design).
 ("PR #121 open, awaiting the owner's merge; first review ship, re-review by a new separate session ship; re-review

@@ -355,3 +355,123 @@ None of these findings blocks the acceptance criteria. All are low or informatio
 | 4 | Resolved after the review: PR CI [#294](https://github.com/porntaned/ERP-for-Factory/actions/runs/43599732586) on `c052f4c` passed all 3 jobs on attempt 1 (`postgresql-tdd` 1195 passed per [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964); `install-guide` success, including the check step and the new stop loop; `report` success). |
 
 The owner ruled these items documentation only, needing no new review ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)).
+
+## Re-review 2
+
+Type: independent review by a separate session (session_01MVmjhdTUAG56qPZmJnVeJn), a new session — not the first
+Reviewer (`session_01MVmjhg9gAi1DN28QQBeVER`), not the re-review session (`session_01MVmjhfwZuoJ19Fys5UNKmE`) and not
+a sub-agent of the Manager; reviewed commit `34211efaf9e0eb0fea6c8094f94dbcd6dc24f39c` (PR #121 head after repair
+round 2); scope, per the owner (Issue #119 comment 6878538215): only the diff `1553e7c..34211ef`.
+
+Created by the Manager session and given only the PR number, the Issue number, the spec path and the diff range (plus
+the Reviewer role rules). "Re-review 2 report" is the Reviewer's final message as received (2026-11-14), copied by the
+Manager without edits; its own headings are shown three levels lower so they nest under this section. "Manager
+disposition (re-review 2)" is the Manager's own and is not part of the review.
+
+### Re-review 2 report
+
+#### Independent review: Issue #119 repair round 2 (PR #121)
+
+- **Review type:** independent review by a separate session (not the Manager, the Implementer or either earlier Reviewer)
+- **Session:** `session_01MVmjhdTUAG56qPZmJnVeJn`
+- **Date:** 2026-11-14
+- **Head reviewed:** `34211efaf9e0eb0fea6c8094f94dbcd6dc24f39c` (same as `origin/claude/vibrant-sagan-ivztik`)
+- **Diff base:** `1553e7c8a8f81bc184679068d6a92a1e7bfceeff`. Scope is `1553e7c..34211ef` only, per the owner.
+- **Commits:** `905ca51` (red tests), `1922d9a` (the workflow fix and the allow-list), `34211ef` (documentation only)
+- **Mode:** read-only. I edited, committed, pushed and commented nothing.
+
+##### 1. Intent
+
+**Goal:** In the `install-guide` job, step "Guide 8: Run and log in" failed in run #296 because runserver was still running 20 s after SIGTERM. When that happens, the step should now print the stuck processes with `ps` and kill them with `pkill -9`. The step fails only if they survive that too. The allow-list in `scripts/check_install_guide.py` and the tests follow the new lines. This is what the owner ruled in comment 6878538215 ("A + C").
+
+**Simpler alternative:** Plain `pkill -9` with no `ps` would also make CI pass, but it would hide even the evidence of the stuck processes. The owner asked for the `ps` output explicitly. The 7-line block is about as small as that ruling allows.
+
+**Scope check (owner ruling):**
+- Only CI-only lines in Guide 8 and the allow-list changed.
+- `docs/INSTALL.md` is unchanged in this diff (`git diff --stat 1553e7c..34211ef -- docs/INSTALL.md` prints nothing).
+- `postgresql-tdd` and `report` are unchanged. I checked it like this:
+  - `install-guide:` starts at byte 7436 in both `origin/main` and `34211ef`, and it is the last job in the file.
+  - `cmp` of the first 7436 bytes of the two files: equal.
+
+##### 2. Trace
+
+**Workflow, lines 306–315 of `foundation.yml` at `34211ef`.** The step runs under `bash -e`.
+1. `pkill -f` sends SIGTERM, then a wait loop of up to 20 s runs. These lines are unchanged.
+2. If `pgrep -d,` still finds a match (the `if` condition is exempt from `-e`), the block runs:
+   - it prints the marker line;
+   - it runs `ps -o … -p "$pids"`, where a comma-separated list is valid input for procps `ps`, followed by `|| true`;
+   - it runs `pkill -9 … || true`;
+   - it waits up to 5 s;
+   - if a match remains, the final `pgrep` fails the step with exit 1.
+3. When SIGTERM works, the condition is false and the step prints nothing extra.
+
+**Checker.**
+- `job_steps` → `_block_scalar` removes the block indentation, so the inner lines keep a 2-space prefix and the closing line is a bare `fi`.
+- `ci_lines` skips the new `# CI-only:` comment.
+- `compare` drops the `(step, line)` pairs found in `CI_ONLY`, then checks that each entry is matched exactly once.
+- So the 7 new entries match only in Guide 8. The bare `fi` entry is scoped to Guide 8, so a `fi` in another job or step is not hidden by it.
+
+**Seams:**
+- The "CI-only: runserver log" step runs only on `if: failure()` (lines 334–336).
+- No later step uses port 8000 or starts runserver again.
+- `pgrep -f` does not match the step's own shell. Its command line is the temp-file path, and `pgrep` excludes itself.
+
+##### 3. Verification (what I ran myself)
+
+These are development checks on `34211ef`, in this container. They are not CI.
+
+| Check | Result |
+|---|---|
+| `python3 -I scripts/check_install_guide.py` (Python 3.13.18) | `install guide check OK: 23 commands match in order (allow-listed: 10 guide-only lines, 31 CI-only lines)`, exit 0. Matches the spec's claim. |
+| `pytest -q tests/ci/test_install_guide_check.py` on a `git archive` copy of `34211ef` (`uv run --no-project --isolated --python python3 --with pytest`) | **47 passed** (plus 1 config warning, because pytest-django is not installed) |
+| The same on `905ca51` | **12 failed**, 35 passed. Matches the claimed red state. |
+| The stop block taken from the workflow at `34211ef`, run with `bash --noprofile --norc -e -o pipefail`, against a dummy `manage.py runserver` that ignores SIGTERM | Printed the marker line and a `ps` row (PID, PPID, `S`, `00:21`, cmd). Bash reported `Killed`. Exit 0 after 20 s. No process left. |
+
+**The 12 new tests use the real path.** They:
+- run `check.job_steps` and `check.ci_lines` on the real workflow;
+- delete each fallback line in turn (7 parametrized cases) and expect "not used". Edits stay inside the fallback block, so they never touch the bare `fi` of `postgresql-tdd`;
+- put the old stop check back and expect it to be rejected;
+- move `pkill -9` to Guide 9 and expect the error to name Guide 9;
+- duplicate the whole block and expect "more than once".
+
+**CI at the time of review:** run [43604169369](https://github.com/porntaned/ERP-for-Factory/actions/runs/43604169369) was still `in_progress` for `install-guide` and `postgresql-tdd`. So the owner's merge criterion (all 3 checks passing on the PR page) is **not verified by this review**.
+
+##### 4. Findings (by severity; all low or info)
+
+1. **Low: if the fallback fires, nothing on the PR page shows it.** Location: `.github/workflows/foundation.yml:310`.
+   - **Why it matters:** When the step recovers through `pkill -9`, it passes. The marker and the `ps` output appear only inside the step log. The runserver log step runs only on failure, so the server log from that moment is not printed either. The purpose of the "C" part of the ruling (collect evidence about the cause) depends on someone opening a green job's log.
+   - **Evidence:** the `if: failure()` at line 335, and my local run above, which exits 0 after printing the marker.
+   - **Smallest change:** prefix the marker with `::warning::` so a passing run carries an annotation. Optionally add `cat runserver.log || true` inside the block, with the matching allow-list entry. Under the owner's rule 1 (low/info findings are recorded as limits without asking), this can be recorded as a known limit instead of being changed.
+
+2. **Info: the root cause is still unknown.** Location: spec, "Known limits".
+   - AGENTS.md asks for root causes to be diagnosed. The owner chose to collect evidence with A + C instead, and the spec states this openly. It is acceptable under that ruling and is recorded for completeness.
+
+3. **Info: the checker does not enforce the order of CI-only lines.** Location: `scripts/check_install_guide.py`, `compare`.
+   - It matches CI-only lines per step as a set. Only `test_r2_guide_8_ends_with_the_stop_lines_in_order` pins their order, and only for the current workflow file.
+   - This existed before this round and is documented in the spec's known limits. No change needed.
+
+4. **Info: the spec's claims match what I observed.** These all agree:
+   - the line counts (22 CI-only lines in Guide 8, 31 in total);
+   - the test counts (12 failed and 35 passed on `905ca51`; 47 passed on `1922d9a`);
+   - the `cmp` byte offset (7436).
+
+   `34211ef` is documentation only, as stated: it touches only `docs/assignments/i119-install-guide-check.md`.
+
+I found no correctness defects in the diff.
+
+##### Verdict
+
+**ship.** The change does exactly what the owner ruled. It touches only the Guide 8 CI-only lines and their allow-list, and it is tested on the real path. I reproduced the fallback, the red and green test results, and the checker output. All findings are low or info and can be recorded as limits under the owner's rule 1. Merging still depends on the owner's criterion, all 3 checks passing on the PR page, which was not met yet when I reviewed (CI still running).
+
+### Manager disposition (re-review 2; Manager session, 2026-11-14)
+
+All findings are low or info; per the owner's standing rule 1 ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)) and the round-2 ruling ([comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215)) they are recorded as known limits without asking; no code change.
+
+| # | Disposition |
+|---|---|
+| 1 | **Known limit:** when the `pkill -9` fallback fires, the step passes and the marker and `ps` output appear only in the `install-guide` step log (no PR annotation; the runserver log step runs only on failure). Whoever checks a run must open the "Guide 8" log and look for `runserver did not stop after SIGTERM; fallback: pkill -9`. |
+| 2 | **Known limit:** the root cause of the stuck processes (runs #293 attempt 1 and #296) is still unknown; the fallback prints `ps` evidence when it happens. |
+| 3 | **Known limit** (already in the spec): CI-only lines are matched per step without order; the stop lines' order is pinned only by a test. |
+| 4 | Informational; no action. |
+
+CI for head `34211ef`, run [#297](https://github.com/porntaned/ERP-for-Factory/actions/runs/43604169369): `install-guide` passed on attempt 1, and its "Guide 8" log does **not** contain the fallback marker (SIGTERM stopped runserver; `pkill -9` was not used).
