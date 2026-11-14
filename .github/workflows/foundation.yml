@@ -252,6 +252,11 @@ jobs:
       - name: "Guide 4: Get the code"
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
+      # CI-only: the commands of docs/INSTALL.md and of this job must match (Issue #119). Runs
+      # right after the checkout, the first step with the files, on the runner's python3.
+      - name: "CI-only: guide and job commands match"
+        run: python3 scripts/check_install_guide.py
+
       - name: "Guide 4: Write .env"
         run: |
           sed -e "s|^DJANGO_SECRET_KEY=.*|DJANGO_SECRET_KEY=$ERP_SECRET_KEY|" \
@@ -299,8 +304,15 @@ jobs:
           grep -F '<td>LED-CHIP</td><td>L-0001</td><td>RM-A</td><td class="text-end">100</td><td>RELEASED</td>' balance.html
           # CI-only: stop the server.
           pkill -f 'manage.py runserver'
-          sleep 2
-          if pgrep -f 'manage.py runserver'; then echo "runserver still running"; exit 1; fi
+          for i in $(seq 1 20); do pgrep -f 'manage.py runserver' > /dev/null || break; sleep 1; done
+          # CI-only: still running after 20 s (run #296): show the processes, then pkill -9; fail only if that fails too.
+          if pids=$(pgrep -d, -f 'manage.py runserver'); then
+            echo "runserver did not stop after SIGTERM; fallback: pkill -9"
+            ps -o pid,ppid,stat,etime,cmd -p "$pids" || true
+            pkill -9 -f 'manage.py runserver' || true
+            for i in $(seq 1 5); do pgrep -f 'manage.py runserver' > /dev/null || break; sleep 1; done
+            if pgrep -f 'manage.py runserver'; then echo "runserver still running after pkill -9"; exit 1; fi
+          fi
 
       # CI-only: running both seeds again adds nothing (row count of every model before and after).
       - name: "CI-only: rerunning the seeds adds nothing"

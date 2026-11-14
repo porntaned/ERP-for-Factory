@@ -3,7 +3,9 @@
 From nothing to the running demo on one machine, with synthetic data only. Commands are bash and
 run in the order shown; every one runs without a prompt, so the CI job `install-guide` in
 [`.github/workflows/foundation.yml`](../.github/workflows/foundation.yml) runs the same commands
-on PostgreSQL 18.6 (the differences are marked `# CI-only:` there).
+on PostgreSQL 18.6 (the differences are marked `# CI-only:` there). The match is checked
+automatically: [`scripts/check_install_guide.py`](../scripts/check_install_guide.py) runs in the
+`install-guide` job and fails it when the commands of this guide and of the job differ.
 
 > **Windows:** ยังไม่ได้ทดสอบบน Windows (not tested on Windows). The commands are bash; WSL or Git
 > Bash may work but nobody has checked.
