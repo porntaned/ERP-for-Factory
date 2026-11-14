@@ -358,3 +358,76 @@ def test_3_other_fences_are_not_rejected(tmp_path, capsys):
     # Only sh and shell are rejected (owner ruling); a text block is prose output, not commands.
     code, output = run(tmp_path, capsys, guide=GUIDE + "\n```text\nSystem check\n```\n")
     assert code == 0, output
+
+
+# Repair round 2 (Issue #119, run #296; owner comment 6878538215): when runserver is still running
+# after the 20 s wait, show its processes, then pkill -9; fail only if it is still running after that.
+
+GUIDE_8 = "Guide 8: Run and log in"
+OLD_STOP_CHECK = (
+    "if pgrep -f 'manage.py runserver'; then echo \"runserver still running\"; exit 1; fi"
+)
+FALLBACK_LINES = [
+    "if pids=$(pgrep -d, -f 'manage.py runserver'); then",
+    '  echo "runserver did not stop after SIGTERM; fallback: pkill -9"',
+    '  ps -o pid,ppid,stat,etime,cmd -p "$pids" || true',
+    "  pkill -9 -f 'manage.py runserver' || true",
+    "  for i in $(seq 1 5); do pgrep -f 'manage.py runserver' > /dev/null || break; sleep 1; done",
+    "  if pgrep -f 'manage.py runserver'; then"
+    ' echo "runserver still running after pkill -9"; exit 1; fi',
+    "fi",
+]
+STOP_LINES = [
+    "pkill -f 'manage.py runserver'",
+    "for i in $(seq 1 20); do pgrep -f 'manage.py runserver' > /dev/null || break; sleep 1; done",
+    *FALLBACK_LINES,
+]
+WORKFLOW_FALLBACK = "".join(f"          {line}\n" for line in FALLBACK_LINES)
+
+
+def test_r2_guide_8_ends_with_the_stop_lines_in_order():
+    compared = [
+        line
+        for step, line in check.ci_lines(check.job_steps(WORKFLOW, "install-guide"))
+        if step == GUIDE_8
+    ]
+    assert compared[-len(STOP_LINES) :] == STOP_LINES
+    assert OLD_STOP_CHECK not in compared
+
+
+def test_r2_stop_lines_are_allow_listed_in_guide_8_only():
+    for line in STOP_LINES:
+        assert check.CI_ONLY.get((GUIDE_8, line)) == "M7.2 CI-only item 5", line
+        assert [step for step, other in check.CI_ONLY if other == line] == [GUIDE_8], line
+    assert (GUIDE_8, OLD_STOP_CHECK) not in check.CI_ONLY
+
+
+@pytest.mark.parametrize("line", FALLBACK_LINES)
+def test_r2_fallback_line_removed_from_the_job(tmp_path, capsys, line):
+    # Edited inside the fallback block: a bare `fi` also ends a block of the postgresql-tdd job.
+    removed = edit(WORKFLOW_FALLBACK, f"          {line}\n", "")
+    workflow = edit(WORKFLOW, WORKFLOW_FALLBACK, removed)
+    assert_fails(tmp_path, capsys, "not used", f"step `{GUIDE_8}`: {line}", workflow=workflow)
+
+
+def test_r2_old_stop_check_alone_is_not_accepted(tmp_path, capsys):
+    workflow = edit(WORKFLOW, WORKFLOW_FALLBACK, f"          {OLD_STOP_CHECK}\n")
+    assert_fails(tmp_path, capsys, f"job:   {OLD_STOP_CHECK}", GUIDE_8, workflow=workflow)
+
+
+def test_r2_pkill_9_moved_to_another_step(tmp_path, capsys):
+    pkill_9 = "            pkill -9 -f 'manage.py runserver' || true\n"
+    reset = "          uv run --env-file .env python manage.py seed_production_demo --reset\n"
+    workflow = edit(edit(WORKFLOW, pkill_9, ""), reset, reset + pkill_9)
+    assert_fails(
+        tmp_path,
+        capsys,
+        "job:     pkill -9 -f 'manage.py runserver' || true",
+        "Guide 9: Start the demo data again",
+        workflow=workflow,
+    )
+
+
+def test_r2_fallback_block_duplicated(tmp_path, capsys):
+    workflow = edit(WORKFLOW, WORKFLOW_FALLBACK, WORKFLOW_FALLBACK + WORKFLOW_FALLBACK)
+    assert_fails(tmp_path, capsys, "more than once", "pkill -9", workflow=workflow)
