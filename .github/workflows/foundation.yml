@@ -305,7 +305,14 @@ jobs:
           # CI-only: stop the server.
           pkill -f 'manage.py runserver'
           for i in $(seq 1 20); do pgrep -f 'manage.py runserver' > /dev/null || break; sleep 1; done
-          if pgrep -f 'manage.py runserver'; then echo "runserver still running"; exit 1; fi
+          # CI-only: still running after 20 s (run #296): show the processes, then pkill -9; fail only if that fails too.
+          if pids=$(pgrep -d, -f 'manage.py runserver'); then
+            echo "runserver did not stop after SIGTERM; fallback: pkill -9"
+            ps -o pid,ppid,stat,etime,cmd -p "$pids" || true
+            pkill -9 -f 'manage.py runserver' || true
+            for i in $(seq 1 5); do pgrep -f 'manage.py runserver' > /dev/null || break; sleep 1; done
+            if pgrep -f 'manage.py runserver'; then echo "runserver still running after pkill -9"; exit 1; fi
+          fi
 
       # CI-only: running both seeds again adds nothing (row count of every model before and after).
       - name: "CI-only: rerunning the seeds adds nothing"

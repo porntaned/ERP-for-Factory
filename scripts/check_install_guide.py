@@ -109,10 +109,27 @@ CI_ONLY = {
         "for i in $(seq 1 20); do pgrep -f 'manage.py runserver' > /dev/null || break;"
         " sleep 1; done",
     ): "M7.2 CI-only item 5",
+    # Repair round 2 (run #296; owner comment 6878538215): still running after the 20 s wait →
+    # show its processes, pkill -9, wait up to 5 s; fail only if it is still running after that.
+    # Replaces `if pgrep … echo "runserver still running"; exit 1; fi`.
+    (GUIDE_8, "if pids=$(pgrep -d, -f 'manage.py runserver'); then"): "M7.2 CI-only item 5",
     (
         GUIDE_8,
-        "if pgrep -f 'manage.py runserver'; then echo \"runserver still running\"; exit 1; fi",
+        '  echo "runserver did not stop after SIGTERM; fallback: pkill -9"',
     ): "M7.2 CI-only item 5",
+    (GUIDE_8, '  ps -o pid,ppid,stat,etime,cmd -p "$pids" || true'): "M7.2 CI-only item 5",
+    (GUIDE_8, "  pkill -9 -f 'manage.py runserver' || true"): "M7.2 CI-only item 5",
+    (
+        GUIDE_8,
+        "  for i in $(seq 1 5); do pgrep -f 'manage.py runserver' > /dev/null || break;"
+        " sleep 1; done",
+    ): "M7.2 CI-only item 5",
+    (
+        GUIDE_8,
+        "  if pgrep -f 'manage.py runserver'; then"
+        ' echo "runserver still running after pkill -9"; exit 1; fi',
+    ): "M7.2 CI-only item 5",
+    (GUIDE_8, "fi"): "M7.2 CI-only item 5",
     # Item 6: the extra step reruns both seeds and diffs per-model row counts.
     (
         SEED_RERUN,
