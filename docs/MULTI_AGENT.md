@@ -35,6 +35,12 @@ Per issue, keep links to the GitHub issue, branch/PR, commits, test or CI result
 ## Repair and escalation
 
 - Default limit: two repair cycles for the same failed finding.
+- **Owner's standing rules (from 2026-11-14, [Issue #119 comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)):**
+  1. Low/info findings after the final review round may be recorded as known limits without asking, unless they make
+     an acceptance criterion or the main goal fail.
+  2. Documentation-only fixes (stale status, historical notes, PR body) may be made by the Manager without asking.
+  3. Always ask the owner first for changes to code, workflows, scope, dependencies, `AGENTS.md` or
+     `docs/MULTI_AGENT.md`.
 - A third recurrence stops automatic repair and is escalated to the owner with evidence and options.
 - Stop immediately for secrets, personal/real factory data, an unexpected destructive action, repository mismatch, authorization failure, scope expansion or conflicting instructions.
 - Never bypass approvals, sandboxing, branch protection or failing checks to make progress appear complete.
@@ -42,6 +48,35 @@ Per issue, keep links to the GitHub issue, branch/PR, commits, test or CI result
 ## Merge and deployment gate
 
 Only the owner decides to merge or deploy. An open PR, passing CI or checked task does not grant that permission.
+
+Owner's standing rules (from 2026-11-14, [Issue #119 comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)):
+
+4. The owner merges every PR on GitHub; the Manager does not merge. (Before 2026-11-14 a session could merge
+   on the owner's explicit merge instruction for that PR — historical. The note "as `AGENTS.md` still describes —
+   historical for new work" held until 2026-11-15, when `AGENTS.md` marked that wording historical.)
+5. After a merge the Manager opens the post-merge docs PR immediately.
+6. A new slice starts only when the owner approves it in a comment on its Issue.
+
+Owner's standing rules 7–8 (from 2026-11-15, owner in chat; verbatim below):
+
+7. **Review level.**
+   - Documentation, diagrams and small CI changes need no separate reviewer session: the owner's checker reviews them at merge.
+   - A change that touches business code, the database or permissions, and the final Scrutinize, gets an independent review by a separate session.
+8. **No self-scheduled CI checks.** Do not set timers or check-ins to poll CI. Report once, when the PR is ready to merge, in this short form:
+   - PR number;
+   - head SHA;
+   - the 3 checks, with their attempt;
+   - whether the `pkill -9` fallback ran;
+   - findings the owner must decide, or "ไม่มี" if there are none.
+
+> 7. ระดับรีวิว: งานเอกสาร/diagram/CI เล็ก = ไม่ต้องมี reviewer session แยก (ผู้ตรวจของเจ้าของตรวจตอน merge)
+>    งานแตะโค้ด business, ฐานข้อมูล, สิทธิ์ หรือ final scrutinize = independent review โดย session แยก
+> 8. ไม่ตั้งเวลาเช็ก CI เอง รายงานครั้งเดียวเมื่อพร้อม merge ในรูปแบบสั้น: เลข PR, head SHA, check 3 ตัว (attempt),
+>    ทางสำรอง pkill -9, finding ที่ต้องให้เจ้าของตัดสิน (ถ้าไม่มีให้เขียน "ไม่มี")
+
+Earlier practice superseded by rules 7–8 (historical from 2026-11-15):
+- Every slice up to Issue #119 had an independent review by a separate session.
+- The Manager set check-ins (`send_later`) to poll CI.
 
 ## Progress rule
 

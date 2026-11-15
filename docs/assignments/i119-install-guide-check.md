@@ -2,20 +2,23 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/vibrant-sagan-ivztik` (restarted from `main` `4f6c065` after
 PR #120 merged); [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119).
-Status: **[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) open, awaiting the owner's merge (the owner merges on GitHub); [repair round 2](#repair-round-2-2026-11-14)
-(the final round: runserver stop fallback, owner [comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215)) done on the branch; independent review of the
-round-2 diff by a new separate session (`session_01MVmjhdTUAG56qPZmJnVeJn`): [ship](../reviews/i119-independent-review.md#re-review-2),
-its low/info findings recorded as known limits (owner rule 1) ("…review of the round-2 diff by a new separate session
-pending" held until that review on 2026-11-14 — historical). Merge criterion (owner): 3/3 checks pass on the PR page.** CI evidence
-of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964) (covers `postgresql-tdd`; always shows the latest
-head; not changed for this round, owner) and the `install-guide` check on the PR (not in the CI comment by design).
-("PR #121 open, awaiting the owner's merge; first review ship, re-review by a new separate session ship; re-review
-findings recorded as known limits and spec notes per the owner ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)), documentation only, no new
-review" held until `install-guide` failed in run #296 and the owner ordered repair round 2 on 2026-11-14; before
-that "repair round 1 done on the branch; re-review pending" held until the re-review and the owner's ruling on
-2026-11-14; before that "PR #121 open, awaiting the owner; independent review by a separate session: ship (findings 1–5 await the owner's decision; no repair made)"
-held until repair round 1 on 2026-11-14; before that "implemented on the branch; PR not opened; review: none" until
-2026-11-13; before that "spec approved by the owner; implementation not started" — historical.)
+Status: **merged: [PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) at `6f6dd2b` (2026-11-14, by the owner on GitHub); Issue #119 complete** (see
+[Closeout](#closeout-2026-11-15)). The status before the merge, kept as historical (held until the merge on 2026-11-14):
+
+> Status: **[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) open, awaiting the owner's merge (the owner merges on GitHub); [repair round 2](#repair-round-2-2026-11-14)
+> (the final round: runserver stop fallback, owner [comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215)) done on the branch; independent review of the
+> round-2 diff by a new separate session (`session_01MVmjhdTUAG56qPZmJnVeJn`): [ship](../reviews/i119-independent-review.md#re-review-2),
+> its low/info findings recorded as known limits (owner rule 1) ("…review of the round-2 diff by a new separate session
+> pending" held until that review on 2026-11-14 — historical). Merge criterion (owner): 3/3 checks pass on the PR page.** CI evidence
+> of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964) (covers `postgresql-tdd`; always shows the latest
+> head; not changed for this round, owner) and the `install-guide` check on the PR (not in the CI comment by design).
+> ("PR #121 open, awaiting the owner's merge; first review ship, re-review by a new separate session ship; re-review
+> findings recorded as known limits and spec notes per the owner ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)), documentation only, no new
+> review" held until `install-guide` failed in run #296 and the owner ordered repair round 2 on 2026-11-14; before
+> that "repair round 1 done on the branch; re-review pending" held until the re-review and the owner's ruling on
+> 2026-11-14; before that "PR #121 open, awaiting the owner; independent review by a separate session: ship (findings 1–5 await the owner's decision; no repair made)"
+> held until repair round 1 on 2026-11-14; before that "implemented on the branch; PR not opened; review: none" until
+> 2026-11-13; before that "spec approved by the owner; implementation not started" — historical.)
 
 Owner approval: [Issue #119 comment](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6842699856)
 (2026-11-13) and the owner's chat message of the same day.
@@ -510,3 +513,65 @@ not reproduced; the respawn case exercises the same final check.
   their parent, state and age. If it happens, the step passes with the marker line in the log.
 - The check matches CI-only lines per step as a set, not in order; the order of the stop lines is pinned by the test
   `test_r2_guide_8_ends_with_the_stop_lines_in_order`, not by the check script.
+
+## Closeout (2026-11-15)
+
+[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) was merged by the owner on GitHub at 2026-11-14T16:34:51Z as merge commit
+`6f6dd2bbc894538e489d4e7d5a3156ca549b7a8a` (head `3c8abc8`); the owner reported it in chat. No session merged it.
+- [PR CI #298](https://github.com/porntaned/ERP-for-Factory/actions/runs/43604628567) on `3c8abc8`: `postgresql-tdd` (PostgreSQL 18.6 / Python 3.14.8,
+  **1207 passed**, [CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964)), `install-guide` and `report` all passed on
+  attempt 1; `install-guide` did not use the `pkill -9` fallback.
+- [Main CI #299](https://github.com/porntaned/ERP-for-Factory/actions/runs/43616383958) on `6f6dd2b`: all 3 jobs passed on attempt 1; `postgresql-tdd`
+  **1207 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/6f6dd2bbc894538e489d4e7d5a3156ca549b7a8a#commitcomment-210026954)); `install-guide` check step OK,
+  1207 passed, login 200, no `pkill -9` fallback (read from the job log).
+- Reviews: three independent reviews by three separate sessions, all ship —
+  `session_01MVmjhg9gAi1DN28QQBeVER` (head `aae03d8`), `session_01MVmjhfwZuoJ19Fys5UNKmE` (head `c052f4c`, after repair
+  round 1) and `session_01MVmjhdTUAG56qPZmJnVeJn` (round-2 diff `1553e7c..34211ef`) — recorded in
+  [the review record](../reviews/i119-independent-review.md). Two repair rounds (the limit). Implementer = sub-agents of
+  the Manager; Manager = session `session_01MVmjhdAZRZbr6kL22x7hby`.
+- Known limits stay as recorded above (step-level keys, the check's own position, some fence forms, CI-only order within
+  a step, a silent `pkill -9` fallback, the unknown root cause of stuck runserver processes).
+- No deployment.
+
+## Handoff (2026-11-15)
+
+1. **Task and role actually performed:** Manager session `session_01MVmjhdAZRZbr6kL22x7hby` ran Issue #119 end to end:
+   - spec and the owner's approval;
+   - Implementer sub-agents for the implementation and repair rounds 1–2;
+   - three independent reviews by three separate sessions;
+   - the post-merge docs PR [PR #122](https://github.com/porntaned/ERP-for-Factory/pull/122).
+
+   The owner merged PR #121 on GitHub. No session merged it.
+2. **Files and behavior changed:**
+   - `scripts/check_install_guide.py` and `tests/ci/test_install_guide_check.py` (51 tests);
+   - in job `install-guide`: the check step, and the runserver stop with its `ps` + `pkill -9` fallback;
+   - one sentence each in `docs/INSTALL.md` and `docs/DEVELOPMENT.md`.
+
+   `postgresql-tdd` and `report` are byte-identical to the base.
+3. **Commands and results:** see [Evidence](#evidence), [Repair round 1](#repair-round-1-2026-11-14),
+   [Repair round 2](#repair-round-2-2026-11-14) and [Closeout](#closeout-2026-11-15):
+   - PR CI #298 and main CI #299: 3/3 on attempt 1, 1207 passed;
+   - the `pkill -9` fallback has not been used since it was added.
+4. **Commits:**
+   - Issue #119 is merged at `6f6dd2b`.
+   - This post-merge record is on branch `claude/vibrant-sagan-ivztik` in [PR #122](https://github.com/porntaned/ERP-for-Factory/pull/122), which is open and awaiting the owner's merge on GitHub. Its merge SHA goes into the next post-merge docs PR (No chain).
+5. **Findings and remaining risks:** the known limits in the Closeout. The root cause of the runserver processes that
+   would not stop (runs #293, #296) is still unknown; if the fallback is ever used, the job log shows `ps` output.
+6. **Owner decisions recorded:**
+   - D1–D4 ([comment 6842699856](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6842699856));
+   - the repair-round rulings;
+   - A+C for the runserver stop ([comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215));
+   - standing rules 1–6 ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755));
+   - rules 7–8 (chat, 2026-11-15).
+
+   All eight are in [`docs/MULTI_AGENT.md`](../MULTI_AGENT.md).
+7. **Still open:**
+   - [PR #122](https://github.com/porntaned/ERP-for-Factory/pull/122) awaits the owner's merge.
+   - [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119) is still open; the owner closes it.
+   - No other branch or PR is pending.
+8. **Next work and who does it:**
+   - **M7.3** (Architecture and Domain diagrams that match the code) runs in a **new Manager session**.
+   - It starts only after the owner approves it in a comment on its new Issue (rule 6).
+   - Per rule 7 it needs no separate reviewer session, unless it touches business code, the database or permissions.
+   - Then M7.4 and M7.5 (M7.5 = final Scrutinize: independent review by a separate session).
+   - This session stops after reporting PR #122's CI.
