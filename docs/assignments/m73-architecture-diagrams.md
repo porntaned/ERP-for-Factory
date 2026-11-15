@@ -2,7 +2,7 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/gracious-sagan-rwlo33` (base `main` `8bbfa9f`);
 [Issue #123](https://github.com/porntaned/ERP-for-Factory/issues/123).
-Status: **owner approved; implementation in progress** (2026-11-15).
+Status: **implemented on the branch; PR open, awaiting the owner's merge** (2026-11-15). ("owner approved; implementation in progress" held until the Implementer's commits `ea157a3` and `a18dfb9` — historical.)
 
 Owner approval: [Issue #123 comment 6891924773](https://github.com/porntaned/ERP-for-Factory/issues/123#issuecomment-6891924773)
 (2026-11-15), on the Issue body as edited 2026-11-15 on the owner's instruction in chat.
@@ -140,3 +140,98 @@ container's `uv` 0.11.32 could not download 3.14.8); PostgreSQL **16** (local, n
 - `python manage.py check` → `System check identified no issues (0 silenced).`
 - `python manage.py migrate --noinput` → OK.
 - `pytest -q -p no:cacheprovider` → **1207 passed** in 229.51s.
+
+### Implementation (Implementer = sub-agent of the Manager, 2026-11-15)
+
+Commits on `claude/gracious-sagan-rwlo33`:
+- `5c00c4b` — this spec (Manager).
+- `ea157a3` — `test: RED tests for M7.3 architecture diagrams` (`tests/docs/__init__.py`,
+  `tests/docs/test_architecture_diagrams.py`).
+- `a18dfb9` — `docs: M7.3 architecture and domain diagrams` (`docs/ARCHITECTURE.md`, one link line each in
+  `docs/PROJECT.md` and `README.md`).
+
+Design choices the spec left open (Implementer; accepted by the Manager):
+- each state diagram and the stock flow carry a `%% functions: <modules>` line; every snake_case name in the block
+  must be a callable of one of those modules, and every state transition must name one;
+- the admin coverage table is found under the heading `## Read-only admin coverage`;
+- `User` is declared under `%% app: auth` without edges; the prose says the user fields are not drawn or checked;
+- the whole-file reference check also resolves backticked names that start with `config`;
+- an unknown line inside a checked block is an error, not skipped;
+- the stock flow includes the inspection step (`record_inspection`) between receipt and transfer.
+
+The Implementer confirmed every state transition in the spec against the code; no difference.
+
+### RED, then GREEN (development checks; PostgreSQL 16, Python 3.14.8)
+
+Run by the Manager (self-verification), repeating the Implementer's runs:
+- **RED** on `ea157a3` (a separate worktree, so `docs/ARCHITECTURE.md` does not exist):
+  `pytest -p no:cacheprovider tests/docs` → **`19 failed, 2 passed`**; all 19 fail with
+  `docs/ARCHITECTURE.md does not exist`. The 2 that pass need no document (the `ReadOnlyAdmin` registry test and
+  the import-rule unit test).
+- **GREEN** on `a18dfb9`:
+  - `pytest --collect-only -q -p no:cacheprovider tests/docs` → `21 tests collected` (**N = 21**).
+  - `pytest -q -p no:cacheprovider tests/docs` → `21 passed`.
+  - Full suite `pytest -q -p no:cacheprovider` → **`1228 passed`** in 200.26s (= 1207 + 21).
+- **No database:** `POSTGRES_PORT=1 pytest -q -p no:cacheprovider tests/docs` → `21 passed`. The Implementer's
+  control run with the same setting on a DB test (`tests/foundation/test_hierarchy.py`) failed with
+  `psycopg.OperationalError ... port 1 failed: Connection refused`. `grep -n "django_db\|TestCase" tests/docs` → none.
+- **Mutation tests in the suite** (6): a missing ER entity (`RequestKey`), an extra ER entity (`Invoice`), a missing
+  ER edge (`StockReceipt → StockLedgerEntry ledger_entry`), an extra dependency (`catalog --> inventory`), a wrong
+  cardinality (`StockReversal.receipt`), an extra state (`REOPENED`); each checks first that the unedited document
+  passes.
+- **Manager's own mutation of the real file** (reverted with `git checkout`): deleting `quality --> inventory` and
+  `admin --> quality` and changing the inventory admin row to `8 / 8` → `4 failed, 17 passed`, with the messages
+  `app-dependencies: edges missing from the doc: ('quality', 'inventory')`,
+  `modules: apps the admin node points to missing from the doc: quality` and
+  `admin coverage: inventory row says 8/8 ... the code has 6/8 ...`.
+
+Ground truth computed by the test at `a18dfb9`: 21 entities, 33 ER edges, 20 app-dependency edges, admin apps
+`access_control, catalog, facilities, inventory, quality`.
+
+### Other checks (development checks, `a18dfb9`)
+
+- `ruff check .` → `All checks passed!`; `ruff format --check .` → `282 files already formatted`.
+- `python manage.py makemigrations --check --dry-run` → `No changes detected`.
+- `git diff --check 8bbfa9f` → no output.
+- `git diff --name-only 8bbfa9f...HEAD` → `README.md`, `docs/ARCHITECTURE.md`, `docs/PROJECT.md`,
+  `docs/assignments/m73-architecture-diagrams.md`, `tests/docs/__init__.py`, `tests/docs/test_architecture_diagrams.py`:
+  all on the allowed list.
+- `git diff --quiet 8bbfa9f -- pyproject.toml uv.lock .github AGENTS.md docs/MULTI_AGENT.md` → exit 0: no
+  dependency, workflow or rule change.
+- Relative links in `docs/ARCHITECTURE.md`, `docs/PROJECT.md` and `README.md`: 25 checked, **0 broken** (Implementer's
+  throwaway checker, files and heading anchors). README has no commit SHA.
+- The prose in `docs/ARCHITECTURE.md` that the test does not check was read against the code by the Manager:
+  cancel/close preconditions (`manufacturing/services.py` `cancel_production_order`, `close_production_order`), the
+  `REJECTED` gate (`inventory/lot_gate.py` and its callers in `services.py`, `transfers.py`, `reversals.py`,
+  `production.py`), one-plant transfers (`inventory/transfer_policy.py` `lock_transfer_scope`), roles, the
+  `inventory_stock_immutable` trigger and the `stock_reversal_*` constraints, and that ledger entries are created
+  only in `inventory`. No difference found.
+- **Not yet verified: rendering on GitHub.** Checked in the PR file view; result recorded below when done.
+
+### Review
+
+No review by a separate session (standing rule 7, owner decision D6). The Manager's checks above are
+self-verification. The owner's checker reviews at merge.
+
+### Findings for the owner (reported, not fixed)
+
+1. **`manufacturing` creates `inventory.Lot` rows directly**: `manufacturing/services.py:664` (`_output_lot`, from
+   `record_output`) calls `Lot.objects.create`; the seed commands use `Lot.objects.get_or_create`
+   (`demo/management/commands/seed_demo.py:75`, `seed_production_demo.py:65`). A Lot is not a quantity or a
+   movement, so `AGENTS.md` "Domain ownership" is not broken as written; `docs/ARCHITECTURE.md` states the fact.
+2. **`inventory ↔ quality` import cycle**: shown as it is; not changed (out of scope).
+3. **`inventory.transfer_policy.require_transfer_quality` has no caller outside tests** (`grep` over non-test code
+   finds only its definition); the transfer and reversal commands check `RELEASED` themselves. Possibly dead code;
+   not referenced in the document.
+4. **Django's `auth.User` and `auth.Group` are editable in the admin** (default `UserAdmin` / `GroupAdmin`).
+   "Admin is read-only" holds for project models only; the document says so under the coverage table.
+5. **Accounting is not built** (no app, no valuation); the document says so.
+
+None of these blocks an acceptance criterion. Each needs an owner decision before any separate Issue.
+
+### Left for the post-merge docs PR
+
+- `docs/TASKS.md`: tick M7.3, สถานะปัจจุบัน, Progress log; also record the merge of
+  [PR #122](https://github.com/porntaned/ERP-for-Factory/pull/122) at `8bbfa9f` with its `main` CI (No chain).
+- `README.md` not-delivered line (`M7.3–M7.5`) → `M7.4–M7.5` after the merge.
+- Closeout here: merge SHA, PR and `main` CI with SHA and test counts.
