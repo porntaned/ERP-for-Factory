@@ -206,7 +206,13 @@ Ground truth computed by the test at `a18dfb9`: 21 entities, 33 ER edges, 20 app
   `production.py`), one-plant transfers (`inventory/transfer_policy.py` `lock_transfer_scope`), roles, the
   `inventory_stock_immutable` trigger and the `stock_reversal_*` constraints, and that ledger entries are created
   only in `inventory`. No difference found.
-- **Not yet verified: rendering on GitHub.** Checked in the PR file view; result recorded below when done.
+- **Rendering on GitHub: not verified by the Manager.** Headless Chromium on the public blob page of `8ca5087`
+  loaded the page and found the 6 Mermaid sections, but GitHub never loaded its renderer frames for an anonymous
+  headless browser, so no rendered result could be read. A local Mermaid parse was not run (the Implementer's
+  attempt was refused by the session's permission check). The acceptance item "Diagrams render on GitHub" stays
+  open for the owner's checker in the PR file view. Lines most likely to matter: the entity-only lines in
+  `erDiagram`, `<br/>` inside quoted flowchart labels, and the `\|` escapes in the cardinality table.
+  ("Checked in the PR file view; result recorded below when done" held until this attempt — historical.)
 
 ### Review
 
