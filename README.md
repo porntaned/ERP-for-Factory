@@ -10,7 +10,9 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 >
 > **ส่งมอบเพิ่ม (M7.2):** [คู่มือติดตั้ง](docs/INSTALL.md) แบบ bash ที่ CI job `install-guide` รันจากสภาพใหม่บน PostgreSQL 18.6 (ยังไม่ได้ทดสอบบน Windows)
 >
-> **ยังไม่ส่งมอบ:** Portfolio delivery (M7.3–M7.5) และไม่มีการ Deploy (ข้อความเดิม "M7.2–M7.5" ใช้ได้ถึง merge PR #118 วันที่ 2026-11-12 — historical)
+> **ส่งมอบเพิ่ม (M7.3):** [ไดอะแกรมสถาปัตยกรรมและโมเดลข้อมูล](docs/ARCHITECTURE.md) แบบ Mermaid ที่เทสต์ `tests/docs` เทียบกับโค้ดทุกครั้งที่รัน suite
+>
+> **ยังไม่ส่งมอบ:** Portfolio delivery (M7.4–M7.5) และไม่มีการ Deploy (ข้อความเดิม "M7.3–M7.5" ใช้ได้ถึง merge PR #124 วันที่ 2026-11-15 — historical; ข้อความเดิม "M7.2–M7.5" ใช้ได้ถึง merge PR #118 วันที่ 2026-11-12 — historical)
 
 ## Stack
 
