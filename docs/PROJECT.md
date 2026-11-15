@@ -25,6 +25,7 @@ These are demo assumptions, not claims about rules shared by every factory or in
 - Django Templates and Bootstrap for screens (introduced in M4.6).
 - pytest, pytest-django, Ruff and GitHub Actions.
 - Small GitHub issues with explicit acceptance criteria and evidence-backed pull requests.
+- [Architecture and domain diagrams](ARCHITECTURE.md): modules, app dependencies, domain model, states and stock flow, checked against the code by `tests/docs/test_architecture_diagrams.py`.
 
 ## Multi-Agent delivery
 

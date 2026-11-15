@@ -28,6 +28,7 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 ## Project evidence
 
 - [Project brief and outcomes](docs/PROJECT.md)
+- [Architecture and domain diagrams](docs/ARCHITECTURE.md) — ไดอะแกรมโมดูล การพึ่งพาระหว่าง app โมเดลข้อมูล สถานะ และการเคลื่อนสต็อก ตรวจกับโค้ดด้วย test
 - [Multi-Agent execution contract](docs/MULTI_AGENT.md)
 - [Project checklist / สถานะงาน](docs/TASKS.md)
 - [Scrutinize review method](docs/SCRUTINIZE.md)
