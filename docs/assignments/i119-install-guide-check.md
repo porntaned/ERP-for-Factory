@@ -2,20 +2,23 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/vibrant-sagan-ivztik` (restarted from `main` `4f6c065` after
 PR #120 merged); [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119).
-Status: **[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) open, awaiting the owner's merge (the owner merges on GitHub); [repair round 2](#repair-round-2-2026-11-14)
-(the final round: runserver stop fallback, owner [comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215)) done on the branch; independent review of the
-round-2 diff by a new separate session (`session_01MVmjhdTUAG56qPZmJnVeJn`): [ship](../reviews/i119-independent-review.md#re-review-2),
-its low/info findings recorded as known limits (owner rule 1) ("…review of the round-2 diff by a new separate session
-pending" held until that review on 2026-11-14 — historical). Merge criterion (owner): 3/3 checks pass on the PR page.** CI evidence
-of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964) (covers `postgresql-tdd`; always shows the latest
-head; not changed for this round, owner) and the `install-guide` check on the PR (not in the CI comment by design).
-("PR #121 open, awaiting the owner's merge; first review ship, re-review by a new separate session ship; re-review
-findings recorded as known limits and spec notes per the owner ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)), documentation only, no new
-review" held until `install-guide` failed in run #296 and the owner ordered repair round 2 on 2026-11-14; before
-that "repair round 1 done on the branch; re-review pending" held until the re-review and the owner's ruling on
-2026-11-14; before that "PR #121 open, awaiting the owner; independent review by a separate session: ship (findings 1–5 await the owner's decision; no repair made)"
-held until repair round 1 on 2026-11-14; before that "implemented on the branch; PR not opened; review: none" until
-2026-11-13; before that "spec approved by the owner; implementation not started" — historical.)
+Status: **merged: [PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) at `6f6dd2b` (2026-11-14, by the owner on GitHub); Issue #119 complete** (see
+[Closeout](#closeout-2026-11-15)). The status before the merge, kept as historical (held until the merge on 2026-11-14):
+
+> Status: **[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) open, awaiting the owner's merge (the owner merges on GitHub); [repair round 2](#repair-round-2-2026-11-14)
+> (the final round: runserver stop fallback, owner [comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215)) done on the branch; independent review of the
+> round-2 diff by a new separate session (`session_01MVmjhdTUAG56qPZmJnVeJn`): [ship](../reviews/i119-independent-review.md#re-review-2),
+> its low/info findings recorded as known limits (owner rule 1) ("…review of the round-2 diff by a new separate session
+> pending" held until that review on 2026-11-14 — historical). Merge criterion (owner): 3/3 checks pass on the PR page.** CI evidence
+> of record: [the PR's CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964) (covers `postgresql-tdd`; always shows the latest
+> head; not changed for this round, owner) and the `install-guide` check on the PR (not in the CI comment by design).
+> ("PR #121 open, awaiting the owner's merge; first review ship, re-review by a new separate session ship; re-review
+> findings recorded as known limits and spec notes per the owner ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)), documentation only, no new
+> review" held until `install-guide` failed in run #296 and the owner ordered repair round 2 on 2026-11-14; before
+> that "repair round 1 done on the branch; re-review pending" held until the re-review and the owner's ruling on
+> 2026-11-14; before that "PR #121 open, awaiting the owner; independent review by a separate session: ship (findings 1–5 await the owner's decision; no repair made)"
+> held until repair round 1 on 2026-11-14; before that "implemented on the branch; PR not opened; review: none" until
+> 2026-11-13; before that "spec approved by the owner; implementation not started" — historical.)
 
 Owner approval: [Issue #119 comment](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6842699856)
 (2026-11-13) and the owner's chat message of the same day.
@@ -510,3 +513,22 @@ not reproduced; the respawn case exercises the same final check.
   their parent, state and age. If it happens, the step passes with the marker line in the log.
 - The check matches CI-only lines per step as a set, not in order; the order of the stop lines is pinned by the test
   `test_r2_guide_8_ends_with_the_stop_lines_in_order`, not by the check script.
+
+## Closeout (2026-11-15)
+
+[PR #121](https://github.com/porntaned/ERP-for-Factory/pull/121) was merged by the owner on GitHub at 2026-11-14T16:34:51Z as merge commit
+`6f6dd2bbc894538e489d4e7d5a3156ca549b7a8a` (head `3c8abc8`); the owner reported it in chat. No session merged it.
+- [PR CI #298](https://github.com/porntaned/ERP-for-Factory/actions/runs/43604628567) on `3c8abc8`: `postgresql-tdd` (PostgreSQL 18.6 / Python 3.14.8,
+  **1207 passed**, [CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964)), `install-guide` and `report` all passed on
+  attempt 1; `install-guide` did not use the `pkill -9` fallback.
+- [Main CI #299](https://github.com/porntaned/ERP-for-Factory/actions/runs/43616383958) on `6f6dd2b`: all 3 jobs passed on attempt 1; `postgresql-tdd`
+  **1207 passed**; `install-guide` check step OK, 1207 passed, login 200, no `pkill -9` fallback; counts read from the
+  job logs (the CI comment is on [commit 6f6dd2b](https://github.com/porntaned/ERP-for-Factory/commit/6f6dd2bbc894538e489d4e7d5a3156ca549b7a8a)).
+- Reviews: three independent reviews by three separate sessions, all ship —
+  `session_01MVmjhg9gAi1DN28QQBeVER` (head `aae03d8`), `session_01MVmjhfwZuoJ19Fys5UNKmE` (head `c052f4c`, after repair
+  round 1) and `session_01MVmjhdTUAG56qPZmJnVeJn` (round-2 diff `1553e7c..34211ef`) — recorded in
+  [the review record](../reviews/i119-independent-review.md). Two repair rounds (the limit). Implementer = sub-agents of
+  the Manager; Manager = session `session_01MVmjhdAZRZbr6kL22x7hby`.
+- Known limits stay as recorded above (step-level keys, the check's own position, some fence forms, CI-only order within
+  a step, a silent `pkill -9` fallback, the unknown root cause of stuck runserver processes).
+- No deployment.

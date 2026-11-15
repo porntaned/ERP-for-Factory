@@ -7,12 +7,15 @@ Build a public portfolio ERP for a fictional LED assembly factory with synthetic
 ## Issue workflow
 
 1. Confirm repository, branch, HEAD and working state. Fetch every branch ref first
-   (`git fetch --depth=50 origin '+refs/heads/*:refs/remotes/origin/*'`) and list remote
+   (`git fetch origin '+refs/heads/*:refs/remotes/origin/*'`) and list remote
    branches not merged into `main`, so stale or parallel work is not missed. Then run
    `git rev-parse --is-shallow-repository`; if it prints `true`, run `git fetch --unshallow origin`
    before trusting `git branch -r --no-merged`, because a shallow clone can report merged branches
    as unmerged (2026-11-12: a shallow clone reported 31 unmerged branches, 5 after unshallowing —
-   [Issue #117](https://github.com/porntaned/ERP-for-Factory/issues/117), item (f)).
+   [Issue #117](https://github.com/porntaned/ERP-for-Factory/issues/117), item (f)). (The fetch command was
+   `git fetch --depth=50 origin '+refs/heads/*:refs/remotes/origin/*'` until 2026-11-15 — historical; the owner chose
+   option B, a full fetch keeping the shallow check, on 2026-11-12 —
+   [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119).)
 2. Read the current GitHub issue and relevant checklist tasks.
 3. State scope, exclusions, dependencies and acceptance criteria.
 4. Make the smallest change that satisfies the issue.

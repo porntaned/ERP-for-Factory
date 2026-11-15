@@ -35,6 +35,12 @@ Per issue, keep links to the GitHub issue, branch/PR, commits, test or CI result
 ## Repair and escalation
 
 - Default limit: two repair cycles for the same failed finding.
+- **Owner's standing rules (from 2026-11-14, [Issue #119 comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)):**
+  1. Low/info findings after the final review round may be recorded as known limits without asking, unless they make
+     an acceptance criterion or the main goal fail.
+  2. Documentation-only fixes (stale status, historical notes, PR body) may be made by the Manager without asking.
+  3. Always ask the owner first for changes to code, workflows, scope, dependencies, `AGENTS.md` or
+     `docs/MULTI_AGENT.md`.
 - A third recurrence stops automatic repair and is escalated to the owner with evidence and options.
 - Stop immediately for secrets, personal/real factory data, an unexpected destructive action, repository mismatch, authorization failure, scope expansion or conflicting instructions.
 - Never bypass approvals, sandboxing, branch protection or failing checks to make progress appear complete.
@@ -42,6 +48,13 @@ Per issue, keep links to the GitHub issue, branch/PR, commits, test or CI result
 ## Merge and deployment gate
 
 Only the owner decides to merge or deploy. An open PR, passing CI or checked task does not grant that permission.
+
+Owner's standing rules (from 2026-11-14, [Issue #119 comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755)):
+
+4. The owner merges every PR on GitHub; the Manager does not merge. (Before 2026-11-14 a session could merge
+   on the owner's explicit merge instruction for that PR, as `AGENTS.md` still describes — historical for new work.)
+5. After a merge the Manager opens the post-merge docs PR immediately.
+6. A new slice starts only when the owner approves it in a comment on its Issue.
 
 ## Progress rule
 

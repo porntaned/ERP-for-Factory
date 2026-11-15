@@ -1,4 +1,4 @@
-Type: review by a sub-agent of the Manager session (a fresh-context sub-agent spawned by the Manager; not a separate session). (Type line added 2026-11-12.)
+Type: independent review by a sub-agent of the Manager session (a fresh-context sub-agent spawned by the Manager; not a separate session). It counts as an independent review under AGENTS.md (review records named `*-independent-review.md`). (Type line added 2026-11-12; "independent review" wording added 2026-11-15 — the earlier line "review by a sub-agent of the Manager session" is historical.)
 
 # Review — PR #101 (Issue #96, M6.1 PR 2: Quality web screens)
 
