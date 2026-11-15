@@ -522,8 +522,8 @@ not reproduced; the respawn case exercises the same final check.
   **1207 passed**, [CI comment](https://github.com/porntaned/ERP-for-Factory/pull/121#issuecomment-6843810964)), `install-guide` and `report` all passed on
   attempt 1; `install-guide` did not use the `pkill -9` fallback.
 - [Main CI #299](https://github.com/porntaned/ERP-for-Factory/actions/runs/43616383958) on `6f6dd2b`: all 3 jobs passed on attempt 1; `postgresql-tdd`
-  **1207 passed**; `install-guide` check step OK, 1207 passed, login 200, no `pkill -9` fallback; counts read from the
-  job logs (the CI comment is on [commit 6f6dd2b](https://github.com/porntaned/ERP-for-Factory/commit/6f6dd2bbc894538e489d4e7d5a3156ca549b7a8a)).
+  **1207 passed** ([CI comment](https://github.com/porntaned/ERP-for-Factory/commit/6f6dd2bbc894538e489d4e7d5a3156ca549b7a8a#commitcomment-210026954)); `install-guide` check step OK,
+  1207 passed, login 200, no `pkill -9` fallback (read from the job log).
 - Reviews: three independent reviews by three separate sessions, all ship —
   `session_01MVmjhg9gAi1DN28QQBeVER` (head `aae03d8`), `session_01MVmjhfwZuoJ19Fys5UNKmE` (head `c052f4c`, after repair
   round 1) and `session_01MVmjhdTUAG56qPZmJnVeJn` (round-2 diff `1553e7c..34211ef`) — recorded in
@@ -532,3 +532,46 @@ not reproduced; the respawn case exercises the same final check.
 - Known limits stay as recorded above (step-level keys, the check's own position, some fence forms, CI-only order within
   a step, a silent `pkill -9` fallback, the unknown root cause of stuck runserver processes).
 - No deployment.
+
+## Handoff (2026-11-15)
+
+1. **Task and role actually performed:** Manager session `session_01MVmjhdAZRZbr6kL22x7hby` ran Issue #119 end to end:
+   - spec and the owner's approval;
+   - Implementer sub-agents for the implementation and repair rounds 1–2;
+   - three independent reviews by three separate sessions;
+   - the post-merge docs PR [PR #122](https://github.com/porntaned/ERP-for-Factory/pull/122).
+
+   The owner merged PR #121 on GitHub. No session merged it.
+2. **Files and behavior changed:**
+   - `scripts/check_install_guide.py` and `tests/ci/test_install_guide_check.py` (51 tests);
+   - in job `install-guide`: the check step, and the runserver stop with its `ps` + `pkill -9` fallback;
+   - one sentence each in `docs/INSTALL.md` and `docs/DEVELOPMENT.md`.
+
+   `postgresql-tdd` and `report` are byte-identical to the base.
+3. **Commands and results:** see [Evidence](#evidence), [Repair round 1](#repair-round-1-2026-11-14),
+   [Repair round 2](#repair-round-2-2026-11-14) and [Closeout](#closeout-2026-11-15):
+   - PR CI #298 and main CI #299: 3/3 on attempt 1, 1207 passed;
+   - the `pkill -9` fallback has not been used since it was added.
+4. **Commits:**
+   - Issue #119 is merged at `6f6dd2b`.
+   - This post-merge record is on branch `claude/vibrant-sagan-ivztik` in [PR #122](https://github.com/porntaned/ERP-for-Factory/pull/122), which is open and awaiting the owner's merge on GitHub. Its merge SHA goes into the next post-merge docs PR (No chain).
+5. **Findings and remaining risks:** the known limits in the Closeout. The root cause of the runserver processes that
+   would not stop (runs #293, #296) is still unknown; if the fallback is ever used, the job log shows `ps` output.
+6. **Owner decisions recorded:**
+   - D1–D4 ([comment 6842699856](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6842699856));
+   - the repair-round rulings;
+   - A+C for the runserver stop ([comment 6878538215](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878538215));
+   - standing rules 1–6 ([comment 6878167755](https://github.com/porntaned/ERP-for-Factory/issues/119#issuecomment-6878167755));
+   - rules 7–8 (chat, 2026-11-15).
+
+   All eight are in [`docs/MULTI_AGENT.md`](../MULTI_AGENT.md).
+7. **Still open:**
+   - [PR #122](https://github.com/porntaned/ERP-for-Factory/pull/122) awaits the owner's merge.
+   - [Issue #119](https://github.com/porntaned/ERP-for-Factory/issues/119) is still open; the owner closes it.
+   - No other branch or PR is pending.
+8. **Next work and who does it:**
+   - **M7.3** (Architecture and Domain diagrams that match the code) runs in a **new Manager session**.
+   - It starts only after the owner approves it in a comment on its new Issue (rule 6).
+   - Per rule 7 it needs no separate reviewer session, unless it touches business code, the database or permissions.
+   - Then M7.4 and M7.5 (M7.5 = final Scrutinize: independent review by a separate session).
+   - This session stops after reporting PR #122's CI.
