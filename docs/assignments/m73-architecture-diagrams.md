@@ -2,7 +2,7 @@
 
 Repository `porntaned/ERP-for-Factory`; branch `claude/gracious-sagan-rwlo33` (base `main` `8bbfa9f`);
 [Issue #123](https://github.com/porntaned/ERP-for-Factory/issues/123).
-Status: **implemented on the branch; PR open, awaiting the owner's merge** (2026-11-15). ("owner approved; implementation in progress" held until the Implementer's commits `ea157a3` and `a18dfb9` — historical.)
+Status: **merged: [PR #124](https://github.com/porntaned/ERP-for-Factory/pull/124) at `8245a28` (2026-11-15); M7.3 complete** ("implemented on the branch; PR open, awaiting the owner's merge" held until the merge — historical). ("owner approved; implementation in progress" held until the Implementer's commits `ea157a3` and `a18dfb9` — historical.)
 
 Owner approval: [Issue #123 comment 6891924773](https://github.com/porntaned/ERP-for-Factory/issues/123#issuecomment-6891924773)
 (2026-11-15), on the Issue body as edited 2026-11-15 on the owner's instruction in chat.
@@ -113,19 +113,19 @@ finding, not fixed.
 ## Acceptance criteria (Issue #123)
 
 - [x] Owner approval with D1–D6 ([comment 6891924773](https://github.com/porntaned/ERP-for-Factory/issues/123#issuecomment-6891924773)).
-- [ ] ER entities and FK/O2O edges equal the code (`User` external, not counted).
-- [ ] App dependency edges equal the code under the rules above, including `inventory ↔ quality`.
-- [ ] Diagram (a) shows admin as it is: read-only via `config/readonly_admin.py`, 5 apps, no manufacturing, inventory 6/8.
-- [ ] States equal the `TextChoices`; every transition names an existing function.
-- [ ] RED before GREEN recorded; the check fails on one missing and one extra item.
-- [ ] Diagrams render on GitHub (PR file view).
-- [ ] No new dependency; no app/migration/settings change; `makemigrations --check` and Ruff pass.
-- [ ] Changed files are all in the allowed list.
-- [ ] New tests use no database.
-- [ ] CI test count = 1207 + the number of new tests.
-- [ ] Relative links in changed Markdown: 0 broken; README has no SHA.
-- [ ] CI on PostgreSQL 18.6 passes all 3 jobs (cited by the CI comment link).
-- [ ] One report when ready to merge (standing rule 8).
+- [x] ER entities and FK/O2O edges equal the code (`User` external, not counted).
+- [x] App dependency edges equal the code under the rules above, including `inventory ↔ quality`.
+- [x] Diagram (a) shows admin as it is: read-only via `config/readonly_admin.py`, 5 apps, no manufacturing, inventory 6/8.
+- [x] States equal the `TextChoices`; every transition names an existing function.
+- [x] RED before GREEN recorded; the check fails on one missing and one extra item.
+- [x] Diagrams render on GitHub (PR file view): checked by the owner, 2026-11-15 — all 6 Mermaid diagrams render, no error.
+- [x] No new dependency; no app/migration/settings change; `makemigrations --check` and Ruff pass.
+- [x] Changed files are all in the allowed list.
+- [x] New tests use no database.
+- [x] CI test count = 1207 + the number of new tests: 1228 = 1207 + 21 (PR CI #304).
+- [x] Relative links in changed Markdown: 0 broken; README has no SHA.
+- [x] CI on PostgreSQL 18.6 passes all 3 jobs (cited by the CI comment link): [PR CI #304](https://github.com/porntaned/ERP-for-Factory/actions/runs/43698657728), [CI comment](https://github.com/porntaned/ERP-for-Factory/pull/124#issuecomment-6892279517).
+- [x] One report when ready to merge (standing rule 8).
 
 ## Evidence
 
@@ -206,7 +206,7 @@ Ground truth computed by the test at `a18dfb9`: 21 entities, 33 ER edges, 20 app
   `production.py`), one-plant transfers (`inventory/transfer_policy.py` `lock_transfer_scope`), roles, the
   `inventory_stock_immutable` trigger and the `stock_reversal_*` constraints, and that ledger entries are created
   only in `inventory`. No difference found.
-- **Rendering on GitHub: not verified by the Manager.** Headless Chromium on the public blob page of `8ca5087`
+- **Rendering on GitHub: not verified by the Manager** (closed by the owner, see Closeout). Headless Chromium on the public blob page of `8ca5087`
   loaded the page and found the 6 Mermaid sections, but GitHub never loaded its renderer frames for an anonymous
   headless browser, so no rendered result could be read. A local Mermaid parse was not run (the Implementer's
   attempt was refused by the session's permission check). The acceptance item "Diagrams render on GitHub" stays
@@ -235,9 +235,32 @@ self-verification. The owner's checker reviews at merge.
 
 None of these blocks an acceptance criterion. Each needs an owner decision before any separate Issue.
 
-### Left for the post-merge docs PR
+### Left for the post-merge docs PR (done in that PR; this list is historical from 2026-11-15)
 
 - `docs/TASKS.md`: tick M7.3, สถานะปัจจุบัน, Progress log; also record the merge of
   [PR #122](https://github.com/porntaned/ERP-for-Factory/pull/122) at `8bbfa9f` with its `main` CI (No chain).
 - `README.md` not-delivered line (`M7.3–M7.5`) → `M7.4–M7.5` after the merge.
 - Closeout here: merge SHA, PR and `main` CI with SHA and test counts.
+
+## Closeout (2026-11-15)
+
+[PR #124](https://github.com/porntaned/ERP-for-Factory/pull/124) was merged by the owner on GitHub at 2026-11-15T10:46:07Z as merge commit `8245a28`
+(head `aa662cd`); the owner reported it in chat. No session merged it.
+- **PR CI** [#304](https://github.com/porntaned/ERP-for-Factory/actions/runs/43698657728) on `aa662cd`: all 3 jobs passed on attempt 1.
+  - `postgresql-tdd`: PostgreSQL 18.6 / Python 3.14.8, **1228 passed** (= 1207 + 21)
+    ([CI comment](https://github.com/porntaned/ERP-for-Factory/pull/124#issuecomment-6892279517)).
+  - `install-guide`: passed. The `pkill -9` fallback did not run: the step `Guide 8: Run and log in` took 2 s, and
+    the fallback only starts after a 20 s wait for `runserver` to stop. This is read from the step timing; the
+    raw job log could not be downloaded from this session (the proxy refused the log host).
+  - `report`: passed.
+- **Main CI** [#305](https://github.com/porntaned/ERP-for-Factory/actions/runs/43705666693) on `8245a28`: **still running when this docs PR was opened**;
+  its result goes into the next post-merge docs PR (No chain).
+- **Rendering:** the owner checked `docs/ARCHITECTURE.md` in the PR file view: all 6 Mermaid diagrams render, no
+  error. The acceptance item is closed by the owner.
+- **Review:** no separate reviewer session (standing rule 7, D6). Implementer = a sub-agent of the Manager; the
+  Manager's re-runs are self-verification; the owner reviewed at merge.
+- **Known limit (standing rule 1):** the relative link to this spec in the body of PR #124
+  (`docs/assignments/m73-architecture-diagrams.md`) is broken, because GitHub resolves relative links in a PR body
+  against the PR page, not the repository. Not fixed; later PR bodies should use full URLs.
+- Findings 1–5 above still wait for the owner's decision.
+- No deployment.
