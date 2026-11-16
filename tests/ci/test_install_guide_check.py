@@ -101,6 +101,16 @@ def test_every_allow_list_entry_has_a_reason():
     assert {step for step, _ in check.CI_ONLY} <= real_steps
 
 
+def test_pkill_9_fallback_shows_a_warning_annotation():
+    """Issue #126 P4: if the fallback runs, the run's summary page shows a GitHub warning."""
+    guide_8 = dict(check.job_steps(WORKFLOW, "install-guide"))["Guide 8: Run and log in"]
+    fallback = [line for line in guide_8 if "fallback: pkill -9" in line]
+    assert fallback == [
+        '  echo "::warning title=install-guide::runserver did not stop after SIGTERM;'
+        ' fallback: pkill -9"'
+    ]
+
+
 # Failure cases (a)-(i) of the spec
 
 
