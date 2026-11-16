@@ -253,8 +253,8 @@ None of these blocks an acceptance criterion. Each needs an owner decision befor
     the fallback only starts after a 20 s wait for `runserver` to stop. This is read from the step timing; the
     raw job log could not be downloaded from this session (the proxy refused the log host).
   - `report`: passed.
-- **Main CI** [#305](https://github.com/porntaned/ERP-for-Factory/actions/runs/43705666693) on `8245a28`: **still running when this docs PR was opened**;
-  its result goes into the next post-merge docs PR (No chain).
+- **Main CI** [#305](https://github.com/porntaned/ERP-for-Factory/actions/runs/43705666693) on `8245a28`: all 3 jobs passed on attempt 1; no `pkill -9`
+  fallback (`Guide 8` took 2 s).
 - **Rendering:** the owner checked `docs/ARCHITECTURE.md` in the PR file view: all 6 Mermaid diagrams render, no
   error. The acceptance item is closed by the owner.
 - **Review:** no separate reviewer session (standing rule 7, D6). Implementer = a sub-agent of the Manager; the

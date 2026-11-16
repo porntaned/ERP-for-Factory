@@ -8,7 +8,7 @@ Native Codex multi-agent capabilities were the default until M4.6; since M4.7 th
 
 ## Roles
 
-- **Manager:** selects the approved issue, assigns work, protects scope, updates the checklist from evidence and opens the post-merge docs PR for its slice ([AGENTS.md](../AGENTS.md#documentation-updates)).
+- **Manager:** selects the approved issue, assigns work, protects scope, updates the checklist from evidence and records the facts known after a merge in the first commit of its next PR ([AGENTS.md](../AGENTS.md#documentation-updates)). ("opens the post-merge docs PR for its slice" held until 2026-11-16 — historical.)
 - **Implementer:** changes only the assigned files and records assumptions, commands, results and limitations.
 - **Reviewer:** reads the completed change independently, applies Scrutinize and does not edit during the review pass. After sending its report, a Reviewer session takes no further work on that slice. Other work the owner gives it is a new task on its own branch, starting with Issue workflow step 1.
 - **Verifier:** runs the required checks in the approved environment and records the tested commit SHA. One agent may verify its own work, but that is labelled self-verification.
@@ -26,7 +26,7 @@ A handoff records:
 3. Commands, environment and exact results.
 4. Commit SHA or a clear statement that work is not committed.
 5. Findings, remaining risks and the next responsible role.
-6. Documentation updated per [AGENTS.md](../AGENTS.md#documentation-updates), or the follow-up docs PR that will do it.
+6. Documentation updated per [AGENTS.md](../AGENTS.md#documentation-updates), or the next PR that will do it. ("or the follow-up docs PR that will do it" held until 2026-11-16 — historical.)
 
 ## Evidence
 
@@ -54,8 +54,13 @@ Owner's standing rules (from 2026-11-14, [Issue #119 comment 6878167755](https:/
 4. The owner merges every PR on GitHub; the Manager does not merge. (Before 2026-11-14 a session could merge
    on the owner's explicit merge instruction for that PR — historical. The note "as `AGENTS.md` still describes —
    historical for new work" held until 2026-11-15, when `AGENTS.md` marked that wording historical.)
-5. After a merge the Manager opens the post-merge docs PR immediately.
-6. A new slice starts only when the owner approves it in a comment on its Issue.
+5. After a merge, the Manager puts the checklist tick and closeout in the first commit of its next PR; no separate
+   docs PR. If `main` CI fails, the Manager tells the owner once in chat. The last slice (M7.5) may have its own docs
+   PR. (From 2026-11-16, [Issue #126 comment 6910189566](https://github.com/porntaned/ERP-for-Factory/issues/126#issuecomment-6910189566); "After a merge the Manager opens the post-merge docs PR immediately." held until
+   2026-11-16 — historical.)
+6. A new slice starts only when the owner approves it in a comment on its Issue. The owner's checker reviews the Issue
+   before approval only when the work touches business code, the database or permissions. Documentation, diagrams and
+   small CI changes are approved without that review. (Second and third sentences from 2026-11-16, [Issue #126 comment 6910189566](https://github.com/porntaned/ERP-for-Factory/issues/126#issuecomment-6910189566).)
 
 Owner's standing rules 7–8 (from 2026-11-15, owner in chat; verbatim below):
 
@@ -73,6 +78,17 @@ Owner's standing rules 7–8 (from 2026-11-15, owner in chat; verbatim below):
 >    งานแตะโค้ด business, ฐานข้อมูล, สิทธิ์ หรือ final scrutinize = independent review โดย session แยก
 > 8. ไม่ตั้งเวลาเช็ก CI เอง รายงานครั้งเดียวเมื่อพร้อม merge ในรูปแบบสั้น: เลข PR, head SHA, check 3 ตัว (attempt),
 >    ทางสำรอง pkill -9, finding ที่ต้องให้เจ้าของตัดสิน (ถ้าไม่มีให้เขียน "ไม่มี")
+
+Owner's decisions on Issue #126 (2026-11-16, [Issue #126 comment 6910189566](https://github.com/porntaned/ERP-for-Factory/issues/126#issuecomment-6910189566); verbatim):
+
+> อนุมัติ P1–P5
+> D-P1: ใช่ status text แก้ทับได้ ไม่ต้องมีวันที่หรือข้อความเดิม
+> D-P2: (a) ใช่ main CI fail ให้แจ้งเจ้าของในแชตครั้งเดียว (b) ใช่ งานสุดท้ายเปิด docs PR ได้ (c) ใช่ ยอมให้ติ๊กบน main ช้าได้ 1 PR
+> D-P5: ไม่เกิน 60 บรรทัด
+> D-การทำ: แยก 2 PR (A: P1 P2 P3 P5, B: P4) ทำหลัง merge PR #125 และก่อน M7.4; ไม่มี reviewer session แยก
+> PR A ให้บันทึกผล main CI #305 (ผ่าน) ที่ยังค้างจาก PR #125 ด้วย
+
+The resulting rules are in [AGENTS.md](../AGENTS.md#documentation-updates) (P1, P2, P5) and rules 5–6 above (P2, P3).
 
 Earlier practice superseded by rules 7–8 (historical from 2026-11-15):
 - Every slice up to Issue #119 had an independent review by a separate session.

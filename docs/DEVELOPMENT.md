@@ -306,7 +306,7 @@ the commit SHA, server version and test counts as a commit comment, and keeps on
 comment on the PR, written by `scripts/ci_summary.py`. A local run on a different PostgreSQL
 or Python version is a development check, not evidence.
 While a PR is open, link to its CI comment instead of copying its SHA or counts into files;
-those go into the post-merge docs PR (see AGENTS.md → Verification).
+after the merge GitHub keeps them on the PR and they are not copied (see AGENTS.md → Verification).
 
 `ruff format --check .` runs in CI; run `uv run ruff format .` before committing.
 
