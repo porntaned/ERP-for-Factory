@@ -38,13 +38,13 @@ Build a public portfolio ERP for a fictional LED assembly factory with synthetic
 - Verify PostgreSQL-specific claims on PostgreSQL. SQLite or mocks are not equivalent evidence.
 - Run targeted tests, diagnose root causes, then run relevant regression checks.
 - Follow `docs/SCRUTINIZE.md` before opening a pull request.
-- Record actual commands, environment and results. For local development checks, record the
-  commit they ran on.
+- Record actual commands, environment and results in the PR body. For local development checks,
+  record the commit they ran on.
 - CI on PostgreSQL 18.6 is the evidence of record. CI posts its results (commit SHA, server
   version, test counts) as a commit comment and one updated PR comment. While the PR is open,
   cite that comment by link only: it always shows the latest head. Do not push a commit
-  whose only purpose is to record a CI result or SHA of the same PR. The CI SHA and run go
-  into the post-merge docs PR.
+  whose only purpose is to record a CI result or SHA of the same PR. After the merge, GitHub
+  keeps the CI result on the PR; it is not copied into the docs.
 - Documentation-only commits after a review need no new review and no new evidence commit.
   The CI comment on the final head covers them. Say in the PR body which commits were
   documentation only.
@@ -60,6 +60,40 @@ Build a public portfolio ERP for a fictional LED assembly factory with synthetic
 - Posted movements retain history; corrections reference the original transaction.
 
 ## Documentation updates
+
+Documentation must describe `main` as it is, with one exception: facts known only after a merge
+(checklist tick, สถานะปัจจุบัน, Progress log line, closeout) may lag `main` by one PR. The agent
+that prepares a change also prepares its documentation in the same PR.
+
+**After a merge.** Merge SHA and `main` CI results are not recorded in the docs; GitHub shows them
+on the PR. The Manager of the slice puts the facts known only after the merge into the first
+commit of its next PR, not into a separate PR. If `main` CI fails, the Manager tells the owner
+once in chat. The last slice (M7.5), which has no next PR, may have its own docs PR.
+
+1. `docs/TASKS.md`: check an item only when linked evidence exists; update **สถานะปัจจุบัน**
+   and add a dated Progress log line (what merged, as a PR link; review type; what remains).
+2. The slice's record in `docs/assignments/<slice>.md` is at most 60 lines: scope, files allowed,
+   acceptance criteria, owner decisions (verbatim) and links to the evidence (PR, CI comment,
+   commits, review). Commands and results of development checks go in the PR body, with the
+   commit they ran on. (Issues up to #29 keep their
+   evidence in `docs/evidence/`; review records go in `docs/reviews/`; only files named `*-independent-review.md` are independent reviews, and every review file states its type on its first lines.)
+3. `README.md`: change only when the delivered / not-delivered summary changes. Never pin a
+   commit SHA there; point to TASKS.md.
+4. Any other document whose described behavior or setup the change affects (`DEVELOPMENT.md`,
+   `PROJECT.md`, this file) is updated in the same PR.
+5. Owner rules and owner decisions are never deleted: when one changes, mark the old text
+   historical with a date. Status text (สถานะปัจจุบัน, "awaiting …", counts, open/closed) is
+   overwritten in place; git history keeps the old version.
+6. Every PR fills in the documentation checklist in `.github/pull_request_template.md`.
+
+<details>
+<summary>Historical rules (held until 2026-11-16; replaced on the owner's approval, [Issue #126 comment 6910189566](https://github.com/porntaned/ERP-for-Factory/issues/126#issuecomment-6910189566))</summary>
+
+Verification, two sentences: "Record actual commands, environment and results. For local
+development checks, record the commit they ran on." and "The CI SHA and run go into the
+post-merge docs PR."
+
+Documentation updates, as it was:
 
 Documentation must describe `main` as it is. The agent that prepares a change also prepares
 its documentation in the same PR. Status that can only be known after the owner merges
@@ -89,3 +123,5 @@ A merge is not finished until that docs PR is open.
    `PROJECT.md`, this file) is updated in the same PR.
 5. Correct stale statements instead of deleting them: mark them historical with a date.
 6. Every PR fills in the documentation checklist in `.github/pull_request_template.md`.
+
+</details>
