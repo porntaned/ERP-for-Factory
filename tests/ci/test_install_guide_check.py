@@ -379,7 +379,8 @@ OLD_STOP_CHECK = (
 )
 FALLBACK_LINES = [
     "if pids=$(pgrep -d, -f 'manage.py runserver'); then",
-    '  echo "runserver did not stop after SIGTERM; fallback: pkill -9"',
+    '  echo "::warning title=install-guide::runserver did not stop after SIGTERM;'
+    ' fallback: pkill -9"',  # Issue #126 P4
     '  ps -o pid,ppid,stat,etime,cmd -p "$pids" || true',
     "  pkill -9 -f 'manage.py runserver' || true",
     "  for i in $(seq 1 5); do pgrep -f 'manage.py runserver' > /dev/null || break; sleep 1; done",
