@@ -2,7 +2,7 @@
 
 [Issue #126](https://github.com/porntaned/ERP-for-Factory/issues/126); approval:
 [comment 6910189566](https://github.com/porntaned/ERP-for-Factory/issues/126#issuecomment-6910189566) (2026-11-16).
-Status: PR A and PR B open, awaiting the owner's merge.
+Status: done — [PR #127](https://github.com/porntaned/ERP-for-Factory/pull/127) (PR A) and [PR #128](https://github.com/porntaned/ERP-for-Factory/pull/128) (PR B) merged by the owner on GitHub (2026-11-16).
 
 ## Owner decisions (verbatim)
 
@@ -36,12 +36,12 @@ code, the database or permissions, and the final Scrutinize, gets an independent
 
 ## Acceptance criteria (Issue #126)
 
-- [ ] New text as approved; the replaced owner rules kept as historical with a date (P1).
-- [ ] No document states the post-merge docs PR as a current rule (`grep`).
-- [ ] P4: `install-guide` and its check step pass on PostgreSQL 18.6; `postgresql-tdd` and `report` unchanged;
+- [x] New text as approved; the replaced owner rules kept as historical with a date (P1).
+- [x] No document states the post-merge docs PR as a current rule (`grep`).
+- [x] P4: `install-guide` and its check step pass on PostgreSQL 18.6; `postgresql-tdd` and `report` unchanged;
       `tests/ci` pass.
-- [ ] Relative links in the changed files: 0 broken.
-- [ ] One report per PR when ready to merge (standing rule 8).
+- [x] Relative links in the changed files: 0 broken.
+- [x] One report per PR when ready to merge (standing rule 8).
 
 ## Roles and review
 
@@ -50,4 +50,5 @@ Manager = session `session_01MVmjhbuGPaWujXggKSGpsT`, who also made the changes.
 
 ## Evidence
 
-Development checks, commands and CI links are in each PR body (P5).
+Development checks, commands and CI links are in each PR body (P5): [PR #127](https://github.com/porntaned/ERP-for-Factory/pull/127),
+[PR #128](https://github.com/porntaned/ERP-for-Factory/pull/128).
