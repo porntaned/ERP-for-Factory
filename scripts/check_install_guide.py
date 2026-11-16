@@ -113,9 +113,11 @@ CI_ONLY = {
     # show its processes, pkill -9, wait up to 5 s; fail only if it is still running after that.
     # Replaces `if pgrep … echo "runserver still running"; exit 1; fi`.
     (GUIDE_8, "if pids=$(pgrep -d, -f 'manage.py runserver'); then"): "M7.2 CI-only item 5",
+    # Issue #126 P4: the echo is a GitHub warning annotation, shown on the run's summary page.
     (
         GUIDE_8,
-        '  echo "runserver did not stop after SIGTERM; fallback: pkill -9"',
+        '  echo "::warning title=install-guide::runserver did not stop after SIGTERM;'
+        ' fallback: pkill -9"',
     ): "M7.2 CI-only item 5",
     (GUIDE_8, '  ps -o pid,ppid,stat,etime,cmd -p "$pids" || true'): "M7.2 CI-only item 5",
     (GUIDE_8, "  pkill -9 -f 'manage.py runserver' || true"): "M7.2 CI-only item 5",
