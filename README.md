@@ -36,6 +36,7 @@ Portfolio ERP สำหรับโรงงานประกอบโคมไ
 - [Scrutinize review method](docs/SCRUTINIZE.md)
 - [Agent and repository rules](AGENTS.md) — รวมกติกาการอัปเดตเอกสารหลัง Merge
 - [Development and test environment](docs/DEVELOPMENT.md)
+- [Demo screenshots](docs/DEMO.md) — ภาพหน้าจอจริงสามเส้นทาง (Inventory, Production, Quality และ trace) พร้อมลิงก์ Issue, PR และ CI
 
 ## Safety and scope
 

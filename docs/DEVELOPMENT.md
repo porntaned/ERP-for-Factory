@@ -86,6 +86,7 @@ DJANGO_DEBUG=true uv run --env-file .env python manage.py runserver
 
 `tests/web/test_m47_demo.py` runs the same steps through HTTP on PostgreSQL. Screenshots:
 `docs/evidence/m47/`.
+Screenshots of all three demo paths (Inventory, Production, Quality and trace): [DEMO.md](DEMO.md).
 
 ## Production demo walkthrough (M5.4)
 
