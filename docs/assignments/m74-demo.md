@@ -2,7 +2,7 @@
 
 [Issue #129](https://github.com/porntaned/ERP-for-Factory/issues/129); approval:
 [comment 6912041133](https://github.com/porntaned/ERP-for-Factory/issues/129#issuecomment-6912041133) (2026-11-16).
-Status: in progress on branch `claude/gracious-sagan-rwlo33`.
+Status: PR open on branch `claude/gracious-sagan-rwlo33`, awaiting the owner's screenshot check and merge.
 
 ## Owner decisions (verbatim)
 
@@ -42,14 +42,14 @@ Not in scope:
 ## Acceptance criteria (Issue #129)
 
 - [x] Owner approval with D1–D7.
-- [ ] Every screenshot comes from an empty database and the seeds at a stated commit. The commands, users and
+- [x] Every screenshot comes from an empty database and the seeds at a stated commit. The commands, users and
       commit are in the PR body.
-- [ ] Numbers in the screenshots match the seed data and `docs/DEVELOPMENT.md`.
-- [ ] Every step in `docs/DEMO.md` links an Issue, a PR and CI evidence that open.
-- [ ] No password, secret or real data in any screenshot.
-- [ ] Total size ≤ 3 MB, width 1280 px, deviceScaleFactor 1. Relative links: 0 broken. No SHA in README.
+- [x] Numbers in the screenshots match the seed data and `docs/DEVELOPMENT.md`.
+- [x] Every step in `docs/DEMO.md` links an Issue, a PR and CI evidence that open.
+- [x] No password, secret or real data in any screenshot.
+- [x] Total size ≤ 3 MB, width 1280 px, deviceScaleFactor 1. Relative links: 0 broken. No SHA in README.
 - [ ] The owner checked the screenshots in the PR.
-- [ ] Changed files all on the list. No new dependency, no workflow change.
+- [x] Changed files all on the list. No new dependency, no workflow change.
 - [x] First commit records the merges of PR #127 and #128 (P2).
 - [ ] CI on PostgreSQL 18.6 passes all 3 jobs. One report (standing rule 8).
 
